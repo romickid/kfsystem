@@ -53,7 +53,7 @@ export default {
   data() {
     return {
       msg: 'Welcome to Your Vue.js App',
-      // for test, don't delete it.
+      // for test, do not delete it.
       api_create: './api/admin_create/',
       api_set_profile: './api/admin_set_profile/',
       api_login_test: './api/admin_login/',
@@ -75,8 +75,8 @@ export default {
 
     postData: function () {
       var vm = this
-      this.item = {email: 'hello1@123.com', password: 'pass23', newpassword: 'passnew'}
-      vm.$http.post(vm.api_reset_password, this.item)
+      this.item = {email: 'hello2@1231.com', password: '2123.com', nickname:"2hello",  newpassword: 'pass123'}  // for test, do not delete it.
+      vm.$http.post(vm.api_login_test, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })

@@ -11,6 +11,6 @@ class Snippet(models.Model):
     name = models.CharField(max_length=100, blank=True, default=' ')
 
 class Admin(models.Model):
-    email=models.EmailField(max_length=200,default='')
-    nickname=models.CharField(max_length=100,blank=True, default=' ')
-    password=models.CharField(max_length=128, blank=True, default=' ')
+    email=models.EmailField(max_length=200,default='null')
+    nickname=models.CharField(max_length=100,blank=True, default='null')
+    password=models.CharField(max_length=128, blank=True, default='null')

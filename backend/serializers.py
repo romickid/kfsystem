@@ -24,8 +24,8 @@ class SnippetSerializer(serializers.Serializer):
 class AdminSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField(max_length = 200)
-    nickname = serializers.CharField(max_length = 100, default = "123")
-    password = serializers.CharField(max_length = 128, default = "123")   # SHA512(SHA512(password)+SHA512(email)+标记字符串)
+    nickname = serializers.CharField(max_length = 100, default = "null")
+    password = serializers.CharField(max_length = 128, default = "null")   
 
     def create(self, validated_data):
         return Admin.objects.create(**validated_data)
