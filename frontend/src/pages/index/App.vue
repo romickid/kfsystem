@@ -13,7 +13,7 @@
   </header>
   <!-- Banner -->
   <section class='banner'>
-      <img src="./assets/slider02.jpg"  alt="" />
+    <img src="./assets/slider02.jpg"  alt="" />
     <div class='banner-content'>
       <h1>连接你的用户 高效你的客服</h1>
       <p>智能机器人 实时在线沟通 一键接入 多渠道汇聚</p>
@@ -93,15 +93,115 @@
           <h3>产品优势</h3>
           <p>仿人脑的智能机器人、无缝转接在线人工、客服无障碍协同、客服管理实时监控、数据报表一键生成、百度亿级流量产品实战检验</p>
           <div class='line'></div>
-          <div class='two-box-text'>
-          <p>仿人脑的智能机器人、无缝转接在线人工、客服无障碍协同、客服管理实时监控、数据报表一键生成、百度亿级流量产品实战检验</p>
-          <p>仿人脑的智能机器人、无缝转接在线人工、客服无障碍协同、客服管理实时监控、数据报表一键生成、百度亿级流量产品实战检验</p>
-          <p>仿人脑的智能机器人、无缝转接在线人工、客服无障碍协同、客服管理实时监控、数据报表一键生成、百度亿级流量产品实战检验</p>
+          <div class='two-box-content'>
+          <div class='row'>
+          <div class="box-right-element">
+            <div class='element1'>
+            <div class="right-element-icon">
+              <span class="fa fa-plug">logo</span>
+            </div>
+            <div class="right-element-text">
+              <h4>Plugin Development</h4>
+              <p>依托于业界领先的智能机器人技术，建立强大的语料知识库，随时响应用户的咨询问答</p>
+            </div>
+            </div>
           </div>
+          <div class="box-right-element">
+            <div class='element2'>
+            <div class="right-element-icon">
+              <span class="fa fa-plug">logo</span>
+            </div>
+            <div class="right-element-text">
+              <h4>Plugin Development</h4>
+              <p>依托于业界领先的智能机器人技术，建立强大的语料知识库，随时响应用户的咨询问答</p>
+            </div>
+            </div>
+          </div>
+          </div>
+          <div class='row'>
+          <div class="box-right-element">
+            <div class='element3'>
+            <div class="right-element-icon">
+              <span class="fa fa-plug">logo</span>
+            </div>
+            <div class="right-element-text">
+              <h4>Plugin Development</h4>
+              <p>依托于业界领先的智能机器人技术，建立强大的语料知识库，随时响应用户的咨询问答</p>
+            </div>
+            </div>
+          </div>
+          <div class="box-right-element">
+            <div class='element4'>
+            <div class="right-element-icon">
+              <span class="fa fa-plug">logo</span>
+            </div>
+            <div class="right-element-text">
+              <h4>Plugin Development</h4>
+              <p>依托于业界领先的智能机器人技术，建立强大的语料知识库，随时响应用户的咨询问答</p>
+            </div>
+            </div>
+          </div>
+          </div>
+        </div>
         </div>
       </div>
     </div>
   </section>
+  <section class='introduction-three'>
+    <div class='introduction-three-content'>
+      <h2>产品概述</h2>
+      <div class='line'></div>
+      <p>百度大数据环境下，依托于先进的业界技术，一群热爱互联网的年轻人抓住机遇，迎接挑战、只做业界最先进的客服平台-夜莺。</p>
+      <p>我们一步一步加快产品迭代，现在夜莺有智能的会学习的机器人、全面数据可视化的在线人工操作并全面融合了微信、微博、app等用户访问渠道。智能、易用、安全是我们的所推崇的、省钱、方便、放心是夜莺能承诺的。</p>
+    </div>
+  </section>
+  <section class='contact-us'>
+    <div class='contact-us-container'>
+      <div class='contact-content'>
+        <div class='contact-content-box'>
+          <h4>Who we are</h4>
+          <span>logo</span>
+          <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+        </div>
+        <div class='contact-content-box'>
+          <h4>Latest works</h4>
+          <div class='lastest-works'>
+            <span class='row'>
+              <img src='./assets/place-1.jpg' alt=''/>
+              <img src='./assets/place-2.jpg' alt=''/>
+            </span>
+            <span class='row'>
+              <img src='./assets/place-3.jpg' alt=''/>
+              <img src='./assets/place-4.jpg' alt=''/>
+            </span>
+          </div>
+        </div>
+        <div class='contact-content-box'>
+          <h4>Get In Touch</h4>
+          <p>The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.</p>
+          <div class='get-in-touch'>
+            <ul>
+              <li> 99 Green Street, White Plaza</li>
+              <li> +1 123 456 8899</li>
+              <li><a> info@dummy.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class='contact-content-box'>
+          <h4>Weekly Newsletter</h4>
+          <p>As opposed to using 'Content here, content here', making it look like readable English.</p>
+          <button type="button" class='button-register'>SUBSCRIBE</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="footer">
+    <div class="footer-container">
+      <div>
+        &copy; Big5 - Customer Service System &nbsp2017 - 8&nbsp All rights reserved. &nbsp&nbspDesign: Xiaochen Gao<a></a>
+      </div>
+    </div>
+  </footer>
 </div>
 </template>
 
@@ -115,6 +215,8 @@ export default {
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   color: #2c3e50;
+  position: relative;
+  margin: 0 auto;
 }
 
 .header {
@@ -141,6 +243,10 @@ export default {
   padding-right: 1em;
 }
 
+.header-item:hover a{
+  color: #9d2933;
+}
+
 .header a {
   color: #f9f9f9;
 }
@@ -148,7 +254,7 @@ export default {
 .banner {
   position: relative;
   top: 3em;
-  z-index: -1;
+  z-index: 0;
 }
 
 .banner img {
@@ -205,13 +311,26 @@ margin: 20px auto 40px;
   margin-bottom: 2em;
 }
 
+.introduction-one-row {
+  display: inline-flex;
+}
+
 .one-row-box {
   background: #fff;
-  display: inline-block;
-  padding: 2em 0em;
-  margin: 0 2em;
+  width: 15em;
+  height:14em;
+  margin-right: 1em;
+  margin-left: 1em;
+}
+
+.one-box-icon {
   margin-top: 2em;
 }
+
+.one-box-content h3{
+  margin-top: 0;
+}
+
 
 .one-row-box:hover {
   background:#1ABB9C;
@@ -233,70 +352,99 @@ margin: 20px auto 40px;
 
 .introduction-two-box {
   text-align: left;
-  position: relative;
-}
-
-.introduction-two-box span{
-  position: absolute;
 }
 
 .introduction-two-box img {
-  width: 42em;
+  float: left;
+  width: calc(100% - 40em);
 }
 
 .two-box-container {
   text-align: left;
-  position: absolute;
-  left: 44em;
+  float: right;
+  width: calc(36em);
 }
 
+.two-box-container h3 {
+  margin-top: 0;
+}
 .two-box-container p {
   font-size: 0.9em;
   padding-right: 3em;
 }
 
-.two-box-text p {
-  padding-top: 1.5em;
-}
-
-.element1 {
-  position: absolute;
-  top: 8em;
-  left: 3em;
-  padding-right: 22em;
-}
-
-.element2 {
-  position: absolute;
-  top: 8em;
-  left: 23em;
-  padding-right: 2em;
-}
-
-.element3 {
-  position: absolute;
-  top: 19em;
-  left: 3em;
-  padding-right: 22em;
-}
-
-.element4 {
-  position: absolute;
-  top: 19em;
-  left: 23em;
-  padding-right: 2em;
+.row {
+  display: inline-flex;
 }
 
 .right-element-icon {
-  position : relative;
-  top: 1.2em;
-  right: 3em;
+  float: left;
 }
 
 .introduction-three {
   position: absolute;
-  right: 0;
-  left: 0;
+  top: 130.5em;
+  background-color: #2a333b;
+  text-align: center;
+  padding: 6em 10em;
+  padding-top: 4em;
+  color: #f9f9f9;
+}
+
+.contact-us {
+  background-color: #f0f2f4;
+  position: absolute;
+  top: 155em;
+  width: 100%;
+  padding-bottom: 3em;
+}
+
+.contact-content {
+  display: inline-flex;
+}
+
+.contact-content-box {
+  width: 25%;
+  height: 15em;
+  padding: 2em 3em;
+}
+
+.lastest-works img {
+  width: 6em;
+  height: 5em
+}
+
+.get-in-touch ul{
+  list-style-type: none;
+  padding: 0;
+}
+
+.get-in-touch li{
+  padding-top: 0.2em;
+}
+
+.contact-content-box button {
+  color: #fff;
+  background-color: #1ABB9C;
+  height: 2em;
+  border-radius: 4px;
+  font-size: 1em;
+  border: none;
+}
+
+.footer {
+  position: absolute;
+  top: 234em;
+  background-color: #2a333b;
+  color: #f0f2f4;
+  font-size: 0.5em;
+  height: 4em;
+  padding-top: 2.5em;
+  width: 100%;
+}
+
+.footer-container {
+  padding-left: 10em;
 }
 
 </style>
