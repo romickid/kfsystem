@@ -19,3 +19,17 @@ class SnippetSerializer(serializers.Serializer):
         """
         instance.name = validated_data.get('title', instance.title)
         return instance
+
+
+class AdminSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    email = serializers.EmailField()
+    nickname = serializers.CharField()
+    password = serializers.CharField()   # SHA512(SHA512(password)+SHA512(email)+标记字符串)
+
+    def create(self, validated_data):
+        return Snippet.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('title', instance.title)
+        return instance
