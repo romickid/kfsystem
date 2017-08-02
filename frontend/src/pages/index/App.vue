@@ -13,7 +13,12 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      value: [20, 50]
+    }
+  }
 }
 </script>
 
