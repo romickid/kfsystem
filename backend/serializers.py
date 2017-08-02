@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
+from .models import Snippet, Admin, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 class SnippetSerializer(serializers.Serializer):
@@ -24,12 +24,14 @@ class SnippetSerializer(serializers.Serializer):
 class AdminSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField(max_length = 200)
-    nickname = serializers.CharField(max_length=100)
-    password = serializers.CharField(max_length=128)   # SHA512(SHA512(password)+SHA512(email)+标记字符串)
+    nickname = serializers.CharField(max_length = 100, default = 'null')
+    password = serializers.CharField(max_length = 128, default = 'null')   # SHA512(SHA512(password)+SHA512(email)+标记字符串)
 
     def create(self, validated_data):
-        return Snippet.objects.create(**validated_data)
+        return Admin.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('title', instance.title)
+        instance.email = validated_data.get('email', instance.email)
+        instance.nickname = validated_data.get('nickname', instance.nickname)
+        instance.password = validated_data.get('password', instance.password)
         return instance

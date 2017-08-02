@@ -53,7 +53,11 @@ export default {
   data() {
     return {
       msg: 'Welcome to Your Vue.js App',
-      m_api: './api/',
+      // for test, don't delete it.
+      api_create: './api/admin_create/',
+      api_set_profile: './api/admin_set_profile/',
+      api_login_test: './api/admin_login/',
+      api_reset_password: './api/admin_reset_password/',
       item: {},
       gridData: ''
 
@@ -71,11 +75,10 @@ export default {
 
     postData: function () {
       var vm = this
-      this.item = { name: 'a1' }
-      vm.$http.post(vm.m_api, this.item)
+      this.item = {email: 'hello@123.com', nickname: 'test2', password: 'pass2'}
+      vm.$http.post(vm.api_set_profile, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
-          vm.getData()
         })
     },
 
@@ -84,7 +87,6 @@ export default {
       this.item = { name: 'a1' }
       vm.$http.delete(vm.m_api + '8/')
         .then((response) => {
-          vm.getData()
         })
     }
   }

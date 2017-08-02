@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .models import Snippet
+from .models import Snippet, Admin
 from .serializers import SnippetSerializer, AdminSerializer
 
 
@@ -50,28 +50,51 @@ def snippet_detail(request, pk):
 
 
 @csrf_exempt
-def admin_login(request):
+def admin_create(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(data=data)
+        serializer = AdminSerializer(data=data)
+
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
+@csrf_exempt
 def admin_set_profile(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(data=data)
+        try:
+            snippet = Admin.objects.get(email = data['email'])
+            serializer = AdminSerializer(snippet, data = data)
+            if serializer.is_valid():
+                serializer.data.nickname = data['nickname']
+                serializer.data.password = data['password']
+                serializer.save()
+                return JsonResponse(serializer.data, status= 201)
+            return JsonResponse(serializer.errors, status=400)
+        except Admin.DoesNotExist:
+            return HttpResponse(status=404)
+
+
+@csrf_exempt
+def admin_login(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AdminSerializer(data=data)
+
+        # TODO add SHA512 fuction
+
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
+@csrf_exempt
 def admin_reset_password(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(data=data)
+        serializer = AdminSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
