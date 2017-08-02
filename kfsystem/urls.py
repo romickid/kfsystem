@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^en_login/', TemplateView.as_view(template_name="en_login.html")),
+    url(r'^se_folders/', TemplateView.as_view(template_name="se_folders.html")),
     url(r'^api/', include('backend.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('backend.urls')),
