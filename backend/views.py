@@ -57,7 +57,7 @@ def admin_create(request):
 
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.data, status=401) # 401 just for test
         return JsonResponse(serializer.errors, status=400)
 
 @csrf_exempt
@@ -69,7 +69,7 @@ def admin_set_profile(request):
             serializer1 = AdminSerializer(snippet, data = data)
             if serializer1.is_valid():
                 serializer1.save()
-                return JsonResponse(serializer1.data, status = 401)
+                return JsonResponse(serializer1.data, status = 401) # 401 just for test
             return JsonResponse(serializer1.errors, status = 400)
         except Admin.DoesNotExist:
             return HttpResponse(status=404)
@@ -85,7 +85,7 @@ def admin_login(request):
 
         try:
             snippet = Admin.objects.get(email = data['email'], password = data['password'])
-            return HttpResponse("Valid", status = 400)
+            return HttpResponse("Valid", status = 401)  # 401 just for test
         except Admin.DoesNotExist:
             return HttpResponse("Invalid", status = 400)
 
@@ -104,7 +104,7 @@ def admin_reset_password(request):
             serializer = AdminSerializer(snippet, data = data)
             if serializer.is_valid():
                 serializer.save()
-                return JsonResponse(serializer.data, status = 201)
+                return JsonResponse(serializer.data, status = 401) # 401 just for test
             return HttpResponse("Completed", status = 400)
         except Admin.DoesNotExist:
             return HttpResponse("Wrong Password or Email", status = 400)
