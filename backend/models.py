@@ -8,9 +8,9 @@ STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
 
 
 class Snippet(models.Model):
-    name = models.CharField(max_length=100, blank=True, default='')
+    name = models.CharField(max_length=100, blank=True, default=' ')
 
 class Admin(models.Model):
     email=models.EmailField(max_length=200,default='')
-    nickname=models.CharField(max_length=100,blank=True, default='')
-    password=models.CharField(max_length=128, blank=True, default='')
+    nickname=models.CharField(max_length=100,blank=True, default=' ')
+    password=models.CharField(max_length=128, blank=True, default=' ')

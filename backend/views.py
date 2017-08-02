@@ -66,13 +66,11 @@ def admin_set_profile(request):
         data = JSONParser().parse(request)
         try:
             snippet = Admin.objects.get(email = data['email'])
-            serializer = AdminSerializer(snippet, data = data)
-            if serializer.is_valid():
-                serializer.data.nickname = data['nickname']
-                serializer.data.password = data['password']
-                serializer.save()
-                return JsonResponse(serializer.data, status= 201)
-            return JsonResponse(serializer.errors, status=400)
+            serializer1 = AdminSerializer(snippet, data = data)
+            if serializer1.is_valid():
+                serializer1.save()
+                return JsonResponse(serializer1.data, status = 401)
+            return JsonResponse(serializer1.errors, status = 400)
         except Admin.DoesNotExist:
             return HttpResponse(status=404)
 
@@ -85,17 +83,28 @@ def admin_login(request):
 
         # TODO add SHA512 fuction
 
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+        try:
+            snippet = Admin.objects.get(email = data['email'], password = data['password'])
+            return HttpResponse("Valid", status = 400)
+        except Admin.DoesNotExist:
+            return HttpResponse("Invalid", status = 400)
+
 
 @csrf_exempt
 def admin_reset_password(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = AdminSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+
+        # TODO add SHA512 fuction
+
+        try:
+            snippet = Admin.objects.get(email = data['email'], password = data['password'])
+            data['password'] = data['newpassword']
+            serializer = AdminSerializer(snippet, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status = 201)
+            return HttpResponse("Completed", status = 400)
+        except Admin.DoesNotExist:
+            return HttpResponse("Wrong Password or Email", status = 400)
