@@ -75,8 +75,8 @@ export default {
 
     postData: function () {
       var vm = this
-      this.item = {email: 'hello@123.com', nickname: 'test2', password: 'pass2'}
-      vm.$http.post(vm.api_set_profile, this.item)
+      this.item = {email: 'hello1@123.com', password: 'pass23', newpassword: 'passnew'}
+      vm.$http.post(vm.api_reset_password, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
