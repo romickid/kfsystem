@@ -3,12 +3,8 @@
     <img src="./assets/logo.png">
     <div>
       <h2>
-        <a href="./en_folders">跳转至企业注册页面</a>
         <a href="./en_login">跳转至企业登录页面</a>
-        <br>
         <a href="./se_folders">跳转至客服注册页面</a>
-        <a href="./se_login">跳转至客服登录页面</a>
-        <Slider v-model="value" range></Slider>
       </h2>
     </div>
     <router-view></router-view>
