@@ -2,8 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .models import Admin, CustomerService
-from .serializers import AdminSerializer, CustomerServiceSerializer
+from .models import Admin, CustomerService, ChattingLog
+from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer
 
 @csrf_exempt
 def admin_create(request):
@@ -124,3 +124,28 @@ def customerservice_reset_password(request):
             return HttpResponse("Completed", status = 400)
         except CustomerService.DoesNotExist:
             return HttpResponse("Wrong Password or Email", status = 400)
+
+
+@csrf_exempt
+def chattinglog_send_message(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ChattingLogSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def chattinglog_get_data(request,pk):
+    if request.method == 'GET':
+        try:
+            chattinglog = CustomerService.objects.get(pk=pk)
+        except CustomerService.DoesNotExist:
+            return HttpResponse(status=404)
+        serializer = CustomerServiceSerializer(chattinglog)
+        return JsonResponse(serializer.data)
+
+
+ 
