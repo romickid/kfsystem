@@ -133,9 +133,12 @@ def serialnumber_validity(request):
 
         try:
             snippet = SerialNumber.objects.get(serials = data['serials'])
-            return HttpResponse("Valid", status = 401)  # 401 just for test
+            if snippet.is_used == True:
+                return HttpResponse("Invalid, the number has been used", status = 400)
+            else:
+                return HttpResponse("Valid", status = 401)  # 401 just for test
         except SerialNumber.DoesNotExist:
-            return HttpResponse("Invalid", status = 400)
+            return HttpResponse("Invalid, the number is not exist", status = 400)
 
 @csrf_exempt
 def serialnumber_mark_used(request):
@@ -145,10 +148,10 @@ def serialnumber_mark_used(request):
         try:
             snippet = SerialNumber.objects.get(serials = data['serials'])
             data['is_used'] = True
-            serializer = CustomerServiceSerializer(snippet, data = data)
+            serializer = SerialNumberSerializer(snippet, data = data)
             if serializer.is_valid():
                 serializer.save()
-                return HttpResponse("Serials Number is used", status = 401)  # 401 just for test
-            return HttpResponse("Invalid", status = 400)
+                return HttpResponse("Serials number is used", status = 401)  # 401 just for test
+            return JsonResponse('Invalid', status = 400)
         except SerialNumber.DoesNotExist:
-            return HttpResponse("Invalid", status = 400)
+            return HttpResponse("Invalid, number is wrong", status = 400)

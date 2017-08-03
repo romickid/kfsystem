@@ -36,7 +36,7 @@ class CustomerServiceSerializer(serializers.Serializer):
 class SerialNumberSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     serials = serializers.CharField(max_length = 200)
-    is_used = serializers.BooleanField()
+    is_used = serializers.BooleanField(default = False)
 
     def create(self, validated_data):
         return SerialNumber.objects.create(**validated_data)
