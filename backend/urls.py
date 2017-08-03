@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'^api/customerservice_set_profile/$', views.customerservice_set_profile),
     url(r'^api/customerservice_login/$', views.customerservice_login),
     url(r'^api/customerservice_reset_password/$', views.customerservice_reset_password),
+    url(r'^api/serialnumber_validity/$', views.serialnumber_validity),
+    url(r'^api/serialnumber_mark_used/$', views.serialnumber_mark_used),
 ]
