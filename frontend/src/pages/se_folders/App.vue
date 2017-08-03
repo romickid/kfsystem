@@ -53,9 +53,9 @@ body {
 .all {
   width: 500px;
   height: 530px;
-  margin: 30px 350px 0 100px;
+  margin: 40px 0 0 500px;
   border-radius: 10px;
-  background: rgba(230, 230, 250, 0.8);
+  background: rgba(154, 192, 205, 0.5);
 }
 
 .container {
@@ -69,8 +69,9 @@ body {
 #title {
   font-size: 20pt;
   font-weight: bold;
-  margin-bottom: 25px;
+  text-align: center;
   margin-left: 90px;
+  width: 350px;
 }
 
 .label {
