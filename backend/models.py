@@ -22,3 +22,7 @@ class ChattingLog(models.Model):
     content=models.CharField(max_length=500, blank=True, default='')
     is_client=models.BooleanField(default=False)
     time=models.DateTimeField()
+
+class SerialNumber(models.Model):
+    serials=models.CharField(max_length=200,blank=False,default='null')
+    is_used=models.BooleanField(default=False)
