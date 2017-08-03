@@ -6,6 +6,7 @@ Vue.config.debug = true
 Vue.config.productionTip = false
 
 Vue.use(VueResource)
+
 new Vue({
   el: '#chat',
   template: '<App/>',
