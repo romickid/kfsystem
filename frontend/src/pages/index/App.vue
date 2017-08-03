@@ -5,6 +5,7 @@
       <h2>
         <a href="./en_login">跳转至企业登录页面</a>
         <a href="./se_folders">跳转至客服注册页面</a>
+        <a href="../kfWorking/kfWorking.html">新客服工作界面！</a>
       </h2>
     </div>
     <router-view></router-view>
