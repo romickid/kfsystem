@@ -313,7 +313,11 @@ export default {
     background-color: #fafafa;
     border-radius: 4px;
   }
+<<<<<<< HEAD
   .massage-te:before {
+=======
+  .massage-text :before {
+>>>>>>> 03d90857ceda388de51fe56d47a54034fc5ca3da
     content: " ";
     position: absolute;
     top: 9px;
