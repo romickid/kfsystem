@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^kfWorking/', TemplateView.as_view(template_name="kfWorking.html")),
     url(r'^en_login/', TemplateView.as_view(template_name="en_login.html")),
     url(r'^se_login/', TemplateView.as_view(template_name="se_login.html")),
+    url(r'^en_folders/', TemplateView.as_view(template_name="en_folders.html")),
     url(r'^se_folders/', TemplateView.as_view(template_name="se_folders.html")),
     url(r'^api/', include('backend.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
