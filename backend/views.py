@@ -145,7 +145,15 @@ def chattinglog_get_data(request,pk):
         except CustomerService.DoesNotExist:
             return HttpResponse(status=404)
         serializer = CustomerServiceSerializer(chattinglog)
-        return JsonResponse(serializer.data)
+        return JsonResponse(serializer.data,status=201)
+
+
+@csrf_exempt
+def chattinglog_delete_record(request):
+    if request.method == 'DELETE':
+        chattinglogs = ChattingLog.objects.all()
+        chattinglogs.delete()
+        return HttpResponse(status=204)
 
 
  
