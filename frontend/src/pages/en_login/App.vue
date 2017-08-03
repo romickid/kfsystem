@@ -13,11 +13,13 @@
             <input type="text" name="password" class="text" id="password">
           </div>
           <div>
-            <input type="button" name="apply" id="apply" class="button" value="登录">
+            <Button type="primary" shape="circle" size="large" id="login">登录</Button>
           </div>
-          <label id="la">
-            <a href="http://www.jisuanke.com" target="_blank" id="forget">忘记密码</a>
-          </label>
+          <div>
+            <label id="la">
+              <a href="http://www.jisuanke.com" target="_blank" id="forget">忘记密码</a>
+            </label>
+          </div>
         </div>
       </div>
     </form>
@@ -51,7 +53,7 @@ body {
   display: flex;
   width: 400px;
   height: 280px;
-  padding: 30px 75px;
+  padding: 20px 75px;
   flex-wrap: wrap;
 }
 
@@ -59,11 +61,15 @@ body {
   font-size: 20pt;
   font-weight: bold;
   text-align: center;
-  width: 350px;
+  padding-left: 120px;
+  margin-bottom: 15px;
 }
 
 .label {
   font-weight: bold;
+  font-size: 15px;
+  padding-top: 20px;
+  padding-bottom: 40px;
   flex: 1 1 500px;
 }
 
@@ -77,7 +83,13 @@ body {
   text-align: center;
   width: 340px;
   height: 38px;
+  margin-bottom: 20px;
+  margin-top: 5px;
   flex: 1 1 500px;
+}
+
+#login {
+  width: 340px;
 }
 
 #apply {
@@ -102,7 +114,7 @@ a {
 }
 
 #la {
-  width: 310px;
+  margin-left: 180px;
   text-align: right;
 }
 </style>
