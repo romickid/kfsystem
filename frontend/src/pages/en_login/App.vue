@@ -15,10 +15,8 @@
           <div>
             <Button type="primary" shape="circle" size="large" id="login">登录</Button>
           </div>
-          <div>
-            <label id="la">
-              <a href="http://www.jisuanke.com" target="_blank" id="forget">忘记密码</a>
-            </label>
+          <div id="butt">
+            <forget-password ref="forgetPassword"></forget-password>
           </div>
         </div>
       </div>
@@ -27,8 +25,12 @@
 </template>
 
 <script>
+import ForgetPassword from '../../components/ForgetPassword'
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    ForgetPassword
+  }
 }
 </script>
 
@@ -92,6 +94,10 @@ body {
   width: 340px;
 }
 
+#butt {
+  padding-left: 270px;
+}
+
 #apply {
   font-weight: bold;
   color: white;
@@ -107,14 +113,5 @@ a {
   font-weight: bold;
   font-size: 9pt;
   color: #4876FF;
-}
-
-#forget {
-  font-size: 12pt;
-}
-
-#la {
-  margin-left: 180px;
-  text-align: right;
 }
 </style>
