@@ -50,7 +50,7 @@
 <script>
 export default {
   name: 'hello',
-  data() {
+  data () {
     return {
       msg: 'Welcome to Your Vue.js App',
       // for test, do not delete it.
