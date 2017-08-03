@@ -58,8 +58,11 @@ export default {
       api_set_profile: './api/admin_set_profile/',
       api_login: './api/admin_login/',
       api_reset_password: './api/admin_reset_password/',
+      api_chattinglog_send_message:'./api/chattinglog_send_message/',
+      api_chattinglog_get_data:'./api/',
       item: {},
-      gridData: ''
+      gridData: '',
+      test: {}
 
     }
   },
@@ -67,16 +70,18 @@ export default {
   methods: {
     getData: function () {
       var vm = this
-      vm.$http.get(vm.m_api)
+      vm.$http.get('./api/1/')
         .then((response) => {
-          vm.$set(this, 'gridData', response.data)
+          vm.$set(this, 'test', response.data)
         })
     },
 
     postData: function () {
       var vm = this
-      this.item = { email: 'hello4@123.com', password: 'pass4', nickname: 'nick4', newpassword: 'passnew4' }  // for test, do not delete it.
-      vm.$http.post(vm.api_reset_password, this.item)
+      vm.getData()
+      console.log(this.test)
+      this.item = { client_id:'hhh', service_id: this.test['id'], content:'qwer', is_client:true, time:'2013-07-10 12:23:42'} // for test, do not delete it.
+      vm.$http.post(vm.api_chattinglog_send_message, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })

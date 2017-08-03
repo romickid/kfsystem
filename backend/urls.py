@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'^api/customerservice_set_profile/$', views.customerservice_set_profile),
     url(r'^api/customerservice_login/$', views.customerservice_login),
     url(r'^api/customerservice_reset_password/$', views.customerservice_reset_password),
+    url(r'^api/chattinglog_send_message/$', views.chattinglog_send_message),
+    url(r'^api/(?P<pk>[0-9]+)/$', views.chattinglog_get_data),
 ]
