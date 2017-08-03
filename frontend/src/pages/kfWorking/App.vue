@@ -7,7 +7,7 @@
       <div class="m-card">
         <header>
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
-          <p class="user-name">{{user.name}}</p>
+          <p class="user-name">{{ user.name }}</p>
         </header>
         <footer>
           <input class="search" type="text" placeholder="search user..." v-model="search">
@@ -17,7 +17,7 @@
         <ul class="m-ul">
           <li class="m-list" v-for="item in userList"  :class="{ choosed: session.userId === item.id }" @click="select(item)">
             <a><img class="m-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
-              <p class="m-name">{{item.name}}</p></a>
+              <p class="m-name">{{ item.name }}</p></a>
           </li>
         </ul>
       </div>
@@ -29,7 +29,7 @@
             <p class="message-time"><span class="time-span">{{item.date | time}}</span></p>
             <div class="massage-main" :class="{ self: item.self }">
               <img class="massage-avatar" width="30" height="30" :src="item | avatar" />
-              <div class="massage-text">{{item.text}}</div>
+              <div class="massage-text">{{ item.text }}</div>
             </div>
           </li>
         </ul>
@@ -49,7 +49,7 @@ export default {
   el: '#chat',
   data () {
     let now = new Date()
-    let userData =  {
+    let userData = {
       // 登录用户
       user: {
         id: 1,
@@ -130,9 +130,9 @@ export default {
     sessionList: {
       deep: true,
       handler () {
-        userData.user = this.user
-        userData.userList = this.userList
-        userData.sessionList = this.sessionList
+        this.userData.user = this.user
+        this.userData.userList = this.userList
+        this.userData.sessionList = this.sessionList
       }
     }
   },
