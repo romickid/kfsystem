@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^se_login/', TemplateView.as_view(template_name="se_login.html")),
     url(r'^en_folders/', TemplateView.as_view(template_name="en_folders.html")),
     url(r'^se_folders/', TemplateView.as_view(template_name="se_folders.html")),
+    url(r'^se_password_retrieval/$', TemplateView.as_view(template_name="se_password_retrieval.html")),
+    url(r'^en_password_retrieval/$', TemplateView.as_view(template_name="en_password_retrieval.html")),
     url(r'^api/', include('backend.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('backend.urls')),

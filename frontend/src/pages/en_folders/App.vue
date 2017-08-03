@@ -57,9 +57,9 @@ body {
 .all {
   width: 500px;
   height: 580px;
-  margin: 15px 350px 0 100px;
+  margin: 20px 0 0 500px;
   border-radius: 10px;
-  background: rgba(230, 230, 250, 0.8);
+  background: rgba(154, 192, 205, 0.5);
 }
 
 .container {
