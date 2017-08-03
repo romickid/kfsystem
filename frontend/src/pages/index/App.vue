@@ -3,7 +3,8 @@
     <img src="./assets/logo.png">
     <div>
       <h2>
-        <a href="../test/test.html">可以跳转哟！</a>
+        <a href="./en_login">跳转至企业登录页面</a>
+        <a href="./se_folders">跳转至客服注册页面</a>
         <a href="../kfWorking/kfWorking.html">新客服工作界面！</a>
       </h2>
     </div>
@@ -13,7 +14,12 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      value: [20, 50]
+    }
+  }
 }
 </script>
 
