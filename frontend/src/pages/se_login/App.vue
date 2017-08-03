@@ -15,6 +15,9 @@
           <div>
             <Button type="primary" shape="circle" size="large" id="login">登录</Button>
           </div>
+          <div id="butt">
+            <forget-password ref="forgetPassword"></forget-password>
+          </div>
         </div>
       </div>
     </form>
@@ -22,8 +25,12 @@
 </template>
 
 <script>
+import ForgetPassword from '../../components/ForgetPassword'
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    ForgetPassword
+  }
 }
 </script>
 
@@ -87,7 +94,7 @@ body {
   width: 340px;
 }
 
-#butt{
+#butt {
   padding-left: 270px;
 }
 
