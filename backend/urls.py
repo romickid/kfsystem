@@ -12,4 +12,6 @@ urlpatterns = [
     url(r'^api/customerservice_reset_password/$', views.customerservice_reset_password),
     url(r'^api/chattinglog_send_message/$', views.chattinglog_send_message),
     url(r'^api/(?P<pk>[0-9]+)/$', views.chattinglog_get_data),
+    url(r'^api/chattinglog_delete_record/$', views.chattinglog_delete_record),
+    
 ]
