@@ -44,6 +44,8 @@
       <button @click="test3()">Test3</button>
       <button @click="test4()">Test4</button>
       <button @click="test5()">Test5</button>
+      <button @click="test6()">empty</button>
+      <button @click="test7()">empty</button>
     </div>
   
   </div>
@@ -72,8 +74,8 @@ export default {
   methods: {
     test1: function () {
       var vm = this
-      this.item = { 'serials': 'abc123' }
-      vm.$http.post(vm.api_validity, this.item)
+      this.item = { 'email': 'test2@a.com' }
+      vm.$http.post(vm.api_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -81,8 +83,8 @@ export default {
 
     test2: function () {
       var vm = this
-      this.item = { 'serials': 'abc123' }
-      vm.$http.post(vm.api_mark_used, this.item)
+      this.item = { 'email': 'test4@a.com' }
+      vm.$http.post(vm.api_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -90,8 +92,8 @@ export default {
 
     test3: function () {
       var vm = this
-      this.item = { 'email': 'test3@a.com', 'password': 'pass3' }
-      vm.$http.post(vm.api_login, this.item)
+      this.item = { 'email': 'test4@a.com', 'password': 'pass4' }
+      vm.$http.post(vm.api_set_profile, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -99,8 +101,8 @@ export default {
 
     test4: function () {
       var vm = this
-      this.item = { 'email': 'test3@a.com', 'password': 'pass3', 'newpassword': 'newpassword3'}
-      vm.$http.post(vm.api_reset_password, this.item)
+      this.item = { 'email': 'test4@a.com', 'nickname': 'nick4'}
+      vm.$http.post(vm.api_set_profile, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -108,8 +110,26 @@ export default {
 
     test5: function () {
       var vm = this
-      this.item = { 'email': 'test3@a.com', 'password': 'pass2' }
-      vm.$http.post(vm.api_login, this.item)
+      this.item = { 'email': 'test4@a.com', 'nickname': 'nick4', 'password': 'pass4' }
+      vm.$http.post(vm.api_set_profile, this.item)
+        .then((response) => {
+          vm.$set(this, 'item', {})
+        })
+    },
+
+    test6: function () {
+      var vm = this
+      this.item = { 'serials': 'abc124' }
+      vm.$http.post(vm.api_mark_used, this.item)
+        .then((response) => {
+          vm.$set(this, 'item', {})
+        })
+    },
+
+    test7: function () {
+      var vm = this
+      this.item = { 'serials': 'abc123' }
+      vm.$http.post(vm.api_mark_used, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
