@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Admin, CustomerService, SerialNumber, LANGUAGE_CHOICES, STYLE_CHOICES
+from .models import Admin, CustomerService, LANGUAGE_CHOICES, STYLE_CHOICES,ChattingLog, SerialNumber
 
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,6 +31,12 @@ class CustomerServiceSerializer(serializers.ModelSerializer):
         instance.password = validated_data.get('password', instance.password)
         instance.save()
         return instance
+
+
+class ChattingLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =ChattingLog
+        fields=('id','client_id','service_id','content','is_client','time')
 
 
 class SerialNumberSerializer(serializers.ModelSerializer):
