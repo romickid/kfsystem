@@ -136,16 +136,8 @@ def chattinglog_send_message(request):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
-
-@csrf_exempt
-def chattinglog_get_data(request,pk):
-    if request.method == 'GET':
-        try:
-            chattinglog = CustomerService.objects.get(pk=pk)
-        except CustomerService.DoesNotExist:
-            return HttpResponse(status=404)
-        serializer = CustomerServiceSerializer(chattinglog)
-        return JsonResponse(serializer.data,status=201)
+ 
+         
 
 
 @csrf_exempt
@@ -154,6 +146,8 @@ def chattinglog_delete_record(request):
         chattinglogs = ChattingLog.objects.all()
         chattinglogs.delete()
         return HttpResponse(status=204)
+
+
 
 
  
