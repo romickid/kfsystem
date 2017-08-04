@@ -38,7 +38,11 @@
   
     <div>
       <div>hello</div>
-      <div>{{gridData}}</div>
+      <div>{{ test }}</div>
+      <button @click="getData()">getData</button>
+      <button @click="postData()">postData</button>
+      <button @click="deleteData()">deleteData</button>
+      <div>{{ gridData }}</div>
       <button @click="test1()">Test1</button>
       <button @click="test2()">Test2</button>
       <button @click="test3()">Test3</button>
@@ -58,14 +62,20 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       // for test, do not delete it.
+
+      api_chattinglog_send_message: './api/chattinglog_send_message/',
+      api_chattinglog_delete_record: './api/chattinglog_delete_record/',
+      api_chattinglog_get_data: './api/',
       api_create: './api/customerservice_create/',
       api_set_profile: './api/customerservice_set_profile/',
       api_login: './api/customerservice_login/',
       api_reset_password: './api/customerservice_reset_password/',
       api_validity: './api/serialnumber_validity/',
       api_mark_used: './api/serialnumber_mark_used/',
+
       item: {},
-      gridData: ''
+      gridData: '',
+      test: {}
 
     }
   },
