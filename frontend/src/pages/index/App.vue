@@ -4,6 +4,7 @@
     <div>
       <h2>
         <a href="../test/test.html">可以跳转哟！</a>
+        <a href="../kfWorking/kfWorking.html">可以跳转哟！</a>
       </h2>
     </div>
     <router-view></router-view>
