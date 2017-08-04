@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^api/chattinglog_send_message/$', views.chattinglog_send_message),
     url(r'^api/(?P<pk>[0-9]+)/$', views.chattinglog_get_data),
     url(r'^api/chattinglog_delete_record/$', views.chattinglog_delete_record),
-    
+    url(r'^api/serialnumber_validity/$', views.serialnumber_validity),
+    url(r'^api/serialnumber_mark_used/$', views.serialnumber_mark_used),
 ]
