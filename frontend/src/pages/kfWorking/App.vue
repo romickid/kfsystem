@@ -7,7 +7,7 @@
       <div class="m-card">
         <header>
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
-          <p class="user-name">{{user.name}}</p>
+          <p class="user-name">{{ user.name }}</p>
           <div class="status-manage"><a>
             <i class="iconfont1">&#xe6a6;</i>
             <ul class="managebox">
@@ -25,7 +25,7 @@
         <ul class="m-ul">
           <li class="m-list" v-for="item in userList"  :class="{ choosed: session.userId === item.id }" @click="select(item)">
             <a><img class="m-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
-              <p class="m-name">{{item.name}}</p></a>
+              <p class="m-name">{{ item.name }}</p></a>
           </li>
         </ul>
       </div>
@@ -43,7 +43,7 @@
         </ul>
       </div>
       <div class="m-menu">
-        菜单栏 {{searchname}}
+        菜单栏
       </div>
       <div class="m-text">
         <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing"></textarea>
