@@ -4,16 +4,19 @@
       <div class="all">
         <div class="container">
           <label id="title">找回密码</label>
-          <div>
+          <div class="div">
             <label class="label">新密码：</label>
-            <input type="text" name="newPassword" class="text" id="newPassword">
+            <input type="password" v-model="newPassword" name="newPassword" class="text" @blur="checkNewPassword" @focus="newPasswordInput">
           </div>
-          <div>
+          <div class="div">
             <label class="label">确认密码：</label>
-            <input type="text" name="repeat" class="text" id="repeat">
+            <input type="password" v-model="newPasswordConfirm" name="newPasswordConfirm" class="text" @blur="checkNewPassword" @focus="newPasswordInput">
+            <i-label v-if="passwordInConsistent">
+              <p>两次密码输入不一致！</p>
+            </i-label>
           </div>
-          <div>
-            <Button type="primary" shape="circle" size="large" id="finish">完成</Button>
+          <div class="div">
+            <Button type="primary" shape="circle" size="large" id="finish" @click="finish">完成</Button>
           </div>
         </div>
       </div>
@@ -23,7 +26,33 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      newPassword: '',
+      newPasswordConfirm: '',
+      passwordInConsistent: false
+    }
+  },
+  methods: {
+    checkNewPassword () {
+      if (this.newPassword !== this.newPasswordConfirm && this.newPassword !== '' && this.newPasswordConfirm !== '') {
+        this.passwordInConsistent = true
+      }
+    },
+    newPasswordInput () {
+      this.passwordInConsistent = false
+    },
+    finish () {
+      if (this.newPassword === '' || this.newPasswordConfirm === '') {
+        this.$Message.info('您的信息不完善！')
+      } else {
+        if (this.passwordInConsistent === false) {
+          // 与后端链接进行信息传输和验证
+        }
+      }
+    }
+  }
 }
 </script>
 
@@ -52,6 +81,10 @@ body {
   flex-wrap: wrap;
 }
 
+.div {
+  margin-top: 8px;
+}
+
 #title {
   font-size: 20pt;
   font-weight: bold;
@@ -63,7 +96,7 @@ body {
 .label {
   font-weight: bold;
   font-size: 15px;
-  padding-top: 20px;
+  padding-top: 30px;
   padding-bottom: 40px;
   flex: 1 1 500px;
 }
@@ -76,10 +109,10 @@ body {
   color: #808080;
   font-weight: bold;
   text-align: center;
+  margin-bottom: 5px;
+  margin-top: 5px;
   width: 300px;
   height: 38px;
-  margin-bottom: 20px;
-  margin-top: 5px;
   flex: 1 1 500px;
 }
 
@@ -91,6 +124,10 @@ a {
   font-weight: bold;
   font-size: 9pt;
   color: #4876FF;
+}
+
+p {
+  color: red;
 }
 </style>
 
