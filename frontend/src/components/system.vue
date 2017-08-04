@@ -7,14 +7,17 @@
         <p>您可以通过信息接口将用户名和用户ID与夜莺系统对接,从而在会话界面和历史记录中查看用户信息。</p>
         <a>点击查看客户用户信息对接流程</a>
       </div>
-      <h3>通讯密钥:</h3><input readonly>
-      <p class='remind'>字符串密钥为平台的API通讯密钥，请妥善保管，如果发现通讯密钥泄露请重设。</p><button>重新生成密钥</button>
+      <h3>通讯密钥:</h3><p class='key-number'>fd43s334ggre43s34gf4342dgfs</p>
+      <p class='remind'>字符串密钥为平台的API通讯密钥，请妥善保管，如果发现通讯密钥泄露请重设。</p><i-button type='ghost'>重新生成密钥</i-button>
     </div>
    </div>
    <div class='info'>
     <div class='info-title'>
       <h2>客服可获取用户信息种类设置</h2>
-      <button>添加用户信息</button>
+      <div class='add'>
+        <Icon type="person-add"></Icon>
+        <i-button type='text'>添加用户信息</i-button>
+      </div>
     </div>
     <div class='info-list'>
       <table cellspacing='0'>
@@ -25,18 +28,18 @@
         </tr>
         <tr class='list-item'>
           <td>Id</td>
-          <td>例：</td>
-          <td>无</td>
+          <td>例：001</td>
+          <td><i-button type='text' disabled=true>删除</i-button></td>
         </tr>
         <tr class='list-item'>
           <td>Username</td>
-          <td>例：</td>
-          <td>无</td>
+          <td>例：Archangel</td>
+          <td><i-button type='text' disabled=true>删除</i-button></td>
         </tr>
         <tr class='list-item'>
           <td>Email</td>
-          <td>例：</td>
-          <td><button>删除</button></td>
+          <td>例：1234567@163.com</td>
+          <td><i-button type='text'>删除</i-button></td>
         </tr>
       </table>
     </div>
@@ -84,8 +87,10 @@ export default {
   padding-right: 2em
 }
 
-.key-content input {
-  height: 3em;
+.key-number {
+  display: inline;
+  padding: 0.5em 0.5em;
+  background-color: #dddee1;
 }
 
 .remind {
@@ -111,8 +116,12 @@ export default {
   display: inline;
 }
 
-.info-title button {
+.add {
   float: right;
+}
+
+.info-title button {
+  padding-left: 0.5em;
 }
 
 .info-list {

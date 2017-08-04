@@ -17,7 +17,7 @@
         <Menu active-name="1" theme="dark" width="auto" @on-select="select">
           <div class="main-logo-left">
             <span>logo</span>
-            <p>jisuanke</p>
+            <p class='main-text'>jisuanke</p>
           </div>
           <Menu-item name="" >
             <Icon type="ios-navigate" :size="iconSize"></Icon>
@@ -33,7 +33,7 @@
           </Menu-item>
           <Submenu name="1">
             <template slot='title'>
-              <Icon type="ios-analytics" :size="iconSize"></Icon>
+              <Icon type="android-locate" :size='iconSize'></Icon>
               <span class="main-text">多渠道设置</span>
             </template>
             <Menu-item name="web">web</Menu-item>
@@ -95,6 +95,7 @@ export default {
 
 .layout {
   border: 1px solid #d7dde4;
+  border-bottom: 0;
   background: #f5f7f9;
   position: relative;
   border-radius: 4px;
