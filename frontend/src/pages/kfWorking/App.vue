@@ -7,7 +7,7 @@
       <div class="m-card">
         <header>
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
-          <p class="user-name">{{user.name}}</p>
+          <p class="user-name">{{ user.name }}</p>
           <div class="status-manage"><a>
             <i class="iconfont1">&#xe6a6;</i>
             <ul class="managebox">
@@ -25,7 +25,7 @@
         <ul class="m-ul">
           <li class="m-list" v-for="item in userList"  :class="{ choosed: session.userId === item.id }" @click="select(item)">
             <a><img class="m-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
-              <p class="m-name">{{item.name}}</p></a>
+              <p class="m-name">{{ item.name }}</p></a>
           </li>
         </ul>
       </div>
@@ -37,7 +37,7 @@
             <p class="message-time"><span class="time-span">{{item.date | time}}</span></p>
             <div class="massage-main" :class="{ self: item.self }">
               <img class="massage-avatar" width="30" height="30" :src="item | avatar"/>
-              <div class="massage-text"><li>{{item.text}}</li></div>
+              <div class="massage-text"><li>{{ item.text }}</li></div>
             </div>
           </li>
         </ul>
@@ -117,7 +117,65 @@ if (!localStorage.getItem(key)) {
 export default {
   el: '#chat',
   data () {
+<<<<<<< frontend/src/pages/kfWorking/App.vue
     let dataserver = JSON.parse(localStorage.getItem(key))
+=======
+    let now = new Date()
+    let userData = {
+      // 登录用户
+      user: {
+        id: 1,
+        name: 'coffce',
+        image: '../../../static/1.jpg'
+      },
+      // 用户列表
+      userList: [
+        {
+          id: 2,
+          name: 'MonsterSXF',
+          image: '../../../static/2.png'
+        },
+        {
+          id: 3,
+          name: 'yayaya',
+          image: '../../../static/3.jpg'
+        }
+      ],
+      // 会话列表
+      sessionList: [
+        {
+          userId: 2,
+          messages: [
+            {
+              text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
+              date: now
+            },
+            {
+              text: '项目地址: https://sc.chinaz.com/jiaoben/',
+              date: now
+            }
+          ]
+        },
+        {
+          userId: 3,
+          messages: [
+            {
+              text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
+              date: now
+            },
+            {
+              text: '项目地址: https://sc.chinaz.com/jiaoben/',
+              date: now
+            },
+            {
+              text: 'xixixi',
+              date: now
+            }
+          ]
+        }
+      ]
+    }
+>>>>>>> frontend/src/pages/kfWorking/App.vue
     return {
       // 登录用户
       user: dataserver.user,
@@ -151,11 +209,17 @@ export default {
     sessionList: {
       deep: true,
       handler () {
+<<<<<<< frontend/src/pages/kfWorking/App.vue
         localStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
           sessionList: this.sessionList
         }))
+=======
+        this.userData.user = this.user
+        this.userData.userList = this.userList
+        this.userData.sessionList = this.sessionList
+>>>>>>> frontend/src/pages/kfWorking/App.vue
       }
     }
   },

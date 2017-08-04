@@ -3,7 +3,16 @@
     <img src="./assets/logo.png">
     <div>
       <h2>
-        <a href="../test/test.html">可以跳转哟！</a>
+        <a href="./en_login">跳转至企业登录页面</a>
+        <a href="./en_folders">跳转至企业注册页面</a> 
+        <br>
+        <a href="./se_login">跳转至客服登录页面</a>
+        <a href="./se_folders">跳转至客服注册页面</a>
+        <br>
+        <a href="./en_password_retrieval">跳转至企业找回密码页面</a>
+        <a href="./se_password_retrieval">跳转至客服找回密码页面</a> 
+        <br>
+        <a href="../kfWorking/kfWorking.html">新客服工作界面！</a>
       </h2>
     </div>
     <router-view></router-view>
@@ -12,7 +21,12 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      value: [20, 50]
+    }
+  }
 }
 </script>
 
