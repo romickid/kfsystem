@@ -4,6 +4,8 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
+from datetime import datetime
+from datetime import timedelta
 
 @csrf_exempt
 def admin_create(request):
@@ -122,6 +124,13 @@ def customerservice_reset_password(request):
             return HttpResponse("Wrong Password or Email", status = 400)
 
 @csrf_exempt
+def chattinglog_get_data(request):
+    if request.method == 'GET':
+        chattinglogs = ChattingLog.objects.all()
+        serializer = ChattingLogSerializer(chattinglogs, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+@csrf_exempt
 def chattinglog_send_message(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
@@ -138,7 +147,18 @@ def chattinglog_delete_record(request):
         chattinglogs = ChattingLog.objects.all()
         chattinglogs.delete()
         return HttpResponse(status=204)
+
+@csrf_exempt
+def chattinglog_delete_record_ontime(request):
+    if request.method == 'DELETE':
+        now = datetime.now()
+        end_date = datetime(now.year, now.month, now.day, 0, 0) 
+        start_date = end_date - timedelta(days=100)
  
+        chattinglogs = ChattingLog.objects.filter(time__range=[start_date, end_date])            
+        chattinglogs.delete()
+        return HttpResponse(status=204)
+
 @csrf_exempt
 def serialnumber_validity(request):
     if request.method == 'POST':
