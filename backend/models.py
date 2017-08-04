@@ -19,7 +19,6 @@ class CustomerService(models.Model):
 class ChattingLog(models.Model):
     client_id=models.CharField(max_length=100, blank=True, default='null')
     service_id=models.ForeignKey('CustomerService')
-    #service_id=models.CharField(max_length=100, blank=True, default='null')
     content=models.CharField(max_length=500, blank=True, default='null')
     is_client=models.BooleanField(default=False)
     time=models.DateTimeField()
