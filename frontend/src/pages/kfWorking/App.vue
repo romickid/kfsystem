@@ -4,16 +4,15 @@
       Place Customer Information Here...
     </div>
     <div class="sidebar">
-      <div class="m-card">
+      <div class="main-card">
         <header>
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
           <p class="user-name">{{ user.name }}</p>
           <div class="status-manage"><a>
             <i class="iconfont1">&#xe6a6;</i>
             <ul class="managebox">
-              <li><a>登出</a></li>
-              <li><a>登出</a></li>
-              <li><a>登出</a></li>
+              <li><a href="../se_login">退出</a></li>
+              <li><a><set-robot ref="setRobot"></set-robot></a></li>
             </ul></a>
           </div>
         </header>
@@ -22,30 +21,30 @@
         </footer>
       </div>
       <div>
-        <ul class="m-ul">
-          <li class="m-list" v-for="item in userList"  :class="{ choosed: session.userId === item.id }" @click="select(item)">
-            <a><img class="m-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
-              <p class="m-name">{{ item.name }}</p></a>
+        <ul class="main-ul">
+          <li class="main-list" v-for="item in userList"  :class="{ choosed: session.userId === item.id }" @click="select(item)">
+            <a><img class="main-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
+              <p class="main-name">{{ item.name }}</p></a>
           </li>
         </ul>
       </div>
     </div>
     <div class="main">
-      <div class="m-message" v-scroll-bottom="session.messages">
+      <div class="main-message" v-scroll-bottom="session.messages">
         <ul>
           <li class="message-list" v-for="item in session.messages">
-            <p class="message-time"><span class="time-span">{{item.date | time}}</span></p>
+            <p class="message-time"><span class="time-span">{{ item.date | time }}</span></p>
             <div class="massage-main" :class="{ self: item.self }">
-              <img class="massage-avatar" width="30" height="30" :src="item | avatar"/>
+              <img class="massage-avatar" width="30" height="30" :src="item.image"/>
               <div class="massage-text"><li>{{ item.text }}</li></div>
             </div>
           </li>
         </ul>
       </div>
-      <div class="m-menu">
+      <div class="main-menu">
         菜单栏
       </div>
-      <div class="m-text">
+      <div class="main-text">
         <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing"></textarea>
         <button class="submit-button" @click="buttoninputing">发送</button>
       </div>
@@ -54,7 +53,8 @@
 </template>
 
 <script>
-const key = 'VUE-CHAT-v'
+import SetRobot from '../../components/SetRobot'
+const key = 'VUE-CHAT-v1'
 // 虚拟数据
 if (!localStorage.getItem(key)) {
   let now = new Date()
@@ -85,11 +85,13 @@ if (!localStorage.getItem(key)) {
         messages: [
           {
             text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-            date: now
+            date: now,
+            image: '../../../static/2.png'
           },
           {
             text: '项目地址: https://sc.chinaz.com/jiaoben/',
-            date: now
+            date: now,
+            image: '../../../static/2.png'
           }
         ]
       },
@@ -98,15 +100,18 @@ if (!localStorage.getItem(key)) {
         messages: [
           {
             text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-            date: now
+            date: now,
+            image: '../../../static/3.jpg'
           },
           {
             text: '项目地址: https://sc.chinaz.com/jiaoben/',
-            date: now
+            date: now,
+            image: '../../../static/3.jpg'
           },
           {
             text: 'xixixi',
-            date: now
+            date: now,
+            image: '../../../static/3.jpg'
           }
         ]
       }
@@ -117,65 +122,7 @@ if (!localStorage.getItem(key)) {
 export default {
   el: '#chat',
   data () {
-<<<<<<< frontend/src/pages/kfWorking/App.vue
     let dataserver = JSON.parse(localStorage.getItem(key))
-=======
-    let now = new Date()
-    let userData = {
-      // 登录用户
-      user: {
-        id: 1,
-        name: 'coffce',
-        image: '../../../static/1.jpg'
-      },
-      // 用户列表
-      userList: [
-        {
-          id: 2,
-          name: 'MonsterSXF',
-          image: '../../../static/2.png'
-        },
-        {
-          id: 3,
-          name: 'yayaya',
-          image: '../../../static/3.jpg'
-        }
-      ],
-      // 会话列表
-      sessionList: [
-        {
-          userId: 2,
-          messages: [
-            {
-              text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-              date: now
-            },
-            {
-              text: '项目地址: https://sc.chinaz.com/jiaoben/',
-              date: now
-            }
-          ]
-        },
-        {
-          userId: 3,
-          messages: [
-            {
-              text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-              date: now
-            },
-            {
-              text: '项目地址: https://sc.chinaz.com/jiaoben/',
-              date: now
-            },
-            {
-              text: 'xixixi',
-              date: now
-            }
-          ]
-        }
-      ]
-    }
->>>>>>> frontend/src/pages/kfWorking/App.vue
     return {
       // 登录用户
       user: dataserver.user,
@@ -187,6 +134,7 @@ export default {
       searchname: '',
       // 选中的会话Index
       sessionIndex: 0,
+      // 文本框中输入的内容
       text: ''
     }
   },
@@ -209,17 +157,11 @@ export default {
     sessionList: {
       deep: true,
       handler () {
-<<<<<<< frontend/src/pages/kfWorking/App.vue
         localStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
           sessionList: this.sessionList
         }))
-=======
-        this.userData.user = this.user
-        this.userData.userList = this.userList
-        this.userData.sessionList = this.sessionList
->>>>>>> frontend/src/pages/kfWorking/App.vue
       }
     }
   },
@@ -232,23 +174,27 @@ export default {
         this.session.messages.push({
           text: this.text,
           date: new Date(),
-          self: true
+          self: true,
+          image: '../../../static/1.jpg'
         })
         this.text = ''
       }
     },
     buttoninputing (e) {
-      this.session.messages.push({
-        text: this.text,
-        date: new Date(),
-        self: true
-      })
-      this.text = ''
+      if (this.text.length !== 0) {
+        this.session.messages.push({
+          text: this.text,
+          date: new Date(),
+          self: true,
+          image: this.user.image
+        })
+        this.text = ''
+      }
     }
   },
   filters: {
     search (list) {
-      arr = []
+      let arr = []
       for (var i = 0; i < list.length; i++) {
         if (list[i].name.indexOf(this.searchname) > -1) {
           arr.push(list[i])
@@ -270,7 +216,9 @@ export default {
       return date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes()
     }
   },
-  components: {}
+  components: {
+    SetRobot
+  }
 }
 </script>
 <style>
@@ -320,7 +268,7 @@ export default {
     background-color: #2e3238;
     overflow: hidden;
   }
-  .m-menu {
+  .main-menu {
     position: absolute;
     width: 100%;
     bottom: 160px;
@@ -328,7 +276,7 @@ export default {
     height: 20px;
     background-color: white;
   }
-  .m-text {
+  .main-text {
     position: absolute;
     width: 100%;
     bottom: 0;
@@ -336,10 +284,10 @@ export default {
     height: 160px;
   }
   /*似乎没有用到？*/
-  .m-message {
+  .main-message {
     height: calc(100% - 180px);
   }
-  .m-card {
+  .main-card {
     padding: 12px;
     border-bottom: solid 1px #24272C;
   }
@@ -422,10 +370,10 @@ export default {
     outline: none;
     background-color: #26292E;
   }
-  .m-ul {
+  .main-ul {
     height: 600px;
   }
-  .m-list {
+  .main-list {
     padding: 12px 15px;
     border-bottom: 1px solid #292C33;
     cursor: pointer;
@@ -435,21 +383,21 @@ export default {
     background-color: rgba(255, 255, 0, 0.1);
     display: block;
   }
-  .m-list a:hover {
+  .main-list a:hover {
     background-color: rgba(255, 255, 255, 0.03);
     display: block;
   }
-  .m-avatar, .m-name {
+  .main-avatar, .m-name {
     vertical-align: middle;
   }
-  .m-avatar {
+  .main-avatar {
     border-radius: 2px;
   }
-  .m-name {
+  .main-name {
     display: inline-block;
     margin: 0 0 0 15px;
   }
-  .m-message {
+  .main-message {
     padding: 10px 15px;
     overflow-y: scroll;
   }
@@ -487,15 +435,7 @@ export default {
     background-color: #fafafa;
     border-radius: 4px;
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-  .massage-te:before {
-=======
-  .massage-text :before {
->>>>>>> 03d90857ceda388de51fe56d47a54034fc5ca3da
-=======
   .main .massage-text:before {
->>>>>>> 61b7815787d7ed69ca4199b8d8c075eae3c97836
     content: " ";
     position: absolute;
     top: 9px;
@@ -532,7 +472,7 @@ export default {
     border-right-color: transparent;
     border-left-color: #b2e281;
   }
-  .m-text {
+  .main-text {
     height: 160px;
     border-top: solid 1px #ddd;
     background: white;
