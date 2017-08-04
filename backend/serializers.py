@@ -1,11 +1,10 @@
 from rest_framework import serializers
 from .models import Admin, CustomerService, SerialNumber, LANGUAGE_CHOICES, STYLE_CHOICES
 
-class AdminSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    email = serializers.EmailField(max_length = 200)
-    nickname = serializers.CharField(max_length = 100, default = "null")
-    password = serializers.CharField(max_length = 128, default = "null")
+class AdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerService
+        fields = ('id', 'email', 'nickname', 'password')
 
     def create(self, validated_data):
         return Admin.objects.create(**validated_data)
@@ -17,11 +16,11 @@ class AdminSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class CustomerServiceSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    email = serializers.EmailField(max_length = 200)
-    nickname = serializers.CharField(max_length = 100, default = "null")
-    password = serializers.CharField(max_length = 128, default = "null")
+
+class CustomerServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerService
+        fields = ('id', 'email', 'nickname', 'password')
 
     def create(self, validated_data):
         return CustomerService.objects.create(**validated_data)
@@ -33,10 +32,11 @@ class CustomerServiceSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class SerialNumberSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    serials = serializers.CharField(max_length = 200)
-    is_used = serializers.BooleanField(default = False)
+
+class SerialNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SerialNumber
+        fields = ('id', 'serials', 'is_used')
 
     def create(self, validated_data):
         return SerialNumber.objects.create(**validated_data)
