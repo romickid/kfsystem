@@ -3,7 +3,9 @@
     <form>
       <div class="all">
         <div class="container">
-          <label id="title">客服完善信息</label>
+          <div>
+            <label id="title">客服完善信息</label>
+          </div>
           <div>
             <label class="label">登录邮箱：</label>
             <input type="text" name="email" class="text" id="email">
@@ -21,10 +23,12 @@
             <input type="text" name="nickname" class="text" id="nickname">
           </div>
           <div>
-            <input type="button" name="apply" id="apply" class="button" value="完成">
+            <Button type="primary" shape="circle" size="large" id="finish">完成</Button>
           </div>
-          <label id="la">已有账号，直接</label>
-          <a href="../se_login" target="_blank" id="login">登录</a>
+          <div>
+            <label id="la">已有账号，直接</label>
+            <a href="../se_login" target="_blank" id="login">登录</a>
+          </div>
         </div>
       </div>
     </form>
@@ -49,9 +53,9 @@ body {
 .all {
   width: 500px;
   height: 530px;
-  margin: 30px 350px 0 100px;
+  margin: 40px 0 0 500px;
   border-radius: 10px;
-  background: rgba(230, 230, 250, 0.8);
+  background: rgba(154, 192, 205, 0.5);
 }
 
 .container {
@@ -66,11 +70,15 @@ body {
   font-size: 20pt;
   font-weight: bold;
   text-align: center;
+  margin-left: 90px;
   width: 350px;
 }
 
 .label {
   font-weight: bold;
+  font-size: 15px;
+  padding-top: 20px;
+  padding-bottom: 40px;
   flex: 1 1 500px;
 }
 
@@ -82,6 +90,8 @@ body {
   color: #808080;
   font-weight: bold;
   text-align: center;
+  margin-bottom: 20px;
+  margin-top: 5px;
   width: 340px;
   height: 38px;
   flex: 1 1 500px;
@@ -111,12 +121,12 @@ a {
   color: #4876FF;
 }
 
-#login {
-  font-size: 12pt;
+#finish {
+  width: 340px;
+  margin-bottom: 10px;
 }
 
 #la {
-  width: 310px;
-  text-align: right;
+  margin-left: 115px;
 }
 </style>
