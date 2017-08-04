@@ -3,7 +3,9 @@
     <form>
       <div class="all">
         <div class="container">
-          <label id="title">用户登录</label>
+          <div>
+            <label id="title">账号注册</label>
+          </div>
           <div>
             <label class="label">登录邮箱：</label>
             <input type="text" name="email" class="text" id="email">
@@ -13,10 +15,23 @@
             <input type="text" name="password" class="text" id="password">
           </div>
           <div>
-            <Button type="primary" shape="circle" size="large" id="login">登录</Button>
+            <label class="label">确认密码：</label>
+            <input type="text" name="password_confirm" class="text" id="password_confirm">
           </div>
-          <div id="butt">
-            <forget-password ref="forgetPassword"></forget-password>
+          <div>
+            <label class="label">使用昵称：</label>
+            <input type="text" name="nickname" class="text" id="nickname">
+          </div>
+          <div>
+            <label class="label">产品序列号：</label>
+            <input type="text" name="serial" class="text" id="serial">
+          </div>
+          <div>
+            <Button type="primary" shape="circle" size="large" id="finish">注册</Button>
+          </div>
+          <div>
+            <label id="la">已有账号，直接</label>
+            <a href="../en_login" target="_blank" id="login">登录</a>
           </div>
         </div>
       </div>
@@ -25,18 +40,14 @@
 </template>
 
 <script>
-import ForgetPassword from '../../components/ForgetPassword'
 export default {
-  name: 'app',
-  components: {
-    ForgetPassword
-  }
+  name: 'app'
 }
 </script>
 
 <style>
 body {
-  background: url(../../../static/back.jpg) no-repeat;
+  background: url(../../../static/center.jpg) no-repeat;
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -45,26 +56,25 @@ body {
 
 .all {
   width: 500px;
-  height: 350px;
-  margin: 40px 250px 0 730px;
+  height: 580px;
+  margin: 20px 0 0 500px;
   border-radius: 10px;
-  background: rgba(230, 230, 250, 0.5);
+  background: rgba(154, 192, 205, 0.5);
 }
 
 .container {
   display: flex;
   width: 400px;
-  height: 280px;
-  padding: 20px 75px;
+  height: 500px;
+  padding: 30px 75px;
   flex-wrap: wrap;
 }
 
 #title {
   font-size: 20pt;
   font-weight: bold;
-  text-align: center;
+  margin-bottom: 25px;
   padding-left: 120px;
-  margin-bottom: 15px;
 }
 
 .label {
@@ -83,19 +93,18 @@ body {
   color: #808080;
   font-weight: bold;
   text-align: center;
-  width: 340px;
-  height: 38px;
   margin-bottom: 20px;
   margin-top: 5px;
+  width: 340px;
+  height: 38px;
   flex: 1 1 500px;
 }
 
-#login {
-  width: 340px;
-}
-
-#butt {
-  padding-left: 270px;
+.explain {
+  font-weight: bold;
+  font-size: 9pt;
+  color: #808080;
+  flex: 1 1 500px;
 }
 
 #apply {
@@ -113,5 +122,14 @@ a {
   font-weight: bold;
   font-size: 9pt;
   color: #4876FF;
+}
+
+#finish {
+  width: 340px;
+  margin-bottom: 10px;
+}
+
+#la {
+  margin-left: 115px;
 }
 </style>
