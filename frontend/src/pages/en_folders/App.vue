@@ -6,28 +6,34 @@
           <div>
             <label id="title">账号注册</label>
           </div>
-          <div>
+          <div class="div">
             <label class="label">登录邮箱：</label>
-            <input type="text" name="email" class="text" id="email">
+            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput">
+            <i-label v-if="emailIllegal">
+              <p>请输入正确的邮箱！</p>
+            </i-label>
           </div>
-          <div>
+          <div class="div">
             <label class="label">登录密码：</label>
-            <input type="text" name="password" class="text" id="password">
+            <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput">
           </div>
-          <div>
+          <div class="div">
             <label class="label">确认密码：</label>
-            <input type="text" name="password_confirm" class="text" id="password_confirm">
+            <input type="password" v-model="passwordConfirm" name="passwordConfirm" class="text" @blur="checkPassword" @focus="passwordInput">
+            <i-label v-if="passwordInConsistent">
+              <p>两次密码输入不一致！</p>
+            </i-label>
           </div>
-          <div>
+          <div class="div">
             <label class="label">使用昵称：</label>
-            <input type="text" name="nickname" class="text" id="nickname">
+            <input type="text" v-model="nickname" name="nickname" class="text">
           </div>
-          <div>
+          <div class="div">
             <label class="label">产品序列号：</label>
-            <input type="text" name="serial" class="text" id="serial">
+            <input type="text" v-model="serialNumber" name="serialNumber" class="text">
           </div>
-          <div>
-            <Button type="primary" shape="circle" size="large" id="finish">注册</Button>
+          <div class="div">
+            <Button type="primary" shape="circle" size="large" id="finish" @click="register">注册</Button>
           </div>
           <div>
             <label id="la">已有账号，直接</label>
@@ -41,7 +47,47 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      nickname: '',
+      serialNumber: '',
+      emailIllegal: false,
+      passwordInConsistent: false
+    }
+  },
+  methods: {
+    checkEmail () {
+      let reg = /^([a-zA-Z0-9]+[_|]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+      let legal = reg.test(this.email)
+      if (legal === false && this.email !== '') {
+        this.emailIllegal = true
+      } else {
+        this.emailIllegal = false
+      }
+    },
+    emailInput () {
+      this.emailIllegal = false
+    },
+    checkPassword () {
+      if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
+        this.passwordInConsistent = true
+      }
+    },
+    passwordInput () {
+      this.passwordInConsistent = false
+    },
+    register () {
+      if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '' || this.serialNumber === '') {
+        this.$Message.info('您的信息不完善！')
+      } else {
+        // 与后端链接进行信息传输和验证
+      }
+    }
+  }
 }
 </script>
 
@@ -70,6 +116,10 @@ body {
   flex-wrap: wrap;
 }
 
+.div {
+  margin-top: 8px;
+}
+
 #title {
   font-size: 20pt;
   font-weight: bold;
@@ -80,7 +130,7 @@ body {
 .label {
   font-weight: bold;
   font-size: 15px;
-  padding-top: 20px;
+  padding-top: 30px;
   padding-bottom: 40px;
   flex: 1 1 500px;
 }
@@ -93,7 +143,7 @@ body {
   color: #808080;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   margin-top: 5px;
   width: 340px;
   height: 38px;
@@ -131,5 +181,9 @@ a {
 
 #la {
   margin-left: 115px;
+}
+
+p {
+  color: red;
 }
 </style>
