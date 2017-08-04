@@ -10,12 +10,12 @@ from datetime import timedelta
 @csrf_exempt
 def admin_create(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
+        json_receive = JSONParser().parse(request)
         try:
-            snippet = Admin.objects.get(email = data['email'])
+            instance = Admin.objects.get(email = json_receive['email'])
             return HttpResponse('ERROR, email has been used.', status=400)
         except Admin.DoesNotExist:
-            serializer = AdminSerializer(data=data)
+            serializer = AdminSerializer(data=json_receive)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status=403) # 401 just for test
@@ -24,16 +24,16 @@ def admin_create(request):
 @csrf_exempt
 def admin_set_profile(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
+        json_receive = JSONParser().parse(request)
         try:
-            data['password'] = data['password']
-            data['nickname'] = data['nickname']
-            snippet = Admin.objects.get(email = data['email'])
-            serializer1 = AdminSerializer(snippet, data = data)
-            if serializer1.is_valid():
-                serializer1.save()
-                return JsonResponse(serializer1.data, status = 401) # 401 just for test
-            return JsonResponse(serializer1.errors, status = 400)
+            json_receive['password'] = json_receive['password']
+            json_receive['nickname'] = json_receive['nickname']
+            instance = Admin.objects.get(email = json_receive['email'])
+            serializer = AdminSerializer(instance, data = json_receive)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status = 401) # 401 just for test
+            return JsonResponse(serializer.errors, status = 400)
         except Admin.DoesNotExist:
             return HttpResponse('ERROR, email address is not exists.', status=400)
         except KeyError:
@@ -42,13 +42,13 @@ def admin_set_profile(request):
 @csrf_exempt
 def admin_login(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = AdminSerializer(data=data)
+        json_receive = JSONParser().parse(request)
+        serializer = AdminSerializer(data=json_receive)
 
         # TODO add SHA512 fuction
 
         try:
-            snippet = Admin.objects.get(email = data['email'], password = data['password'])
+            instance = Admin.objects.get(email = json_receive['email'], password = json_receive['password'])
             return HttpResponse("Valid", status = 401)  # 401 just for test
         except Admin.DoesNotExist:
             return HttpResponse("Invalid", status = 400)
@@ -56,15 +56,15 @@ def admin_login(request):
 @csrf_exempt
 def admin_reset_password(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = AdminSerializer(data=data)
+        json_receive = JSONParser().parse(request)
+        serializer = AdminSerializer(data=json_receive)
 
         # TODO add SHA512 fuction
 
         try:
-            snippet = Admin.objects.get(email = data['email'], password = data['password'])
-            data['password'] = data['newpassword']
-            serializer = AdminSerializer(snippet, data = data)
+            instance = Admin.objects.get(email = json_receive['email'], password = json_receive['password'])
+            json_receive['password'] = json_receive['newpassword']
+            serializer = AdminSerializer(instance, data = json_receive)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status = 401) # 401 just for test
@@ -75,12 +75,12 @@ def admin_reset_password(request):
 @csrf_exempt
 def customerservice_create(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
+        json_receive = JSONParser().parse(request)
         try:
-            snippet = CustomerService.objects.get(email = data['email'])
+            instance = CustomerService.objects.get(email = json_receive['email'])
             return HttpResponse('ERROR, email has been used.', status=400)
         except CustomerService.DoesNotExist:
-            serializer = CustomerServiceSerializer(data=data)
+            serializer = CustomerServiceSerializer(data=json_receive)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status=401) # 401 just for test
@@ -89,16 +89,16 @@ def customerservice_create(request):
 @csrf_exempt
 def customerservice_set_profile(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
+        json_receive = JSONParser().parse(request)
         try:
-            data['password'] = data['password']
-            data['nickname'] = data['nickname']
-            snippet = CustomerService.objects.get(email = data['email'])
-            serializer1 = CustomerServiceSerializer(snippet, data = data)
-            if serializer1.is_valid():
-                serializer1.save()
-                return JsonResponse(serializer1.data, status = 401) # 401 just for test
-            return JsonResponse(serializer1.errors, status = 400)
+            json_receive['password'] = json_receive['password']
+            json_receive['nickname'] = json_receive['nickname']
+            instance = CustomerService.objects.get(email = json_receive['email'])
+            serializer = CustomerServiceSerializer(instance, data = json_receive)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status = 401) # 401 just for test
+            return JsonResponse(serializer.errors, status = 400)
         except CustomerService.DoesNotExist:
             return HttpResponse(status=404)
         except KeyError:
@@ -107,13 +107,13 @@ def customerservice_set_profile(request):
 @csrf_exempt
 def customerservice_login(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = CustomerServiceSerializer(data=data)
+        json_receive = JSONParser().parse(request)
+        serializer = CustomerServiceSerializer(data=json_receive)
 
         # TODO add SHA512 fuction
 
         try:
-            snippet = CustomerService.objects.get(email = data['email'], password = data['password'])
+            instance = CustomerService.objects.get(email = json_receive['email'], password = json_receive['password'])
             return HttpResponse("Valid", status = 401)  # 401 just for test
         except CustomerService.DoesNotExist:
             return HttpResponse("Invalid", status = 400)
@@ -121,15 +121,15 @@ def customerservice_login(request):
 @csrf_exempt
 def customerservice_reset_password(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = CustomerServiceSerializer(data=data)
+        json_receive = JSONParser().parse(request)
+        serializer = CustomerServiceSerializer(data=json_receive)
 
         # TODO add SHA512 fuction
 
         try:
-            snippet = CustomerService.objects.get(email = data['email'], password = data['password'])
-            data['password'] = data['newpassword']
-            serializer = CustomerServiceSerializer(snippet, data = data)
+            instance = CustomerService.objects.get(email = json_receive['email'], password = json_receive['password'])
+            json_receive['password'] = json_receive['newpassword']
+            serializer = CustomerServiceSerializer(instance, data = json_receive)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status = 401) # 401 just for test
@@ -176,12 +176,12 @@ def chattinglog_delete_record_ontime(request):
 @csrf_exempt
 def serialnumber_validity(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = SerialNumberSerializer(data=data)
+        json_receive = JSONParser().parse(request)
+        serializer = SerialNumberSerializer(data=json_receive)
 
         try:
-            snippet = SerialNumber.objects.get(serials = data['serials'])
-            if snippet.is_used == True:
+            instance = SerialNumber.objects.get(serials = json_receive['serials'])
+            if instance.is_used == True:
                 return HttpResponse("Invalid, the number has been used", status = 400)
             else:
                 return HttpResponse("Valid", status = 401)  # 401 just for test
@@ -191,13 +191,13 @@ def serialnumber_validity(request):
 @csrf_exempt
 def serialnumber_mark_used(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
+        json_receive = JSONParser().parse(request)
         try:
-            snippet = SerialNumber.objects.get(serials = data['serials'])
-            if snippet.is_used == True:
+            instance = SerialNumber.objects.get(serials = json_receive['serials'])
+            if instance.is_used == True:
                 return HttpResponse("ERROR, serials number was used", status = 400)
-            data['is_used'] = True
-            serializer = SerialNumberSerializer(snippet, data = data)
+            json_receive['is_used'] = True
+            serializer = SerialNumberSerializer(instance, data = json_receive)
             if serializer.is_valid():
                 serializer.save()
                 return HttpResponse("Serials number is used", status = 401)  # 401 just for test
