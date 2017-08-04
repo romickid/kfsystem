@@ -3,7 +3,7 @@
     <form>
       <div class="all">
         <div class="container">
-          <label id="title">用户登录</label>
+          <label id="title">客服登录</label>
           <div>
             <label class="label">登录邮箱：</label>
             <input type="text" name="email" class="text" id="email">
@@ -115,3 +115,4 @@ a {
   color: #4876FF;
 }
 </style>
+
