@@ -37,17 +37,15 @@
     </ul>
   
     <div>
-      <div>hello</div>
-      <div>{{ test }}</div>
-      <button @click="getData()">getData</button>
-      <button @click="postData()">postData</button>
-      <button @click="deleteData()">deleteData</button>
+      <div>hello</div>      
       <div>{{ gridData }}</div>
+      <button @click="getData()">getData</button>
       <button @click="test1()">Test1</button>
       <button @click="test2()">Test2</button>
       <button @click="test3()">Test3</button>
       <button @click="test4()">Test4</button>
       <button @click="test5()">Test5</button>
+      <button @click="test6()">test_delete_ontime</button>
     </div>
   
   </div>
@@ -63,7 +61,8 @@ export default {
 
       api_chattinglog_send_message: './api/chattinglog_send_message/',
       api_chattinglog_delete_record: './api/chattinglog_delete_record/',
-      api_chattinglog_get_data: './api/',
+      api_chattinglog_get_data: './api/chattinglog_get_data/',
+      api_chattinglog_delete_record_ontime: './api/chattinglog_delete_record_ontime/',
       api_create: './api/customerservice_create/',
       api_set_profile: './api/customerservice_set_profile/',
       api_login: './api/customerservice_login/',
@@ -123,7 +122,25 @@ export default {
         .then((response) => {
           vm.$set(this, 'item', {})
         })
-    }
+    },
+
+    test6: function () {
+      var vm = this
+      //this.item = { client_id: 'hhh', service_id: 1, content: 'qwer', is_client: true, time: '2013-07-10 12:23:42' }
+      vm.$http.delete(vm.api_chattinglog_delete_record_ontime)
+        .then((response) => {
+          console.log('Complete delete on time!')
+        })
+    },
+
+    getData: function () {
+      var vm = this
+      vm.$http.get(vm.api_chattinglog_get_data)
+        .then((response) => {
+          vm.$set(this, 'gridData', response.data)
+        })
+    },
+
   }
 
 }
