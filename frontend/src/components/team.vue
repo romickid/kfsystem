@@ -3,7 +3,19 @@
    <div class='team-content'>
     <div class='title'>
       <h2>客服人员列表</h2>
-      <button>添加客服</button>
+      <div class='add'>
+      <Icon type="person-add" class='add-icon'></Icon>
+      <i-button type='text' @click='addModal = true'>添加客服</i-button>
+      <Modal
+        v-model="addModal"
+        title="添加客服"
+        @on-ok="ok"
+        @on-cancel="cancel">
+        <form>
+          <i-input placeholder='在此输入您要添加的客服邮箱' size=large></i-input>
+        </form>
+      </Modal>
+      </div>
     </div>
     <div class='list'>
       <table cellspacing='0'>
@@ -15,7 +27,7 @@
         <tr>
           <td>xiaochen.gao@icloud.com</td>
           <td>高小宸</td>
-          <td><button>删除</button></td>
+          <td><i-button type='text'>删除</i-button></td>
         </tr>
       </table>
     </div>
@@ -24,8 +36,14 @@
 </template>
 
 <script>
+import 'iview/dist/styles/iview.css'
 export default {
-  name: 'team'
+  name: 'team',
+  data () {
+    return {
+      addModal: false
+    }
+  }
 
 }
 </script>
@@ -41,12 +59,16 @@ export default {
    padding: 0.5em 2em;
 }
 
-.title h2{
+.title h2 {
   display: inline;
 }
 
-.title button {
+.add {
   float: right;
+}
+
+.add button{
+  padding-left: 0.5em;
 }
 
 .list {
