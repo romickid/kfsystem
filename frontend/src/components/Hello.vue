@@ -38,7 +38,7 @@
   
     <div>
       <div>hello</div>
-      <div>{{item}}</div>
+      <div>{{test}}</div>
       <button @click="getData()">getData</button>
       <button @click="postData()">postData</button>
       <button @click="deleteData()">deleteData</button>
@@ -58,9 +58,9 @@ export default {
       api_set_profile: './api/admin_set_profile/',
       api_login: './api/admin_login/',
       api_reset_password: './api/admin_reset_password/',
-      api_chattinglog_send_message:'./api/chattinglog_send_message/',
-      api_chattinglog_delete_record:'./api/chattinglog_delete_record/',
-      api_chattinglog_get_data:'./api/',
+      api_chattinglog_send_message: './api/chattinglog_send_message/',
+      api_chattinglog_delete_record: './api/chattinglog_delete_record/',
+      api_chattinglog_get_data: './api/',
       item: {},
       gridData: '',
       test: {}
@@ -74,19 +74,14 @@ export default {
       vm.$http.get('./api/1/')
         .then((response) => {
           vm.$set(this, 'test', response.data)
-          //this.item = { client_id:'hhh', service_id: response.data['id'], content:'qwer', is_client:true, time:'2013-07-10 12:23:42'}
-          console.log(this.item)
         })
     },
 
     postData: function () {
       var vm = this
-      //vm.getData()
-      //console.log(this.test)
-      this.item = { client_id:'hhh', service_id:'12', content:'qwer', is_client:true, time:'2013-07-10 12:23:42'} // for test, do not delete it.
+      this.item = { client_id: 'hhh', service_id: 1, content: 'qwer', is_client: true, time: '2013-07-10 12:23:42'} // for test, do not delete it.
       vm.$http.post(vm.api_chattinglog_send_message, this.item)
-        .then((response) => {
-          //vm.$set(this, 'item', {})
+        .then((response) => {          
         })
     },
 
