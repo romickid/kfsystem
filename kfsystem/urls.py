@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^kfWorking/', TemplateView.as_view(template_name="kfWorking.html")),
+    url(r'^customerNewLabel/', TemplateView.as_view(template_name="customerNewLabel.html")),
     url(r'^en_login/', TemplateView.as_view(template_name="en_login.html")),
     url(r'^se_login/', TemplateView.as_view(template_name="se_login.html")),
     url(r'^en_folders/', TemplateView.as_view(template_name="en_folders.html")),
