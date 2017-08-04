@@ -43,7 +43,7 @@
         </ul>
       </div>
       <div class="m-menu">
-        菜单栏 {{searchname}}
+        菜单栏
       </div>
       <div class="m-text">
         <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing"></textarea>
