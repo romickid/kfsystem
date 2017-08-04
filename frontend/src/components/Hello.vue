@@ -39,9 +39,11 @@
     <div>
       <div>hello</div>
       <div>{{gridData}}</div>
-      <button @click="getData()">getData</button>
-      <button @click="postData()">postData</button>
-      <button @click="deleteData()">deleteData</button>
+      <button @click="test1()">Test1</button>
+      <button @click="test2()">Test2</button>
+      <button @click="test3()">Test3</button>
+      <button @click="test4()">Test4</button>
+      <button @click="test5()">Test5</button>
     </div>
   
   </div>
@@ -50,41 +52,66 @@
 <script>
 export default {
   name: 'hello',
-  data() {
+  data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      m_api: './api/',
+      // for test, do not delete it.
+      api_create: './api/customerservice_create/',
+      api_set_profile: './api/customerservice_set_profile/',
+      api_login: './api/customerservice_login/',
+      api_reset_password: './api/customerservice_reset_password/',
+      api_validity: './api/serialnumber_validity/',
+      api_mark_used: './api/serialnumber_mark_used/',
       item: {},
       gridData: ''
 
     }
   },
 
+  // FOR TEST, DO NOT DELETE IT!
   methods: {
-    getData: function () {
+    test1: function () {
       var vm = this
-      vm.$http.get(vm.m_api)
-        .then((response) => {
-          vm.$set(this, 'gridData', response.data)
-        })
-    },
-
-    postData: function () {
-      var vm = this
-      this.item = { name: 'a1' }
-      vm.$http.post(vm.m_api, this.item)
+      this.item = { 'serials': 'abc123' }
+      vm.$http.post(vm.api_validity, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
-          vm.getData()
         })
     },
 
-    deleteData: function () {
+    test2: function () {
       var vm = this
-      this.item = { name: 'a1' }
-      vm.$http.delete(vm.m_api + '8/')
+      this.item = { 'serials': 'abc123' }
+      vm.$http.post(vm.api_mark_used, this.item)
         .then((response) => {
-          vm.getData()
+          vm.$set(this, 'item', {})
+        })
+    },
+
+    test3: function () {
+      var vm = this
+      this.item = { 'email': 'test3@a.com', 'password': 'pass3' }
+      vm.$http.post(vm.api_login, this.item)
+        .then((response) => {
+          vm.$set(this, 'item', {})
+        })
+    },
+
+    test4: function () {
+      var vm = this
+      this.item = { 'email': 'test3@a.com', 'password': 'pass3', 'newpassword': 'newpassword3'}
+      vm.$http.post(vm.api_reset_password, this.item)
+        .then((response) => {
+          vm.$set(this, 'item', {})
+        })
+    },
+
+    test5: function () {
+      var vm = this
+      this.item = { 'email': 'test3@a.com', 'password': 'pass2' }
+      vm.$http.post(vm.api_login, this.item)
+        .then((response) => {
+          vm.$set(this, 'item', {})
         })
     }
   }
