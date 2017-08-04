@@ -4,15 +4,16 @@
     <div>
       <h2>
         <a href="./en_login">跳转至企业登录页面</a>
-        <a href="./en_folders">跳转至企业注册页面</a> 
+        <a href="./en_folders">跳转至企业注册页面</a>
         <br>
         <a href="./se_login">跳转至客服登录页面</a>
         <a href="./se_folders">跳转至客服注册页面</a>
         <br>
         <a href="./en_password_retrieval">跳转至企业找回密码页面</a>
-        <a href="./se_password_retrieval">跳转至客服找回密码页面</a> 
+        <a href="./se_password_retrieval">跳转至客服找回密码页面</a>
         <br>
-        <a href="../kfWorking/kfWorking.html">新客服工作界面！</a>
+        <a href="../kfWorking/kfWorking.html">客服工作页面工作界面！</a>
+        <a href="../customerNewLabel/customerNewLabel.html">用户新标签页面</a>
       </h2>
     </div>
     <router-view></router-view>

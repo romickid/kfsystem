@@ -1,25 +1,11 @@
 <template>
   <div class="container">
-    <div class="information">
-      Place Customer Information Here...
-    </div>
     <div class="sidebar">
       <div class="m-card">
         <header>
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
           <p class="user-name">{{ user.name }}</p>
-          <div class="status-manage"><a>
-            <i class="iconfont1">&#xe6a6;</i>
-            <ul class="managebox">
-              <li><a>登出</a></li>
-              <li><a>登出</a></li>
-              <li><a>登出</a></li>
-            </ul></a>
-          </div>
         </header>
-        <footer>
-          <input class="search" type="text" placeholder="search user..." v-model="searchname">
-        </footer>
       </div>
       <div>
         <ul class="m-ul">
@@ -34,16 +20,16 @@
       <div class="m-message" v-scroll-bottom="session.messages">
         <ul>
           <li class="message-list" v-for="item in session.messages">
-            <p class="message-time"><span class="time-span">{{item.date | time}}</span></p>
+            <p class="message-time"><span class="time-span">{{ item.date | time }}</span></p>
             <div class="massage-main" :class="{ self: item.self }">
-              <img class="massage-avatar" width="30" height="30" :src="item | avatar"/>
+              <img class="massage-avatar" width="30" height="30" :src="item.image"/>
               <div class="massage-text"><li>{{ item.text }}</li></div>
             </div>
           </li>
         </ul>
       </div>
       <div class="m-menu">
-        菜单栏
+        <button class="human-service">人工客服</button>
       </div>
       <div class="m-text">
         <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing"></textarea>
@@ -54,7 +40,7 @@
 </template>
 
 <script>
-const key = 'VUE-CHAT-v'
+const key = 'VUE-Customer1'
 // 虚拟数据
 if (!localStorage.getItem(key)) {
   let now = new Date()
@@ -71,11 +57,6 @@ if (!localStorage.getItem(key)) {
         id: 2,
         name: 'MonsterSXF',
         image: '../../../static/2.png'
-      },
-      {
-        id: 3,
-        name: 'yayaya',
-        image: '../../../static/3.jpg'
       }
     ],
     // 会话列表
@@ -85,28 +66,13 @@ if (!localStorage.getItem(key)) {
         messages: [
           {
             text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-            date: now
+            date: now,
+            image: '../../../static/2.png'
           },
           {
             text: '项目地址: https://sc.chinaz.com/jiaoben/',
-            date: now
-          }
-        ]
-      },
-      {
-        userId: 3,
-        messages: [
-          {
-            text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-            date: now
-          },
-          {
-            text: '项目地址: https://sc.chinaz.com/jiaoben/',
-            date: now
-          },
-          {
-            text: 'xixixi',
-            date: now
+            date: now,
+            image: '../../../static/2.png'
           }
         ]
       }
@@ -117,65 +83,7 @@ if (!localStorage.getItem(key)) {
 export default {
   el: '#chat',
   data () {
-<<<<<<< frontend/src/pages/kfWorking/App.vue
     let dataserver = JSON.parse(localStorage.getItem(key))
-=======
-    let now = new Date()
-    let userData = {
-      // 登录用户
-      user: {
-        id: 1,
-        name: 'coffce',
-        image: '../../../static/1.jpg'
-      },
-      // 用户列表
-      userList: [
-        {
-          id: 2,
-          name: 'MonsterSXF',
-          image: '../../../static/2.png'
-        },
-        {
-          id: 3,
-          name: 'yayaya',
-          image: '../../../static/3.jpg'
-        }
-      ],
-      // 会话列表
-      sessionList: [
-        {
-          userId: 2,
-          messages: [
-            {
-              text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-              date: now
-            },
-            {
-              text: '项目地址: https://sc.chinaz.com/jiaoben/',
-              date: now
-            }
-          ]
-        },
-        {
-          userId: 3,
-          messages: [
-            {
-              text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-              date: now
-            },
-            {
-              text: '项目地址: https://sc.chinaz.com/jiaoben/',
-              date: now
-            },
-            {
-              text: 'xixixi',
-              date: now
-            }
-          ]
-        }
-      ]
-    }
->>>>>>> frontend/src/pages/kfWorking/App.vue
     return {
       // 登录用户
       user: dataserver.user,
@@ -183,25 +91,15 @@ export default {
       userList: dataserver.userList,
       // 会话列表
       sessionList: dataserver.sessionList,
-      // 搜索key
-      searchname: '',
       // 选中的会话Index
       sessionIndex: 0,
+      // 文本框中输入的内容
       text: ''
     }
   },
   computed: {
     session () {
       return this.sessionList[this.sessionIndex]
-    },
-    sessionUser () {
-      let users = this.userList.filter(item => item.id === this.session.userId)
-      return users[0]
-    },
-    avatar (item) {
-    // 如果是自己发的消息显示登录用户的头像
-      let user = item.self ? this.user : this.sessionUser
-      return user.image
     }
   },
   watch: {
@@ -209,46 +107,41 @@ export default {
     sessionList: {
       deep: true,
       handler () {
-<<<<<<< frontend/src/pages/kfWorking/App.vue
         localStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
           sessionList: this.sessionList
         }))
-=======
-        this.userData.user = this.user
-        this.userData.userList = this.userList
-        this.userData.sessionList = this.sessionList
->>>>>>> frontend/src/pages/kfWorking/App.vue
       }
     }
   },
   methods: {
-    select (value) {
-      this.sessionIndex = this.userList.indexOf(value)
-    },
     inputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
         this.session.messages.push({
           text: this.text,
           date: new Date(),
-          self: true
+          self: true,
+          image: this.user.image
         })
         this.text = ''
       }
     },
     buttoninputing (e) {
-      this.session.messages.push({
-        text: this.text,
-        date: new Date(),
-        self: true
-      })
-      this.text = ''
+      if (this.text.length !== 0) {
+        this.session.messages.push({
+          text: this.text,
+          date: new Date(),
+          self: true,
+          image: this.user.image
+        })
+        this.text = ''
+      }
     }
   },
   filters: {
     search (list) {
-      arr = []
+      let arr = []
       for (var i = 0; i < list.length; i++) {
         if (list[i].name.indexOf(this.searchname) > -1) {
           arr.push(list[i])
@@ -267,7 +160,7 @@ export default {
       if (typeof date === 'string') {
         date = new Date(date)
       }
-      return date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes()
+      return date.getYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes()
     }
   },
   components: {}
@@ -288,7 +181,7 @@ export default {
   }
   body {
     font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
-    background: #176994 url(../index/assets/bg.jpg);
+    background: #176994 url(../index/assets/newbg.jpg);
     background-size: cover;
   }
   ul {
@@ -296,7 +189,11 @@ export default {
   }
   /*主要界面*/
   .container {
-    height: 100%;
+    height: 70%;
+    width: 80%;
+    margin: 10% auto 10%;
+    vertical-align: center;
+    border-radius: 4px;
   }
   .sidebar, .main, .information {
     height: 100%;
@@ -367,9 +264,6 @@ export default {
     -webkit-text-stroke-width: 0.2px;
     -moz-osx-font-smoothing: grayscale;
   }
-  footer {
-    margin-top: 10px;
-  }
   .user-avatar, .user-name {
     vertical-align: middle;
   }
@@ -380,47 +274,6 @@ export default {
     display: inline-block;
     margin: 0 0 0 15px;
     font-size: 16px;
-  }
-  .managebox {
-    display: none;
-    width:100px;
-    border:1px solid #eee;
-    background-color:#FFF;
-    border-radius: 4px;
-    position:absolute;
-    top:20px;
-    left: 100px;
-    cursor: pointer;
-  }
-  .managebox li {
-    height: auto;
-    font-size: small;
-    text-align: center;
-    color: grey;
-    border:1px solid #eee;
-  }
-  .managebox li a:hover {
-    background-color: rgba(255, 255, 0, 0.1);
-    display: block;
-  }
-  .status-manage {
-    float: right;
-  }
-  .status-manage a:hover .managebox {
-    display: block;
-    float: left;
-  }
-  .search {
-    padding: 0 10px;
-    width: 100%;
-    font-size: 12px;
-    color: #fff;
-    height: 30px;
-    line-height: 30px;
-    border: solid 1px #3a3a3a;
-    border-radius: 4px;
-    outline: none;
-    background-color: #26292E;
   }
   .m-ul {
     height: 600px;
@@ -487,15 +340,7 @@ export default {
     background-color: #fafafa;
     border-radius: 4px;
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-  .massage-te:before {
-=======
-  .massage-text :before {
->>>>>>> 03d90857ceda388de51fe56d47a54034fc5ca3da
-=======
   .main .massage-text:before {
->>>>>>> 61b7815787d7ed69ca4199b8d8c075eae3c97836
     content: " ";
     position: absolute;
     top: 9px;
@@ -545,6 +390,12 @@ export default {
     outline: none;
     font-family: "Micrsofot Yahei";
     resize: none;
+  }
+  .human-service {
+    height: 100%;
+    position: absolute;
+    border-radius: 14px;
+    color: white;
   }
   .submit-button {
     width: 10%;
