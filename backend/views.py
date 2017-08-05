@@ -13,13 +13,13 @@ def admin_create(request):
         json_receive = JSONParser().parse(request)
         try:
             instance = Admin.objects.get(email = json_receive['email'])
-            return HttpResponse('ERROR, email has been used.', status=400)
+            return HttpResponse('ERROR, email has been used.', status = 400)
         except Admin.DoesNotExist:
-            serializer = AdminSerializer(data=json_receive)
+            serializer = AdminSerializer(data = json_receive)
             if serializer.is_valid():
                 serializer.save()
-                return JsonResponse(serializer.data, status=403) # 401 just for test
-            return JsonResponse(serializer.errors, status=400)
+                return JsonResponse(serializer.data, status = 403) # 401 just for test
+            return JsonResponse(serializer.errors, status = 400)
 
 @csrf_exempt
 def admin_set_profile(request):
@@ -35,15 +35,15 @@ def admin_set_profile(request):
                 return JsonResponse(serializer.data, status = 401) # 401 just for test
             return JsonResponse(serializer.errors, status = 400)
         except Admin.DoesNotExist:
-            return HttpResponse('ERROR, email address is not exists.', status=400)
+            return HttpResponse('ERROR, email address is not exists.', status = 400)
         except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=400)
+            return HttpResponse('ERROR, incomplete information.', status = 400)
 
 @csrf_exempt
 def admin_login(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = AdminSerializer(data=json_receive)
+        serializer = AdminSerializer(data = json_receive)
 
         # TODO add SHA512 fuction
 
@@ -57,7 +57,7 @@ def admin_login(request):
 def admin_reset_password(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = AdminSerializer(data=json_receive)
+        serializer = AdminSerializer(data = json_receive)
 
         # TODO add SHA512 fuction
 
@@ -78,13 +78,13 @@ def customerservice_create(request):
         json_receive = JSONParser().parse(request)
         try:
             instance = CustomerService.objects.get(email = json_receive['email'])
-            return HttpResponse('ERROR, email has been used.', status=400)
+            return HttpResponse('ERROR, email has been used.', status = 400)
         except CustomerService.DoesNotExist:
-            serializer = CustomerServiceSerializer(data=json_receive)
+            serializer = CustomerServiceSerializer(data = json_receive)
             if serializer.is_valid():
                 serializer.save()
-                return JsonResponse(serializer.data, status=401) # 401 just for test
-            return JsonResponse(serializer.errors, status=400)
+                return JsonResponse(serializer.data, status = 401) # 401 just for test
+            return JsonResponse(serializer.errors, status = 400)
 
 @csrf_exempt
 def customerservice_set_profile(request):
@@ -100,15 +100,15 @@ def customerservice_set_profile(request):
                 return JsonResponse(serializer.data, status = 401) # 401 just for test
             return JsonResponse(serializer.errors, status = 400)
         except CustomerService.DoesNotExist:
-            return HttpResponse(status=404)
+            return HttpResponse(status = 404)
         except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=400)
+            return HttpResponse('ERROR, incomplete information.', status = 400)
 
 @csrf_exempt
 def customerservice_login(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = CustomerServiceSerializer(data=json_receive)
+        serializer = CustomerServiceSerializer(data = json_receive)
 
         # TODO add SHA512 fuction
 
@@ -122,7 +122,7 @@ def customerservice_login(request):
 def customerservice_reset_password(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = CustomerServiceSerializer(data=json_receive)
+        serializer = CustomerServiceSerializer(data = json_receive)
 
         # TODO add SHA512 fuction
 
@@ -141,37 +141,35 @@ def customerservice_reset_password(request):
 def chattinglog_get_data(request):
     if request.method == 'GET':
         chattinglogs = ChattingLog.objects.all()
-        serializer = ChattingLogSerializer(chattinglogs, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        serializer = ChattingLogSerializer(chattinglogs, many = True)
+        return JsonResponse(serializer.data, safe = False)
 
 @csrf_exempt
 def chattinglog_send_message(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = ChattingLogSerializer(data=data)
-
+        serializer = ChattingLogSerializer(data = data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return JsonResponse(serializer.data, status = 201)
+        return JsonResponse(serializer.errors, status = 400)
 
 @csrf_exempt
 def chattinglog_delete_record(request):
     if request.method == 'DELETE':
         chattinglogs = ChattingLog.objects.all()
         chattinglogs.delete()
-        return HttpResponse(status=204)
+        return HttpResponse(status = 204)
 
 @csrf_exempt
 def chattinglog_delete_record_ontime(request):
     if request.method == 'DELETE':
         now = datetime.now()
         end_date = datetime(now.year, now.month, now.day, 0, 0) 
-        start_date = end_date - timedelta(days=100)
- 
-        chattinglogs = ChattingLog.objects.filter(time__range=[start_date, end_date])            
+        start_date = end_date - timedelta(days = 100)
+        chattinglogs = ChattingLog.objects.filter(time__range = [start_date, end_date])            
         chattinglogs.delete()
-        return HttpResponse(status=204)
+        return HttpResponse(status = 204)
 
 @csrf_exempt
 def chattinglog_status_change(request):
@@ -190,8 +188,7 @@ def chattinglog_status_change(request):
 def serialnumber_validity(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = SerialNumberSerializer(data=json_receive)
-
+        serializer = SerialNumberSerializer(data = json_receive)
         try:
             instance = SerialNumber.objects.get(serials = json_receive['serials'])
             if instance.is_used == True:
