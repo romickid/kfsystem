@@ -16,7 +16,19 @@
       <h2>客服可获取用户信息种类设置</h2>
       <div class='add'>
         <Icon type="person-add"></Icon>
-        <i-button type='text'>添加用户信息</i-button>
+        <i-button type='text' @click="modal = true">添加用户信息</i-button>
+        <Modal v-model="modal" title="普通的Modal对话框标题" @on-ok="ok" @on-cancel="cancel">
+          <Form :model="formItem" :label-width="80">
+            <Form-item label="信息种类">
+              <Checkbox-group v-model="formItem.checkbox">
+                <Checkbox label="Email"></Checkbox>
+                <Checkbox label="Phonenumber"></Checkbox>
+                <Checkbox label="Location"></Checkbox>
+                <Checkbox label="Date"></Checkbox>
+              </Checkbox-group>
+            </Form-item>
+          </Form>
+        </Modal>
       </div>
     </div>
     <div class='info-list'>
@@ -29,17 +41,17 @@
         <tr class='list-item'>
           <td>Id</td>
           <td>例：001</td>
-          <td><i-button type='text' disabled=true>删除</i-button></td>
+          <td><i-button type='text' disabled>删除</i-button></td>
         </tr>
         <tr class='list-item'>
           <td>Username</td>
           <td>例：Archangel</td>
-          <td><i-button type='text' disabled=true>删除</i-button></td>
+          <td><i-button type='text' disabled>删除</i-button></td>
         </tr>
-        <tr class='list-item'>
-          <td>Email</td>
-          <td>例：1234567@163.com</td>
-          <td><i-button type='text'>删除</i-button></td>
+        <tr class='list-item' v-for='(infomationType, id) in infomationTypes'>
+          <td>{{ infomationType }}</td>
+          <td>{{ examples[id] }}</td>
+          <td><i-button type='text' @click='delete_info(id)'>删除</i-button></td>
         </tr>
       </table>
     </div>
@@ -49,7 +61,38 @@
 
 <script>
 export default {
-  name: 'system'
+  name: 'system',
+  data () {
+    return {
+      modal: false,
+      formItem: {
+        checkbox: []
+      },
+      example: {
+        'Email': '例：1234567@163.com',
+        'Phonenumber': '例：1234567',
+        'Location': '例：xx省xx市xxx街xxx号',
+        'Date': '例：xxxx年xx月xx日'
+      },
+      infomationTypes: [],
+      examples: []
+    }
+  },
+  methods: {
+    ok () {
+      this.infomationTypes = this.formItem.checkbox
+      for (let i=0;i < this.infomationTypes.length;i++) {
+        this.examples[i] = this.example[this.infomationTypes[i]]
+      }
+    },
+    cancel () {
+      this.formItem.checkbox = this.infomationTypes
+    },
+    delete_info (index) {
+      this.infomationTypes.splice(index,1)
+      this.examples.splice(index,1)
+    }
+  }
 
 }
 </script>
