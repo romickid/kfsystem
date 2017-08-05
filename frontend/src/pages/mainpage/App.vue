@@ -3,14 +3,14 @@
   <!-- Header -->
   <div class="header">
     <div class="ceiling">
-        <a href='./mainpage.html'><img src="./assets/logo.png" alt=""></a>
+        <a href='./'><img src="./assets/logo.png" alt=""></a>
       <div class="ceiling-main">
         <a href="#" class='ceiling-item'>首页</a> |
-        <a href="#" class='ceiling-item'>产品介绍</a> |
-        <a href="#" class='ceiling-item'>帮助中心</a> |
-        <a href="#" class='ceiling-item'>登录</a> |
-        <a href="#" class='ceiling-item'>注册</a> |
-        <a href="#" class='ceiling-item'>客服入口</a>
+        <a href="#jump" class='ceiling-item'>产品介绍</a> |
+        <a href="./documentation" class='ceiling-item'>帮助中心</a> |
+        <a href="./en_login" class='ceiling-item'>登录</a> |
+        <a href="./en_folders" class='ceiling-item'>注册</a> |
+        <a href="./se_folders" class='ceiling-item'>客服入口</a>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
     </div>
   </section>
   <!-- One -->
-  <div id='jump1' class='jumper'>
+  <div id='jump1'>
   </div>
   <section class='introduction-one'>
     <div class='introduction-one-content'>
@@ -166,7 +166,7 @@
       <div class='contact-content'>
         <div class='contact-content-box'>
           <h4>Who we are</h4>
-          <span>logo</span>
+          <img src="./assets/logo.png" alt="">
           <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
         </div>
         <div class='contact-content-box'>
@@ -196,7 +196,7 @@
         <div class='contact-content-box'>
           <h4>Weekly Newsletter</h4>
           <p>As opposed to using 'Content here, content here', making it look like readable English.</p>
-          <button type="button" class='button-register'>SUBSCRIBE</button>
+          <i-button type="button" class='button-register' @click='gotoregister'>REGISTER</i-button>
         </div>
       </div>
     </div>
@@ -216,8 +216,8 @@
 export default {
   name: 'app',
   methods: {
-    submit () {
-      console.log(1)
+    gotoregister() {
+      window.location.href = './en_folders'
     }
   }
 }
@@ -421,7 +421,7 @@ margin: 20px auto 40px;
   padding-right: 3em;
 }
 
-.row {
+ .two-box-container .row {
   display: inline-flex;
   padding-bottom: 15%;
 }
@@ -470,6 +470,11 @@ margin: 20px auto 40px;
   height: 5em
 }
 
+.lastest-works .row {
+  display: inline-flex;
+  padding-bottom: 5%;
+}
+
 .get-in-touch ul{
   list-style-type: none;
   padding: 0;
@@ -482,11 +487,11 @@ margin: 20px auto 40px;
 .contact-content-box button {
   color: #fff;
   background-color: #1ABB9C;
-  height: 2em;
-  border-radius: 4px;
-  font-size: 1em;
-  border: none;
   margin-top: 1em;
+}
+
+.contact-content-box h4 {
+  padding-bottom: 3%;
 }
 
 /*= footer
