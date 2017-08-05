@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Admin, CustomerService, ChattingLog, SerialNumber, LANGUAGE_CHOICES, STYLE_CHOICES
 
+
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
