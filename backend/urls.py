@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^api/chattinglog_get_data/$', views.chattinglog_get_data),
     url(r'^api/chattinglog_delete_record/$', views.chattinglog_delete_record),
     url(r'^api/chattinglog_delete_record_ontime/$', views.chattinglog_delete_record_ontime),
+    url(r'^api/chattinglog_status_change/$', views.chattinglog_status_change),
     url(r'^api/serialnumber_validity/$', views.serialnumber_validity),
     url(r'^api/serialnumber_mark_used/$', views.serialnumber_mark_used),
 ]

@@ -45,7 +45,9 @@
       <button @click="test3()">Test3</button>
       <button @click="test4()">Test4</button>
       <button @click="test5()">Test5</button>
-      <button @click="test6()">test_delete_ontime</button>
+
+      <button @click="test8()">test_delete_ontime</button>
+      <button @click="test9()">test_status_change</button>
     </div>
   
   </div>
@@ -63,6 +65,7 @@ export default {
       api_chattinglog_delete_record: './api/chattinglog_delete_record/',
       api_chattinglog_get_data: './api/chattinglog_get_data/',
       api_chattinglog_delete_record_ontime: './api/chattinglog_delete_record_ontime/',
+      api_chattinglog_status_change: './api/chattinglog_status_change/',
       api_create: './api/customerservice_create/',
       api_set_profile: './api/customerservice_set_profile/',
       api_login: './api/customerservice_login/',
@@ -144,10 +147,18 @@ export default {
 
     test8: function () {
       var vm = this
-      // this.item = { client_id: 'hhh', service_id: 1, content: 'qwer', is_client: true, time: '2013-07-10 12:23:42' }
       vm.$http.delete(vm.api_chattinglog_delete_record_ontime)
         .then((response) => {
           console.log('Complete delete on time!')
+        })
+    },
+
+    test9: function () {
+      var vm = this
+      vm.$http.get(vm.api_chattinglog_status_change)
+        .then((response) => {
+          vm.$set(this, 'gridData', response.data)
+          console.log('Change status!')
         })
     },
 
