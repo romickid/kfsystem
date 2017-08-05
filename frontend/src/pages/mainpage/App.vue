@@ -5,12 +5,12 @@
     <div class="ceiling">
         <a href='./'><img src="./assets/logo.png" alt=""></a>
       <div class="ceiling-main">
-        <a href="#" class='ceiling-item'>首页</a> |
+        <a class='ceiling-item mainpage'>首页</a> |
         <a href="#jump" class='ceiling-item'>产品介绍</a> |
-        <a href="./documentation" class='ceiling-item'>帮助中心</a> |
-        <a href="./en_login" class='ceiling-item'>登录</a> |
-        <a href="./en_folders" class='ceiling-item'>注册</a> |
-        <a href="./se_folders" class='ceiling-item'>客服入口</a>
+        <a href="../documentation" class='ceiling-item'>帮助中心</a> |
+        <a href="../en_login" class='ceiling-item'>登录</a> |
+        <a href="../en_folders" class='ceiling-item'>注册</a> |
+        <a href="../se_folders" class='ceiling-item'>客服入口</a>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
     </div>
   </section>
   <!-- One -->
-  <div id='jump1'>
+  <div id='jump'>
   </div>
   <section class='introduction-one'>
     <div class='introduction-one-content'>
@@ -209,6 +209,7 @@
       </div>
     </div>
   </footer>
+  <Back-top></Back-top>
 </div>
 </template>
 
@@ -216,7 +217,7 @@
 export default {
   name: 'app',
   methods: {
-    gotoregister() {
+    gotoregister () {
       window.location.href = './en_folders'
     }
   }
@@ -290,6 +291,11 @@ p {
   padding-left: 1em;
   padding-right: 1em;
 
+}
+
+.ceiling-main .mainpage {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
 }
 
 .ceiling-item:hover {
@@ -369,7 +375,6 @@ margin: 20px auto 40px;
   margin-top: 0;
   padding-bottom: 0.5em;
 }
-
 
 .one-row-box:hover {
   background:#1ABB9C;

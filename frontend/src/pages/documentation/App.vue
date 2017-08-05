@@ -3,13 +3,13 @@
   <!-- Header -->
   <div class="header">
     <div class="ceiling">
-        <a href='./mainpage.html'><img src="./assets/logo.png" alt=""></a>
+        <a href='../main'><img src="./assets/logo.png" alt=""></a>
       <div class="ceiling-main">
-        <a href="#" class='ceiling-item'>首页</a> |
-        <a href="#" class='ceiling-item'>帮助中心</a> |
-        <a href="#" class='ceiling-item'>登录</a> |
-        <a href="#" class='ceiling-item'>注册</a> |
-        <a href="#" class='ceiling-item'>客服入口</a>
+        <a href="../main" class='ceiling-item'>首页</a> |
+        <a class='ceiling-item document'>帮助中心</a> |
+        <a href="../en_login" class='ceiling-item'>登录</a> |
+        <a href="../en_folders" class='ceiling-item'>注册</a> |
+        <a href="../se_folders" class='ceiling-item'>客服入口</a>
       </div>
     </div>
   </div>
@@ -152,6 +152,7 @@
       <i-col span='3'>&nbsp</i-col>
     </Row>
   </section>
+  <Back-top></Back-top>
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
@@ -243,6 +244,11 @@ p {
   padding-left: 1em;
   padding-right: 1em;
 
+}
+
+.ceiling-item .document {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
 }
 
 .ceiling-item:hover {
