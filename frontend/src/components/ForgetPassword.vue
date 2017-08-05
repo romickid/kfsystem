@@ -40,7 +40,7 @@ export default {
     },
     ok () {
       if (this.email === '') {
-        this.isEmpty = true
+        this.isEmpty = false
         this.emailIllegal = false
       } else {
         if (this.emailIllegal === false) {
