@@ -23,6 +23,8 @@ def admin_create(request):
             return HttpResponse('ERROR, serials is invalid', status=400)
         if admin_is_repetition_by_email(json_receive['email']) == True:
             return HttpResponse('ERROR, email has been registered', status=400)
+        if len(json_receive) != 4:
+            return HttpResponse('ERROR, wrong information', status=400)
 
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
@@ -40,15 +42,22 @@ def admin_create(request):
 def admin_login(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = AdminSerializer(data=json_receive)
+        try:
+            json_receive['email'] = json_receive['email']
+            json_receive['password'] = json_receive['password']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 2:
+            return HttpResponse('ERROR, wrong information.', status=400)
 
         # TODO add SHA512 fuction
 
+        serializer = AdminSerializer(data=json_receive)
         try:
             instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
             return HttpResponse("Valid", status=401)  # 401 just for test
         except Admin.DoesNotExist:
-            return HttpResponse("Invalid", status=400)
+            return HttpResponse("ERROR, Invalid", status=400)
 
 
 @csrf_exempt
