@@ -4,16 +4,19 @@
       <div class="all">
         <div class="container">
           <label id="title">客服登录</label>
-          <div>
+          <div class="div">
             <label class="label">登录邮箱：</label>
-            <input type="text" name="email" class="text" id="email">
+            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput">
+            <i-label v-if="emailIllegal">
+              <p id="p">请输入正确的邮箱！</p>
+            </i-label>
           </div>
-          <div>
+          <div class="div">
             <label class="label">登录密码：</label>
-            <input type="text" name="password" class="text" id="password">
+            <input type="text" v-model="password" name="password" class="text" id="password">
           </div>
-          <div>
-            <Button type="primary" shape="circle" size="large" id="login">登录</Button>
+          <div class="div">
+            <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
           </div>
           <div id="butt">
             <forget-password ref="forgetPassword"></forget-password>
@@ -30,6 +33,34 @@ export default {
   name: 'app',
   components: {
     ForgetPassword
+  },
+  data () {
+    return {
+      email: '',
+      password: '',
+      emailIllegal: false
+    }
+  },
+  methods: {
+    checkEmail () {
+      let reg = /^([a-zA-Z0-9]+[_|]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+      let legal = reg.test(this.email)
+      if (legal === false && this.email !== '') {
+        this.emailIllegal = true
+      } else {
+        this.emailIllegal = false
+      }
+    },
+    emailInput () {
+      this.emailIllegal = false
+    },
+    login () {
+      if (this.email === '' || this.password === '') {
+        this.$Message.info('您的信息不完善！')
+      } else {
+        // 与后端链接进行信息传输和验证
+      }
+    }
   }
 }
 </script>
@@ -51,12 +82,9 @@ body {
   background: rgba(230, 230, 250, 0.5);
 }
 
-.container {
-  display: flex;
-  width: 400px;
-  height: 280px;
-  padding: 20px 75px;
-  flex-wrap: wrap;
+
+.div {
+  margin-top: 8px;
 }
 
 #title {
@@ -85,7 +113,7 @@ body {
   text-align: center;
   width: 340px;
   height: 38px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   margin-top: 5px;
   flex: 1 1 500px;
 }
@@ -113,6 +141,10 @@ a {
   font-weight: bold;
   font-size: 9pt;
   color: #4876FF;
+}
+
+#p {
+  color: red;
 }
 </style>
 
