@@ -52,11 +52,10 @@ def admin_login(request):
 
         # TODO add SHA512 fuction
 
-        try:
-            instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
-            return HttpResponse("Valid", status=401)  # 401 just for test
-        except Admin.DoesNotExist:
-            return HttpResponse("ERROR, Invalid", status=400)
+        if admin_is_valid_by_email_password(json_receive['email'], json_receive['password']) == True:
+            return HttpResponse("Valid.", status=401)  # 401 just for test
+        else:
+            return HttpResponse("ERROR, wrong email or password.", status=400)
 
 
 @csrf_exempt
@@ -71,20 +70,20 @@ def admin_reset_password(request):
             return HttpResponse('ERROR, incomplete information.', status=400)
         if len(json_receive) != 3:
             return HttpResponse('ERROR, wrong information.', status=400)
+        if admin_is_valid_by_email_password(json_receive['email'], json_receive['password']) == False:
+            return HttpResponse("ERROR, wrong email or password.", status=400)
 
         # TODO add SHA512 fuction
 
         serializer = AdminSerializer(data=json_receive)
-        try:
-            instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
-            json_receive['password'] = json_receive['newpassword']
-            serializer = AdminSerializer(instance, data=json_receive)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=401) # 401 just for test
+        instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
+        json_receive['password'] = json_receive['newpassword']
+        serializer = AdminSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=401) # 401 just for test
+        else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
-        except Admin.DoesNotExist:
-            return HttpResponse("ERROR, wrong password or email.", status=400)
 
 
 @csrf_exempt
@@ -216,6 +215,14 @@ def chattinglog_status_change(request):
 def admin_is_repetition_by_email(email):
     try:
         instance = Admin.objects.get(email=email)
+        return True
+    except Admin.DoesNotExist:
+        return False
+
+
+def admin_is_valid_by_email_password(email, password):
+    try:
+        instance = Admin.objects.get(email=email, password=password)
         return True
     except Admin.DoesNotExist:
         return False
