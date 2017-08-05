@@ -216,7 +216,7 @@
 export default {
   name: 'app',
   methods: {
-    submit() {
+    submit () {
       console.log(1)
     }
   }

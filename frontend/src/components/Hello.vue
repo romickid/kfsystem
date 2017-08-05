@@ -108,7 +108,7 @@ export default {
 
     test4: function () {
       var vm = this
-      this.item = { 'email': 'test4@a.com', 'nickname': 'nick4'}
+      this.item = { 'email': 'test4@a.com', 'nickname': 'nick4' }
       vm.$http.post(vm.api_set_profile, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
@@ -142,9 +142,9 @@ export default {
         })
     },
 
-    test6: function () {
+    test8: function () {
       var vm = this
-      //this.item = { client_id: 'hhh', service_id: 1, content: 'qwer', is_client: true, time: '2013-07-10 12:23:42' }
+      // this.item = { client_id: 'hhh', service_id: 1, content: 'qwer', is_client: true, time: '2013-07-10 12:23:42' }
       vm.$http.delete(vm.api_chattinglog_delete_record_ontime)
         .then((response) => {
           console.log('Complete delete on time!')
@@ -157,7 +157,7 @@ export default {
         .then((response) => {
           vm.$set(this, 'gridData', response.data)
         })
-    },
+    }
 
   }
 
