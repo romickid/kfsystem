@@ -10,16 +10,30 @@ from datetime import datetime, timedelta
 @csrf_exempt
 def admin_create(request):
     if request.method == 'POST':
+        # Admin:email, nickname, password  SerialNumber:serials
         json_receive = JSONParser().parse(request)
         try:
-            instance = Admin.objects.get(email=json_receive['email'])
-            return HttpResponse('ERROR, email has been used.', status=400)
-        except Admin.DoesNotExist:
-            serializer = AdminSerializer(data=json_receive)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=403) # 401 just for test
-            return JsonResponse(serializer.errors, status=400)
+            json_receive['email'] = json_receive['email']
+            json_receive['nickname'] = json_receive['nickname']
+            json_receive['password'] = json_receive['password']
+            json_receive['serials'] = json_receive['serials']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if sn_is_serials_valid(json_receive['serials']) == False:
+            return HttpResponse('ERROR, serials is invalid', status=400)
+        if admin_is_repetition_by_email(json_receive['email']) == True:
+            return HttpResponse('ERROR, email has been registered', status=400)
+
+        json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
+        json_receive['widget_url'] = json_receive['email'] + '.widget_url'
+        json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
+        json_receive['communication_key'] = json_receive['email'] + '.communication_key' # TODO MD5 + salt
+        serializer = AdminSerializer(data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            sn_mark_used(json_receive['serials'])
+            return JsonResponse(serializer.data, status=401) # 401 For Test
+        return JsonResponse(serializer.errors, status=400)
 
 
 @csrf_exempt
@@ -228,3 +242,32 @@ def serialnumber_mark_used(request):
             return JsonResponse('Invalid', status=400)
         except SerialNumber.DoesNotExist:
             return HttpResponse("Invalid, number is wrong", status=400)
+
+
+def admin_is_repetition_by_email(email):
+    try:
+        instance = Admin.objects.get(email=email)
+        return True
+    except Admin.DoesNotExist:
+        return False
+
+
+def sn_is_serials_valid(serials):
+    try:
+        instance = SerialNumber.objects.get(serials=serials)
+        if instance.is_used == True:
+            return False
+        else:
+            return True
+    except SerialNumber.DoesNotExist:
+        return False
+
+
+def sn_mark_used(serials):
+    if sn_is_serials_valid(serials) == False:
+        return False
+    else:
+        instance = SerialNumber.objects.get(serials=serials)
+        instance.is_used = True
+        instance.save()
+        return True
