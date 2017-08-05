@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Admin, CustomerService, LANGUAGE_CHOICES, STYLE_CHOICES,ChattingLog, SerialNumber
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, LANGUAGE_CHOICES, STYLE_CHOICES
 
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,7 +20,7 @@ class AdminSerializer(serializers.ModelSerializer):
 class CustomerServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
-        fields = ('id', 'email', 'nickname', 'password','is_online','connection_num')
+        fields = ('id', 'email', 'nickname', 'password', 'is_online', 'connection_num')
 
     def create(self, validated_data):
         return CustomerService.objects.create(**validated_data)
@@ -38,8 +38,8 @@ class CustomerServiceSerializer(serializers.ModelSerializer):
 class ChattingLogSerializer(serializers.ModelSerializer):
     class Meta:
         model =ChattingLog
-        fields=('id','client_id','service_id','content','is_client','time')
-    
+        fields=('id', 'client_id', 'service_id', 'content', 'is_client', 'time')
+
     def create(self, validated_data):
         return ChattingLog.objects.create(**validated_data)
 
