@@ -4,8 +4,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime,timedelta
 
 @csrf_exempt
 def admin_create(request):
