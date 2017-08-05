@@ -174,6 +174,19 @@ def chattinglog_delete_record_ontime(request):
         return HttpResponse(status=204)
 
 @csrf_exempt
+def chattinglog_status_change(request):
+    if request.method == 'GET':
+        customerservice = CustomerService.objects.get(nickname = 'lala')
+        if customerservice.is_online == True:
+            serializer = CustomerServiceSerializer(customerservice, data = {'is_online': False}, partial = True)
+        if customerservice.is_online == False:
+            serializer = CustomerServiceSerializer(customerservice, data = {'is_online': True}, partial = True)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, safe = False)                      
+        return JsonResponse(serializer1.errors, status = 400)
+
+@csrf_exempt
 def serialnumber_validity(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
