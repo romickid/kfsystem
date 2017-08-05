@@ -37,8 +37,8 @@ class CustomerServiceSerializer(serializers.ModelSerializer):
 
 class ChattingLogSerializer(serializers.ModelSerializer):
     class Meta:
-        model =ChattingLog
-        fields=('id', 'client_id', 'service_id', 'content', 'is_client', 'time')
+        model = ChattingLog
+        fields = ('id', 'client_id', 'service_id', 'content', 'is_client', 'time')
 
     def create(self, validated_data):
         return ChattingLog.objects.create(**validated_data)
