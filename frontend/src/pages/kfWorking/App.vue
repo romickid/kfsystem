@@ -12,12 +12,12 @@
             <i class="iconfont1">&#xe6a6;</i>
             <ul class="managebox">
               <li><a href="../se_login">退出</a></li>
-              <li><a><set-robot ref="setRobot"></set-robot></a></li>
             </ul></a>
           </div>
         </header>
         <footer>
           <input class="search" type="text" placeholder="search user..." v-model="searchname">
+          <set-robot ref="setRobot"></set-robot>
         </footer>
       </div>
       <div>
@@ -48,6 +48,13 @@
         <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing"></textarea>
         <button class="submit-button" @click="buttoninputing">发送</button>
       </div>
+    </div>
+    <div class="r-modal">
+      <Modal v-if="find" title="找回密码页" @on-ok="ok" @on-cancel="cancel">
+        <p>机器人设置</p>
+        <br>
+        <i-input class="setting" v-model="value" placeholder="请输入邮箱" style="width: 300px"></i-input>
+      </Modal>
     </div>
   </div>
 </template>
@@ -135,7 +142,8 @@ export default {
       // 选中的会话Index
       sessionIndex: 0,
       // 文本框中输入的内容
-      text: ''
+      text: '',
+      find: false
     }
   },
   computed: {
@@ -168,6 +176,9 @@ export default {
   methods: {
     select (value) {
       this.sessionIndex = this.userList.indexOf(value)
+    },
+    showModal () {
+      this.find = !this.find
     },
     inputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
@@ -242,6 +253,11 @@ export default {
   ul {
     list-style: none;
   }
+  ::-webkit-scrollbar {width:8px;}
+  ::-webkit-scrollbar-track {background-color:#bee1eb;}
+  ::-webkit-scrollbar-thumb {background-color:#00aff0;}
+  ::-webkit-scrollbar-thumb<a href="https://www.baidu.com/s?wd=%3Ahover&tn=44039180_cpr&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1YdnHT4rHIWm1fdujPWPjbL0ZwV5Hcvrjm3rH6sPfKWUMw85HfYnjn4nH6sgvPsT6KdThsqpZwYTjCEQLGCpyw9Uz4Bmy-bIi4WUvYETgN-TLwGUv3EP1RkPjRYP1TvPHf3rjRsnW0Y" target="_blank" class="baidu-highlight">:hover</a> {background-color:#9c3}
+  ::-webkit-scrollbar-thumb:active {background-color:#00aff0}
   /*主要界面*/
   .container {
     height: 100%;
@@ -254,7 +270,8 @@ export default {
     width: 200px;
     color: #f4f4f4;
     background-color: #2e3238;
-    overflow: hidden;
+    overflow-x: visible;
+    overflow-y: visible;
   }
   .main {
     position: relative;
@@ -331,14 +348,15 @@ export default {
   }
   .managebox {
     display: none;
-    width:100px;
-    border:1px solid #eee;
-    background-color:#FFF;
+    width: 100px;
+    border: 1px solid #eee;
+    background-color: #FFF;
     border-radius: 4px;
-    position:absolute;
-    top:20px;
+    position: absolute;
+    top: 20px;
     left: 100px;
     cursor: pointer;
+    overflow: visible;
   }
   .managebox li {
     height: auto;
@@ -372,6 +390,7 @@ export default {
   }
   .main-ul {
     height: 600px;
+    overflow-y: scroll;
   }
   .main-list {
     padding: 12px 15px;
@@ -493,6 +512,11 @@ export default {
     bottom: 2px;
     border-radius: 14px;
     color: white;
+  }
+  .r-modal {
+    position: absolute;
+    background: white;
+    padding: 270px;
   }
   #chat {
     margin: 20px auto;
