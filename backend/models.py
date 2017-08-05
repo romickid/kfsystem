@@ -6,6 +6,7 @@ LEXERS = [item for item in get_all_lexers() if item[1]]
 LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
 STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
 
+
 class Admin(models.Model):
     email = models.EmailField(default='empty@empty.com', unique=True)
     nickname = models.CharField(max_length=50, default='empty', unique=True)
@@ -15,12 +16,14 @@ class Admin(models.Model):
     mobile_url = models.CharField(max_length=200, default='empty', unique=True)
     communication_key = models.CharField(max_length=32, default='empty', unique=True) # TODO MD5 + salt
 
+
 class CustomerService(models.Model):
     email = models.EmailField(default='empty@empty.com', unique=True)
     nickname = models.CharField(max_length=50, default='empty', unique=True)
     password = models.CharField(max_length=128, default='empty')
     is_online = models.BooleanField(default=False)
     connection_num = models.IntegerField(default=0)
+
 
 class ChattingLog(models.Model):
     client_id = models.CharField(max_length=100, default='empty')
@@ -29,9 +32,11 @@ class ChattingLog(models.Model):
     is_client = models.BooleanField(default=None)
     time = models.DateTimeField(auto_now_add=True)
 
+
 class SerialNumber(models.Model):
     serials = models.CharField(max_length=50, default='empty', unique=True)
     is_used = models.BooleanField(default=None)
+
 
 class ImageLog(models.Model):
     client_id = models.CharField(max_length=100, default='empty')
