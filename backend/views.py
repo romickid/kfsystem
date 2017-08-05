@@ -92,14 +92,19 @@ def customerservice_create(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
         try:
-            instance = CustomerService.objects.get(email=json_receive['email'])
-            return HttpResponse('ERROR, email has been used.', status=400)
-        except CustomerService.DoesNotExist:
-            serializer = CustomerServiceSerializer(data=json_receive)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=401) # 401 just for test
-            return JsonResponse(serializer.errors, status=400)
+            json_receive['email'] = json_receive['email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if cs_is_repetition_by_email(json_receive['email']) == True:
+            return HttpResponse('ERROR, email has been registered.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+
+        serializer = CustomerServiceSerializer(data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=401) # 401 just for test
+        return HttpResponse('ERROR, invalid data in serializer.', status=400)
 
 
 @csrf_exempt
@@ -235,3 +240,11 @@ def sn_mark_used(serials):
         instance.is_used = True
         instance.save()
         return True
+
+
+def cs_is_repetition_by_email(email):
+    try:
+        instance = CustomerService.objects.get(email=email)
+        return True
+    except CustomerService.DoesNotExist:
+        return False
