@@ -4,7 +4,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 
 
 @csrf_exempt
@@ -186,7 +186,7 @@ def chattinglog_delete_record_ontime(request):
 @csrf_exempt
 def chattinglog_status_change(request):
     if request.method == 'GET':
-        customerservice = CustomerService.objects.get(nickname = 'lala')
+        customerservice = CustomerService.objects.get(nickname='lala')
         if customerservice.is_online == True:
             serializer = CustomerServiceSerializer(customerservice, data={'is_online': False}, partial=True)
         if customerservice.is_online == False:
