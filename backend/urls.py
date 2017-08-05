@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
     url(r'^api/admin_create/$', views.admin_create),
-    url(r'^api/admin_set_profile/$', views.admin_set_profile),
     url(r'^api/admin_login/$', views.admin_login),
     url(r'^api/admin_reset_password/$', views.admin_reset_password),
     url(r'^api/customerservice_create/$', views.customerservice_create),
@@ -15,6 +14,4 @@ urlpatterns = [
     url(r'^api/chattinglog_delete_record/$', views.chattinglog_delete_record),
     url(r'^api/chattinglog_delete_record_ontime/$', views.chattinglog_delete_record_ontime),
     url(r'^api/chattinglog_status_change/$', views.chattinglog_status_change),
-    url(r'^api/serialnumber_validity/$', views.serialnumber_validity),
-    url(r'^api/serialnumber_mark_used/$', views.serialnumber_mark_used),
 ]
