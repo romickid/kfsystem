@@ -37,25 +37,6 @@ def admin_create(request):
 
 
 @csrf_exempt
-def admin_set_profile(request):
-    if request.method == 'POST':
-        json_receive = JSONParser().parse(request)
-        try:
-            json_receive['password'] = json_receive['password']
-            json_receive['nickname'] = json_receive['nickname']
-            instance = Admin.objects.get(email=json_receive['email'])
-            serializer = AdminSerializer(instance, data=json_receive)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=401) # 401 just for test
-            return JsonResponse(serializer.errors, status=400)
-        except Admin.DoesNotExist:
-            return HttpResponse('ERROR, email address is not exists.', status=400)
-        except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-
-
-@csrf_exempt
 def admin_login(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
@@ -209,39 +190,6 @@ def chattinglog_status_change(request):
             serializer.save()
             return JsonResponse(serializer.data, safe=False)                      
         return JsonResponse(serializer1.errors, status=400)
-
-
-@csrf_exempt
-def serialnumber_validity(request):
-    if request.method == 'POST':
-        json_receive = JSONParser().parse(request)
-        serializer = SerialNumberSerializer(data=json_receive)
-        try:
-            instance = SerialNumber.objects.get(serials=json_receive['serials'])
-            if instance.is_used == True:
-                return HttpResponse("Invalid, the number has been used", status=400)
-            else:
-                return HttpResponse("Valid", status=401)  # 401 just for test
-        except SerialNumber.DoesNotExist:
-            return HttpResponse("Invalid, the number is not exist", status=400)
-
-
-@csrf_exempt
-def serialnumber_mark_used(request):
-    if request.method == 'POST':
-        json_receive = JSONParser().parse(request)
-        try:
-            instance = SerialNumber.objects.get(serials=json_receive['serials'])
-            if instance.is_used == True:
-                return HttpResponse("ERROR, serials number was used", status=400)
-            json_receive['is_used'] = True
-            serializer = SerialNumberSerializer(instance, data=json_receive)
-            if serializer.is_valid():
-                serializer.save()
-                return HttpResponse("Serials number is used", status=401)  # 401 just for test
-            return JsonResponse('Invalid', status=400)
-        except SerialNumber.DoesNotExist:
-            return HttpResponse("Invalid, number is wrong", status=400)
 
 
 def admin_is_repetition_by_email(email):
