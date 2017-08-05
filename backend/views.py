@@ -20,11 +20,11 @@ def admin_create(request):
         except KeyError:
             return HttpResponse('ERROR, incomplete information.', status=400)
         if sn_is_serials_valid(json_receive['serials']) == False:
-            return HttpResponse('ERROR, serials is invalid', status=400)
+            return HttpResponse('ERROR, serials is invalid.', status=400)
         if admin_is_repetition_by_email(json_receive['email']) == True:
-            return HttpResponse('ERROR, email has been registered', status=400)
+            return HttpResponse('ERROR, email has been registered.', status=400)
         if len(json_receive) != 4:
-            return HttpResponse('ERROR, wrong information', status=400)
+            return HttpResponse('ERROR, wrong information.', status=400)
 
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
@@ -35,7 +35,7 @@ def admin_create(request):
             serializer.save()
             sn_mark_used(json_receive['serials'])
             return JsonResponse(serializer.data, status=401) # 401 For Test
-        return JsonResponse(serializer.errors, status=400)
+        return HttpResponse('ERROR, invalid data in serializer.', status=400)
 
 
 @csrf_exempt
@@ -52,7 +52,6 @@ def admin_login(request):
 
         # TODO add SHA512 fuction
 
-        serializer = AdminSerializer(data=json_receive)
         try:
             instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
             return HttpResponse("Valid", status=401)  # 401 just for test
@@ -64,10 +63,18 @@ def admin_login(request):
 def admin_reset_password(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = AdminSerializer(data=json_receive)
+        try:
+            json_receive['email'] = json_receive['email']
+            json_receive['password'] = json_receive['password']
+            json_receive['newpassword'] = json_receive['newpassword']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 3:
+            return HttpResponse('ERROR, wrong information.', status=400)
 
         # TODO add SHA512 fuction
 
+        serializer = AdminSerializer(data=json_receive)
         try:
             instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
             json_receive['password'] = json_receive['newpassword']
@@ -75,9 +82,9 @@ def admin_reset_password(request):
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status=401) # 401 just for test
-            return HttpResponse("Completed", status=400)
+            return HttpResponse("ERROR, invalid data in serializer.", status=400)
         except Admin.DoesNotExist:
-            return HttpResponse("Wrong Password or Email", status=400)
+            return HttpResponse("ERROR, wrong password or email.", status=400)
 
 
 @csrf_exempt
