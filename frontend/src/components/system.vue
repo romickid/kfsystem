@@ -93,7 +93,6 @@ export default {
       this.examples.splice(index, 1)
     }
   }
-
 }
 </script>
 

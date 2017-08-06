@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="header">
     <div class="ceiling">
-        <a href='../main'><img src="./assets/logo.png" alt=""></a>
+      <a href='../main'><img src="./assets/logo.png" alt=""></a>
       <div class="ceiling-main">
         <a href="../main" class='ceiling-item'>首页</a> |
         <a class='ceiling-item document'>帮助中心</a> |

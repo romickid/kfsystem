@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="header">
     <div class="ceiling">
-        <a href='./'><img src="./assets/logo.png" alt=""></a>
+      <a href='./'><img src="./assets/logo.png" alt=""></a>
       <div class="ceiling-main">
         <a class='ceiling-item mainpage'>首页</a> |
         <a href="#jump" class='ceiling-item'>产品介绍</a> |
