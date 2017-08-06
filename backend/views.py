@@ -75,7 +75,6 @@ def admin_reset_password(request):
 
         # TODO add SHA512 fuction
 
-        serializer = AdminSerializer(data=json_receive)
         instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
         json_receive['password'] = json_receive['newpassword']
         serializer = AdminSerializer(instance, data=json_receive)
@@ -109,55 +108,72 @@ def customerservice_create(request):
 @csrf_exempt
 def customerservice_set_profile(request):
     if request.method == 'POST':
+        # CustomerService: email password nickname
         json_receive = JSONParser().parse(request)
         try:
+            json_receive['emil'] = json_receive['email']
             json_receive['password'] = json_receive['password']
             json_receive['nickname'] = json_receive['nickname']
-            instance = CustomerService.objects.get(email=json_receive['email'])
-            serializer = CustomerServiceSerializer(instance, data=json_receive)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=401) # 401 just for test
-            return JsonResponse(serializer.errors, status=400)
-        except CustomerService.DoesNotExist:
-            return HttpResponse(status=404)
         except KeyError:
             return HttpResponse('ERROR, incomplete information.', status=400)
+        if cs_is_repetition_by_email(json_receive['email']) == False:
+            return HttpResponse('ERROR, email has not been registered.', status=400)
+        if len(json_receive) != 3:
+            return HttpResponse('ERROR, wrong information.', status=400)
+
+        instance = CustomerService.objects.get(email=json_receive['email'])
+        serializer = CustomerServiceSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=401) # 401 just for test
+        return HttpResponse('ERROR, invalid data in serializer.', status=400)
 
 
 @csrf_exempt
 def customerservice_login(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = CustomerServiceSerializer(data=json_receive)
+        try:
+            json_receive['email'] = json_receive['email']
+            json_receive['password'] = json_receive['password']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 2:
+            return HttpResponse('ERROR, wrong information.', status=400)
 
         # TODO add SHA512 fuction
 
-        try:
-            instance = CustomerService.objects.get(email=json_receive['email'], password=json_receive['password'])
-            return HttpResponse("Valid", status=401)  # 401 just for test
-        except CustomerService.DoesNotExist:
-            return HttpResponse("Invalid", status=400)
+        if cs_is_valid_by_email_password(json_receive['email'], json_receive['password']) == True:
+            return HttpResponse("Valid.", status=401)  # 401 just for test
+        else:
+            return HttpResponse("ERROR, wrong email or password.", status=400)
 
 
 @csrf_exempt
 def customerservice_reset_password(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        serializer = CustomerServiceSerializer(data=json_receive)
+        try:
+            json_receive['email'] = json_receive['email']
+            json_receive['password'] = json_receive['password']
+            json_receive['newpassword'] = json_receive['newpassword']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 3:
+            return HttpResponse('ERROR, wrong information.', status=400)
+        if cs_is_valid_by_email_password(json_receive['email'], json_receive['password']) == False:
+            return HttpResponse("ERROR, wrong email or password.", status=400)
 
         # TODO add SHA512 fuction
 
-        try:
-            instance = CustomerService.objects.get(email=json_receive['email'], password=json_receive['password'])
-            json_receive['password'] = json_receive['newpassword']
-            serializer = CustomerServiceSerializer(instance, data=json_receive)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=401) # 401 just for test
-            return HttpResponse("Completed", status=400)
-        except CustomerService.DoesNotExist:
-           return HttpResponse("Wrong Password or Email", status=400)
+        instance = CustomerService.objects.get(email=json_receive['email'], password=json_receive['password'])
+        json_receive['password'] = json_receive['newpassword']
+        serializer = CustomerServiceSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=401) # 401 just for test
+        else:
+            return HttpResponse("ERROR, invalid data in serializer.", status=400)
 
 
 @csrf_exempt
@@ -252,6 +268,14 @@ def sn_mark_used(serials):
 def cs_is_repetition_by_email(email):
     try:
         instance = CustomerService.objects.get(email=email)
+        return True
+    except CustomerService.DoesNotExist:
+        return False
+
+
+def cs_is_valid_by_email_password(email, password):
+    try:
+        instance = CustomerService.objects.get(email=email, password=password)
         return True
     except CustomerService.DoesNotExist:
         return False
