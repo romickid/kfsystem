@@ -5,8 +5,8 @@
       <div class="layout-ceiling">
         <div class="layout-logo">logo</div>
         <div class="layout-ceiling-main">
-          <a href="#">首页</a> |
-          <a href="#">帮助中心</a>
+          <a href="../main">首页</a> |
+          <a href="../documentation">帮助中心</a>
         </div>
       </div>
     </div>
