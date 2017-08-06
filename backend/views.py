@@ -103,6 +103,7 @@ def customerservice_create(request):
         if len(json_receive) != 1:
             return HttpResponse('ERROR, wrong information.', status=400)
 
+        json_receive['nickname'] = json_receive['email']
         serializer = CustomerServiceSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
