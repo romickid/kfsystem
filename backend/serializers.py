@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, LANGUAGE_CHOICES, STYLE_CHOICES
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomerService
-        fields = ('id', 'email', 'nickname', 'password')
+        model = Admin
+        fields = ('id', 'email', 'nickname', 'password', 'web_url', 'widget_url', 'mobile_url', 'communication_key')
 
     def create(self, validated_data):
         return Admin.objects.create(**validated_data)
@@ -14,6 +14,10 @@ class AdminSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.nickname = validated_data.get('nickname', instance.nickname)
         instance.password = validated_data.get('password', instance.password)
+        instance.web_url = validated_data.get('web_url', instance.web_url)
+        instance.widget_url = validated_data.get('widget_url', instance.widget_url)
+        instance.mobile_url = validated_data.get('mobile_url', instance.mobile_url)
+        instance.communication_key = validated_data.get('communication_key', instance.communication_key)
         instance.save()
         return instance
 
@@ -65,5 +69,22 @@ class SerialNumberSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.serials = validated_data.get('serials', instance.serials)
         instance.is_used = validated_data.get('is_used', instance.is_used)
+        instance.save()
+        return instance
+
+class ImageLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageLog
+        fields = ('id', 'client_id', 'service_id', 'content', 'is_client', 'time')
+
+    def create(self, validated_data):
+        return ImageLog.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.client_id = validated_data.get('client_id', instance.client_id)
+        instance.service_id = validated_data.get('service_id', instance.service_id)
+        instance.image = validated_data.get('image', instance.image)
+        instance.is_client = validated_data.get('is_client', instance.is_client)
+        instance.time = validated_data.get('time', instance.time)
         instance.save()
         return instance
