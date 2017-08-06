@@ -53,9 +53,8 @@ def admin_login(request):
         if len(json_receive) != 2:
             return HttpResponse('ERROR, wrong information.', status=400)
 
-        
-
-        if admin_is_valid_by_email_password(json_receive['email'], json_receive['password']) == True:
+        sha512_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
+        if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
             return HttpResponse("Valid.", status=401)  # 401 just for test
         else:
             return HttpResponse("ERROR, wrong email or password.", status=400)
@@ -74,13 +73,14 @@ def admin_reset_password(request):
             return HttpResponse('ERROR, incomplete information.', status=400)
         if len(json_receive) != 3:
             return HttpResponse('ERROR, wrong information.', status=400)
-        if admin_is_valid_by_email_password(json_receive['email'], json_receive['password']) == False:
+
+        sha512_old_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
+        if admin_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
             return HttpResponse("ERROR, wrong email or password.", status=400)
 
-        # TODO add SHA512 fuction
-
-        instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
-        json_receive['password'] = json_receive['newpassword']
+        sha512_new_final_password = admin_generate_password(json_receive['email'], json_receive['newpassword'])
+        instance = Admin.objects.get(email=json_receive['email'], password=sha512_old_final_password)
+        json_receive['password'] = sha512_new_final_password
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -288,10 +288,10 @@ def cs_is_valid_by_email_password(email, password):
         return False
 
 
-def admin_generate_password(email, sha512_password):
+def admin_generate_password(email, sha512_frontend_password):
     hash_email = hashlib.sha512()
     hash_email.update(email.encode('utf-8'))
     sha512_email = hash_email.hexdigest()
     hash_password = hashlib.sha512()
-    hash_password.update((sha512_password+sha512_email+'big5').encode('utf-8'))
+    hash_password.update((sha512_frontend_password+sha512_email+'big5').encode('utf-8'))
     return hash_password.hexdigest()
