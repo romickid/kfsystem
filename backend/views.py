@@ -22,7 +22,7 @@ def admin_create(request):
             return HttpResponse('ERROR, incomplete information.', status=400)
         if sn_is_serials_valid(json_receive['serials']) == False:
             return HttpResponse('ERROR, serials is invalid.', status=400)
-        if admin_is_repetition_by_email(json_receive['email']) == True:
+        if admin_is_existent_by_email(json_receive['email']) == True:
             return HttpResponse('ERROR, email has been registered.', status=400)
         if len(json_receive) != 4:
             return HttpResponse('ERROR, wrong information.', status=400)
@@ -98,7 +98,7 @@ def customerservice_create(request):
             json_receive['email'] = json_receive['email']
         except KeyError:
             return HttpResponse('ERROR, incomplete information.', status=400)
-        if cs_is_repetition_by_email(json_receive['email']) == True:
+        if cs_is_existent_by_email(json_receive['email']) == True:
             return HttpResponse('ERROR, email has been registered.', status=400)
         if len(json_receive) != 1:
             return HttpResponse('ERROR, wrong information.', status=400)
@@ -121,7 +121,7 @@ def customerservice_set_profile(request):
             json_receive['nickname'] = json_receive['nickname']
         except KeyError:
             return HttpResponse('ERROR, incomplete information.', status=400)
-        if cs_is_repetition_by_email(json_receive['email']) == False:
+        if cs_is_existent_by_email(json_receive['email']) == False:
             return HttpResponse('ERROR, email has not been registered.', status=400)
         if len(json_receive) != 3:
             return HttpResponse('ERROR, wrong information.', status=400)
@@ -235,7 +235,7 @@ def chattinglog_status_change(request):
         return JsonResponse(serializer1.errors, status=400)
 
 
-def admin_is_repetition_by_email(email):
+def admin_is_existent_by_email(email):
     try:
         instance = Admin.objects.get(email=email)
         return True
@@ -249,6 +249,15 @@ def admin_is_valid_by_email_password(email, password):
         return True
     except Admin.DoesNotExist:
         return False
+
+
+def admin_generate_password(email, sha512_frontend_password):
+    hash_email = hashlib.sha512()
+    hash_email.update(email.encode('utf-8'))
+    sha512_email = hash_email.hexdigest()
+    hash_password = hashlib.sha512()
+    hash_password.update((sha512_frontend_password+sha512_email+'big5').encode('utf-8'))
+    return hash_password.hexdigest()
 
 
 def sn_is_serials_valid(serials):
@@ -272,7 +281,7 @@ def sn_mark_used(serials):
         return True
 
 
-def cs_is_repetition_by_email(email):
+def cs_is_existent_by_email(email):
     try:
         instance = CustomerService.objects.get(email=email)
         return True
@@ -286,12 +295,3 @@ def cs_is_valid_by_email_password(email, password):
         return True
     except CustomerService.DoesNotExist:
         return False
-
-
-def admin_generate_password(email, sha512_frontend_password):
-    hash_email = hashlib.sha512()
-    hash_email.update(email.encode('utf-8'))
-    sha512_email = hash_email.hexdigest()
-    hash_password = hashlib.sha512()
-    hash_password.update((sha512_frontend_password+sha512_email+'big5').encode('utf-8'))
-    return hash_password.hexdigest()
