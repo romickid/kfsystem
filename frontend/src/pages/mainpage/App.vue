@@ -5,12 +5,12 @@
     <div class="ceiling">
         <a href='./'><img src="./assets/logo.png" alt=""></a>
       <div class="ceiling-main">
-        <a href="#" class='ceiling-item'>首页</a> |
+        <a class='ceiling-item mainpage'>首页</a> |
         <a href="#jump" class='ceiling-item'>产品介绍</a> |
-        <a href="./documentation" class='ceiling-item'>帮助中心</a> |
-        <a href="./en_login" class='ceiling-item'>登录</a> |
-        <a href="./en_folders" class='ceiling-item'>注册</a> |
-        <a href="./se_folders" class='ceiling-item'>客服入口</a>
+        <a href="../documentation" class='ceiling-item'>帮助中心</a> |
+        <a href="../en_login" class='ceiling-item'>登录</a> |
+        <a href="../en_folders" class='ceiling-item'>注册</a> |
+        <a href="../se_folders" class='ceiling-item'>客服入口</a>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
     </div>
   </section>
   <!-- One -->
-  <div id='jump1'>
+  <div id='jump'>
   </div>
   <section class='introduction-one'>
     <div class='introduction-one-content'>
@@ -209,6 +209,7 @@
       </div>
     </div>
   </footer>
+  <Back-top></Back-top>
 </div>
 </template>
 
@@ -216,7 +217,7 @@
 export default {
   name: 'app',
   methods: {
-    gotoregister() {
+    gotoregister () {
       window.location.href = './en_folders'
     }
   }
@@ -225,7 +226,7 @@ export default {
 
 <style>
 #app {
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica,"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   color: #2c3e50;
   position: relative;
   margin: 0 auto;
@@ -292,6 +293,11 @@ p {
 
 }
 
+.ceiling-main .mainpage {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
+}
+
 .ceiling-item:hover {
   color: #9d2933;
   border-bottom: 1px solid #9d2933;
@@ -340,7 +346,7 @@ p {
   overflow: hidden;
 }
 
-.introduction-one-content h2{
+.introduction-one-content h2 {
   margin-bottom: 0;
   padding-top: 4em;
 }
@@ -365,11 +371,10 @@ margin: 20px auto 40px;
   padding-top: 1em;
 }
 
-.one-box-content h3{
+.one-box-content h3 {
   margin-top: 0;
   padding-bottom: 0.5em;
 }
-
 
 .one-row-box:hover {
   background:#1ABB9C;
@@ -475,12 +480,12 @@ margin: 20px auto 40px;
   padding-bottom: 5%;
 }
 
-.get-in-touch ul{
+.get-in-touch ul {
   list-style-type: none;
   padding: 0;
 }
 
-.get-in-touch li{
+.get-in-touch li {
   padding-top: 0.2em;
 }
 

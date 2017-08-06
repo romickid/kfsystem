@@ -19,7 +19,6 @@
 <script>
 export default {
   name: 'web'
-
 }
 </script>
 
@@ -28,18 +27,22 @@ export default {
 .web {
 	padding: 0em 3em;
 }
+
 .method {
 	margin: 4em 0em;
 }
+
 .method-title {
   padding: 0.5em 2em;
 }
+
 .method-content {
   margin: 0.5em 2em;
   padding: 1em 1em;
   background-color: #f5f7f9;
 }
-.method-foot{
+
+.method-foot {
 	padding: 0.5em 2em;
 }
 </style>
