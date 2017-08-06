@@ -81,7 +81,7 @@ export default {
   methods: {
     ok () {
       this.infomationTypes = this.formItem.checkbox
-      for (let i=0; i < this.infomationTypes.length ; i++) {
+      for (let i = 0; i < this.infomationTypes.length; i++) {
         this.examples[i] = this.example[this.infomationTypes[i]]
       }
     },
