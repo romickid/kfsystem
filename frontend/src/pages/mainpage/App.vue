@@ -226,7 +226,7 @@ export default {
 
 <style>
 #app {
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica,"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   color: #2c3e50;
   position: relative;
   margin: 0 auto;
@@ -346,7 +346,7 @@ p {
   overflow: hidden;
 }
 
-.introduction-one-content h2{
+.introduction-one-content h2 {
   margin-bottom: 0;
   padding-top: 4em;
 }
@@ -371,7 +371,7 @@ margin: 20px auto 40px;
   padding-top: 1em;
 }
 
-.one-box-content h3{
+.one-box-content h3 {
   margin-top: 0;
   padding-bottom: 0.5em;
 }
@@ -480,12 +480,12 @@ margin: 20px auto 40px;
   padding-bottom: 5%;
 }
 
-.get-in-touch ul{
+.get-in-touch ul {
   list-style-type: none;
   padding: 0;
 }
 
-.get-in-touch li{
+.get-in-touch li {
   padding-top: 0.2em;
 }
 

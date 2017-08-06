@@ -5,14 +5,15 @@
       <h2>客服人员列表</h2>
       <div class='add'>
       <Icon type="person-add" class='add-icon'></Icon>
-      <i-button type='text' @click='addModal = true'>添加客服</i-button>
+      <i-button type='text' @click='addModal = true'>添加客服
+      </i-button>
       <Modal
         v-model="addModal"
         title="添加客服"
         @on-ok="ok"
         @on-cancel="cancel">
         <form>
-          <i-input placeholder='在此输入您要添加的客服邮箱' size=large></i-input>
+          <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf'></i-input>
         </form>
       </Modal>
       </div>
@@ -24,10 +25,13 @@
           <th>姓名</th>
           <th>操作</th>
         </tr>
-        <tr>
-          <td>xiaochen.gao@icloud.com</td>
+        <tr v-for='(kf, id) in kfstaff'>
+          <td>{{ kf }}</td>
           <td>高小宸</td>
-          <td><i-button type='text'>删除</i-button></td>
+          <td>
+            <i-button type='text' @click='deleteKf(id)'>删除
+            </i-button>
+          </td>
         </tr>
       </table>
     </div>
@@ -41,10 +45,25 @@ export default {
   name: 'team',
   data () {
     return {
-      addModal: false
+      addModal: false,
+      kf: '',
+      kfstaff: []
+    }
+  },
+  methods: {
+    ok () {
+      if (this.kf === '')
+        return
+      this.kfstaff.push(this.kf)
+      this.kf = ''
+    },
+    cancel () {
+      this.kf = ''
+    },
+    deleteKf (index) {
+      this.kfstaff.splice(index, 1)
     }
   }
-
 }
 </script>
 
@@ -67,24 +86,27 @@ export default {
   float: right;
 }
 
-.add button{
+.add button {
   padding-left: 0.5em;
 }
 
 .list {
   background-color: #f5f7f9;
 }
+
 .list table {
   width: 100%;
   text-align: center;
 }
-.list th{
+
+.list th {
   width: 33%;
   border: 1px solid #bbbec4;
   border-bottom: 0;
   border-left: 0;
   padding: 0.5em 0;
 }
+
 .list td {
   width: 33%;
   border: 1px solid #bbbec4;
@@ -92,5 +114,4 @@ export default {
   border-left: 0;
   padding: 0.5em 0;
 }
-
 </style>

@@ -81,7 +81,7 @@ export default {
   methods: {
     ok () {
       this.infomationTypes = this.formItem.checkbox
-      for (let i=0;i < this.infomationTypes.length;i++) {
+      for (let i=0; i < this.infomationTypes.length ; i++) {
         this.examples[i] = this.example[this.infomationTypes[i]]
       }
     },
@@ -89,8 +89,8 @@ export default {
       this.formItem.checkbox = this.infomationTypes
     },
     delete_info (index) {
-      this.infomationTypes.splice(index,1)
-      this.examples.splice(index,1)
+      this.infomationTypes.splice(index, 1)
+      this.examples.splice(index, 1)
     }
   }
 
@@ -122,7 +122,7 @@ export default {
   padding-bottom: 1em;
 }
 
-.introduction p{
+.introduction p {
   display: inline;
 }
 
@@ -141,7 +141,7 @@ export default {
 }
 
 
-.key-content h3{
+.key-content h3 {
   display: inline;
 }
 
