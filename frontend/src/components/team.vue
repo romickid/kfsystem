@@ -52,8 +52,9 @@ export default {
   },
   methods: {
     ok () {
-      if (this.kf === '')
+      if (this.kf === '') {
         return
+      }
       this.kfstaff.push(this.kf)
       this.kf = ''
     },
