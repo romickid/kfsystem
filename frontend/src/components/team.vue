@@ -1,41 +1,37 @@
 <template>
   <div class="team">
-   <div class='team-content'>
-    <div class='title'>
-      <h2>客服人员列表</h2>
-      <div class='add'>
-      <Icon type="person-add" class='add-icon'></Icon>
-      <i-button type='text' @click='addModal = true'>添加客服
-      </i-button>
-      <Modal
-        v-model="addModal"
-        title="添加客服"
-        @on-ok="ok"
-        @on-cancel="cancel">
-        <form>
-          <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf'></i-input>
-        </form>
-      </Modal>
+    <div class='team-content'>
+      <div class='title'>
+        <h2>客服人员列表</h2>
+        <div class='add'>
+          <Icon type="person-add" class='add-icon'></Icon>
+          <i-button type='text' @click='addModal = true'>添加客服
+          </i-button>
+          <Modal v-model="addModal" title="添加客服" @on-ok="ok" @on-cancel="cancel">
+            <form>
+              <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf'></i-input>
+            </form>
+          </Modal>
+        </div>
+      </div>
+      <div class='list'>
+        <table cellspacing='0'>
+          <tr>
+            <th>帐号</th>
+            <th>姓名</th>
+            <th>操作</th>
+          </tr>
+          <tr v-for='(kf, id) in kfstaff'>
+            <td>{{ kf }}</td>
+            <td>高小宸</td>
+            <td>
+              <i-button type='text' @click='deleteKf(id)'>删除
+              </i-button>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
-    <div class='list'>
-      <table cellspacing='0'>
-        <tr>
-          <th>帐号</th>
-          <th>姓名</th>
-          <th>操作</th>
-        </tr>
-        <tr v-for='(kf, id) in kfstaff'>
-          <td>{{ kf }}</td>
-          <td>高小宸</td>
-          <td>
-            <i-button type='text' @click='deleteKf(id)'>删除
-            </i-button>
-          </td>
-        </tr>
-      </table>
-    </div>
-   </div>
   </div>
 </template>
 
@@ -52,8 +48,9 @@ export default {
   },
   methods: {
     ok () {
-      if (this.kf === '')
+      if (this.kf === '') {
         return
+      }
       this.kfstaff.push(this.kf)
       this.kf = ''
     },
@@ -75,7 +72,7 @@ export default {
 }
 
 .title {
-   padding: 0.5em 2em;
+  padding: 0.5em 2em;
 }
 
 .title h2 {
