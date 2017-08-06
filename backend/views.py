@@ -5,6 +5,7 @@ from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
 from datetime import datetime, timedelta
+import hashlib
 
 
 @csrf_exempt
@@ -21,11 +22,12 @@ def admin_create(request):
             return HttpResponse('ERROR, incomplete information.', status=400)
         if sn_is_serials_valid(json_receive['serials']) == False:
             return HttpResponse('ERROR, serials is invalid.', status=400)
-        if admin_is_repetition_by_email(json_receive['email']) == True:
+        if admin_is_existent_by_email(json_receive['email']) == True:
             return HttpResponse('ERROR, email has been registered.', status=400)
         if len(json_receive) != 4:
             return HttpResponse('ERROR, wrong information.', status=400)
 
+        json_receive['password'] = admin_generate_password(json_receive['email'], json_receive['password'])
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
         json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
@@ -51,9 +53,8 @@ def admin_login(request):
         if len(json_receive) != 2:
             return HttpResponse('ERROR, wrong information.', status=400)
 
-        # TODO add SHA512 fuction
-
-        if admin_is_valid_by_email_password(json_receive['email'], json_receive['password']) == True:
+        sha512_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
+        if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
             return HttpResponse("Valid.", status=401)  # 401 just for test
         else:
             return HttpResponse("ERROR, wrong email or password.", status=400)
@@ -72,13 +73,14 @@ def admin_reset_password(request):
             return HttpResponse('ERROR, incomplete information.', status=400)
         if len(json_receive) != 3:
             return HttpResponse('ERROR, wrong information.', status=400)
-        if admin_is_valid_by_email_password(json_receive['email'], json_receive['password']) == False:
+
+        sha512_old_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
+        if admin_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
             return HttpResponse("ERROR, wrong email or password.", status=400)
 
-        # TODO add SHA512 fuction
-
-        instance = Admin.objects.get(email=json_receive['email'], password=json_receive['password'])
-        json_receive['password'] = json_receive['newpassword']
+        sha512_new_final_password = admin_generate_password(json_receive['email'], json_receive['newpassword'])
+        instance = Admin.objects.get(email=json_receive['email'], password=sha512_old_final_password)
+        json_receive['password'] = sha512_new_final_password
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -96,7 +98,7 @@ def customerservice_create(request):
             json_receive['email'] = json_receive['email']
         except KeyError:
             return HttpResponse('ERROR, incomplete information.', status=400)
-        if cs_is_repetition_by_email(json_receive['email']) == True:
+        if cs_is_existent_by_email(json_receive['email']) == True:
             return HttpResponse('ERROR, email has been registered.', status=400)
         if len(json_receive) != 1:
             return HttpResponse('ERROR, wrong information.', status=400)
@@ -119,11 +121,12 @@ def customerservice_set_profile(request):
             json_receive['nickname'] = json_receive['nickname']
         except KeyError:
             return HttpResponse('ERROR, incomplete information.', status=400)
-        if cs_is_repetition_by_email(json_receive['email']) == False:
+        if cs_is_existent_by_email(json_receive['email']) == False:
             return HttpResponse('ERROR, email has not been registered.', status=400)
         if len(json_receive) != 3:
             return HttpResponse('ERROR, wrong information.', status=400)
 
+        json_receive['password'] = cs_generate_password(json_receive['email'], json_receive['password'])
         instance = CustomerService.objects.get(email=json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
@@ -145,9 +148,8 @@ def customerservice_login(request):
         if len(json_receive) != 2:
             return HttpResponse('ERROR, wrong information.', status=400)
 
-        # TODO add SHA512 fuction
-
-        if cs_is_valid_by_email_password(json_receive['email'], json_receive['password']) == True:
+        sha512_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
+        if cs_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
             return HttpResponse("Valid.", status=401)  # 401 just for test
         else:
             return HttpResponse("ERROR, wrong email or password.", status=400)
@@ -166,13 +168,14 @@ def customerservice_reset_password(request):
             return HttpResponse('ERROR, incomplete information.', status=400)
         if len(json_receive) != 3:
             return HttpResponse('ERROR, wrong information.', status=400)
-        if cs_is_valid_by_email_password(json_receive['email'], json_receive['password']) == False:
+
+        sha512_old_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
+        if cs_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
             return HttpResponse("ERROR, wrong email or password.", status=400)
-
-        # TODO add SHA512 fuction
-
-        instance = CustomerService.objects.get(email=json_receive['email'], password=json_receive['password'])
-        json_receive['password'] = json_receive['newpassword']
+        
+        sha512_new_final_password = cs_generate_password(json_receive['email'], json_receive['newpassword'])
+        instance = CustomerService.objects.get(email=json_receive['email'], password=sha512_old_final_password)
+        json_receive['password'] = sha512_new_final_password
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -233,7 +236,7 @@ def chattinglog_status_change(request):
         return JsonResponse(serializer1.errors, status=400)
 
 
-def admin_is_repetition_by_email(email):
+def admin_is_existent_by_email(email):
     try:
         instance = Admin.objects.get(email=email)
         return True
@@ -241,12 +244,21 @@ def admin_is_repetition_by_email(email):
         return False
 
 
-def admin_is_valid_by_email_password(email, password):
+def admin_is_valid_by_email_password(email, sha512_final_password):
     try:
         instance = Admin.objects.get(email=email, password=password)
         return True
     except Admin.DoesNotExist:
         return False
+
+
+def admin_generate_password(email, sha512_frontend_password):
+    hash_email = hashlib.sha512()
+    hash_email.update(email.encode('utf-8'))
+    sha512_email = hash_email.hexdigest()
+    hash_password = hashlib.sha512()
+    hash_password.update((sha512_frontend_password+sha512_email+'adminbig5').encode('utf-8'))
+    return hash_password.hexdigest()
 
 
 def sn_is_serials_valid(serials):
@@ -270,7 +282,7 @@ def sn_mark_used(serials):
         return True
 
 
-def cs_is_repetition_by_email(email):
+def cs_is_existent_by_email(email):
     try:
         instance = CustomerService.objects.get(email=email)
         return True
@@ -278,9 +290,18 @@ def cs_is_repetition_by_email(email):
         return False
 
 
-def cs_is_valid_by_email_password(email, password):
+def cs_is_valid_by_email_password(email, sha512_final_password):
     try:
         instance = CustomerService.objects.get(email=email, password=password)
         return True
     except CustomerService.DoesNotExist:
         return False
+
+
+def cs_generate_password(email, sha512_frontend_password):
+    hash_email = hashlib.sha512()
+    hash_email.update(email.encode('utf-8'))
+    sha512_email = hash_email.hexdigest()
+    hash_password = hashlib.sha512()
+    hash_password.update((sha512_frontend_password+sha512_email+'customerservicebig5').encode('utf-8'))
+    return hash_password.hexdigest()
