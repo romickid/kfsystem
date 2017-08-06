@@ -27,12 +27,7 @@ def admin_create(request):
         if len(json_receive) != 4:
             return HttpResponse('ERROR, wrong information.', status=400)
 
-        hash_email = hashlib.sha512()
-        hash_email.update(json_receive['email'].encode('utf-8'))
-        sha512_email = hash_email.hexdigest()
-        hash_password = hashlib.sha512()
-        hash_password.update((json_receive['password']+sha512_email+'big5').encode('utf-8'))
-        json_receive['password'] = hash_password.hexdigest()
+        json_receive['password'] = admin_generate_password(json_receive['email'], json_receive['password'])
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
         json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
@@ -58,7 +53,7 @@ def admin_login(request):
         if len(json_receive) != 2:
             return HttpResponse('ERROR, wrong information.', status=400)
 
-        # TODO add SHA512 fuction
+        
 
         if admin_is_valid_by_email_password(json_receive['email'], json_receive['password']) == True:
             return HttpResponse("Valid.", status=401)  # 401 just for test
@@ -291,3 +286,12 @@ def cs_is_valid_by_email_password(email, password):
         return True
     except CustomerService.DoesNotExist:
         return False
+
+
+def admin_generate_password(email, sha512_password):
+    hash_email = hashlib.sha512()
+    hash_email.update(email.encode('utf-8'))
+    sha512_email = hash_email.hexdigest()
+    hash_password = hashlib.sha512()
+    hash_password.update((sha512_password+sha512_email+'big5').encode('utf-8'))
+    return hash_password.hexdigest()
