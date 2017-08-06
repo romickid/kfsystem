@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 @csrf_exempt
 def admin_create(request):
     if request.method == 'POST':
-        # Admin:email, nickname, password  SerialNumber:serials
+        # Admin: email nickname password  SerialNumber: serials
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
@@ -41,6 +41,7 @@ def admin_create(request):
 @csrf_exempt
 def admin_login(request):
     if request.method == 'POST':
+        # Admin: email password
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
@@ -61,6 +62,7 @@ def admin_login(request):
 @csrf_exempt
 def admin_reset_password(request):
     if request.method == 'POST':
+        # Admin: email password newpassword
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
@@ -88,6 +90,7 @@ def admin_reset_password(request):
 @csrf_exempt
 def customerservice_create(request):
     if request.method == 'POST':
+        # CustomerService: email
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
@@ -132,6 +135,7 @@ def customerservice_set_profile(request):
 @csrf_exempt
 def customerservice_login(request):
     if request.method == 'POST':
+        # CustomerService: email password
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
@@ -152,6 +156,7 @@ def customerservice_login(request):
 @csrf_exempt
 def customerservice_reset_password(request):
     if request.method == 'POST':
+        # CustomerService: email password newpassword
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
