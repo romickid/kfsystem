@@ -21,8 +21,16 @@
         </footer>
       </div>
       <div>
-        <ul class="main-ul">
-          <li class="main-list" v-for="item in userList"  :class="{ choosed: session.userId === item.id }" @click="select(item)">
+        <ul class="main-ul" v-if="hangon">
+          <div><p @click="switchoff"><a>点击切换已挂断聊天消息</a></p></div>
+          <li class="main-list" v-for="item in userList" :class="{ choosed: session.userId === item.id }" @click="select(item)">
+            <a><img class="main-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
+              <p class="main-name">{{ item.name }}</p></a>
+          </li>
+        </ul>
+        <ul class="main-ul" v-if="!hangon">
+          <div><p @click="switchoff"><a>点击切换活跃聊天消息</a></p></div>
+          <li class="main-list" v-for="item in hangoffUserList" :class="{ choosed: session.userId === item.id }" @click="select(item)">
             <a><img class="main-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
               <p class="main-name">{{ item.name }}</p></a>
           </li>
@@ -50,10 +58,10 @@
       </div>
     </div>
     <div class="r-modal">
-      <Modal v-if="find" title="找回密码页" @on-ok="ok" @on-cancel="cancel">
+      <Modal v-if="find" title="设置机器人" @on-ok="ok" @on-cancel="cancel">
         <p>机器人设置</p>
         <br>
-        <i-input class="setting" v-model="value" placeholder="请输入邮箱" style="width: 300px"></i-input>
+        <i-input class="setting" v-model="value" placeholder="" style="width: 300px"></i-input>
       </Modal>
     </div>
   </div>
@@ -61,7 +69,7 @@
 
 <script>
 import SetRobot from '../../components/SetRobot'
-const key = 'VUE-CHAT-v1'
+const key = 'VUE-CHAT-v4'
 // 虚拟数据
 if (!localStorage.getItem(key)) {
   let now = new Date()
@@ -83,6 +91,23 @@ if (!localStorage.getItem(key)) {
         id: 3,
         name: 'yayaya',
         image: '../../../static/3.jpg'
+      }
+    ],
+    hangoffUserList: [
+      {
+        id: 2,
+        name: 'MonsterSXF',
+        image: '../../../static/2.png'
+      },
+      {
+        id: 3,
+        name: 'yayaya',
+        image: '../../../static/3.jpg'
+      },
+      {
+        id: 3,
+        name: 'haha',
+        image: '../../../static/1.jpg'
       }
     ],
     // 会话列表
@@ -135,6 +160,7 @@ export default {
       user: dataserver.user,
       // 用户列表
       userList: dataserver.userList,
+      hangoffUserList: dataserver.hangoffUserList,
       // 会话列表
       sessionList: dataserver.sessionList,
       // 搜索key
@@ -143,7 +169,10 @@ export default {
       sessionIndex: 0,
       // 文本框中输入的内容
       text: '',
-      find: false
+      // 设置机器人
+      find: false,
+      // 显示活跃消息
+      hangon: true
     }
   },
   computed: {
@@ -153,11 +182,6 @@ export default {
     sessionUser () {
       let users = this.userList.filter(item => item.id === this.session.userId)
       return users[0]
-    },
-    avatar (item) {
-    // 如果是自己发的消息显示登录用户的头像
-      let user = item.self ? this.user : this.sessionUser
-      return user.image
     }
   },
   watch: {
@@ -201,6 +225,9 @@ export default {
         })
         this.text = ''
       }
+    },
+    switchoff () {
+      this.hangon = !this.hangon
     }
   },
   filters: {
@@ -213,12 +240,6 @@ export default {
       }
       return arr
     },
-    // 筛选出用户头像
-    // avatar (item,selfUser, sessionUser) {
-    // // 如果是自己发的消息显示登录用户的头像
-    //   let user = item.self ? selfUser : sessionUser
-    //   return user && user.image
-    // },
     // 将日期过滤为 hour:minutes
     time (date) {
       if (typeof date === 'string') {
@@ -300,7 +321,6 @@ export default {
     left: 0;
     height: 160px;
   }
-  /*似乎没有用到？*/
   .main-message {
     height: calc(100% - 180px);
   }
@@ -363,7 +383,7 @@ export default {
     font-size: small;
     text-align: center;
     color: grey;
-    border:1px solid #eee;
+    border: 1px solid #eee;
   }
   .managebox li a:hover {
     background-color: rgba(255, 255, 0, 0.1);
@@ -391,6 +411,10 @@ export default {
   .main-ul {
     height: 600px;
     overflow-y: scroll;
+  }
+  .main-ul a:hover {
+    cursor: pointer;
+    background-color: gray;
   }
   .main-list {
     padding: 12px 15px;
