@@ -244,7 +244,7 @@ def admin_is_existent_by_email(email):
         return False
 
 
-def admin_is_valid_by_email_password(email, password):
+def admin_is_valid_by_email_password(email, sha512_final_password):
     try:
         instance = Admin.objects.get(email=email, password=password)
         return True
@@ -290,7 +290,7 @@ def cs_is_existent_by_email(email):
         return False
 
 
-def cs_is_valid_by_email_password(email, password):
+def cs_is_valid_by_email_password(email, sha512_final_password):
     try:
         instance = CustomerService.objects.get(email=email, password=password)
         return True
