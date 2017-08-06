@@ -5,6 +5,7 @@ from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
 from datetime import datetime, timedelta
+import hashlib
 
 
 @csrf_exempt
@@ -26,6 +27,12 @@ def admin_create(request):
         if len(json_receive) != 4:
             return HttpResponse('ERROR, wrong information.', status=400)
 
+        hash_email = hashlib.sha512()
+        hash_email.update(json_receive['email'].encode('utf-8'))
+        sha512_email = hash_email.hexdigest()
+        hash_password = hashlib.sha512()
+        hash_password.update((json_receive['password']+sha512_email+'big5').encode('utf-8'))
+        json_receive['password'] = hash_password.hexdigest()
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
         json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
