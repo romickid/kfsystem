@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p type="text" @click="showModal">机器人设置</p>
+    <p type="text" @click="showModal" class="show-modal"><a>机器人设置</a></p>
     <ul class="robot-setting">
       <li class="robot-modal" v-if="find" @on-ok="ok" @on-cancel="cancel">
         <a><p>增添语料</p>
@@ -46,6 +46,9 @@ export default {
 }
 </script>
 <style>
+  .show-modal a:hover{
+    cursor: pointer;
+  }
   .robot-setting {
     background: white;
     color: black;
