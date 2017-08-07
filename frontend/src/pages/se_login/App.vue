@@ -3,7 +3,9 @@
     <form>
       <div class="all">
         <div class="container">
-          <label id="title">客服登录</label>
+          <div class="div">
+            <label id="title">客服登录</label>
+          </div>
           <div class="div">
             <label class="label">登录邮箱：</label>
             <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput">
@@ -75,31 +77,33 @@ body {
 }
 
 .all {
-  width: 500px;
+  width: 40%;
   height: 350px;
-  margin: 40px 250px 0 730px;
+  margin: 40px 250px 0 58.4%;
   border-radius: 10px;
   background: rgba(230, 230, 250, 0.5);
 }
 
 .container {
   display: flex;
-  width: 400px;
+  width: 100%;
   height: 280px;
-  padding: 20px 75px;
+  padding: 3.78% 14.16%;
   flex-wrap: wrap;
 }
 
 .div {
   margin-top: 8px;
+  flex: 1 1 100%;
 }
 
 #title {
-  font-size: 20pt;
+  font-size: 15pt;
   font-weight: bold;
   text-align: center;
-  padding-left: 120px;
+  padding-left: 38%;
   margin-bottom: 15px;
+  flex: 1 1 100%;
 }
 
 .label {
@@ -107,41 +111,31 @@ body {
   font-size: 15px;
   padding-top: 20px;
   padding-bottom: 40px;
-  flex: 1 1 500px;
+  flex: 1 1 100%;
 }
 
 .text {
   border: 2px solid #E3E3E3;
   border-radius: 5px;
   font-size: 11pt;
-  height: 38px;
   color: #808080;
   font-weight: bold;
   text-align: center;
-  width: 340px;
+  width: 100%;
   height: 38px;
   margin-bottom: 5px;
   margin-top: 5px;
-  flex: 1 1 500px;
+  flex: 1 1 100%;
 }
 
 #login {
-  width: 340px;
+  width: 100%;
+  margin-bottom: 10px;
+  flex: 1 1 100%;
 }
 
 #butt {
-  padding-left: 270px;
-}
-
-#apply {
-  font-weight: bold;
-  color: white;
-  font-size: 15pt;
-  background-color: #228B22;
-  border-radius: 20px;
-  width: 350px;
-  height: 40px;
-  flex: 1 1 500px;
+  padding-left: 75%;
 }
 
 a {
