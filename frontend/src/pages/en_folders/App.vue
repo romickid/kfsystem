@@ -3,7 +3,7 @@
     <form>
       <div class="all">
         <div class="container">
-          <div>
+          <div class="div">
             <label id="title">账号注册</label>
           </div>
           <div class="div">
@@ -38,7 +38,7 @@
           <div class="div">
             <Button type="primary" shape="circle" size="large" id="finish" @click="register">注册</Button>
           </div>
-          <div>
+          <div class="div">
             <label id="la">已有账号，直接</label>
             <a href="../en_login" target="_blank" id="login">登录</a>
           </div>
@@ -143,30 +143,32 @@ body {
 }
 
 .all {
-  width: 500px;
+  width: 40%;
   height: 600px;
-  margin: 10px 0 0 500px;
+  margin: 10px 0 0 40%;
   border-radius: 10px;
   background: rgba(154, 192, 205, 0.5);
 }
 
 .container {
   display: flex;
-  width: 400px;
+  width: 100%;
   height: 500px;
-  padding: 30px 75px;
+  padding: 5.67% 14.16%;
   flex-wrap: wrap;
 }
 
 .div {
-  margin-top: 8px;
+  margin-top: 1.78%;
+  flex: 1 1 100%;
 }
 
 #title {
-  font-size: 20pt;
+  font-size: 15pt;
   font-weight: bold;
   margin-bottom: 25px;
-  padding-left: 120px;
+  padding-left: 38%;
+  flex: 1 1 100%;
 }
 
 .label {
@@ -174,40 +176,28 @@ body {
   font-size: 15px;
   padding-top: 30px;
   padding-bottom: 40px;
-  flex: 1 1 500px;
+  flex: 1 1 100%;
 }
 
 .text {
   border: 2px solid #E3E3E3;
   border-radius: 5px;
   font-size: 11pt;
-  height: 38px;
   color: #808080;
   font-weight: bold;
   text-align: center;
   margin-bottom: 5px;
   margin-top: 5px;
-  width: 340px;
+  width: 100%;
   height: 38px;
-  flex: 1 1 500px;
+  flex: 1 1 100%;
 }
 
 .explain {
   font-weight: bold;
   font-size: 9pt;
   color: #808080;
-  flex: 1 1 500px;
-}
-
-#apply {
-  font-weight: bold;
-  color: white;
-  font-size: 15pt;
-  background-color: #228B22;
-  border-radius: 20px;
-  width: 350px;
-  height: 40px;
-  flex: 1 1 500px;
+  flex: 1 1 100%;
 }
 
 a {
@@ -217,12 +207,13 @@ a {
 }
 
 #finish {
-  width: 340px;
+  width: 100%;
   margin-bottom: 10px;
+  flex: 1 1 100%;
 }
 
 #la {
-  margin-left: 115px;
+  margin-left: 35%;
 }
 
 p {

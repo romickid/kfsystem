@@ -3,10 +3,15 @@
     <form>
       <div class="all">
         <div class="container">
-          <label id="title">找回密码</label>
+          <div class="div">
+            <label id="title">找回密码</label>
+          </div>
           <div class="div">
             <label class="label">新密码：</label>
             <input type="password" v-model="newPassword" name="newPassword" class="text" @blur="checkNewPassword" @focus="newPasswordInput">
+            <i-label v-if="passwordNonStandard">
+              <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
+            </i-label>
           </div>
           <div class="div">
             <label class="label">确认密码：</label>
@@ -31,6 +36,7 @@ export default {
     return {
       newPassword: '',
       newPasswordConfirm: '',
+      passwordNonStandard: false,
       passwordInConsistent: false
     }
   },
@@ -38,6 +44,13 @@ export default {
     checkNewPassword () {
       if (this.newPassword !== this.newPasswordConfirm && this.newPassword !== '' && this.newPasswordConfirm !== '') {
         this.passwordInConsistent = true
+      }
+      let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
+      let standardContent = reg.test(this.newPassword)
+      if (standardContent === false && this.newPassword !== '') {
+        this.passwordNonStandard = true
+      } else {
+        this.passwordNonStandard = false
       }
     },
     newPasswordInput () {
@@ -66,31 +79,33 @@ body {
 }
 
 .all {
-  width: 400px;
+  width: 32%;
   height: 350px;
-  margin: 170px 0 0 703px;
+  margin: 170px 0 0 55%;
   border-radius: 10px;
   background: rgba(127, 255, 170, 0.3);
 }
 
 .container {
   display: flex;
-  width: 370px;
+  width: 100%;
   height: 280px;
-  padding: 20px 50px;
+  padding: 20px 14.16%;
   flex-wrap: wrap;
 }
 
 .div {
   margin-top: 8px;
+  flex: 1 1 100%;
 }
 
 #title {
-  font-size: 20pt;
+  font-size: 15pt;
   font-weight: bold;
   text-align: center;
-  padding-left: 95px;
+  padding-left: 38%;
   margin-bottom: 15px;
+  flex: 1 1 100%;
 }
 
 .label {
@@ -98,26 +113,27 @@ body {
   font-size: 15px;
   padding-top: 30px;
   padding-bottom: 40px;
-  flex: 1 1 500px;
+  flex: 1 1 100%;
 }
 
 .text {
   border: 2px solid #E3E3E3;
   border-radius: 5px;
   font-size: 11pt;
-  height: 38px;
   color: #808080;
   font-weight: bold;
   text-align: center;
   margin-bottom: 5px;
   margin-top: 5px;
-  width: 300px;
+  width: 100%;
   height: 38px;
-  flex: 1 1 500px;
+  flex: 1 1 100%;
 }
 
 #finish {
-  width: 300px;
+  width: 100%;
+  margin-bottom: 10px;
+  flex: 1 1 100%;
 }
 
 a {
