@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
 from datetime import datetime, timedelta
-import hashlib
+import hashlib, random, string
 
 
 @csrf_exempt
@@ -31,7 +31,7 @@ def admin_create(request):
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
         json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
-        json_receive['communication_key'] = json_receive['email'] + '.communication_key' # TODO MD5 + salt
+        json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
         serializer = AdminSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -87,6 +87,47 @@ def admin_reset_password(request):
             return JsonResponse(serializer.data, status=401) # 401 just for test
         else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
+
+
+@csrf_exempt
+def admin_show_communication_key(request):
+    if request.method == 'POST':
+        # Admin: email
+        json_receive = JSONParser().parse(request)
+        try:
+            json_receive['email'] = json_receive['email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+
+        if admin_is_existent_by_email(json_receive['email']) == False:
+            return HttpResponse('ERROR, wrong email.', status=400)
+        else:
+            communication_key = admin_get_communication_key(json_receive['email'])
+            json_send = {'communication_key': communication_key}
+            return JsonResponse(json_send, status=401) # 401 just for test
+
+
+@csrf_exempt
+def admin_reset_communication_key(request):
+    if request.method == 'POST':
+        # Admin: email
+        json_receive = JSONParser().parse(request)
+        try:
+            json_receive['email'] = json_receive['email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+
+        if admin_is_existent_by_email(json_receive['email']) == False:
+            return HttpResponse('ERROR, wrong email.', status=400)
+        else:
+            instance = Admin.objects.get(email=json_receive['email'])
+            json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
+            serializer = AdminSerializer(instance, data=json_receive)
+            return JsonResponse(serializer.data, status=401) # 401 just for test
 
 
 @csrf_exempt
@@ -260,6 +301,22 @@ def admin_generate_password(email, sha512_frontend_password):
     hash_password = hashlib.sha512()
     hash_password.update((sha512_frontend_password+sha512_email+'adminbig5').encode('utf-8'))
     return hash_password.hexdigest()
+
+
+def admin_generate_communication_key(email):
+    salt1 = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+    salt2 = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+    hash_key = hashlib.md5()
+    hash_key.update((salt1+email+salt2).encode('utf-8'))
+    return hash_key.hexdigest()
+
+
+def admin_get_communication_key(email):
+    try:
+        instance = Admin.objects.get(email=email)
+        return instance.communication_key
+    except Admin.DoesNotExist:
+        return False
 
 
 def sn_is_serials_valid(serials):
