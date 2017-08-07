@@ -17,7 +17,7 @@
             <label class="label">登录密码：</label>
             <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput">
             <i-label v-if="passwordNonStandard">
-              <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
+              <p>密码要包含字母、数字和特殊字符，不包含空格，长度6-20位！</p>
             </i-label>
           </div>
           <div class="div">
@@ -60,7 +60,9 @@ export default {
       serialNumber: '',
       emailIllegal: false,
       passwordNonStandard: false,
-      passwordInConsistent: false
+      passwordInConsistent: false,
+      api_create1: '../api/admin_create/',
+      item: {}
     }
   },
   methods: {
@@ -80,9 +82,13 @@ export default {
       if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
         this.passwordInConsistent = true
       }
-      let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
+      let reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/
       let standardContent = reg.test(this.password)
-      if (standardContent === false && this.password !== '') {
+      let standardLength = true
+      if ((this.password.length >= 1 && this.password.length < 6) || this.password.length > 20) {
+        standardLength = false
+      }
+      if ((standardContent === false || standardLength === false) && this.password !== '') {
         this.passwordNonStandard = true
       } else {
         this.passwordNonStandard = false
@@ -94,8 +100,37 @@ export default {
     register () {
       if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '' || this.serialNumber === '') {
         this.$Message.info('您的信息不完善！')
+      } else if (this.emailIllegal === true) {
+        this.$Message.info('您的输入的邮箱格式不正确！')
+      } else if (this.passwordNonStandard === true) {
+        this.$Message.info('您的输入的密码格式不正确！')
+      } else if (this.passwordInConsistent === true) {
+        this.$Message.info('您两次输入的密码不一致！')
       } else {
         // 与后端链接进行信息传输和验证
+        var vm = this
+        this.item = {
+          'email': this.email,
+          'nickname': this.nickname,
+          'password': this.password,
+          'serials': this.serialNumber
+        }
+        vm.$http.post(vm.api_create1, this.item)
+          .then((response) => {
+            if (response.data === 'ERROR, invalid data in serializer.') {
+              this.$Message.info('未知错误')
+            } else if (response.data === 'ERROR, serials is invalid.') {
+              this.$Message.info('请输入正确的产品序列号！')
+            } else if (response.data === 'ERROR, email has been registered.') {
+              this.$Message.info('该邮箱已被注册！')
+            } else if (response.data === 'ERROR, nickname has been used.') {
+              this.$Message.info('该昵称已被注册')
+            } else {
+              window.location.href = '../en_login'
+            }
+          }, (response) => {
+            this.$Message.info('未知错误')
+          })
       }
     }
   }

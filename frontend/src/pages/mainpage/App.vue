@@ -10,7 +10,7 @@
         <a href="../documentation" class='ceiling-item'>帮助中心</a> |
         <a href="../en_login" class='ceiling-item'>登录</a> |
         <a href="../en_folders" class='ceiling-item'>注册</a> |
-        <a href="../se_folders" class='ceiling-item'>客服入口</a>
+        <a href="../se_login" class='ceiling-item'>客服入口</a>
       </div>
     </div>
   </div>
