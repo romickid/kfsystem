@@ -26,13 +26,14 @@ class AdminSerializer(serializers.ModelSerializer):
 class CustomerServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
-        fields = ('id', 'email', 'nickname', 'password', 'is_online', 'connection_num', 'vid')
+        fields = ('id', 'email', 'enterprise', 'nickname', 'password', 'is_online', 'connection_num', 'vid')
 
     def create(self, validated_data):
         return CustomerService.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
+        instance.enterprise = validated_data.get('enterprise', instance.enterprise)
         instance.nickname = validated_data.get('nickname', instance.nickname)
         instance.password = validated_data.get('password', instance.password)
         instance.is_online = validated_data.get('is_online', instance.is_online)
