@@ -1,57 +1,57 @@
 <template>
-  <div id="app">
+  <div id='app'>
     <!-- Header -->
-    <div class="layout">
-      <div class="layout-ceiling">
-        <div class="layout-logo">logo</div>
-        <div class="layout-ceiling-main">
-          <a href="../main">首页</a> |
-          <a href="../documentation">帮助中心</a>
+    <div class='layout'>
+      <div class='layout-ceiling'>
+        <div class='layout-logo'>logo</div>
+        <div class='layout-ceiling-main'>
+          <a href='../main'>首页</a> |
+          <a href='../documentation'>帮助中心</a>
         </div>
       </div>
     </div>
     <!-- Main -->
-    <div class="main" :class="{'main-hide-text': spanLeft < 5}">
-      <Row type="flex">
-        <i-col :span="spanLeft" class="main-menu-left">
-          <Menu active-name="1" theme="dark" width="auto" @on-select="select">
-            <div class="main-logo-left">
+    <div class='main' :class="{'main-hide-text': spanLeft < 5}">
+      <Row type='flex'>
+        <i-col :span="spanLeft" class='main-menu-left'>
+          <Menu active-name='1' theme='dark' width='auto' @on-select='select'>
+            <div class='main-logo-left'>
               <span>logo</span>
               <p class='main-text'>jisuanke</p>
             </div>
-            <Menu-item name="">
-              <Icon type="ios-navigate" :size="iconSize"></Icon>
-              <span class="main-text">概览</span>
+            <Menu-item name=''>
+              <Icon type='ios-navigate' :size='iconSize'></Icon>
+              <span class='main-text'>概览</span>
             </Menu-item>
-            <Menu-item name="team">
-              <Icon type="ios-keypad" :size="iconSize"></Icon>
-              <span class="main-text">团队管理</span>
+            <Menu-item name='team'>
+              <Icon type='ios-keypad' :size='iconSize'></Icon>
+              <span class='main-text'>团队管理</span>
             </Menu-item>
-            <Menu-item name="system">
-              <Icon type="ios-analytics" :size="iconSize"></Icon>
-              <span class="main-text">系统设置</span>
+            <Menu-item name='system'>
+              <Icon type='ios-analytics' :size='iconSize'></Icon>
+              <span class='main-text'>系统设置</span>
             </Menu-item>
-            <Submenu name="1">
+            <Submenu name='1'>
               <template slot='title'>
-                <Icon type="android-locate" :size='iconSize'></Icon>
-                <span class="main-text">多渠道设置</span>
+                <Icon type='android-locate' :size='iconSize'></Icon>
+                <span class='main-text'>多渠道设置</span>
               </template>
-              <Menu-item name="web">web</Menu-item>
-              <Menu-item name="widget">widget</Menu-item>
-              <Menu-item name="mobile">mobile</Menu-item>
+              <Menu-item name='web'>web</Menu-item>
+              <Menu-item name='widget'>widget</Menu-item>
+              <Menu-item name='mobile'>mobile</Menu-item>
             </Submenu>
           </Menu>
         </i-col>
-        <i-col :span="spanRight" class='content'>
-          <div class="main-header">
-            <i-button type="text" @click="toggleClick">
-              <Icon type="navicon" size="32"></Icon>
+        <i-col :span='spanRight' class='content'>
+          <div class='main-header'>
+            <i-button type='text' @click='toggleClick'>
+              <Icon type='navicon' size='32'></Icon>
             </i-button>
           </div>
-          <div class="main-content">
+          <div class='main-content'>
             <router-view></router-view>
           </div>
-          <div class="main-copy">
+          <div class='main-copy'>
             2011-2016 &copy; TalkingData
           </div>
         </i-col>
