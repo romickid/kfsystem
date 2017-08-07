@@ -11,13 +11,24 @@
           <div class="status-manage"><a>
             <i class="iconfont1">&#xe6a6;</i>
             <ul class="managebox">
-              <li><a href="../se_login">退出</a></li>
+              <li><Button><a href="../se_login">退出账号</a></Button></li>
+              <li>
+                <Button @click="modal1 = true">机器人设置</Button>
+                <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
+                  <p>增添预料</p>
+                  <input type="text" placeholder="请输入需要增添的语料">
+                  <button>确认增添</button>
+                  <div>
+                    <p>更改语料</p>
+                    <br>
+                    <p>删除语料</p>
+                  </div>
+                </Modal></li>
             </ul></a>
           </div>
         </header>
         <footer>
           <input class="search" type="text" placeholder="search user..." v-model="searchname">
-          <set-robot ref="setRobot"></set-robot>
         </footer>
       </div>
       <div>
@@ -57,19 +68,11 @@
         <button class="submit-button" @click="buttoninputing">发送</button>
       </div>
     </div>
-    <div class="r-modal">
-      <Modal v-if="find" title="设置机器人" @on-ok="ok" @on-cancel="cancel">
-        <p>机器人设置</p>
-        <br>
-        <i-input class="setting" v-model="value" placeholder="" style="width: 300px"></i-input>
-      </Modal>
-    </div>
   </div>
 </template>
 
 <script>
-import SetRobot from '../../components/SetRobot'
-const key = 'VUE-CHAT-v4'
+const key = 'VUE-CHAT-v5'
 // 虚拟数据
 if (!localStorage.getItem(key)) {
   let now = new Date()
@@ -84,12 +87,12 @@ if (!localStorage.getItem(key)) {
     userList: [
       {
         id: 2,
-        name: 'MonsterSXF',
+        name: '小怪兽',
         image: '../../../static/2.png'
       },
       {
         id: 3,
-        name: 'yayaya',
+        name: '独角兽',
         image: '../../../static/3.jpg'
       }
     ],
@@ -116,12 +119,12 @@ if (!localStorage.getItem(key)) {
         userId: 2,
         messages: [
           {
-            text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
+            text: '你好，我是客户小怪兽！！',
             date: now,
             image: '../../../static/2.png'
           },
           {
-            text: '项目地址: https://sc.chinaz.com/jiaoben/',
+            text: '有个问题想请你帮助我~',
             date: now,
             image: '../../../static/2.png'
           }
@@ -131,17 +134,17 @@ if (!localStorage.getItem(key)) {
         userId: 3,
         messages: [
           {
-            text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
+            text: '你好，我是客户独角兽🦄',
             date: now,
             image: '../../../static/3.jpg'
           },
           {
-            text: '项目地址: https://sc.chinaz.com/jiaoben/',
+            text: '你可以帮我嘛~',
             date: now,
             image: '../../../static/3.jpg'
           },
           {
-            text: 'xixixi',
+            text: '嘻嘻嘻',
             date: now,
             image: '../../../static/3.jpg'
           }
@@ -169,10 +172,10 @@ export default {
       sessionIndex: 0,
       // 文本框中输入的内容
       text: '',
-      // 设置机器人
-      find: false,
       // 显示活跃消息
-      hangon: true
+      hangon: true,
+      // 设置机器人
+      modal1: false
     }
   },
   computed: {
@@ -248,9 +251,7 @@ export default {
       return date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes()
     }
   },
-  components: {
-    SetRobot
-  }
+  components: {}
 }
 </script>
 <style>
