@@ -82,6 +82,13 @@ body {
   background: rgba(230, 230, 250, 0.5);
 }
 
+.container {
+  display: flex;
+  width: 400px;
+  height: 280px;
+  padding: 20px 75px;
+  flex-wrap: wrap;
+}
 
 .div {
   margin-top: 8px;
