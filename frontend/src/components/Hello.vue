@@ -56,9 +56,11 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       // for test, do not delete it.
-      // api_admin_create: './api/admin_create/',
+      api_admin_create: './api/admin_create/',
       api_admin_show_communication_key: './api/admin_show_communication_key/',
       api_admin_reset_communication_key: './api/admin_reset_communication_key/',
+      api_admin_find_password_email_request: './api/admin_find_password_email_request/',
+      api_admin_find_password_check_vid: './api/admin_find_password_check_vid/',
 
       api_chattinglog_send_message: './api/chattinglog_send_message/',
       api_chattinglog_delete_record: './api/chattinglog_delete_record/',
@@ -77,8 +79,8 @@ export default {
   methods: {
     test1: function () {
       var vm = this
-      this.item = { 'email': 'test1@a.com' }
-      vm.$http.post(vm.api_admin_show_communication_key, this.item)
+      this.item = { 'vid': '9a6770931ca5a7fd3c297580d4892dc7' }
+      vm.$http.post(vm.api_admin_find_password_check_vid, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -86,8 +88,8 @@ export default {
 
     test2: function () {
       var vm = this
-      this.item = { 'email': 'test2@a.com', 'password': 'pass2' }
-      vm.$http.post(vm.api_admin_show_communication_key, this.item)
+      this.item = { 'email': 'test2@a.com' }
+      vm.$http.post(vm.api_admin_find_password_check_vid, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -95,8 +97,8 @@ export default {
 
     test3: function () {
       var vm = this
-      this.item = {}
-      vm.$http.post(vm.api_admin_show_communication_key, this.item)
+      this.item = { 'email': 'test3@a.com', 'password': 'pass3', 'serials': 's3' }
+      vm.$http.post(vm.api_admin_find_password_check_vid, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -104,8 +106,8 @@ export default {
 
     test4: function () {
       var vm = this
-      this.item = { 'email': 'test3@a.com' }
-      vm.$http.post(vm.api_admin_show_communication_key, this.item)
+      this.item = { 'email': 'test4@a.com', 'nickname': 'nick4', 'password': 'pass4', 'serials': 's4', 'hello': 'hello' }
+      vm.$http.post(vm.api_admin_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
