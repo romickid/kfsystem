@@ -1,5 +1,5 @@
 <template>
-  <div class="system">
+  <div class='system'>
    <div class='key'>
     <div class='key-title'><h2>用户信息对接设置</h2></div>
     <div class='key-content'>
@@ -7,7 +7,8 @@
         <p>您可以通过信息接口将用户名和用户ID与夜莺系统对接,从而在会话界面和历史记录中查看用户信息。</p>
         <a>点击查看客户用户信息对接流程</a>
       </div>
-      <h3>通讯密钥:</h3><p class='key-number'>fd43s334ggre43s34gf4342dgfs</p>
+      <h3>通讯密钥:</h3>
+      <p class='key-number'>{{ communicationKey }}</p>
       <p class='remind'>字符串密钥为平台的API通讯密钥，请妥善保管，如果发现通讯密钥泄露请重设。</p><i-button type='ghost'>重新生成密钥</i-button>
     </div>
    </div>
@@ -15,16 +16,16 @@
     <div class='info-title'>
       <h2>客服可获取用户信息种类设置</h2>
       <div class='add'>
-        <Icon type="person-add"></Icon>
-        <i-button type='text' @click="modal = true">添加用户信息</i-button>
-        <Modal v-model="modal" title="普通的Modal对话框标题" @on-ok="ok" @on-cancel="cancel">
-          <Form :model="formItem" :label-width="80">
-            <Form-item label="信息种类">
-              <Checkbox-group v-model="formItem.checkbox">
-                <Checkbox label="Email"></Checkbox>
-                <Checkbox label="Phonenumber"></Checkbox>
-                <Checkbox label="Location"></Checkbox>
-                <Checkbox label="Date"></Checkbox>
+        <Icon type='person-ad'></Icon>
+        <i-button type='text' @click='modal = true'>添加用户信息</i-button>
+        <Modal v-model='modal' title='普通的Modal对话框标题' @on-ok='ok' @on-cancel='cancel'>
+          <Form :model='formItem' :label-width='80'>
+            <Form-item label='信息种类'>
+              <Checkbox-group v-model='formItem.checkbox'>
+                <Checkbox label='Email'></Checkbox>
+                <Checkbox label='Phonenumber'></Checkbox>
+                <Checkbox label='Location'></Checkbox>
+                <Checkbox label='Date'></Checkbox>
               </Checkbox-group>
             </Form-item>
           </Form>
@@ -75,7 +76,10 @@ export default {
         'Date': '例：xxxx年xx月xx日'
       },
       infomationTypes: [],
-      examples: []
+      examples: [],
+      apiShowCommunicationKey: '../api/admin_show_communication_key/',
+      adminEmail: {},
+      communicationKey: ''
     }
   },
   methods: {
@@ -92,6 +96,26 @@ export default {
       this.infomationTypes.splice(index, 1)
       this.examples.splice(index, 1)
     }
+  },
+  created () {
+    var vm = this
+    this.adminEmail = {
+      'email': '1234444@123.com'
+    }
+    vm.$http.post(vm.apiShowCommunicationKey, this.adminEmail)
+      .then((response) => {
+        if (response.data === 'ERROR, incomplete information.') {
+          window.location.href = '../en_login'
+        } else if (response.data === 'ERROR, wrong information.') {
+          window.location.href = '../en_login'
+        } else if (response.data === 'ERROR, wrong email.') {
+          window.location.href = '../en_login'
+        } else {
+          this.communicationKey = response.data.communication_key
+        }
+      }, (response) => {
+        window.location.href = '../en_login'
+      })
   }
 }
 </script>

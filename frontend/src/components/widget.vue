@@ -43,6 +43,6 @@ export default {
 }
 
 .method-foot {
-	padding: 0.5em 2em;
+  padding: 0.5em 2em;
 }
 </style>
