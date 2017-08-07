@@ -35,9 +35,9 @@
         <a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a>
       </li>
     </ul>
-  
+
     <div>
-      <div>hello</div>      
+      <div>hello</div>
       <div>{{ gridData }}</div>
       <button @click="test1()">Test1</button>
       <button @click="test2()">Test2</button>
@@ -45,7 +45,7 @@
       <button @click="test4()">Test4</button>
       <button @click="test5()">Test5</button>
     </div>
-  
+
   </div>
 </template>
 
