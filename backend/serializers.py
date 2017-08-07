@@ -5,7 +5,7 @@ from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog,
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = ('id', 'email', 'nickname', 'password', 'web_url', 'widget_url', 'mobile_url', 'communication_key')
+        fields = ('id', 'email', 'nickname', 'password', 'web_url', 'widget_url', 'mobile_url', 'communication_key', 'vid')
 
     def create(self, validated_data):
         return Admin.objects.create(**validated_data)
@@ -18,6 +18,7 @@ class AdminSerializer(serializers.ModelSerializer):
         instance.widget_url = validated_data.get('widget_url', instance.widget_url)
         instance.mobile_url = validated_data.get('mobile_url', instance.mobile_url)
         instance.communication_key = validated_data.get('communication_key', instance.communication_key)
+        instance.vid = validated_data.get('vid', instance.vid)
         instance.save()
         return instance
 
@@ -25,7 +26,7 @@ class AdminSerializer(serializers.ModelSerializer):
 class CustomerServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
-        fields = ('id', 'email', 'nickname', 'password', 'is_online', 'connection_num')
+        fields = ('id', 'email', 'nickname', 'password', 'is_online', 'connection_num', 'vid')
 
     def create(self, validated_data):
         return CustomerService.objects.create(**validated_data)
@@ -36,6 +37,7 @@ class CustomerServiceSerializer(serializers.ModelSerializer):
         instance.password = validated_data.get('password', instance.password)
         instance.is_online = validated_data.get('is_online', instance.is_online)
         instance.connection_num = validated_data.get('connection_num', instance.connection_num)
+        instance.vid = validated_data.get('vid', instance.vid)
         instance.save()
         return instance
 

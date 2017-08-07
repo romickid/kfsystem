@@ -5,6 +5,7 @@ from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
 from datetime import datetime, timedelta
+from django.core.mail import send_mail
 import hashlib, random, string
 
 
@@ -34,6 +35,7 @@ def admin_create(request):
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
         json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
         json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
+        json_receive['vid'] = admin_generate_vid(json_receive['email'])
         serializer = AdminSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -89,6 +91,51 @@ def admin_reset_password(request):
             return JsonResponse(serializer.data, status=401) # 401 just for test
         else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
+
+
+@csrf_exempt
+def admin_find_password_email_request(request):
+    if request.method == 'POST':
+        # Admin: email
+        json_receive = JSONParser().parse(request)
+        try:
+            json_receive['email'] = json_receive['email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+        if admin_is_existent_by_email(json_receive['email']) == False:
+            return HttpResponse('ERROR, wrong email.', status=400)
+
+        instance = Admin.objects.get(email=json_receive['email'])
+        json_receive['vid'] = admin_generate_vid(json_receive['email'])
+        serializer = AdminSerializer(instance, data=json_receive)
+        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/admin_find_password_page/?key=' + json_receive['vid']
+        if serializer.is_valid():
+            serializer.save()
+            admin_send_email('big5_nankai@163.com', content)
+            return HttpResponse('Valid '+json_receive['vid'], status=401)
+        else:
+            return HttpResponse("ERROR, invalid data in serializer.", status=400)
+
+
+@csrf_exempt
+def admin_find_password_check_vid(request):
+    if request.method == 'POST':
+        # Admin: vid
+        json_receive = JSONParser().parse(request)
+        try:
+            json_receive['vid'] = json_receive['vid']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+        if admin_is_existent_by_vid(json_receive['vid']) == False:
+            return HttpResponse('ERROR, wrong vid.', status=400)
+
+        instance = Admin.objects.get(vid=json_receive['vid'])
+        json_send = { 'email': instance.email }
+        return JsonResponse(json_send, status=401)
 
 
 @csrf_exempt
@@ -171,6 +218,7 @@ def customerservice_set_profile(request):
             return HttpResponse('ERROR, wrong information.', status=400)
 
         json_receive['password'] = cs_generate_password(json_receive['email'], json_receive['password'])
+        json_receive['vid'] = cs_generate_vid(json_receive['email'])
         instance = CustomerService.objects.get(email=json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
@@ -226,6 +274,51 @@ def customerservice_reset_password(request):
             return JsonResponse(serializer.data, status=401) # 401 just for test
         else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
+
+
+@csrf_exempt
+def customerservice_find_password_email_request(request):
+    if request.method == 'POST':
+        # CustomerService: email
+        json_receive = JSONParser().parse(request)
+        try:
+            json_receive['email'] = json_receive['email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+        if cs_is_existent_by_email(json_receive['email']) == False:
+            return HttpResponse('ERROR, wrong email.', status=400)
+
+        instance = CustomerService.objects.get(email=json_receive['email'])
+        json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        serializer = CustomerServiceSerializer(instance, data=json_receive)
+        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/customerservice_find_password_page/?key=' + json_receive['vid']
+        if serializer.is_valid():
+            serializer.save()
+            cs_send_email('big5_nankai@163.com', content)
+            return HttpResponse('Valid '+json_receive['vid'], status=401)
+        else:
+            return HttpResponse("ERROR, invalid data in serializer.", status=400)
+
+
+@csrf_exempt
+def customerservice_find_password_check_vid(request):
+    if request.method == 'POST':
+        # CustomerService: vid
+        json_receive = JSONParser().parse(request)
+        try:
+            json_receive['vid'] = json_receive['vid']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+        if cs_is_existent_by_vid(json_receive['vid']) == False:
+            return HttpResponse('ERROR, wrong vid.', status=400)
+
+        instance = CustomerService.objects.get(vid=json_receive['vid'])
+        json_send = { 'email': instance.email }
+        return JsonResponse(json_send, status=401)
 
 
 @csrf_exempt
@@ -329,6 +422,22 @@ def admin_get_communication_key(email):
         return False
 
 
+def admin_generate_vid(email):
+    return admin_generate_communication_key(email)
+
+
+def admin_send_email(email, content):
+    send_mail('客服系统找回密码', content, 'big5_nankai@163.com', [email], fail_silently=True)
+
+
+def admin_is_existent_by_vid(vid):
+    try:
+        instance = Admin.objects.get(vid=vid)
+        return True
+    except Admin.DoesNotExist:
+        return False
+
+
 def sn_is_serials_valid(serials):
     try:
         instance = SerialNumber.objects.get(serials=serials)
@@ -373,3 +482,11 @@ def cs_generate_password(email, sha512_frontend_password):
     hash_password = hashlib.sha512()
     hash_password.update((sha512_frontend_password+sha512_email+'customerservicebig5').encode('utf-8'))
     return hash_password.hexdigest()
+
+
+def cs_generate_vid(email):
+    return admin_generate_communication_key(email)
+
+
+def cs_send_email(email, content):
+    send_mail('客服系统找回密码', content, 'big5_nankai@163.com', [email], fail_silently=True)
