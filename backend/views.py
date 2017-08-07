@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
 from datetime import datetime, timedelta
-import hashlib
+import hashlib, random, string
 
 
 @csrf_exempt
@@ -104,8 +104,8 @@ def admin_show_communication_key(request):
         if admin_is_existent_by_email(json_receive['email']) == False:
             return HttpResponse('ERROR, wrong email.', status=400)
         else:
-            instance = Admin.objects.get(email=json_receive['email'])
-            json_send = {'communication_key': instance.communication_key}
+            communication_key = admin_get_communication_key(json_receive['email'])
+            json_send = {'communication_key': communication_key}
             return JsonResponse(json_send, status=401) # 401 just for test
 
 
@@ -127,7 +127,7 @@ def admin_reset_communication_key(request):
             instance = Admin.objects.get(email=json_receive['email'])
             json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
             serializer = AdminSerializer(instance, data=json_receive)
-            return JsonResponse(json_send, status=401) # 401 just for test
+            return JsonResponse(serializer.data, status=401) # 401 just for test
 
 
 @csrf_exempt
@@ -303,10 +303,19 @@ def admin_generate_password(email, sha512_frontend_password):
 
 
 def admin_generate_communication_key(email):
-    salt = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+    salt1 = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+    salt2 = ''.join(random.sample(string.ascii_letters + string.digits, 8))
     hash_key = hashlib.md5()
-    hash_key.update((email+salt).encode('utf-8'))
+    hash_key.update((salt1+email+salt2).encode('utf-8'))
     return hash_key.hexdigest()
+
+
+def admin_get_communication_key(email):
+    try:
+        instance = Admin.objects.get(email=email)
+        return instance.communication_key
+    except Admin.DoesNotExist:
+        return False
 
 
 def sn_is_serials_valid(serials):
