@@ -24,6 +24,8 @@ def admin_create(request):
             return HttpResponse('ERROR, serials is invalid.', status=400)
         if admin_is_existent_by_email(json_receive['email']) == True:
             return HttpResponse('ERROR, email has been registered.', status=400)
+        if admin_is_existent_by_nickname(json_receive['nickname']) == True:
+            return HttpResponse('ERROR, nickname has been used.', status=400)
         if len(json_receive) != 4:
             return HttpResponse('ERROR, wrong information.', status=400)
 
@@ -240,6 +242,14 @@ def chattinglog_status_change(request):
 def admin_is_existent_by_email(email):
     try:
         instance = Admin.objects.get(email=email)
+        return True
+    except Admin.DoesNotExist:
+        return False
+
+
+def admin_is_existent_by_nickname(nickname):
+    try:
+        instance = Admin.objects.get(nickname=nickname)
         return True
     except Admin.DoesNotExist:
         return False
