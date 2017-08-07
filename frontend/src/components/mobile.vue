@@ -1,17 +1,17 @@
 <template>
   <div class="mobile">
     <div class='method'>
-   	  <div class='method-title'>
-   	    <h2>在网站中嵌入web咨询页面地址</h2>
+      <div class='method-title'>
+        <h2>在网站中嵌入web咨询页面地址</h2>
       </div>
       <div class='method-content'>
-   	    <a>https://ikefu.baidu.com/web/archangel</a>
+        <a>https://ikefu.baidu.com/web/archangel</a>
       </div>
       <div class='method-foot'>
-      	<ul>
-      		<li>网站客服访问入口定制，可参考<a>《网站客服访问入口样式定制介绍》</a></li>
-      	</ul>
-   	  </div>
+        <ul>
+          <li>网站客服访问入口定制，可参考<a>《网站客服访问入口样式定制介绍》</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -25,11 +25,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mobile {
-	padding: 0em 3em;
+  padding: 0em 3em;
 }
 
 .method {
-	margin: 4em 0em;
+  margin: 4em 0em;
 }
 
 .method-title {
@@ -43,6 +43,6 @@ export default {
 }
 
 .method-foot {
-	padding: 0.5em 2em;
+  padding: 0.5em 2em;
 }
 </style>
