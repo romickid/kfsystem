@@ -17,7 +17,7 @@
             <label class="label">登录密码：</label>
             <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput">
             <i-label v-if="passwordNonStandard">
-              <p>密码要包含字母、数字和特殊字符，不包含空格，长度6-20位！</p>
+              <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
             </i-label>
           </div>
           <div class="div">
@@ -75,13 +75,9 @@ export default {
       if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
         this.passwordInConsistent = true
       }
-      let reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/
+      let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
       let standardContent = reg.test(this.password)
-      let standardLength = true
-      if ((this.password.length >= 1 && this.password.length < 6) || this.password.length > 20) {
-        standardLength = false
-      }
-      if ((standardContent === false || standardLength === false) && this.password !== '') {
+      if (standardContent === false && this.password !== '') {
         this.passwordNonStandard = true
       } else {
         this.passwordNonStandard = false
