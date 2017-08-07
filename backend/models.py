@@ -15,6 +15,7 @@ class Admin(models.Model):
     widget_url = models.CharField(max_length=200, default='empty', unique=True)
     mobile_url = models.CharField(max_length=200, default='empty', unique=True)
     communication_key = models.CharField(max_length=32, default='empty', unique=True) # TODO MD5 + salt
+    vid = models.CharField(max_length=32, default='empty', unique=True)
 
 
 class CustomerService(models.Model):
@@ -23,6 +24,7 @@ class CustomerService(models.Model):
     password = models.CharField(max_length=128, default='empty')
     is_online = models.BooleanField(default=False)
     connection_num = models.IntegerField(default=0)
+    vid = models.CharField(max_length=32, default='empty', unique=True)
 
 
 class ChattingLog(models.Model):
