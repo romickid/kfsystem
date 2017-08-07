@@ -9,9 +9,11 @@
       </div>
       <div>
         <ul class="m-ul">
-          <li class="m-list" v-for="item in userList"  :class="{ choosed: session.userId === item.id }" @click="select(item)">
-            <a><img class="m-avatar"  width="30" height="30" :alt="item.name" :src="item.image">
-              <p class="m-name">{{ item.name }}</p></a>
+          <li class="m-list" v-for="item in userList" :class="{ choosed: session.userId === item.id }" @click="select(item)">
+            <a>
+              <img class="m-avatar" width="30" height="30" :alt="item.name" :src="item.image">
+              <p class="m-name">{{ item.name }}</p>
+            </a>
           </li>
         </ul>
       </div>
@@ -20,10 +22,14 @@
       <div class="m-message" v-scroll-bottom="session.messages">
         <ul>
           <li class="message-list" v-for="item in session.messages">
-            <p class="message-time"><span class="time-span">{{ item.date | time }}</span></p>
+            <p class="message-time">
+              <span class="time-span">{{ item.date | time }}</span>
+            </p>
             <div class="massage-main" :class="{ self: item.self }">
-              <img class="massage-avatar" width="30" height="30" :src="item.image"/>
-              <div class="massage-text"><li>{{ item.text }}</li></div>
+              <img class="massage-avatar" width="30" height="30" :src="item.image" />
+              <div class="massage-text">
+                <li>{{ item.text }}</li>
+              </div>
             </div>
           </li>
         </ul>
@@ -32,7 +38,9 @@
         <button class="human-service">人工客服</button>
       </div>
       <div class="m-text">
-        <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing"></textarea>
+        <p class="lead emoji-picker-container">
+          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
+        </p>
         <button class="submit-button" @click="buttoninputing">发送</button>
       </div>
     </div>
@@ -82,7 +90,7 @@ if (!localStorage.getItem(key)) {
 }
 export default {
   el: '#chat',
-  data () {
+  data() {
     let dataserver = JSON.parse(localStorage.getItem(key))
     return {
       // 登录用户
@@ -98,7 +106,7 @@ export default {
     }
   },
   computed: {
-    session () {
+    session() {
       return this.sessionList[this.sessionIndex]
     }
   },
@@ -106,7 +114,7 @@ export default {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
       deep: true,
-      handler () {
+      handler() {
         localStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
@@ -116,7 +124,7 @@ export default {
     }
   },
   methods: {
-    inputing (e) {
+    inputing(e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
         this.session.messages.push({
           text: this.text,
@@ -127,7 +135,7 @@ export default {
         this.text = ''
       }
     },
-    buttoninputing (e) {
+    buttoninputing(e) {
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -140,7 +148,7 @@ export default {
     }
   },
   filters: {
-    search (list) {
+    search(list) {
       let arr = []
       for (var i = 0; i < list.length; i++) {
         if (list[i].name.indexOf(this.searchname) > -1) {
@@ -156,7 +164,7 @@ export default {
     //   return user && user.image
     // },
     // 将日期过滤为 hour:minutes
-    time (date) {
+    time(date) {
       if (typeof date === 'string') {
         date = new Date(date)
       }
@@ -167,249 +175,304 @@ export default {
 }
 </script>
 <style>
-  /*开头*/
-  *, *:before, *:after {
-    box-sizing: border-box;
-  }
-  body, html {
-    height: 100%;
-    overflow: hidden;
-  }
-  body, ul {
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
-    background: #176994 url(../index/assets/newbg.jpg);
-    background-size: cover;
-  }
-  ul {
-    list-style: none;
-  }
-  /*主要界面*/
-  .container {
-    height: 70%;
-    width: 80%;
-    margin: 10% auto 10%;
-    vertical-align: center;
-    border-radius: 4px;
-  }
-  .sidebar, .main, .information {
-    height: 100%;
-  }
-  .sidebar {
-    float: left;
-    width: 200px;
-    color: #f4f4f4;
-    background-color: #2e3238;
-    overflow: hidden;
-  }
-  .main {
-    position: relative;
-    overflow: hidden;
-    background-color: #eee;
-  }
-  .information {
-    float: right;
-    width: 200px;
-    color: #f4f4f4;
-    background-color: #2e3238;
-    overflow: hidden;
-  }
-  .m-menu {
-    position: absolute;
-    width: 100%;
-    bottom: 160px;
-    left: 0;
-    height: 20px;
-    background-color: white;
-  }
-  .m-text {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    height: 160px;
-  }
-  /*似乎没有用到？*/
-  .m-message {
-    height: calc(100% - 180px);
-  }
-  .m-card {
-    padding: 12px;
-    border-bottom: solid 1px #24272C;
-  }
-  @font-face {
-    font-family: 'iconfont';
-    src: url('../index/assets/font/iconfont.eot');
-    src: url('../index/assets/font/iconfont.eot?#iefix') format('embedded-opentype'),
-    url('../index/assets/font/iconfont.woff') format('woff'),
-    url('../index/assets/font/iconfont.ttf') format('truetype'),
-    url('../index/assets/font/iconfont.svg#iconfont') format('svg');
-  }
-  .iconfont0 {
-    font-family: "iconfont" !important;
-    font-size: 40px;
-    font-style: normal;
-    -webkit-font-smoothing: antialiased;
-    -webkit-text-stroke-width: 0.2px;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  .iconfont1 {
-    font-family: "iconfont" !important;
-    font-size: 16px;
-    font-style: normal;
-    -webkit-font-smoothing: antialiased;
-    -webkit-text-stroke-width: 0.2px;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  .user-avatar, .user-name {
-    vertical-align: middle;
-  }
-  .user-avatar {
-    border-radius: 2px;
-  }
-  .user-name {
-    display: inline-block;
-    margin: 0 0 0 15px;
-    font-size: 16px;
-  }
-  .m-ul {
-    height: 600px;
-  }
-  .m-list {
-    padding: 12px 15px;
-    border-bottom: 1px solid #292C33;
-    cursor: pointer;
-    transition: background-color .1s;
-  }
-  .choosed {
-    background-color: rgba(255, 255, 0, 0.1);
-    display: block;
-  }
-  .m-list a:hover {
-    background-color: rgba(255, 255, 255, 0.03);
-    display: block;
-  }
-  .m-avatar, .m-name {
-    vertical-align: middle;
-  }
-  .m-avatar {
-    border-radius: 2px;
-  }
-  .m-name {
-    display: inline-block;
-    margin: 0 0 0 15px;
-  }
-  .m-message {
-    padding: 10px 15px;
-    overflow-y: scroll;
-  }
-  .message-list {
-    margin-bottom: 15px;
-  }
-  .message-time {
-    margin: 7px 0;
-    text-align: center;
-  }
-  .time-span {
-    display: inline-block;
-    padding: 0 18px;
-    font-size: 12px;
-    color: #fff;
-    border-radius: 2px;
-    background-color: #dcdcdc;
-  }
-  .main .message-avatar {
-    float: left;
-    margin: 0 10px 0 0;
-    border-radius: 3px;
-  }
-  .main .massage-text {
-    left: 5px;
-    display: inline-block;
-    position: relative;
-    padding: 0 10px;
-    max-width: calc(80% - 40px);
-    min-height: 30px;
-    line-height: 2.5;
-    font-size: 12px;
-    text-align: left;
-    word-break: break-all;
-    background-color: #fafafa;
-    border-radius: 4px;
-  }
-  .main .massage-text:before {
-    content: " ";
-    position: absolute;
-    top: 9px;
-    right: 100%;
-    border: 6px solid transparent;
-    border-right-color: #fafafa;
-  }
-  .self {
-    text-align: right;
-  }
-  .self > img {
-    float: right;
-    margin: 0 0 0 10px;
-  }
-  .self > .massage-text {
-    display: inline-block;
-    position: relative;
-    padding: 0 10px;
-    max-width: calc(80% + 10px);
-    min-height: 30px;
-    line-height: 2.5;
-    font-size: 12px;
-    background-color: #b2e281;
-    word-break: break-all;
-    border-radius: 4px;
-  }
-  .self > .massage-text:before {
-    content: " ";
-    position: absolute;
-    right: inherit;
-    top: 9px;
-    left: 100%;
-    border: 6px solid transparent;
-    border-right-color: transparent;
-    border-left-color: #b2e281;
-  }
-  .m-text {
-    height: 160px;
-    border-top: solid 1px #ddd;
-    background: white;
-  }
-  .textarea {
-    padding: 10px;
-    height: 100%;
-    width: 86%;
-    border: none;
-    outline: none;
-    font-family: "Micrsofot Yahei";
-    resize: none;
-  }
-  .human-service {
-    height: 100%;
-    position: absolute;
-    border-radius: 14px;
-    color: white;
-  }
-  .submit-button {
-    width: 10%;
-    position: absolute;
-    right: 2px;
-    bottom: 2px;
-    border-radius: 14px;
-    color: white;
-  }
-  #chat {
-    margin: 20px auto;
-    width: 800px;
-    height: 600px;
-    overflow: hidden;
-    border-radius: 3px;
-  }
+/*开头*/
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
+  background: #176994 url(../index/assets/newbg.jpg);
+  background-size: cover;
+}
+
+ul {
+  list-style: none;
+}
+
+
+/*主要界面*/
+
+.container {
+  height: 70%;
+  width: 80%;
+  margin: 10% auto 10%;
+  vertical-align: center;
+  border-radius: 4px;
+}
+
+.sidebar,
+.main,
+.information {
+  height: 100%;
+}
+
+.sidebar {
+  float: left;
+  width: 200px;
+  color: #f4f4f4;
+  background-color: #2e3238;
+  overflow: hidden;
+}
+
+.main {
+  position: relative;
+  overflow: hidden;
+  background-color: #eee;
+}
+
+.information {
+  float: right;
+  width: 200px;
+  color: #f4f4f4;
+  background-color: #2e3238;
+  overflow: hidden;
+}
+
+.m-menu {
+  position: absolute;
+  width: 100%;
+  bottom: 160px;
+  left: 0;
+  height: 20px;
+  background-color: white;
+}
+
+.m-text {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  height: 160px;
+}
+
+
+/*似乎没有用到？*/
+
+.m-message {
+  height: calc(100% - 180px);
+}
+
+.m-card {
+  padding: 12px;
+  border-bottom: solid 1px #24272C;
+}
+
+@font-face {
+  font-family: 'iconfont';
+  src: url('../index/assets/font/iconfont.eot');
+  src: url('../index/assets/font/iconfont.eot?#iefix') format('embedded-opentype'),
+  url('../index/assets/font/iconfont.woff') format('woff'),
+  url('../index/assets/font/iconfont.ttf') format('truetype'),
+  url('../index/assets/font/iconfont.svg#iconfont') format('svg');
+}
+
+.iconfont0 {
+  font-family: "iconfont" !important;
+  font-size: 40px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.iconfont1 {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.user-avatar,
+.user-name {
+  vertical-align: middle;
+}
+
+.user-avatar {
+  border-radius: 2px;
+}
+
+.user-name {
+  display: inline-block;
+  margin: 0 0 0 15px;
+  font-size: 16px;
+}
+
+.m-ul {
+  height: 600px;
+}
+
+.m-list {
+  padding: 12px 15px;
+  border-bottom: 1px solid #292C33;
+  cursor: pointer;
+  transition: background-color .1s;
+}
+
+.choosed {
+  background-color: rgba(255, 255, 0, 0.1);
+  display: block;
+}
+
+.m-list a:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  display: block;
+}
+
+.m-avatar,
+.m-name {
+  vertical-align: middle;
+}
+
+.m-avatar {
+  border-radius: 2px;
+}
+
+.m-name {
+  display: inline-block;
+  margin: 0 0 0 15px;
+}
+
+.m-message {
+  padding: 10px 15px;
+  overflow-y: scroll;
+}
+
+.message-list {
+  margin-bottom: 15px;
+}
+
+.message-time {
+  margin: 7px 0;
+  text-align: center;
+}
+
+.time-span {
+  display: inline-block;
+  padding: 0 18px;
+  font-size: 12px;
+  color: #fff;
+  border-radius: 2px;
+  background-color: #dcdcdc;
+}
+
+.main .message-avatar {
+  float: left;
+  margin: 0 10px 0 0;
+  border-radius: 3px;
+}
+
+.main .massage-text {
+  left: 5px;
+  display: inline-block;
+  position: relative;
+  padding: 0 10px;
+  max-width: calc(80% - 40px);
+  min-height: 30px;
+  line-height: 2.5;
+  font-size: 12px;
+  text-align: left;
+  word-break: break-all;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+.main .massage-text:before {
+  content: " ";
+  position: absolute;
+  top: 9px;
+  right: 100%;
+  border: 6px solid transparent;
+  border-right-color: #fafafa;
+}
+
+.self {
+  text-align: right;
+}
+
+.self>img {
+  float: right;
+  margin: 0 0 0 10px;
+}
+
+.self>.massage-text {
+  display: inline-block;
+  position: relative;
+  padding: 0 10px;
+  max-width: calc(80% + 10px);
+  min-height: 30px;
+  line-height: 2.5;
+  font-size: 12px;
+  background-color: #b2e281;
+  word-break: break-all;
+  border-radius: 4px;
+}
+
+.self>.massage-text:before {
+  content: " ";
+  position: absolute;
+  right: inherit;
+  top: 9px;
+  left: 100%;
+  border: 6px solid transparent;
+  border-right-color: transparent;
+  border-left-color: #b2e281;
+}
+
+.m-text {
+  height: 160px;
+  border-top: solid 1px #ddd;
+  background: white;
+}
+
+.textarea {
+  padding: 10px;
+  height: 100%;
+  width: 86%;
+  border: none;
+  outline: none;
+  font-family: "Micrsofot Yahei";
+  resize: none;
+}
+
+.human-service {
+  height: 100%;
+  position: absolute;
+  border-radius: 14px;
+  color: white;
+}
+
+.submit-button {
+  width: 10%;
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  border-radius: 14px;
+  color: white;
+}
+
+#chat {
+  margin: 20px auto;
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  border-radius: 3px;
+}
 </style>
