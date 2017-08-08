@@ -21,7 +21,7 @@
             <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
           </div>
           <div id="butt">
-            <forget-password ref="forgetPassword"></forget-password>
+            <forget-password ref="forget_password"></forget-password>
           </div>
         </div>
       </div>
@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import forget_password from '../../components/forget_password'
+import ForgetPassword from '../../components/forget_password'
 export default {
   name: 'app',
   components: {
-    forget_password
+    ForgetPassword
   },
   data () {
     return {
