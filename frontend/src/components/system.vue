@@ -9,7 +9,7 @@
       </div>
       <h3>通讯密钥:</h3>
       <p class='key-number'>{{ communicationKey }}</p>
-      <p class='remind'>字符串密钥为平台的API通讯密钥，请妥善保管，如果发现通讯密钥泄露请重设。</p><i-button type='ghost'>重新生成密钥</i-button>
+      <p class='remind'>字符串密钥为平台的API通讯密钥，请妥善保管，如果发现通讯密钥泄露请重设。</p><i-button type='ghost' @click='reset_key'>重新生成密钥</i-button>
     </div>
    </div>
    <div class='info'>
@@ -78,6 +78,7 @@ export default {
       infomationTypes: [],
       examples: [],
       apiShowCommunicationKey: '../api/admin_show_communication_key/',
+      apiResetCommunicationKey: '../api/admin_reset_communication_key/',
       adminEmail: {},
       communicationKey: ''
     }
@@ -95,6 +96,25 @@ export default {
     delete_info (index) {
       this.infomationTypes.splice(index, 1)
       this.examples.splice(index, 1)
+    },
+    reset_key () {
+      var vm = this
+      vm.$http.post(vm.apiResetCommunicationKey, this.adminEmail)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, invalid data in serializer.') {
+            window.location.href = '../en_login'
+          } else {
+            this.communicationKey = response.data.communication_key
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
     }
   },
   created () {
