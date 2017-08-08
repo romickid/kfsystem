@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="sidebar">
+    <!-- <div class="sidebar">
       <div class="m-card">
         <header>
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
@@ -17,7 +17,7 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
     <div class="main">
       <div class="m-message" v-scroll-bottom="session.messages">
         <ul>
@@ -34,14 +34,11 @@
           </li>
         </ul>
       </div>
-      <div class="m-menu">
-        <button class="human-service">人工客服</button>
-      </div>
       <div class="m-text">
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
-        <button class="submit-button" @click="buttoninputing">发送</button>
+        <Button class="submit-button" @click="buttoninputing">发送</Button>
       </div>
     </div>
   </div>
@@ -90,7 +87,7 @@ if (!localStorage.getItem(key)) {
 }
 export default {
   el: '#chat',
-  data() {
+  data () {
     let dataserver = JSON.parse(localStorage.getItem(key))
     return {
       // 登录用户
@@ -106,7 +103,7 @@ export default {
     }
   },
   computed: {
-    session() {
+    session () {
       return this.sessionList[this.sessionIndex]
     }
   },
@@ -114,7 +111,7 @@ export default {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
       deep: true,
-      handler() {
+      handler () {
         localStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
@@ -124,7 +121,7 @@ export default {
     }
   },
   methods: {
-    inputing(e) {
+    inputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
         this.session.messages.push({
           text: this.text,
@@ -135,7 +132,7 @@ export default {
         this.text = ''
       }
     },
-    buttoninputing(e) {
+    buttoninputing (e) {
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -148,23 +145,7 @@ export default {
     }
   },
   filters: {
-    search(list) {
-      let arr = []
-      for (var i = 0; i < list.length; i++) {
-        if (list[i].name.indexOf(this.searchname) > -1) {
-          arr.push(list[i])
-        }
-      }
-      return arr
-    },
-    // 筛选出用户头像
-    // avatar (item,selfUser, sessionUser) {
-    // // 如果是自己发的消息显示登录用户的头像
-    //   let user = item.self ? selfUser : sessionUser
-    //   return user && user.image
-    // },
-    // 将日期过滤为 hour:minutes
-    time(date) {
+    time (date) {
       if (typeof date === 'string') {
         date = new Date(date)
       }
@@ -205,9 +186,7 @@ ul {
   list-style: none;
 }
 
-
 /*主要界面*/
-
 .container {
   height: 70%;
   width: 80%;
@@ -216,32 +195,11 @@ ul {
   border-radius: 4px;
 }
 
-.sidebar,
-.main,
-.information {
-  height: 100%;
-}
-
-.sidebar {
-  float: left;
-  width: 200px;
-  color: #f4f4f4;
-  background-color: #2e3238;
-  overflow: hidden;
-}
-
 .main {
+  height: 100%;
   position: relative;
   overflow: hidden;
   background-color: #eee;
-}
-
-.information {
-  float: right;
-  width: 200px;
-  color: #f4f4f4;
-  background-color: #2e3238;
-  overflow: hidden;
 }
 
 .m-menu {
@@ -261,93 +219,9 @@ ul {
   height: 160px;
 }
 
-
 /*似乎没有用到？*/
-
 .m-message {
   height: calc(100% - 180px);
-}
-
-.m-card {
-  padding: 12px;
-  border-bottom: solid 1px #24272C;
-}
-
-@font-face {
-  font-family: 'iconfont';
-  src: url('../index/assets/font/iconfont.eot');
-  src: url('../index/assets/font/iconfont.eot?#iefix') format('embedded-opentype'),
-  url('../index/assets/font/iconfont.woff') format('woff'),
-  url('../index/assets/font/iconfont.ttf') format('truetype'),
-  url('../index/assets/font/iconfont.svg#iconfont') format('svg');
-}
-
-.iconfont0 {
-  font-family: "iconfont" !important;
-  font-size: 40px;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-stroke-width: 0.2px;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.iconfont1 {
-  font-family: "iconfont" !important;
-  font-size: 16px;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-stroke-width: 0.2px;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.user-avatar,
-.user-name {
-  vertical-align: middle;
-}
-
-.user-avatar {
-  border-radius: 2px;
-}
-
-.user-name {
-  display: inline-block;
-  margin: 0 0 0 15px;
-  font-size: 16px;
-}
-
-.m-ul {
-  height: 600px;
-}
-
-.m-list {
-  padding: 12px 15px;
-  border-bottom: 1px solid #292C33;
-  cursor: pointer;
-  transition: background-color .1s;
-}
-
-.choosed {
-  background-color: rgba(255, 255, 0, 0.1);
-  display: block;
-}
-
-.m-list a:hover {
-  background-color: rgba(255, 255, 255, 0.03);
-  display: block;
-}
-
-.m-avatar,
-.m-name {
-  vertical-align: middle;
-}
-
-.m-avatar {
-  border-radius: 2px;
-}
-
-.m-name {
-  display: inline-block;
-  margin: 0 0 0 15px;
 }
 
 .m-message {
@@ -452,20 +326,11 @@ ul {
   resize: none;
 }
 
-.human-service {
-  height: 100%;
-  position: absolute;
-  border-radius: 14px;
-  color: white;
-}
-
 .submit-button {
   width: 10%;
   position: absolute;
   right: 2px;
   bottom: 2px;
-  border-radius: 14px;
-  color: white;
 }
 
 #chat {
