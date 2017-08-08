@@ -15,7 +15,7 @@
           </div>
           <div class="div">
             <label class="label">登录密码：</label>
-            <input type="text" v-model="password" name="password" class="text" id="password">
+            <input type="password" v-model="password" name="password" class="text" id="password">
           </div>
           <div class="div">
             <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
@@ -30,17 +30,19 @@
 </template>
 
 <script>
-import ForgetPassword from '../../components/ForgetPassword'
+import forget_password from '../../components/forget_password'
 export default {
   name: 'app',
   components: {
-    ForgetPassword
+    forget_password
   },
   data () {
     return {
       email: '',
       password: '',
-      emailIllegal: false
+      emailIllegal: false,
+      api_login: '../api/admin_login/',
+      item: {}
     }
   },
   methods: {
@@ -59,8 +61,30 @@ export default {
     login () {
       if (this.email === '' || this.password === '') {
         this.$Message.info('您的信息不完善！')
+      } else if (this.emailIllegal === true) {
+        this.$Message.info('您的输入的邮箱格式不正确！')
       } else {
         // 与后端链接进行信息传输和验证
+        let vm = this
+        this.item = {
+          'email': this.email,
+          'password': this.password
+        }
+        vm.$http.post(vm.api_login, this.item)
+          .then((response) => {
+            if (response.data === 'ERROR, wrong email or password.') {
+              this.$Message.info('错误的账号或密码！')
+            } else if (response.data === 'ERROR, wrong information.') {
+              this.$Message.info('未知错误！')
+            } else if (response.data === 'ERROR, incomplete information.') {
+              this.$Message.info('信息不完整！')
+            } else {
+              this.$Message.info('登陆成功！')
+              // window.location.href = '../en_login'
+            }
+          }, (response) => {
+            this.$Message.info('未知错误2！')
+          })
       }
     }
   }

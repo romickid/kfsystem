@@ -52,15 +52,15 @@ def admin_login(request):
             json_receive['email'] = json_receive['email']
             json_receive['password'] = json_receive['password']
         except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=400)
+            return HttpResponse('ERROR, incomplete information.', status=200)
         if len(json_receive) != 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
+            return HttpResponse('ERROR, wrong information.', status=200)
 
         sha512_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
-            return HttpResponse("Valid.", status=401)  # 401 just for test
+            return HttpResponse("Valid.", status=201)  # 401 just for test
         else:
-            return HttpResponse("ERROR, wrong email or password.", status=400)
+            return HttpResponse("ERROR, wrong email or password.", status=200)
 
 
 @csrf_exempt
