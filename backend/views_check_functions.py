@@ -56,6 +56,17 @@ def admin_find_password_check_vid_check(json_receive):
     return 1, 'No ERROR.'
 
 
+def admin_find_password_save_data_check(json_receive):
+    test_result = json_testing(json_receive, ['email', 'newpassword'], 2)
+    if test_result == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_result == 2:
+        return 0, 'ERROR, wrong information.'
+    if admin_is_existent_by_email(json_receive['email']) == False:
+        return 0, 'ERROR, wrong email.'
+    return 1, 'No ERROR.'
+
+
 def admin_show_communication_key_check(json_receive):
     test_result = json_testing(json_receive, ['email'], 1)
     if test_result == 1:
@@ -139,6 +150,17 @@ def customerservice_find_password_check_vid_check(json_receive):
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_vid(json_receive['vid']) == False:
         return 0, 'ERROR, wrong vid.'
+    return 1, 'No ERROR.'
+
+
+def customerservice_find_password_save_data_check(json_receive):
+    test_result = json_testing(json_receive, ['email', 'newpassword'], 2)
+    if test_result == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_result == 2:
+        return 0, 'ERROR, wrong information.'
+    if cs_is_existent_by_email(json_receive['email']) == False:
+        return 0, 'ERROR, wrong email.'
     return 1, 'No ERROR.'
 
 
