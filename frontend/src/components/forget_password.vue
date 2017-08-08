@@ -5,9 +5,6 @@
       <p>登录邮箱：</p>
       <br>
       <i-input v-model="email" id="input" @on-blur="checkEmail" @on-focus="emailInput"></i-input>
-      <i-label v-if="isEmpty">
-        <p class="p">请输入邮箱！</p>
-      </i-label>
       <i-label v-if="emailIllegal">
         <p class="p">请输入正确的邮箱！</p>
       </i-label>
@@ -21,13 +18,12 @@ export default {
     return {
       find: false,
       email: '',
-      isEmpty: false,
       emailIllegal: false
     }
   },
   methods: {
     checkEmail () {
-      let reg = /^([a-zA-Z0-9]+[_|]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+      let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.email)
       if (legal === false && this.email !== '') {
         this.emailIllegal = true
@@ -40,7 +36,6 @@ export default {
     },
     ok () {
       if (this.email === '') {
-        this.isEmpty = false
         this.emailIllegal = false
       } else {
         if (this.emailIllegal === false) {
@@ -49,13 +44,11 @@ export default {
           this.$Message.info('您的邮箱不正确，请重新填写申请！')
         }
         this.email = ''
-        this.isEmpty = false
         this.emailIllegal = false
       }
     },
     cancel () {
       this.email = ''
-      this.isEmpty = false
       this.emailIllegal = false
     }
   }
