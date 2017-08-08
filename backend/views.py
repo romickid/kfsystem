@@ -104,6 +104,26 @@ def admin_find_password_check_vid(request):
 
 
 @csrf_exempt
+def admin_find_password_save_data(request):
+    if request.method == 'POST':
+    # Admin: email newpassword
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = admin_find_password_save_data_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
+
+        instance = Admin.objects.get(email=json_receive['email'])
+        sha512_new_final_password = admin_generate_password(json_receive['email'], json_receive['newpassword'])
+        json_receive['password'] = sha512_new_final_password
+        json_receive['vid'] = admin_generate_vid(json_receive['email'])
+        serializer = AdminSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=401) # 401 just for test
+        return HttpResponse("ERROR, invalid data in serializer.", status=400)
+
+
+@csrf_exempt
 def admin_show_communication_key(request):
     if request.method == 'POST':
         # Admin: email
@@ -251,6 +271,26 @@ def customerservice_find_password_check_vid(request):
         instance = CustomerService.objects.get(vid=json_receive['vid'])
         json_send = { 'email': instance.email }
         return JsonResponse(json_send, status=401)
+
+
+@csrf_exempt
+def customerservice_find_password_save_data(request):
+    if request.method == 'POST':
+        # CustomerService: email newpassword
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = cs_find_password_save_data_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
+
+        instance = CustomerService.objects.get(email=json_receive['email'])
+        sha512_new_final_password = cs_generate_password(json_receive['email'], json_receive['newpassword'])
+        json_receive['password'] = sha512_new_final_password
+        json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        serializer = CustomerServiceSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=401) # 401 just for test
+        return HttpResponse("ERROR, invalid data in serializer.", status=400)
 
 
 @csrf_exempt
