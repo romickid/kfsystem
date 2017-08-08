@@ -145,16 +145,16 @@ def admin_show_communication_key(request):
         try:
             json_receive['email'] = json_receive['email']
         except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=400)
+            return HttpResponse('ERROR, incomplete information.', status=200)
         if len(json_receive) != 1:
-            return HttpResponse('ERROR, wrong information.', status=400)
+            return HttpResponse('ERROR, wrong information.', status=200)
 
         if admin_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=400)
+            return HttpResponse('ERROR, wrong email.', status=200)
         else:
             communication_key = admin_get_communication_key(json_receive['email'])
             json_send = {'communication_key': communication_key}
-            return JsonResponse(json_send, status=401) # 401 just for test
+            return JsonResponse(json_send, status=200) # 401 just for test
 
 
 @csrf_exempt
@@ -165,17 +165,18 @@ def admin_reset_communication_key(request):
         try:
             json_receive['email'] = json_receive['email']
         except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=400)
+            return HttpResponse('ERROR, incomplete information.', status=200)
         if len(json_receive) != 1:
-            return HttpResponse('ERROR, wrong information.', status=400)
-
+            return HttpResponse('ERROR, wrong information.', status=200)
         if admin_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=400)
-        else:
-            instance = Admin.objects.get(email=json_receive['email'])
-            json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
-            serializer = AdminSerializer(instance, data=json_receive)
-            return JsonResponse(serializer.data, status=401) # 401 just for test
+            return HttpResponse('ERROR, wrong email.', status=200)
+        instance = Admin.objects.get(email=json_receive['email'])
+        json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
+        serializer = AdminSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=200) # 401 just for test
+        return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
 @csrf_exempt
@@ -268,7 +269,6 @@ def customerservice_reset_password(request):
         sha512_old_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
         if cs_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
             return HttpResponse("ERROR, wrong email or password.", status=400)
-        
         sha512_new_final_password = cs_generate_password(json_receive['email'], json_receive['newpassword'])
         instance = CustomerService.objects.get(email=json_receive['email'], password=sha512_old_final_password)
         json_receive['password'] = sha512_new_final_password
@@ -378,9 +378,9 @@ def chattinglog_delete_record(request):
 def chattinglog_delete_record_ontime(request):
     if request.method == 'DELETE':
         now = datetime.now()
-        end_date = datetime(now.year, now.month, now.day, 0, 0) 
+        end_date = datetime(now.year, now.month, now.day, 0, 0)
         start_date = end_date - timedelta(days=100)
-        chattinglogs = ChattingLog.objects.filter(time__range=[start_date, end_date])            
+        chattinglogs = ChattingLog.objects.filter(time__range=[start_date, end_date])
         chattinglogs.delete()
         return HttpResponse(status=204)
 
@@ -395,5 +395,5 @@ def chattinglog_status_change(request):
             serializer = CustomerServiceSerializer(customerservice, data={'is_online': True}, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, safe=False)                      
+            return JsonResponse(serializer.data, safe=False)
         return JsonResponse(serializer1.errors, status=400)
