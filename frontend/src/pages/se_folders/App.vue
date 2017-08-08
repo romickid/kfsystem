@@ -46,7 +46,7 @@ export default {
   name: 'app',
   data () {
     return {
-      email: '123@qq.com',     //接收传进来的email
+      email: '123@qq.com', // 接收传进来的email
       password: '',
       passwordConfirm: '',
       nickname: '',
@@ -87,7 +87,7 @@ export default {
         this.item = {
           'email': this.email,
           'password': this.password,
-          'nickname': this.nickname,
+          'nickname': this.nickname
         }
         vm.$http.post(vm.set_profile, this.item)
           .then((response) => {
