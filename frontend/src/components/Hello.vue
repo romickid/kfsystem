@@ -114,7 +114,7 @@ export default {
           vm.$set(this, 'item', {})
         })
     },
-    
+
     test5: function () {
       var vm = this
       this.item = { 'email': 'cs1@a.com', 'admin_email': 'test1@a.com' }
@@ -122,7 +122,7 @@ export default {
         .then((response) => {
           vm.$set(this, 'item', {})
         })
-    },
+    }
   }
 }
 </script>
