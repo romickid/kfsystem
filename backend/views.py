@@ -181,18 +181,23 @@ def admin_reset_communication_key(request):
 @csrf_exempt
 def customerservice_create(request):
     if request.method == 'POST':
-        # CustomerService: email
+        # CustomerService: email, admin_email
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
+            json_receive['admin_email'] = json_receive['admin_email']
         except KeyError:
             return HttpResponse('ERROR, incomplete information.', status=400)
         if cs_is_existent_by_email(json_receive['email']) == True:
             return HttpResponse('ERROR, email has been registered.', status=400)
-        if len(json_receive) != 1:
+        if admin_is_existent_by_email(json_receive['admin_email']) == False:
+            return HttpResponse('ERROR, admin_email is wrong.', status=400)
+        if len(json_receive) != 2:
             return HttpResponse('ERROR, wrong information.', status=400)
 
         json_receive['nickname'] = json_receive['email']
+        instance_admin = Admin.objects.get(email=json_receive['admin_email'])
+        json_receive['enterprise'] = instance_admin.id
         serializer = CustomerServiceSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
