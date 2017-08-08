@@ -146,7 +146,6 @@ def admin_show_communication_key(request):
             return JsonResponse(json_send, status=200) # 401 just for test
 
 
-
 @csrf_exempt
 def admin_reset_communication_key(request):
     if request.method == 'POST':
@@ -167,7 +166,6 @@ def admin_reset_communication_key(request):
             serializer.save()
             return JsonResponse(serializer.data, status=200) # 401 just for test
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
-
 
 
 @csrf_exempt
