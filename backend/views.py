@@ -131,17 +131,20 @@ def admin_show_communication_key(request):
     if request.method == 'POST':
         # Admin: email
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email'], 1)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if admin_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=400)
+        try:
+            json_receive['email'] = json_receive['email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=200)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=200)
 
-        communication_key = admin_get_communication_key(json_receive['email'])
-        json_send = {'communication_key': communication_key}
-        return JsonResponse(json_send, status=401) # 401 just for test
+        if admin_is_existent_by_email(json_receive['email']) == False:
+            return HttpResponse('ERROR, wrong email.', status=200)
+        else:
+            communication_key = admin_get_communication_key(json_receive['email'])
+            json_send = {'communication_key': communication_key}
+            return JsonResponse(json_send, status=200) # 401 just for test
+
 
 
 @csrf_exempt
@@ -149,19 +152,22 @@ def admin_reset_communication_key(request):
     if request.method == 'POST':
         # Admin: email
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email'], 1)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-
+        try:
+            json_receive['email'] = json_receive['email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=200)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=200)
         if admin_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=400)
-        else:
-            instance = Admin.objects.get(email=json_receive['email'])
-            json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
-            serializer = AdminSerializer(instance, data=json_receive)
-            return JsonResponse(serializer.data, status=401) # 401 just for test
+            return HttpResponse('ERROR, wrong email.', status=200)
+        instance = Admin.objects.get(email=json_receive['email'])
+        json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
+        serializer = AdminSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=200) # 401 just for test
+        return HttpResponse('ERROR, invalid data in serializer.', status=200)
+
 
 
 @csrf_exempt
