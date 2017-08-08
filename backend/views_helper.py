@@ -21,7 +21,7 @@ def admin_is_existent_by_nickname(nickname):
 
 def admin_is_valid_by_email_password(email, sha512_final_password):
     try:
-        instance = Admin.objects.get(email=email, password=password)
+        instance = Admin.objects.get(email=email, password=sha512_final_password)
         return True
     except Admin.DoesNotExist:
         return False
@@ -99,7 +99,7 @@ def cs_is_existent_by_email(email):
 
 def cs_is_valid_by_email_password(email, sha512_final_password):
     try:
-        instance = CustomerService.objects.get(email=email, password=password)
+        instance = CustomerService.objects.get(email=email, password=sha512_final_password)
         return True
     except CustomerService.DoesNotExist:
         return False
