@@ -181,7 +181,7 @@ def admin_reset_communication_key(request):
 @csrf_exempt
 def customerservice_create(request):
     if request.method == 'POST':
-        # CustomerService: email, admin_email
+        # CustomerService: email  Admin: admin_email
         json_receive = JSONParser().parse(request)
         try:
             json_receive['email'] = json_receive['email']
@@ -323,6 +323,28 @@ def customerservice_find_password_check_vid(request):
         instance = CustomerService.objects.get(vid=json_receive['vid'])
         json_send = { 'email': instance.email }
         return JsonResponse(json_send, status=401)
+
+
+@csrf_exempt
+def customerservice_show_status(request):
+    if request.method == 'POST':
+        # Admin: admin_email
+        json_receive = JSONParser().parse(request)
+        try:
+            json_receive['admin_email'] = json_receive['admin_email']
+        except KeyError:
+            return HttpResponse('ERROR, incomplete information.', status=400)
+        if len(json_receive) != 1:
+            return HttpResponse('ERROR, wrong information.', status=400)
+        if admin_is_existent_by_email(json_receive['admin_email']) == False:
+            return HttpResponse('ERROR, wrong admin_email.', status=400)
+
+        instance_admin = Admin.objects.get(email=json_receive['admin_email'])
+        instance_customerservice = CustomerService.objects.filter(enterprise=instance_admin.id)
+        json_send = list()
+        for i in instance_customerservice:
+            json_send.append({'email': i.email, 'is_register': i.is_register, 'is_online': i.is_online, 'connection_num': i.connection_num, 'nickname': i.nickname})
+        return JsonResponse(json_send, safe=False, status=401)
 
 
 @csrf_exempt

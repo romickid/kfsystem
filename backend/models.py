@@ -23,6 +23,7 @@ class CustomerService(models.Model):
     enterprise = models.ForeignKey('Admin', on_delete=models.CASCADE)
     nickname = models.CharField(max_length=50, default='empty', unique=True)
     password = models.CharField(max_length=128, default='empty')
+    is_register = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
     connection_num = models.IntegerField(default=0)
     vid = models.CharField(max_length=32, default='empty', unique=True)
