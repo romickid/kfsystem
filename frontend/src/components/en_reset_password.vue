@@ -33,7 +33,9 @@ export default {
       oldPassword: '',
       newPassword: '',
       passwordNonstandard: false,
-      emailIllegal: false
+      emailIllegal: false,
+      api_reset_password: '../api/admin_reset_password/',
+      item: {}
     }
   },
   methods: {
@@ -67,7 +69,29 @@ export default {
         this.$Message.info('您的输入的密码格式不正确！')
       } else {
         // 与后端链接进行信息传输和验证
-        this.$Message.info('与后端链接进行信息传输和验证！')
+        let vm = this
+        this.item = {
+          'email': this.email,
+          'password': this.oldPassword,
+          'newpassword': this.newPassword
+        }
+        vm.$http.post(vm.api_reset_password, this.item)
+          .then((response) => {
+            if (response.data === 'ERROR, wrong email or password.') {
+              this.$Message.info('错误的账号或密码！')
+            } else if (response.data === 'ERROR, invalid data in serializer.') {
+              this.$Message.info('未知错误！')
+            } else if (response.data === 'ERROR, incomplete information.') {
+              this.$Message.info('信息不完善！')
+            } else if (response.data === 'ERROR, wrong information.') {
+              this.$Message.info('信息错误！')
+            } else {
+              this.$Message.info('密码修改成功！')
+              // window.location.href = '../en_login'
+            }
+          }, (response) => {
+            this.$Message.info('未知错误2！')
+          })
       }
       this.email = ''
       this.oldPassword = ''
