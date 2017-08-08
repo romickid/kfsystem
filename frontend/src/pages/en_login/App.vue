@@ -21,7 +21,7 @@
             <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
           </div>
           <div id="butt">
-            <forget-password ref="forget_password"></forget-password>
+            <en-forget-password ref="enForgetPassword"></en-forget-password>
             <en-reset-password ref="enResetPassword"></en-reset-password>
           </div>
         </div>
@@ -31,13 +31,13 @@
 </template>
 
 <script>
-import EnResetPassword from '../../components/en_reset_password'
-import ForgetPassword from '../../components/forget_password'
+import enResetPassword from '../../components/en_reset_password'
+import enForgetPassword from '../../components/en_forget_password'
 export default {
   name: 'app',
   components: {
-    EnResetPassword,
-    ForgetPassword
+    enResetPassword,
+    enForgetPassword
   },
   data () {
     return {
