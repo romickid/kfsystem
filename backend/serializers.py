@@ -8,11 +8,16 @@ class AdminSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'nickname', 'password', 'web_url', 'widget_url', 'mobile_url', 'communication_key', 'vid')
 
 
-class CustomerServiceSerializer(serializers.ModelSerializer):
-    enterprise = serializers.IntegerField(source='enterprise.id', read_only=True)
+class CustomerServiceCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
         fields = ('id', 'email', 'enterprise', 'nickname', 'password', 'is_register', 'is_online', 'connection_num', 'vid')
+
+
+class CustomerServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerService
+        fields = ('id', 'email', 'nickname', 'password', 'is_register', 'is_online', 'connection_num', 'vid')
 
 
 class ChattingLogSerializer(serializers.ModelSerializer):
