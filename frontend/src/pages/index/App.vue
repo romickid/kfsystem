@@ -12,8 +12,8 @@
         <a href="./en_password_retrieval">跳转至企业找回密码页面</a>
         <a href="./se_password_retrieval">跳转至客服找回密码页面</a>
         <br>
-        <a href="../kfWorking/kfWorking.html">客服工作页面工作界面！</a>
-        <a href="../customerNewLabel/customerNewLabel.html">用户新标签页面</a>
+        <a href="../kf_working/kf_working.html">客服工作页面工作界面！</a>
+        <a href="../customer_newlabel/customer_newlabel.html">用户新标签页面</a>
       </h2>
     </div>
     <router-view></router-view>
