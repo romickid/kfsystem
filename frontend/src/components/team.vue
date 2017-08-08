@@ -18,7 +18,7 @@
         <table cellspacing='0'>
           <tr>
             <th>帐号</th>
-            <th>姓名</th>
+            <th>昵称</th>
             <th>操作</th>
           </tr>
           <tr v-for='(kf, id) in kfstaff'>
@@ -43,7 +43,10 @@ export default {
     return {
       addModal: false,
       kf: '',
-      kfstaff: []
+      kfstaff: [],
+      apiCustomerserviceCreate: '../api/customerservice_create/',
+      adminEmail: '1234444@123.com',
+      customerService: {}
     }
   },
   methods: {
@@ -51,8 +54,35 @@ export default {
       if (this.kf === '') {
         return
       }
-      this.kfstaff.push(this.kf)
-      this.kf = ''
+      var vm = this
+      this.customerService = {
+        'email': this.kf,
+        'admin_email': this.adminEmail
+      }
+      vm.$http.post(vm.apiCustomerserviceCreate, this.customerService)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            this.kf = ''
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, email has been registered.') {
+            this.$Message.info('该客服邮箱已被注册')
+            this.kf = ''
+          } else if (response.data === 'ERROR, admin_email is wrong.') {
+            this.kf = ''
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong information.') {
+            this.kf = ''
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, invalid data in serializer.') {
+            this.kf = ''
+            window.location.href = '../en_login'
+          } else {
+            this.kf = ''
+            this.$Message.info('添加成功')
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
     },
     cancel () {
       this.kf = ''
