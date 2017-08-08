@@ -68,7 +68,7 @@ def admin_generate_vid(email):
     return admin_generate_communication_key(email)
 
 
-def admin_send_email(email, content):
+def admin_send_email_find_password(email, content):
     send_mail('客服系统找回密码', content, 'big5_nankai@163.com', [email], fail_silently=True)
 
 
@@ -138,5 +138,9 @@ def cs_generate_vid(email):
     return admin_generate_communication_key(email)
 
 
-def cs_send_email(email, content):
+def cs_send_email_create_account(email, content):
+    send_mail('客服系统创建账户', content, 'big5_nankai@163.com', [email], fail_silently=True)
+
+
+def cs_send_email_find_password(email, content):
     send_mail('客服系统找回密码', content, 'big5_nankai@163.com', [email], fail_silently=True)
