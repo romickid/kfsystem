@@ -20,6 +20,7 @@ class Admin(models.Model):
 
 class CustomerService(models.Model):
     email = models.EmailField(default='empty@empty.com', unique=True)
+    enterprise = models.ForeignKey('Admin', on_delete=models.CASCADE)
     nickname = models.CharField(max_length=50, default='empty', unique=True)
     password = models.CharField(max_length=128, default='empty')
     is_online = models.BooleanField(default=False)
@@ -29,7 +30,7 @@ class CustomerService(models.Model):
 
 class ChattingLog(models.Model):
     client_id = models.CharField(max_length=100, default='empty')
-    service_id = models.ForeignKey('CustomerService')
+    service_id = models.ForeignKey('CustomerService', on_delete=models.CASCADE)
     content = models.CharField(max_length=500, default='empty')
     is_client = models.BooleanField(default=None)
     time = models.DateTimeField(auto_now_add=True)

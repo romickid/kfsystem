@@ -62,6 +62,8 @@ export default {
       api_admin_find_password_email_request: './api/admin_find_password_email_request/',
       api_admin_find_password_check_vid: './api/admin_find_password_check_vid/',
 
+      api_customerservice_create: './api/customerservice_create/',
+
       api_chattinglog_send_message: './api/chattinglog_send_message/',
       api_chattinglog_delete_record: './api/chattinglog_delete_record/',
       api_chattinglog_get_data: './api/chattinglog_get_data/',
@@ -79,8 +81,8 @@ export default {
   methods: {
     test1: function () {
       var vm = this
-      this.item = { 'vid': '9a6770931ca5a7fd3c297580d4892dc7' }
-      vm.$http.post(vm.api_admin_find_password_check_vid, this.item)
+      this.item = { 'email': 'cs1@a.com', 'admin_email': 'test1@a.com' }
+      vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -88,8 +90,8 @@ export default {
 
     test2: function () {
       var vm = this
-      this.item = { 'email': 'test2@a.com' }
-      vm.$http.post(vm.api_admin_find_password_check_vid, this.item)
+      this.item = { 'email': 'cs2@a.com' }
+      vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -97,8 +99,8 @@ export default {
 
     test3: function () {
       var vm = this
-      this.item = { 'email': 'test3@a.com', 'password': 'pass3', 'serials': 's3' }
-      vm.$http.post(vm.api_admin_find_password_check_vid, this.item)
+      this.item = { 'email': 'cs3@a.com', 'admin_email': 'test1@a.com', 'nickname': 'cs3' }
+      vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -106,153 +108,22 @@ export default {
 
     test4: function () {
       var vm = this
-      this.item = { 'email': 'test4@a.com', 'nickname': 'nick4', 'password': 'pass4', 'serials': 's4', 'hello': 'hello' }
-      vm.$http.post(vm.api_admin_create, this.item)
+      this.item = { 'email': 'cs4@a.com', 'admin_email': 'test3@a.com' }
+      vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
-
+    
     test5: function () {
       var vm = this
-      this.item = { 'email': 'test5@a.com', 'nickname': 'nick5', 'password': 'pass5', 'serials': 's1' }
-      vm.$http.post(vm.api_admin_create, this.item)
+      this.item = { 'email': 'cs1@a.com', 'admin_email': 'test1@a.com' }
+      vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
-
-    test6: function () {
-      var vm = this
-      this.item = { 'email': 'test2@a.com' }
-      vm.$http.post(vm.api_create, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test7: function () {
-      var vm = this
-      this.item = { 'serials': 'abc123' }
-      vm.$http.post(vm.api_mark_used, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test8: function () {
-      var vm = this
-      vm.$http.delete(vm.api_chattinglog_delete_record_ontime)
-        .then((response) => {
-          console.log('Complete delete on time!')
-        })
-    },
-
-    test9: function () {
-      var vm = this
-      vm.$http.get(vm.api_chattinglog_status_change)
-        .then((response) => {
-          vm.$set(this, 'gridData', response.data)
-          console.log('Change status!')
-        })
-    },
-
-    getData: function () {
-      var vm = this
-      vm.$http.get(vm.api_chattinglog_get_data)
-        .then((response) => {
-          vm.$set(this, 'gridData', response.data)
-        })
-    }
-
   }
-
-  // Test admin_create
-  /*
-    test1: function () {
-      var vm = this
-      this.item = { 'email': 'test1@a.com', 'nickname': 'nick1', 'password': 'pass1', 'serials': 's1' }
-      vm.$http.post(vm.api_admin_create, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test2: function () {
-      var vm = this
-      this.item = { 'email': 'test2@a.com', 'nickname': 'nick2', 'password': 'pass2', 'serials': 's2' }
-      vm.$http.post(vm.api_admin_create, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test3: function () {
-      var vm = this
-      this.item = { 'email': 'test3@a.com', 'password': 'pass3', 'serials': 's3' }
-      vm.$http.post(vm.api_admin_create, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test4: function () {
-      var vm = this
-      this.item = { 'email': 'test4@a.com', 'nickname': 'nick4', 'password': 'pass4', 'serials': 's4', 'hello': 'hello' }
-      vm.$http.post(vm.api_admin_create, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test5: function () {
-      var vm = this
-      this.item = { 'email': 'test5@a.com', 'nickname': 'nick5', 'password': 'pass5', 'serials': 's1' }
-      vm.$http.post(vm.api_admin_create, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-  */
-
-  // Test admin_show_communication_key
-  /*
-        test1: function () {
-      var vm = this
-      this.item = { 'email': 'test1@a.com' }
-      vm.$http.get(vm.api_admin_show_communication_key, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test2: function () {
-      var vm = this
-      this.item = { 'email': 'test2@a.com', 'password': 'pass2' }
-      vm.$http.get(vm.api_admin_show_communication_key, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test3: function () {
-      var vm = this
-      this.item = {}
-      vm.$http.get(vm.api_admin_show_communication_key, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
-    test4: function () {
-      var vm = this
-      this.item = { 'email': 'test3@a.com' }
-      vm.$http.get(vm.api_admin_show_communication_key, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-  */
 }
 </script>
 
