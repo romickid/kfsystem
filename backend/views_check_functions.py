@@ -97,6 +97,8 @@ def customerservice_set_profile_check(json_receive):
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email(json_receive['email']) == False:
         return 0, 'ERROR, email has not been registered.'
+    if cs_is_existent_by_nickname(json_receive['nickname']) == True:
+        return 0, 'ERROR, nickname has been used.'
     return 1, 'No ERROR.'
 
 

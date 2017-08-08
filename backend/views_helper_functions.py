@@ -109,6 +109,14 @@ def cs_is_existent_by_email(email):
         return False
 
 
+def cs_is_existent_by_nickname(nickname):
+    try:
+        instance = CustomerService.objects.get(nickname=nickname)
+        return True
+    except CustomerService.DoesNotExist:
+        return False
+
+
 def cs_is_valid_by_email_password(email, sha512_final_password):
     try:
         instance = CustomerService.objects.get(email=email, password=sha512_final_password)
