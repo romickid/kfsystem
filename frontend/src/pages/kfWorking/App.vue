@@ -83,9 +83,6 @@
           </li>
         </ul>
       </div>
-      <div class="main-menu">
-        菜单栏
-      </div>
       <div class="main-text">
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
@@ -97,7 +94,7 @@
 </template>
 
 <script>
-const key = 'VUE-CHAT-v5'
+const key = 'VUE-CHAT-v6'
 // 虚拟数据
 if (!localStorage.getItem(key)) {
   let now = new Date()
@@ -123,17 +120,17 @@ if (!localStorage.getItem(key)) {
     ],
     hangoffUserList: [
       {
-        id: 2,
+        id: 4,
         name: 'MonsterSXF',
         image: '../../../static/2.png'
       },
       {
-        id: 3,
+        id: 5,
         name: 'yayaya',
         image: '../../../static/3.jpg'
       },
       {
-        id: 3,
+        id: 6,
         name: 'haha',
         image: '../../../static/1.jpg'
       }
@@ -175,13 +172,51 @@ if (!localStorage.getItem(key)) {
           }
         ]
       }
+    ],
+    // 已挂断会话列表
+    hangoffSessionList: [
+      {
+        userId: 4,
+        messages: [
+          {
+            text: '你好，我是客户小怪兽！！',
+            date: now,
+            image: '../../../static/2.png'
+          },
+          {
+            text: '我已经挂断了哦',
+            date: now,
+            image: '../../../static/2.png'
+          }
+        ]
+      },
+      {
+        userId: 5,
+        messages: [
+          {
+            text: '你好，我是客户独角兽🦄',
+            date: now,
+            image: '../../../static/3.jpg'
+          },
+          {
+            text: '你可以帮我嘛~',
+            date: now,
+            image: '../../../static/3.jpg'
+          },
+          {
+            text: '嘻嘻嘻',
+            date: now,
+            image: '../../../static/3.jpg'
+          }
+        ]
+      }
     ]
   }
   localStorage.setItem(key, JSON.stringify(userData))
 }
 export default {
   el: '#chat',
-  data() {
+  data () {
     let dataserver = JSON.parse(localStorage.getItem(key))
     return {
       // 登录用户
@@ -191,6 +226,7 @@ export default {
       hangoffUserList: dataserver.hangoffUserList,
       // 会话列表
       sessionList: dataserver.sessionList,
+      hangoffSessionList: dataserver.hangoffSessionList,
       // 搜索key
       searchname: '',
       // 选中的会话Index
@@ -204,35 +240,34 @@ export default {
     }
   },
   computed: {
-    session() {
-      return this.sessionList[this.sessionIndex]
-    },
-    sessionUser() {
-      let users = this.userList.filter(item => item.id === this.session.userId)
-      return users[0]
+    session () {
+      if (this.hangon) {
+        return this.sessionList[this.sessionIndex]
+      } else {
+        return this.hangoffSessionList[this.sessionIndex]
+      }
     }
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
       deep: true,
-      handler() {
+      handler () {
         localStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
-          sessionList: this.sessionList
+          hangoffUserList: this.hangoffUserList,
+          sessionList: this.sessionList,
+          hangoffSessionList: this.hangoffSessionList
         }))
       }
     }
   },
   methods: {
-    select(value) {
+    select (value) {
       this.sessionIndex = this.userList.indexOf(value)
     },
-    showModal() {
-      this.find = !this.find
-    },
-    inputing(e) {
+    inputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
         this.session.messages.push({
           text: this.text,
@@ -243,7 +278,7 @@ export default {
         this.text = ''
       }
     },
-    buttoninputing(e) {
+    buttoninputing (e) {
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -254,12 +289,12 @@ export default {
         this.text = ''
       }
     },
-    switchoff() {
+    switchoff () {
       this.hangon = !this.hangon
     }
   },
   filters: {
-    search(list) {
+    search (list) {
       let arr = []
       for (var i = 0; i < list.length; i++) {
         if (list[i].name.indexOf(this.searchname) > -1) {
@@ -269,7 +304,7 @@ export default {
       return arr
     },
     // 将日期过滤为 hour:minutes
-    time(date) {
+    time (date) {
       if (typeof date === 'string') {
         date = new Date(date)
       }
