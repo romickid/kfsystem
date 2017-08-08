@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
-from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
+from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer
 from datetime import datetime, timedelta
 from .views_helper_functions import *
 from .views_check_functions import *
@@ -83,7 +83,7 @@ def admin_find_password_email_request(request):
         content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/admin_find_password_page/?key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
-            admin_send_email('big5_nankai@163.com', content)
+            admin_send_email_find_password(json_receive['email'], content)
             return HttpResponse('Valid '+json_receive['vid'], status=401)
         else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
@@ -147,12 +147,15 @@ def customerservice_create(request):
         if is_correct == 0:
             return HttpResponse(error_message, status=400)
 
-        json_receive['nickname'] = json_receive['email']
         instance_admin = Admin.objects.get(email=json_receive['admin_email'])
+        json_receive['nickname'] = json_receive['email']
         json_receive['enterprise'] = instance_admin.id
-        serializer = CustomerServiceSerializer(data=json_receive)
+        json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        serializer = CustomerServiceCreateSerializer(data=json_receive)
+        content = '尊敬的客服您好' + ':\n' + '请点击以下链接完成账号创建的剩余工作。\n' + 'http://192.168.55.33:8000/customerservice_create_page/?mail=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
+            cs_send_email_create_account(json_receive['email'], content)
             return JsonResponse(serializer.data, status=401) # 401 just for test
         return HttpResponse('ERROR, invalid data in serializer.', status=400)
 
@@ -230,7 +233,7 @@ def customerservice_find_password_email_request(request):
         content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/customerservice_find_password_page/?key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
-            cs_send_email('big5_nankai@163.com', content)
+            cs_send_email_find_password(json_receive['email'], content)
             return HttpResponse('Valid '+json_receive['vid'], status=401)
         else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
