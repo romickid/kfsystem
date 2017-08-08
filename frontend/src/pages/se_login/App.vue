@@ -21,7 +21,7 @@
             <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
           </div>
           <div id="butt">
-            <forget-password ref="forget_password"></forget-password>
+            <se-forget-password ref="seForgetPassword"></se-forget-password>
           </div>
         </div>
       </div>
@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import ForgetPassword from '../../components/forget_password'
+import seForgetPassword from '../../components/se_forget_password'
 export default {
   name: 'app',
   components: {
-    ForgetPassword
+    seForgetPassword
   },
   data () {
     return {
