@@ -5,6 +5,7 @@ urlpatterns = [
     url(r'^api/admin_create/$', views.admin_create),
     url(r'^api/admin_login/$', views.admin_login),
     url(r'^api/admin_reset_password/$', views.admin_reset_password),
+    url(r'^api/admin_find_password_email_request/$', views.admin_find_password_email_request),   
     url(r'^api/admin_show_communication_key/$', views.admin_show_communication_key),
     url(r'^api/admin_reset_communication_key/$', views.admin_reset_communication_key),
     url(r'^api/admin_find_password_email_request/$', views.admin_find_password_email_request),
