@@ -1,13 +1,14 @@
 <template>
-  <div class="team">
+  <div class='team'>
     <div class='team-content'>
       <div class='title'>
         <h2>客服人员列表</h2>
+         <i-button type='text' @click='refresh'>刷新</i-button>
         <div class='add'>
-          <Icon type="person-add" class='add-icon'></Icon>
+          <Icon type='person-add' class='add-icon'></Icon>
           <i-button type='text' @click='addModal = true'>添加客服
           </i-button>
-          <Modal v-model="addModal" title="添加客服" @on-ok="ok" @on-cancel="cancel">
+          <Modal v-model='addModal' title='添加客服' @on-ok='ok' @on-cancel='cancel'>
             <form>
               <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf'></i-input>
             </form>
@@ -19,15 +20,20 @@
           <tr>
             <th>帐号</th>
             <th>昵称</th>
+            <th>验证状态</th>
+            <th>在线状态</th>
+            <th>连接人数</th>
             <th>操作</th>
           </tr>
           <tr v-for='(kf, id) in kfstaff'>
-            <td>{{ kf }}</td>
-            <td>高小宸</td>
-            <td>
-              <i-button type='text' @click='deleteKf(id)'>删除
-              </i-button>
-            </td>
+            <td>{{ kf.email }}</td>
+            <td>{{ kf.nickname }}</td>
+            <td>{{ kf.is_register ? '已验证' : '未验证'}}</td>
+            <td>{{ kf.is_online ? '在线' : '离线'}}</td>
+            <th>{{ kf.connection_num }}</th>
+            <th>
+              <i-button type='text' @click='deleteKf(id)'>删除</i-button>
+            </th>
           </tr>
         </table>
       </div>
@@ -45,7 +51,8 @@ export default {
       kf: '',
       kfstaff: [],
       apiCustomerserviceCreate: '../api/customerservice_create/',
-      adminEmail: '1234444@123.com',
+      apiCustomerserviceShowStatus: '../api/customerservice_show_status/',
+      adminEmail: {},
       customerService: {}
     }
   },
@@ -57,27 +64,22 @@ export default {
       var vm = this
       this.customerService = {
         'email': this.kf,
-        'admin_email': this.adminEmail
+        'admin_email': this.adminEmail.admin_email
       }
       vm.$http.post(vm.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            this.kf = ''
             window.location.href = '../en_login'
           } else if (response.data === 'ERROR, email has been registered.') {
             this.$Message.info('该客服邮箱已被注册')
             this.kf = ''
           } else if (response.data === 'ERROR, admin_email is wrong.') {
-            this.kf = ''
             window.location.href = '../en_login'
           } else if (response.data === 'ERROR, wrong information.') {
-            this.kf = ''
             window.location.href = '../en_login'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            this.kf = ''
             window.location.href = '../en_login'
           } else {
-            this.kf = ''
             this.$Message.info('添加成功')
           }
         }, (response) => {
@@ -89,7 +91,30 @@ export default {
     },
     deleteKf (index) {
       this.kfstaff.splice(index, 1)
+    },
+    refresh () {
+      var vm = this
+      vm.$http.post(vm.apiCustomerserviceShowStatus, this.adminEmail)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong admin_email.') {
+            window.location.href = '../en_login'
+          } else {
+            this.kfstaff = response.data
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
     }
+  },
+  created () {
+    this.adminEmail = {
+      'admin_email': '1234444@123.com'
+    }
+    this.refresh()
   }
 }
 </script>
@@ -127,7 +152,7 @@ export default {
 }
 
 .list th {
-  width: 33%;
+  width: 16.65%;
   border: 1px solid #bbbec4;
   border-bottom: 0;
   border-left: 0;
@@ -135,7 +160,7 @@ export default {
 }
 
 .list td {
-  width: 33%;
+  width: 16.65%;
   border: 1px solid #bbbec4;
   border-bottom: 0;
   border-left: 0;
