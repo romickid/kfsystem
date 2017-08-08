@@ -26,7 +26,7 @@ class AdminSerializer(serializers.ModelSerializer):
 class CustomerServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
-        fields = ('id', 'email', 'enterprise', 'nickname', 'password', 'is_online', 'connection_num', 'vid')
+        fields = ('id', 'email', 'enterprise', 'nickname', 'password', 'is_register', 'is_online', 'connection_num', 'vid')
 
     def create(self, validated_data):
         return CustomerService.objects.create(**validated_data)
@@ -36,6 +36,7 @@ class CustomerServiceSerializer(serializers.ModelSerializer):
         instance.enterprise = validated_data.get('enterprise', instance.enterprise)
         instance.nickname = validated_data.get('nickname', instance.nickname)
         instance.password = validated_data.get('password', instance.password)
+        instance.is_register = validated_data.get('is_register', instance.is_register)
         instance.is_online = validated_data.get('is_online', instance.is_online)
         instance.connection_num = validated_data.get('connection_num', instance.connection_num)
         instance.vid = validated_data.get('vid', instance.vid)
