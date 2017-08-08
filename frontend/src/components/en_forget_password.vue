@@ -18,7 +18,9 @@ export default {
     return {
       find: false,
       email: '',
-      emailIllegal: false
+      emailIllegal: false,
+      api_find_password_email_request: '../api/admin_find_password_email_request/',
+      item: {}
     }
   },
   methods: {
@@ -34,18 +36,35 @@ export default {
     emailInput () {
       this.emailIllegal = false
     },
-    ok () {
+    ok () {            
       if (this.email === '') {
         this.emailIllegal = false
+        this.$Message.info('您的信息不完善！')
       } else {
-        if (this.emailIllegal === false) {
-          this.$Message.info('成功向您的邮箱发送邮件!')
-        } else {
-          this.$Message.info('您的邮箱不正确，请重新填写申请！')
+        // 与后端链接进行信息传输和验证
+        let vm = this
+        this.item = {
+          'email': this.email
         }
-        this.email = ''
-        this.emailIllegal = false
+        vm.$http.post(vm.api_find_password_email_request, this.item)
+          .then((response) => {
+            if (response.data === 'ERROR, wrong email.') {
+              this.$Message.info('错误的账号！')
+            } else if (response.data === 'ERROR, invalid data in serializer.') {
+              this.$Message.info('未知错误！')
+            } else if (response.data === 'ERROR, incomplete information.') {
+              this.$Message.info('信息不完善！')
+            } else if (response.data === 'ERROR, wrong information.') {
+              this.$Message.info('信息错误！')
+            } else {
+              this.$Message.info(response.data)
+              // window.location.href = '../en_login'
+            }
+          }, (response) => {
+            this.$Message.info('未知错误2！')
+          })
       }
+      this.email = ''
     },
     cancel () {
       this.email = ''
