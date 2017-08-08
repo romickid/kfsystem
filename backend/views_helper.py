@@ -3,6 +3,18 @@ from django.core.mail import send_mail
 import hashlib, random, string
 
 
+def json_testing(json_receive, array_str, json_length):
+    json = json_receive
+    try:
+        for i in array_str:
+            json[i] = json[i]
+    except KeyError:
+        return 1
+    if len(json) != json_length:
+        return 2
+    return 0
+
+
 def admin_is_existent_by_email(email):
     try:
         instance = Admin.objects.get(email=email)
