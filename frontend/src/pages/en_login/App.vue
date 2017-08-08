@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import ForgetPassword from '../../components/ForgetPassword'
+import forget_password from '../../components/forget_password'
 export default {
   name: 'app',
   components: {
-    ForgetPassword
+    forget_password
   },
   data () {
     return {
@@ -148,4 +148,3 @@ a {
   color: red;
 }
 </style>
-
