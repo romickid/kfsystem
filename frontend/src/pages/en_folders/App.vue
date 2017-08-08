@@ -104,7 +104,7 @@ export default {
         this.$Message.info('您两次输入的密码不一致！')
       } else {
         // 与后端链接进行信息传输和验证
-        var vm = this
+        let vm = this
         this.item = {
           'email': this.email,
           'nickname': this.nickname,

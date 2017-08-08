@@ -8,10 +8,7 @@
           </div>
           <div class="div">
             <label class="label">登录邮箱：</label>
-            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput">
-            <i-label v-if="emailIllegal">
-              <p>请输入正确的邮箱！</p>
-            </i-label>
+            <input type="text" v-model="email" name="email" class="text" readonly="true">
           </div>
           <div class="div">
             <label class="label">登录密码：</label>
@@ -49,28 +46,17 @@ export default {
   name: 'app',
   data () {
     return {
-      email: '',
+      email: '123@qq.com',     //接收传进来的email
       password: '',
       passwordConfirm: '',
       nickname: '',
-      emailIllegal: false,
       passwordNonStandard: false,
-      passwordInConsistent: false
+      passwordInConsistent: false,
+      api_set_profile: '../api/customerservice_set_profile/',
+      item: {}
     }
   },
   methods: {
-    checkEmail () {
-      let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
-      let legal = reg.test(this.email)
-      if (legal === false && this.email !== '') {
-        this.emailIllegal = true
-      } else {
-        this.emailIllegal = false
-      }
-    },
-    emailInput () {
-      this.emailIllegal = false
-    },
     checkPassword () {
       if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
         this.passwordInConsistent = true
@@ -89,8 +75,35 @@ export default {
     finish () {
       if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '') {
         this.$Message.info('您的信息不完善！')
+      } else if (this.emailIllegal === true) {
+        this.$Message.info('您的输入的邮箱格式不正确！')
+      } else if (this.passwordNonstandard === true) {
+        this.$Message.info('您的输入的密码格式不正确！')
+      } else if (this.passwordInconsistent === true) {
+        this.$Message.info('您两次输入的密码不一致！')
       } else {
         // 与后端链接进行信息传输和验证
+        let vm = this
+        this.item = {
+          'email': this.email,
+          'password': this.password,
+          'nickname': this.nickname,
+        }
+        vm.$http.post(vm.set_profile, this.item)
+          .then((response) => {
+            if (response.data === 'ERROR, invalid data in serializer.') {
+              this.$Message.info('未知错误')
+            } else if (response.data === 'ERROR, email has not been registered.') {
+              this.$Message.info('该邮箱未被注册！')
+            } else if (response.data === 'ERROR, nickname has been used.') {
+              this.$Message.info('该昵称已被注册')
+            } else {
+              this.$Message.info('完善信息成功')
+              // window.location.href = '../en_login'
+            }
+          }, (response) => {
+            this.$Message.info('未知错误')
+          })
       }
     }
   }
