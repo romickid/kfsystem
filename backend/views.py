@@ -5,7 +5,8 @@ from rest_framework.parsers import JSONParser
 from .models import Admin, CustomerService, ChattingLog, SerialNumber
 from .serializers import AdminSerializer, CustomerServiceSerializer, ChattingLogSerializer, SerialNumberSerializer
 from datetime import datetime, timedelta
-from .views_helper import *
+from .views_helper_functions import *
+from .views_check_functions import *
 
 
 @csrf_exempt
@@ -13,18 +14,9 @@ def admin_create(request):
     if request.method == 'POST':
         # Admin: email nickname password  SerialNumber: serials
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email', 'nickname', 'password', 'serials'], 4)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if sn_is_serials_valid(json_receive['serials']) == False:
-            return HttpResponse('ERROR, serials is invalid.', status=400)
-        if admin_is_existent_by_email(json_receive['email']) == True:
-            return HttpResponse('ERROR, email has been registered.', status=400)
-        if admin_is_existent_by_nickname(json_receive['nickname']) == True:
-            return HttpResponse('ERROR, nickname has been used.', status=400)
-
+        is_correct, error_message = admin_create_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
         json_receive['password'] = admin_generate_password(json_receive['email'], json_receive['password'])
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
@@ -44,12 +36,9 @@ def admin_login(request):
     if request.method == 'POST':
         # Admin: email password
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email', 'password'], 2)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-
+        is_correct, error_message = admin_login_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
         sha512_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
             return HttpResponse("Valid.", status=401)  # 401 just for test
@@ -62,16 +51,13 @@ def admin_reset_password(request):
     if request.method == 'POST':
         # Admin: email password newpassword
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email', 'password', 'newpassword'], 3)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
+        is_correct, error_message = admin_reset_password_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         sha512_old_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
             return HttpResponse("ERROR, wrong email or password.", status=400)
-
         sha512_new_final_password = admin_generate_password(json_receive['email'], json_receive['newpassword'])
         instance = Admin.objects.get(email=json_receive['email'], password=sha512_old_final_password)
         json_receive['password'] = sha512_new_final_password
@@ -79,8 +65,7 @@ def admin_reset_password(request):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=401) # 401 just for test
-        else:
-            return HttpResponse("ERROR, invalid data in serializer.", status=400)
+        return HttpResponse("ERROR, invalid data in serializer.", status=400)
 
 
 @csrf_exempt
@@ -88,13 +73,9 @@ def admin_find_password_email_request(request):
     if request.method == 'POST':
         # Admin: email
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email'], 1)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if admin_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=400)
+        is_correct, error_message = admin_find_password_email_request_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
@@ -113,13 +94,9 @@ def admin_find_password_check_vid(request):
     if request.method == 'POST':
         # Admin: vid
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['vid'], 1)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if admin_is_existent_by_vid(json_receive['vid']) == False:
-            return HttpResponse('ERROR, wrong vid.', status=400)
+        is_correct, error_message = admin_find_password_check_vid_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         instance = Admin.objects.get(vid=json_receive['vid'])
         json_send = { 'email': instance.email }
@@ -131,12 +108,9 @@ def admin_show_communication_key(request):
     if request.method == 'POST':
         # Admin: email
         json_receive = JSONParser().parse(request)
-        try:
-            json_receive['email'] = json_receive['email']
-        except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=200)
-        if len(json_receive) != 1:
-            return HttpResponse('ERROR, wrong information.', status=200)
+        is_correct, error_message = admin_show_communication_key_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         if admin_is_existent_by_email(json_receive['email']) == False:
             return HttpResponse('ERROR, wrong email.', status=200)
@@ -151,14 +125,10 @@ def admin_reset_communication_key(request):
     if request.method == 'POST':
         # Admin: email
         json_receive = JSONParser().parse(request)
-        try:
-            json_receive['email'] = json_receive['email']
-        except KeyError:
-            return HttpResponse('ERROR, incomplete information.', status=200)
-        if len(json_receive) != 1:
-            return HttpResponse('ERROR, wrong information.', status=200)
-        if admin_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=200)
+        is_correct, error_message = admin_reset_communication_key_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
+
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
         serializer = AdminSerializer(instance, data=json_receive)
@@ -173,15 +143,9 @@ def customerservice_create(request):
     if request.method == 'POST':
         # CustomerService: email  Admin: admin_email
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email', 'admin_email'], 2)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if cs_is_existent_by_email(json_receive['email']) == True:
-            return HttpResponse('ERROR, email has been registered.', status=400)
-        if admin_is_existent_by_email(json_receive['admin_email']) == False:
-            return HttpResponse('ERROR, admin_email is wrong.', status=400)
+        is_correct, error_message = customerservice_create_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         json_receive['nickname'] = json_receive['email']
         instance_admin = Admin.objects.get(email=json_receive['admin_email'])
@@ -198,13 +162,9 @@ def customerservice_set_profile(request):
     if request.method == 'POST':
         # CustomerService: email password nickname
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email', 'password', 'nickname'], 3)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if cs_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, email has not been registered.', status=400)
+        is_correct, error_message = customerservice_set_profile_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         json_receive['password'] = cs_generate_password(json_receive['email'], json_receive['password'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
@@ -221,11 +181,9 @@ def customerservice_login(request):
     if request.method == 'POST':
         # CustomerService: email password
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email', 'password'], 2)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
+        is_correct, error_message = customerservice_login_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         sha512_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
         if cs_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
@@ -239,11 +197,9 @@ def customerservice_reset_password(request):
     if request.method == 'POST':
         # CustomerService: email password newpassword
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email', 'password', 'newpassword'], 3)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
+        is_correct, error_message = customerservice_reset_password_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         sha512_old_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
         if cs_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
@@ -264,13 +220,9 @@ def customerservice_find_password_email_request(request):
     if request.method == 'POST':
         # CustomerService: email
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['email'], 1)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if cs_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=400)
+        is_correct, error_message = customerservice_find_password_email_request_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         instance = CustomerService.objects.get(email=json_receive['email'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
@@ -289,13 +241,9 @@ def customerservice_find_password_check_vid(request):
     if request.method == 'POST':
         # CustomerService: vid
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['vid'], 1)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if cs_is_existent_by_vid(json_receive['vid']) == False:
-            return HttpResponse('ERROR, wrong vid.', status=400)
+        is_correct, error_message = customerservice_find_password_check_vid_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         instance = CustomerService.objects.get(vid=json_receive['vid'])
         json_send = { 'email': instance.email }
@@ -307,13 +255,9 @@ def customerservice_show_status(request):
     if request.method == 'POST':
         # Admin: admin_email
         json_receive = JSONParser().parse(request)
-        test_result = json_testing(json_receive, ['admin_email'], 1)
-        if test_result == 1:
-            return HttpResponse('ERROR, incomplete information.', status=400)
-        if test_result == 2:
-            return HttpResponse('ERROR, wrong information.', status=400)
-        if admin_is_existent_by_email(json_receive['admin_email']) == False:
-            return HttpResponse('ERROR, wrong admin_email.', status=400)
+        is_correct, error_message = customerservice_show_status_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=400)
 
         instance_admin = Admin.objects.get(email=json_receive['admin_email'])
         instance_customerservice = CustomerService.objects.filter(enterprise=instance_admin.id)
