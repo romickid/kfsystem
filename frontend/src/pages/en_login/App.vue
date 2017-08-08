@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import forget_password from '../../components/forget_password'
+import ForgetPassword from '../../components/forget_password'
 export default {
   name: 'app',
   components: {
-    forget_password
+    ForgetPassword
   },
   data () {
     return {
