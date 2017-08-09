@@ -19,7 +19,7 @@ export default {
       find: false,
       email: '',
       emailIllegal: false,
-      api_find_password_email_request: '../api/customerservice_find_password_email_request/',
+      api_forget_password_email_request: '../api/customerservice_forget_password_email_request/',
       item: {}
     }
   },
@@ -50,7 +50,7 @@ export default {
       this.cancel()
     },
     communicate () {
-      this.$http.post(this.api_find_password_email_request, this.item)
+      this.$http.post(this.api_forget_password_email_request, this.item)
         .then((response) => {
           if (response.data === 'ERROR, wrong email.') {
             this.$Message.info('错误的账号！')
