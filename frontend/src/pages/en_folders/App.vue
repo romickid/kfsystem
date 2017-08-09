@@ -62,7 +62,6 @@ export default {
       passwordNonstandard: false,
       passwordInconsistent: false,
       api_create1: '../api/admin_create/',
-      vm: this,
       item: {}
     }
   },
@@ -95,7 +94,7 @@ export default {
       this.passwordInconsistent = false
     },
     communicate () {
-      this.vm.$http.post(this.vm.api_create1, this.item)
+      this.$http.post(this.api_create1, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
             this.$Message.info('未知错误')

@@ -35,7 +35,6 @@ export default {
       passwordNonstandard: false,
       emailIllegal: false,
       api_reset_password: '../api/customerservice_reset_password/',
-      vm: this,
       item: {}
     }
   },
@@ -80,7 +79,7 @@ export default {
       this.cancel()
     },
     communicate () {
-      this.vm.$http.post(this.vm.api_reset_password, this.item)
+      this.$http.post(this.api_reset_password, this.item)
         .then((response) => {
           if (response.data === 'ERROR, wrong email or password.') {
             this.$Message.info('错误的账号或密码！')

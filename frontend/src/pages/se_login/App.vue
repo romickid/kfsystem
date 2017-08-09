@@ -42,7 +42,6 @@ export default {
       password: '',
       emailIllegal: false,
       api_login: '../api/customerservice_login/',
-      vm: this,
       item: {}
     }
   },
@@ -60,7 +59,7 @@ export default {
       this.emailIllegal = false
     },
     communicate () {
-      this.vm.$http.post(this.vm.api_login, this.item)
+      this.$http.post(this.api_login, this.item)
         .then((response) => {
           if (response.data === 'ERROR, wrong email or password.') {
             this.$Message.info('错误的账号或密码！')

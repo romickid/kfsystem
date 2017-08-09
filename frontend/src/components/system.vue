@@ -90,7 +90,6 @@ export default {
       apiResetCommunicationKey: '../api/admin_reset_communication_key/',
       adminEmail: {},
       communicationKey: '',
-      vm: this
     }
   },
   methods: {
@@ -108,7 +107,7 @@ export default {
       this.examples.splice(index, 1)
     },
     reset_key () {
-      this.vm.$http.post(this.vm.apiResetCommunicationKey, this.adminEmail)
+      this.$http.post(this.apiResetCommunicationKey, this.adminEmail)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../en_login'
@@ -130,7 +129,7 @@ export default {
     this.adminEmail = {
       'email': '1234444@123.com'
     }
-    this.vm.$http.post(this.vm.apiShowCommunicationKey, this.adminEmail)
+    this.$http.post(this.apiShowCommunicationKey, this.adminEmail)
       .then((response) => {
         if (response.data === 'ERROR, incomplete information.') {
           window.location.href = '../en_login'
