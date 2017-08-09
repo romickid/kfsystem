@@ -157,6 +157,23 @@ def admin_reset_communication_key(request):
 
 
 @csrf_exempt
+def admin_show_cs_status(request):
+    if request.method == 'POST':
+        # no json
+        is_correct, error_message = customerservice_show_status_check(request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['a_email']
+        instance_admin = Admin.objects.get(email=data_email)
+        instance_customerservice = CustomerService.objects.filter(enterprise=instance_admin.id)
+        json_send = list()
+        for i in instance_customerservice:
+            json_send.append({'email': i.email, 'is_register': i.is_register, 'is_online': i.is_online, 'connection_num': i.connection_num, 'nickname': i.nickname})
+        return JsonResponse(json_send, safe=False, status=200)
+
+
+@csrf_exempt
 def customerservice_create(request):
     if request.method == 'POST':
         # CustomerService: email  Admin: admin_email
@@ -218,12 +235,13 @@ def customerservice_login(request):
 @csrf_exempt
 def customerservice_reset_password(request):
     if request.method == 'POST':
-        # CustomerService: email password newpassword
+        # CustomerService: password newpassword
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_reset_password_check(json_receive)
+        is_correct, error_message = customerservice_reset_password_check(json_receive, request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
+        json_receive['email'] = request.session['c_email']
         sha512_old_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
         if cs_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
             return HttpResponse("ERROR, wrong email or password.", status=200)
@@ -288,23 +306,6 @@ def customerservice_forget_password_save_data(request):
             serializer.save()
             return JsonResponse(serializer.data, status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
-
-
-@csrf_exempt
-def customerservice_show_status(request):
-    if request.method == 'POST':
-        # Admin: admin_email
-        json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_show_status_check(json_receive)
-        if is_correct == 0:
-            return HttpResponse(error_message, status=200)
-
-        instance_admin = Admin.objects.get(email=json_receive['admin_email'])
-        instance_customerservice = CustomerService.objects.filter(enterprise=instance_admin.id)
-        json_send = list()
-        for i in instance_customerservice:
-            json_send.append({'email': i.email, 'is_register': i.is_register, 'is_online': i.is_online, 'connection_num': i.connection_num, 'nickname': i.nickname})
-        return JsonResponse(json_send, safe=False, status=200)
 
 
 @csrf_exempt
