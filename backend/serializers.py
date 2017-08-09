@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, LANGUAGE_CHOICES, STYLE_CHOICES
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, LANGUAGE_CHOICES, STYLE_CHOICES, EnterpriseInfoType
 
 
 class AdminSerializer(serializers.ModelSerializer):
@@ -36,3 +36,9 @@ class ImageLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageLog
         fields = ('id', 'client_id', 'service_id', 'content', 'is_client', 'time')
+
+
+class EnterpriseInfoTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EnterpriseInfoType
+        fields = ('id', 'attri_name', 'attri_type', 'en_name')
