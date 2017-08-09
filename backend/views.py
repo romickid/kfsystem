@@ -41,7 +41,8 @@ def admin_login(request):
             return HttpResponse(error_message, status=200)
         sha512_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
-            return HttpResponse("Valid.", status=200) 
+            request.session['email'] = json_receive['email']
+            return HttpResponse(request.session['email'], status=200)
         else:
             return HttpResponse("ERROR, wrong email or password.", status=200)
 
@@ -51,6 +52,7 @@ def admin_reset_password(request):
     if request.method == 'POST':
         # Admin: email password newpassword
         json_receive = JSONParser().parse(request)
+        json_receive['email'] = request.session['email']
         is_correct, error_message = admin_reset_password_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
