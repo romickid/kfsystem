@@ -86,15 +86,15 @@ export default {
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             this.$Message.info('未知错误！')
           } else if (response.data === 'ERROR, incomplete information.') {
-            this.$Message.info('信息不完善！')
+            this.$Message.info('未知错误！')
           } else if (response.data === 'ERROR, wrong information.') {
-            this.$Message.info('信息错误！')
+            this.$Message.info('未知错误！')
           } else {
             this.$Message.info('密码修改成功！')
             // window.location.href = '../en_login'
           }
         }, (response) => {
-          this.$Message.info('未知错误2！')
+          this.$Message.info('未知错误！')
         })
     },
     cancel () {
