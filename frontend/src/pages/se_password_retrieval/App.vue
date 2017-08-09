@@ -37,7 +37,9 @@ export default {
       newPassword: '',
       newPasswordConfirm: '',
       passwordNonStandard: false,
-      passwordInConsistent: false
+      passwordInConsistent: false,
+      apiCustomerserviceForgetPasswordCheckVid: '../api/customerservice_forget_password_check_vid/',
+      customerserviceFindPassword: {}
     }
   },
   methods: {
@@ -64,7 +66,28 @@ export default {
           // 与后端链接进行信息传输和验证
         }
       }
+    },
+    verify () {
+      this.$http.post(this.apiCustomerserviceForgetPasswordCheckVid, this.customerserviceFindPassword)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong email or vid.') {
+            window.location.href = '../main'
+          }
+        }, (response) => {
+          window.location.href = '../main'
+        })
     }
+  },
+  created () {
+    this.customerserviceFindPassword = {
+      'email': this.$utils.getUrlKey('email'),
+      'vid': this.$utils.getUrlKey('key')
+    }
+    this.verify()
   }
 }
 </script>
