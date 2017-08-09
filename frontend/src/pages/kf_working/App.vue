@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import * as io from 'socket.io-client'
 const key = 'VUE-CHAT-v6'
 // 虚拟数据
 if (!localStorage.getItem(key)) {
@@ -236,7 +237,8 @@ export default {
       // 显示活跃消息
       hangon: true,
       // 设置机器人
-      modal1: false
+      modal1: false,
+      socket: ''
     }
   },
   computed: {
@@ -247,6 +249,18 @@ export default {
         return this.hangoffSessionList[this.sessionIndex]
       }
     }
+  },
+  created () {
+    const that = this
+    this.socket = io('http://localhost:3000')
+    this.socket.on('chat2 message', function (msg) {
+      that.session.messages.push({
+        text: msg,
+        date: new Date(),
+        image: that.userList[0].image
+      })
+    })
+    this.socket.emit('chat2 message', 'create')
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
@@ -275,6 +289,7 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
+        this.socket.emit('chat2 message', this.text)
         this.text = ''
       }
     },
@@ -286,6 +301,7 @@ export default {
           self: true,
           image: this.user.image
         })
+        this.socket.emit('chat2 message', this.text)
         this.text = ''
       }
     },
