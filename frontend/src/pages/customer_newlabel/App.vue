@@ -1,23 +1,5 @@
 <template>
   <div class="container">
-    <!-- <div class="sidebar">
-      <div class="m-card">
-        <header>
-          <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
-          <p class="user-name">{{ user.name }}</p>
-        </header>
-      </div>
-      <div>
-        <ul class="m-ul">
-          <li class="m-list" v-for="item in userList" :class="{ choosed: session.userId === item.id }" @click="select(item)">
-            <a>
-              <img class="m-avatar" width="30" height="30" :alt="item.name" :src="item.image">
-              <p class="m-name">{{ item.name }}</p>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div> -->
     <div class="main">
       <div class="m-message" v-scroll-bottom="session.messages">
         <ul>
@@ -45,6 +27,7 @@
 </template>
 
 <script>
+import * as io from 'socket.io-client'
 const key = 'VUE-Customer1'
 // 虚拟数据
 if (!localStorage.getItem(key)) {
@@ -99,13 +82,26 @@ export default {
       // 选中的会话Index
       sessionIndex: 0,
       // 文本框中输入的内容
-      text: ''
+      text: '',
+      socket: ''
     }
   },
   computed: {
     session () {
       return this.sessionList[this.sessionIndex]
     }
+  },
+  created () {
+    const that = this
+    this.socket = io('http://localhost:3000')
+    this.socket.on('chat2 message', function (msg) {
+      that.sessionList[0].messages.push({
+        text: msg,
+        date: new Date(),
+        image: that.userList[0].image
+      })
+    })
+    this.socket.emit('chat2 message', 'create')
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
@@ -129,6 +125,7 @@ export default {
           self: true,
           image: this.user.image
         })
+        this.socket.emit('chat2 message', this.text)
         this.text = ''
       }
     },
@@ -140,6 +137,7 @@ export default {
           self: true,
           image: this.user.image
         })
+        this.socket.emit('chat2 message', this.text)
         this.text = ''
       }
     }
