@@ -89,7 +89,7 @@ export default {
       apiShowCommunicationKey: '../api/admin_show_communication_key/',
       apiResetCommunicationKey: '../api/admin_reset_communication_key/',
       adminEmail: {},
-      communicationKey: '',
+      communicationKey: ''
     }
   },
   methods: {
