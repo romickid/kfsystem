@@ -48,3 +48,9 @@ class ImageLog(models.Model):
     image = models.ImageField(upload_to='screenshots') # TODO need to modify
     is_client = models.BooleanField(default=None)
     time = models.DateTimeField(auto_now_add=True)
+
+
+class EnterpriseInfoType(models.Model):
+    attri_name= models.CharField(max_length=50, default='empty')
+    attri_type= models.CharField(max_length=50, default='empty')
+    en_name= models.CharField(max_length=50, default='empty')
