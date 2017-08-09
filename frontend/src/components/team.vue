@@ -54,7 +54,6 @@ export default {
       apiCustomerserviceShowStatus: '../api/customerservice_show_status/',
       adminEmail: {},
       customerService: {},
-      vm: this
     }
   },
   methods: {
@@ -96,7 +95,7 @@ export default {
       this.kfstaff.splice(index, 1)
     },
     refresh () {
-      this.vm.$http.post(this.vm.apiCustomerserviceShowStatus, this.adminEmail)
+      this.$http.post(this.apiCustomerserviceShowStatus, this.adminEmail)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../en_login'

@@ -53,7 +53,6 @@ export default {
       passwordNonStandard: false,
       passwordInConsistent: false,
       api_set_profile: '../api/customerservice_set_profile/',
-      vm: this,
       item: {}
     }
   },
@@ -74,7 +73,7 @@ export default {
       this.passwordInConsistent = false
     },
     communicate () {
-      this.vm.$http.post(this.vm.set_profile, this.item)
+      this.$http.post(this.set_profile, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
             this.$Message.info('未知错误')
