@@ -1,62 +1,71 @@
 <template>
   <div class='system'>
-   <div class='key'>
-    <div class='key-title'><h2>用户信息对接设置</h2></div>
-    <div class='key-content'>
-      <div class='introduction'>
-        <p>您可以通过信息接口将用户名和用户ID与夜莺系统对接,从而在会话界面和历史记录中查看用户信息。</p>
-        <a>点击查看客户用户信息对接流程</a>
+    <div class='key'>
+      <div class='key-title'>
+        <h2>用户信息对接设置</h2>
       </div>
-      <h3>通讯密钥:</h3>
-      <p class='key-number'>{{ communicationKey }}</p>
-      <p class='remind'>字符串密钥为平台的API通讯密钥，请妥善保管，如果发现通讯密钥泄露请重设。</p><i-button type='ghost' @click='reset_key'>重新生成密钥</i-button>
-    </div>
-   </div>
-   <div class='info'>
-    <div class='info-title'>
-      <h2>客服可获取用户信息种类设置</h2>
-      <div class='add'>
-        <Icon type='person-ad'></Icon>
-        <i-button type='text' @click='modal = true'>添加用户信息</i-button>
-        <Modal v-model='modal' title='普通的Modal对话框标题' @on-ok='ok' @on-cancel='cancel'>
-          <Form :model='formItem' :label-width='80'>
-            <Form-item label='信息种类'>
-              <Checkbox-group v-model='formItem.checkbox'>
-                <Checkbox label='Email'></Checkbox>
-                <Checkbox label='Phonenumber'></Checkbox>
-                <Checkbox label='Location'></Checkbox>
-                <Checkbox label='Date'></Checkbox>
-              </Checkbox-group>
-            </Form-item>
-          </Form>
-        </Modal>
+      <div class='key-content'>
+        <div class='introduction'>
+          <p>您可以通过信息接口将用户名和用户ID与夜莺系统对接,从而在会话界面和历史记录中查看用户信息。</p>
+          <a>点击查看客户用户信息对接流程</a>
+        </div>
+        <h3>通讯密钥:</h3>
+        <p class='key-number'>{{ communicationKey }}</p>
+        <p class='remind'>字符串密钥为平台的API通讯密钥，请妥善保管，如果发现通讯密钥泄露请重设。</p>
+        <i-button type='ghost' @click='reset_key'>重新生成密钥</i-button>
       </div>
     </div>
-    <div class='info-list'>
-      <table cellspacing='0'>
-        <tr>
-          <th>种类</th>
-          <th>例子</th>
-          <th>操作</th>
-        </tr>
-        <tr class='list-item'>
-          <td>Id</td>
-          <td>例：001</td>
-          <td><i-button type='text' disabled>删除</i-button></td>
-        </tr>
-        <tr class='list-item'>
-          <td>Username</td>
-          <td>例：Archangel</td>
-          <td><i-button type='text' disabled>删除</i-button></td>
-        </tr>
-        <tr class='list-item' v-for='(infomationType, id) in infomationTypes'>
-          <td>{{ infomationType }}</td>
-          <td>{{ examples[id] }}</td>
-          <td><i-button type='text' @click='delete_info(id)'>删除</i-button></td>
-        </tr>
-      </table>
+    <div class='info'>
+      <div class='info-title'>
+        <h2>客服可获取用户信息种类设置</h2>
+        <div class='add'>
+          <Icon type='person-ad'></Icon>
+          <i-button type='text' @click='modal = true'>添加用户信息</i-button>
+          <Modal v-model='modal' title='普通的Modal对话框标题' @on-ok='ok' @on-cancel='cancel'>
+            <Form :model='formItem' :label-width='80'>
+              <Form-item label='信息种类'>
+                <Checkbox-group v-model='formItem.checkbox'>
+                  <Checkbox label='Email'></Checkbox>
+                  <Checkbox label='Phonenumber'></Checkbox>
+                  <Checkbox label='Location'></Checkbox>
+                  <Checkbox label='Date'></Checkbox>
+                </Checkbox-group>
+              </Form-item>
+            </Form>
+          </Modal>
+        </div>
+      </div>
+      <div class='info-list'>
+        <table cellspacing='0'>
+          <tr>
+            <th>种类</th>
+            <th>例子</th>
+            <th>操作</th>
+          </tr>
+          <tr class='list-item'>
+            <td>Id</td>
+            <td>例：001</td>
+            <td>
+              <i-button type='text' disabled>删除</i-button>
+            </td>
+          </tr>
+          <tr class='list-item'>
+            <td>Username</td>
+            <td>例：Archangel</td>
+            <td>
+              <i-button type='text' disabled>删除</i-button>
+            </td>
+          </tr>
+          <tr class='list-item' v-for='(infomationType, id) in infomationTypes'>
+            <td>{{ infomationType }}</td>
+            <td>{{ examples[id] }}</td>
+            <td>
+              <i-button type='text' @click='delete_info(id)'>删除</i-button>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
-   </div>
   </div>
 </template>
 
@@ -80,7 +89,8 @@ export default {
       apiShowCommunicationKey: '../api/admin_show_communication_key/',
       apiResetCommunicationKey: '../api/admin_reset_communication_key/',
       adminEmail: {},
-      communicationKey: ''
+      communicationKey: '',
+      vm: this
     }
   },
   methods: {
@@ -98,8 +108,7 @@ export default {
       this.examples.splice(index, 1)
     },
     reset_key () {
-      var vm = this
-      vm.$http.post(vm.apiResetCommunicationKey, this.adminEmail)
+      this.vm.$http.post(this.vm.apiResetCommunicationKey, this.adminEmail)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../en_login'
@@ -118,11 +127,10 @@ export default {
     }
   },
   created () {
-    var vm = this
     this.adminEmail = {
       'email': '1234444@123.com'
     }
-    vm.$http.post(vm.apiShowCommunicationKey, this.adminEmail)
+    this.vm.$http.post(this.vm.apiShowCommunicationKey, this.adminEmail)
       .then((response) => {
         if (response.data === 'ERROR, incomplete information.') {
           window.location.href = '../en_login'

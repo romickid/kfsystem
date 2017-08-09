@@ -62,6 +62,7 @@ export default {
       passwordNonstandard: false,
       passwordInconsistent: false,
       api_create1: '../api/admin_create/',
+      vm: this,
       item: {}
     }
   },
@@ -93,6 +94,24 @@ export default {
     passwordInput () {
       this.passwordInconsistent = false
     },
+    communicate () {
+      this.vm.$http.post(this.vm.api_create1, this.item)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            this.$Message.info('未知错误')
+          } else if (response.data === 'ERROR, serials is invalid.') {
+            this.$Message.info('请输入正确的产品序列号！')
+          } else if (response.data === 'ERROR, email has been registered.') {
+            this.$Message.info('该邮箱已被注册！')
+          } else if (response.data === 'ERROR, nickname has been used.') {
+            this.$Message.info('该昵称已被注册')
+          } else {
+            window.location.href = '../en_login'
+          }
+        }, (response) => {
+          this.$Message.info('未知错误')
+        })
+    },
     register () {
       if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '' || this.serialNumber === '') {
         this.$Message.info('您的信息不完善！')
@@ -104,29 +123,13 @@ export default {
         this.$Message.info('您两次输入的密码不一致！')
       } else {
         // 与后端链接进行信息传输和验证
-        let vm = this
         this.item = {
           'email': this.email,
           'nickname': this.nickname,
           'password': this.password,
           'serials': this.serialNumber
         }
-        vm.$http.post(vm.api_create1, this.item)
-          .then((response) => {
-            if (response.data === 'ERROR, invalid data in serializer.') {
-              this.$Message.info('未知错误')
-            } else if (response.data === 'ERROR, serials is invalid.') {
-              this.$Message.info('请输入正确的产品序列号！')
-            } else if (response.data === 'ERROR, email has been registered.') {
-              this.$Message.info('该邮箱已被注册！')
-            } else if (response.data === 'ERROR, nickname has been used.') {
-              this.$Message.info('该昵称已被注册')
-            } else {
-              window.location.href = '../en_login'
-            }
-          }, (response) => {
-            this.$Message.info('未知错误')
-          })
+        this.communicate()
       }
     }
   }
