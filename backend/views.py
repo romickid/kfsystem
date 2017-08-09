@@ -80,11 +80,11 @@ def admin_find_password_email_request(request):
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
         serializer = AdminSerializer(instance, data=json_receive)
-        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/admin_find_password_page/?key=' + json_receive['vid']
+        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/admin_find_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             admin_send_email_find_password(json_receive['email'], content)
-            return HttpResponse('Valid '+json_receive['vid'], status=401)
+            return HttpResponse('Valid', status=401)
         else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
 
@@ -247,11 +247,11 @@ def customerservice_find_password_email_request(request):
         instance = CustomerService.objects.get(email=json_receive['email'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
-        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/customerservice_find_password_page/?key=' + json_receive['vid']
+        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/customerservice_find_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             cs_send_email_find_password(json_receive['email'], content)
-            return HttpResponse('Valid '+json_receive['vid'], status=401)
+            return HttpResponse('Valid', status=401)
         else:
             return HttpResponse("ERROR, invalid data in serializer.", status=400)
 
