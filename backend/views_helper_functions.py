@@ -80,6 +80,21 @@ def admin_is_existent_by_email_vid(email, vid):
         return False
 
 
+def admin_sessions_check(request):
+    try:
+        request.session['a_email'] = request.session['a_email']
+        return True
+    except KeyError:
+        return False
+
+
+def admin_sessions_del(request):
+    try:
+        del request.session['a_email']
+    except KeyError:
+        pass
+
+
 def sn_is_serials_valid(serials):
     try:
         instance = SerialNumber.objects.get(serials=serials)
@@ -152,3 +167,18 @@ def cs_send_email_create_account(email, content):
 
 def cs_send_email_forget_password(email, content):
     send_mail('客服系统找回密码', content, 'big5_nankai@163.com', [email], fail_silently=True)
+
+
+def cs_sessions_check(request):
+    try:
+        request.session['c_email'] = request.session['c_email']
+        return True
+    except KeyError:
+        return False
+
+
+def cs_sessions_del(request):
+    try:
+        del request.session['c_email']
+    except KeyError:
+        pass

@@ -67,6 +67,8 @@ export default {
       api_admin_find_password_check_vid: './api/admin_find_password_check_vid/',
 
       api_customerservice_create: './api/customerservice_create/',
+      api_customerservice_set_profile: './api/customerservice_set_profile/',
+      api_customerservice_login: './api/customerservice_login/',
 
       api_chattinglog_send_message: './api/chattinglog_send_message/',
       api_chattinglog_delete_record: './api/chattinglog_delete_record/',
@@ -85,35 +87,44 @@ export default {
   methods: {    
     test1: function () {
       var vm = this
+      this.item = { 'email': 'test1@a.com', 'nickname': 'nick1', 'password': 'pass1', 'serials': 's1' }
+      vm.$http.post(vm.api_admin_create, this.item)
+        .then((response) => {
+          vm.$set(this, 'item', {})
+        })
+    },
+    
+    test2: function () {
+      var vm = this
       this.item = { 'email': 'test1@a.com', 'password': 'pass1' }
       vm.$http.post(vm.api_admin_login, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
-
-    test2: function () {
-      var vm = this
-      this.item = { 'email': 'test2@a.com', 'password': 'pass2' }
-      vm.$http.post(vm.api_admin_login, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-
+    
     test3: function () {
       var vm = this
-      this.item = { 'email': 'test1@a.com', 'password': 'pass1', 'newpassword': 'newpass1' }
-      vm.$http.post(vm.api_admin_reset_password, this.item)
+      this.item = { 'email': 'cs1@a.com' ,'admin_email': 'test1@a.com'}
+      vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
-
+    
     test4: function () {
       var vm = this
-      this.item = { 'email': 'test2@a.com', 'password': 'pass2', 'newpassword': 'newpass2' }
-      vm.$http.post(vm.api_admin_reset_password, this.item)
+      this.item = { 'email': 'cs1@a.com', 'password': 'pass1', 'nickname': 'nickname1' }
+      vm.$http.post(vm.api_customerservice_set_profile, this.item)
+        .then((response) => {
+          vm.$set(this, 'item', {})
+        })
+    },
+    
+    test5: function () {
+      var vm = this
+      this.item = { 'email': 'cs1@a.com', 'password': 'pass1' }
+      vm.$http.post(vm.api_customerservice_login, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
