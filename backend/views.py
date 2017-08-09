@@ -51,13 +51,13 @@ def admin_login(request):
 @csrf_exempt
 def admin_reset_password(request):
     if request.method == 'POST':
-        # Admin: email password newpassword
+        # Admin: password newpassword
         json_receive = JSONParser().parse(request)
-        json_receive['email'] = request.session['email']
-        is_correct, error_message = admin_reset_password_check(json_receive)
+        is_correct, error_message = admin_reset_password_check(json_receive, request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
-
+        
+        json_receive['email'] = request.session['a_email']
         sha512_old_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
             return HttpResponse("ERROR, wrong email or password.", status=200)
@@ -126,29 +126,27 @@ def admin_forget_password_save_data(request):
 @csrf_exempt
 def admin_show_communication_key(request):
     if request.method == 'POST':
-        # Admin: email
-        json_receive = JSONParser().parse(request)
-        is_correct, error_message = admin_show_communication_key_check(json_receive)
+        # no json
+        is_correct, error_message = admin_show_communication_key_check(request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
-        if admin_is_existent_by_email(json_receive['email']) == False:
-            return HttpResponse('ERROR, wrong email.', status=200)
-        else:
-            communication_key = admin_get_communication_key(json_receive['email'])
-            json_send = {'communication_key': communication_key}
-            return JsonResponse(json_send, status=200)
+        data_email = request.session['a_email']
+        communication_key = admin_get_communication_key(data_email)
+        json_send = {'communication_key': communication_key}
+        return JsonResponse(json_send, status=200)
 
 
 @csrf_exempt
 def admin_reset_communication_key(request):
     if request.method == 'POST':
-        # Admin: email
-        json_receive = JSONParser().parse(request)
-        is_correct, error_message = admin_reset_communication_key_check(json_receive)
+        # no json
+        is_correct, error_message = admin_reset_communication_key_check(request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
+        json_receive = dict()
+        json_receive['email'] = request.session['a_email']
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
         serializer = AdminSerializer(instance, data=json_receive)
