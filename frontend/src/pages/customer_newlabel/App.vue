@@ -94,14 +94,16 @@ export default {
   created () {
     const that = this
     this.socket = io('http://localhost:3000')
-    this.socket.on('chat2 message', function (msg) {
+    that.socket.id = '24'
+    // 接收消息
+    this.socket.on('server message', function (msg, id) {
       that.sessionList[0].messages.push({
         text: msg,
         date: new Date(),
         image: that.userList[0].image
       })
     })
-    this.socket.emit('chat2 message', 'create')
+    this.socket.emit('customer set id', that.socket.id)
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
@@ -125,7 +127,7 @@ export default {
           self: true,
           image: this.user.image
         })
-        this.socket.emit('chat2 message', this.text)
+        this.socket.emit('customer message', this.text, '4')
         this.text = ''
       }
     },
@@ -137,7 +139,7 @@ export default {
           self: true,
           image: this.user.image
         })
-        this.socket.emit('chat2 message', this.text)
+        this.socket.emit('customer message', this.text, '4')
         this.text = ''
       }
     }
