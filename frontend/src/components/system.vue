@@ -88,7 +88,6 @@ export default {
       examples: [],
       apiShowCommunicationKey: '../api/admin_show_communication_key/',
       apiResetCommunicationKey: '../api/admin_reset_communication_key/',
-      adminEmail: {},
       communicationKey: ''
     }
   },
@@ -109,9 +108,7 @@ export default {
     reset_key () {
       this.$http.post(this.apiResetCommunicationKey)
         .then((response) => {
-          if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../en_login'
-          } else if (response.data === 'ERROR, wrong information.') {
+          if (response.data === 'ERROR, session is broken.') {
             window.location.href = '../en_login'
           } else if (response.data === 'ERROR, wrong email.') {
             window.location.href = '../en_login'
@@ -126,9 +123,6 @@ export default {
     }
   },
   created () {
-    this.adminEmail = {
-      'email': '1234444@123.com'
-    }
     this.$http.post(this.apiShowCommunicationKey)
       .then((response) => {
         if (response.data === 'ERROR, session is broken.') {
