@@ -72,6 +72,23 @@ export default {
     passwordInput () {
       this.passwordInConsistent = false
     },
+    communicate () {
+      this.$http.post(this.set_profile, this.item)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            this.$Message.info('未知错误')
+          } else if (response.data === 'ERROR, email has not been registered.') {
+            this.$Message.info('该邮箱未被注册！')
+          } else if (response.data === 'ERROR, nickname has been used.') {
+            this.$Message.info('该昵称已被注册')
+          } else {
+            this.$Message.info('完善信息成功')
+            // window.location.href = '../en_login'
+          }
+        }, (response) => {
+          this.$Message.info('未知错误')
+        })
+    },
     finish () {
       if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '') {
         this.$Message.info('您的信息不完善！')
@@ -83,27 +100,12 @@ export default {
         this.$Message.info('您两次输入的密码不一致！')
       } else {
         // 与后端链接进行信息传输和验证
-        let vm = this
         this.item = {
           'email': this.email,
           'password': this.password,
           'nickname': this.nickname
         }
-        vm.$http.post(vm.set_profile, this.item)
-          .then((response) => {
-            if (response.data === 'ERROR, invalid data in serializer.') {
-              this.$Message.info('未知错误')
-            } else if (response.data === 'ERROR, email has not been registered.') {
-              this.$Message.info('该邮箱未被注册！')
-            } else if (response.data === 'ERROR, nickname has been used.') {
-              this.$Message.info('该昵称已被注册')
-            } else {
-              this.$Message.info('完善信息成功')
-              // window.location.href = '../en_login'
-            }
-          }, (response) => {
-            this.$Message.info('未知错误')
-          })
+        this.communicate()
       }
     }
   }

@@ -61,6 +61,23 @@ export default {
     emailInput () {
       this.emailIllegal = false
     },
+    communicate () {
+      this.$http.post(this.api_login, this.item)
+        .then((response) => {
+          if (response.data === 'ERROR, wrong email or password.') {
+            this.$Message.info('错误的账号或密码！')
+          } else if (response.data === 'ERROR, wrong information.') {
+            this.$Message.info('未知错误！')
+          } else if (response.data === 'ERROR, incomplete information.') {
+            this.$Message.info('信息不完整！')
+          } else {
+            this.$Message.info('登陆成功！')
+            // window.location.href = '../en_login'
+          }
+        }, (response) => {
+          this.$Message.info('未知错误2！')
+        })
+    },
     login () {
       if (this.email === '' || this.password === '') {
         this.$Message.info('您的信息不完善！')
@@ -68,26 +85,11 @@ export default {
         this.$Message.info('您的输入的邮箱格式不正确！')
       } else {
         // 与后端链接进行信息传输和验证
-        let vm = this
         this.item = {
           'email': this.email,
           'password': this.password
         }
-        vm.$http.post(vm.api_login, this.item)
-          .then((response) => {
-            if (response.data === 'ERROR, wrong email or password.') {
-              this.$Message.info('错误的账号或密码！')
-            } else if (response.data === 'ERROR, wrong information.') {
-              this.$Message.info('未知错误！')
-            } else if (response.data === 'ERROR, incomplete information.') {
-              this.$Message.info('信息不完整！')
-            } else {
-              this.$Message.info('登陆成功！')
-              // window.location.href = '../en_login'
-            }
-          }, (response) => {
-            this.$Message.info('未知错误2！')
-          })
+        this.communicate()
       }
     }
   }
