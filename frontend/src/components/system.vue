@@ -107,7 +107,7 @@ export default {
       this.examples.splice(index, 1)
     },
     reset_key () {
-      this.$http.post(this.apiResetCommunicationKey, this.adminEmail)
+      this.$http.post(this.apiResetCommunicationKey)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../en_login'
@@ -129,11 +129,9 @@ export default {
     this.adminEmail = {
       'email': '1234444@123.com'
     }
-    this.$http.post(this.apiShowCommunicationKey, this.adminEmail)
+    this.$http.post(this.apiShowCommunicationKey)
       .then((response) => {
-        if (response.data === 'ERROR, incomplete information.') {
-          window.location.href = '../en_login'
-        } else if (response.data === 'ERROR, wrong information.') {
+        if (response.data === 'ERROR, session is broken.') {
           window.location.href = '../en_login'
         } else if (response.data === 'ERROR, wrong email.') {
           window.location.href = '../en_login'
