@@ -76,17 +76,21 @@ export default {
       this.$http.post(this.set_profile, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            this.$Message.info('未知错误')
+            this.$Message.info('未知错误！')
+          } else if (response.data === 'ERROR, incomplete information.' || response.data === 'ERROR, wrong information.') {
+            this.$Message.info('未知错误!')
+          } else if (response.data === 'ERROR, admin_email is wrong.') {
+            this.$Message.info('邀请您的企业邮箱有误！')
           } else if (response.data === 'ERROR, email has not been registered.') {
             this.$Message.info('该邮箱未被注册！')
           } else if (response.data === 'ERROR, nickname has been used.') {
-            this.$Message.info('该昵称已被注册')
+            this.$Message.info('该昵称已被注册！')
           } else {
-            this.$Message.info('完善信息成功')
+            this.$Message.info('完善信息成功！')
             // window.location.href = '../en_login'
           }
         }, (response) => {
-          this.$Message.info('未知错误')
+          this.$Message.info('未知错误！')
         })
     },
     finish () {

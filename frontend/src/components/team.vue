@@ -53,7 +53,7 @@ export default {
       apiCustomerserviceCreate: '../api/customerservice_create/',
       apiCustomerserviceShowStatus: '../api/customerservice_show_status/',
       adminEmail: {},
-      customerService: {},
+      customerService: {}
     }
   },
   methods: {
