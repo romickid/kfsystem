@@ -72,9 +72,9 @@ def admin_send_email_find_password(email, content):
     send_mail('客服系统找回密码', content, 'big5_nankai@163.com', [email], fail_silently=True)
 
 
-def admin_is_existent_by_vid(vid):
+def admin_is_existent_by_email_vid(email, vid):
     try:
-        instance = Admin.objects.get(vid=vid)
+        instance = Admin.objects.get(email=email, vid=vid)
         return True
     except Admin.DoesNotExist:
         return False
@@ -120,6 +120,14 @@ def cs_is_existent_by_nickname(nickname):
 def cs_is_valid_by_email_password(email, sha512_final_password):
     try:
         instance = CustomerService.objects.get(email=email, password=sha512_final_password)
+        return True
+    except CustomerService.DoesNotExist:
+        return False
+
+
+def cs_is_existent_by_email_vid(email, vid):
+    try:
+        instance = CustomerService.objects.get(email=email, vid=vid)
         return True
     except CustomerService.DoesNotExist:
         return False

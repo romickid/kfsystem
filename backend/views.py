@@ -92,15 +92,12 @@ def admin_find_password_email_request(request):
 @csrf_exempt
 def admin_find_password_check_vid(request):
     if request.method == 'POST':
-        # Admin: vid
+        # Admin: email vid
         json_receive = JSONParser().parse(request)
         is_correct, error_message = admin_find_password_check_vid_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=400)
-
-        instance = Admin.objects.get(vid=json_receive['vid'])
-        json_send = { 'email': instance.email }
-        return JsonResponse(json_send, status=401)
+        return HttpResponse('Valid', status=401)
 
 
 @csrf_exempt
@@ -262,15 +259,12 @@ def customerservice_find_password_email_request(request):
 @csrf_exempt
 def customerservice_find_password_check_vid(request):
     if request.method == 'POST':
-        # CustomerService: vid
+        # CustomerService: email vid
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_find_password_check_vid_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=400)
-
-        instance = CustomerService.objects.get(vid=json_receive['vid'])
-        json_send = { 'email': instance.email }
-        return JsonResponse(json_send, status=401)
+        return HttpResponse('Valid', status=401)
 
 
 @csrf_exempt
