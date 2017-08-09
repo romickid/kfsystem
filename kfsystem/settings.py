@@ -129,12 +129,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "frontend/dist/static"),
 ]
 
-#邮件配置
+# email setting
 EMAIL_HOST = 'smtp.163.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = 'big5_nankai@163.com'
 EMAIL_HOST_PASSWORD = 'big12345'
 EMAIL_SUBJECT_PREFIX = u'[django]'
 EMAIL_USE_TLS = True
-# 管理员站点
+# admin setting
 # SERVER_EMAIL = 'xinxinyu2011@163.com'
