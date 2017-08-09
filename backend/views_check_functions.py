@@ -34,7 +34,7 @@ def admin_reset_password_check(json_receive):
     return 1, 'No ERROR.'
 
 
-def admin_find_password_email_request_check(json_receive):
+def admin_forget_password_email_request_check(json_receive):
     test_result = json_testing(json_receive, ['email'], 1)
     if test_result == 1:
         return 0, 'ERROR, incomplete information.'
@@ -45,7 +45,7 @@ def admin_find_password_email_request_check(json_receive):
     return 1, 'No ERROR.'
 
 
-def admin_find_password_check_vid_check(json_receive):
+def admin_forget_password_check_vid_check(json_receive):
     test_result = json_testing(json_receive, ['email', 'vid'], 2)
     if test_result == 1:
         return 0, 'ERROR, incomplete information.'
@@ -56,7 +56,7 @@ def admin_find_password_check_vid_check(json_receive):
     return 1, 'No ERROR.'
 
 
-def admin_find_password_save_data_check(json_receive):
+def admin_forget_password_save_data_check(json_receive):
     test_result = json_testing(json_receive, ['email', 'newpassword'], 2)
     if test_result == 1:
         return 0, 'ERROR, incomplete information.'
@@ -131,7 +131,7 @@ def customerservice_reset_password_check(json_receive):
     return 1, 'No ERROR.'
 
 
-def customerservice_find_password_email_request_check(json_receive):
+def customerservice_forget_password_email_request_check(json_receive):
     test_result = json_testing(json_receive, ['email'], 1)
     if test_result == 1:
         return 0, 'ERROR, incomplete information.'
@@ -142,7 +142,7 @@ def customerservice_find_password_email_request_check(json_receive):
     return 1, 'No ERROR.'
 
 
-def customerservice_find_password_check_vid_check(json_receive):
+def customerservice_forget_password_check_vid_check(json_receive):
     test_result = json_testing(json_receive, ['email', 'vid'], 2)
     if test_result == 1:
         return 0, 'ERROR, incomplete information.'
@@ -153,7 +153,7 @@ def customerservice_find_password_check_vid_check(json_receive):
     return 1, 'No ERROR.'
 
 
-def customerservice_find_password_save_data_check(json_receive):
+def customerservice_forget_password_save_data_check(json_receive):
     test_result = json_testing(json_receive, ['email', 'newpassword'], 2)
     if test_result == 1:
         return 0, 'ERROR, incomplete information.'

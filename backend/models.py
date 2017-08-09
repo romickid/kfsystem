@@ -14,7 +14,7 @@ class Admin(models.Model):
     web_url = models.CharField(max_length=200, default='empty', unique=True)
     widget_url = models.CharField(max_length=200, default='empty', unique=True)
     mobile_url = models.CharField(max_length=200, default='empty', unique=True)
-    communication_key = models.CharField(max_length=32, default='empty', unique=True) # TODO MD5 + salt
+    communication_key = models.CharField(max_length=32, default='empty', unique=True)
     vid = models.CharField(max_length=32, default='empty')
 
 
