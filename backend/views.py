@@ -16,7 +16,7 @@ def admin_create(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = admin_create_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
         json_receive['password'] = admin_generate_password(json_receive['email'], json_receive['password'])
         json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
         json_receive['widget_url'] = json_receive['email'] + '.widget_url'
@@ -27,8 +27,8 @@ def admin_create(request):
         if serializer.is_valid():
             serializer.save()
             sn_mark_used(json_receive['serials'])
-            return JsonResponse(serializer.data, status=401) # 401 For Test
-        return HttpResponse('ERROR, invalid data in serializer.', status=400)
+            return JsonResponse(serializer.data, status=200)
+        return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
 @csrf_exempt
@@ -38,12 +38,12 @@ def admin_login(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = admin_login_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
         sha512_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
-            return HttpResponse("Valid.", status=401)  # 401 just for test
+            return HttpResponse("Valid.", status=200) 
         else:
-            return HttpResponse("ERROR, wrong email or password.", status=400)
+            return HttpResponse("ERROR, wrong email or password.", status=200)
 
 
 @csrf_exempt
@@ -53,61 +53,61 @@ def admin_reset_password(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = admin_reset_password_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         sha512_old_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
-            return HttpResponse("ERROR, wrong email or password.", status=400)
+            return HttpResponse("ERROR, wrong email or password.", status=200)
         sha512_new_final_password = admin_generate_password(json_receive['email'], json_receive['newpassword'])
         instance = Admin.objects.get(email=json_receive['email'], password=sha512_old_final_password)
         json_receive['password'] = sha512_new_final_password
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=401) # 401 just for test
-        return HttpResponse("ERROR, invalid data in serializer.", status=400)
+            return JsonResponse(serializer.data, status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
-def admin_find_password_email_request(request):
+def admin_forget_password_email_request(request):
     if request.method == 'POST':
         # Admin: email
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = admin_find_password_email_request_check(json_receive)
+        is_correct, error_message = admin_forget_password_email_request_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
         serializer = AdminSerializer(instance, data=json_receive)
-        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/admin_find_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/admin_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
-            admin_send_email_find_password(json_receive['email'], content)
-            return HttpResponse('Valid', status=401)
+            admin_send_email_forget_password(json_receive['email'], content)
+            return HttpResponse('Valid', status=200)
         else:
-            return HttpResponse("ERROR, invalid data in serializer.", status=400)
+            return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
-def admin_find_password_check_vid(request):
+def admin_forget_password_check_vid(request):
     if request.method == 'POST':
         # Admin: email vid
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = admin_find_password_check_vid_check(json_receive)
+        is_correct, error_message = admin_forget_password_check_vid_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
-        return HttpResponse('Valid', status=401)
+            return HttpResponse(error_message, status=200)
+        return HttpResponse('Valid', status=200)
 
 
 @csrf_exempt
-def admin_find_password_save_data(request):
+def admin_forget_password_save_data(request):
     if request.method == 'POST':
-    # Admin: email newpassword
+        # Admin: email newpassword
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = admin_find_password_save_data_check(json_receive)
+        is_correct, error_message = admin_forget_password_save_data_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         instance = Admin.objects.get(email=json_receive['email'])
         sha512_new_final_password = admin_generate_password(json_receive['email'], json_receive['newpassword'])
@@ -116,8 +116,8 @@ def admin_find_password_save_data(request):
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=401) # 401 just for test
-        return HttpResponse("ERROR, invalid data in serializer.", status=400)
+            return JsonResponse(serializer.data, status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
@@ -127,14 +127,14 @@ def admin_show_communication_key(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = admin_show_communication_key_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         if admin_is_existent_by_email(json_receive['email']) == False:
             return HttpResponse('ERROR, wrong email.', status=200)
         else:
             communication_key = admin_get_communication_key(json_receive['email'])
             json_send = {'communication_key': communication_key}
-            return JsonResponse(json_send, status=200) # 401 just for test
+            return JsonResponse(json_send, status=200)
 
 
 @csrf_exempt
@@ -144,14 +144,14 @@ def admin_reset_communication_key(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = admin_reset_communication_key_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=200) # 401 just for test
+            return JsonResponse(serializer.data, status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
@@ -162,7 +162,7 @@ def customerservice_create(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_create_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         instance_admin = Admin.objects.get(email=json_receive['admin_email'])
         json_receive['nickname'] = json_receive['email']
@@ -173,8 +173,8 @@ def customerservice_create(request):
         if serializer.is_valid():
             serializer.save()
             cs_send_email_create_account(json_receive['email'], content)
-            return JsonResponse(serializer.data, status=401) # 401 just for test
-        return HttpResponse('ERROR, invalid data in serializer.', status=400)
+            return JsonResponse(serializer.data, status=200)
+        return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
 @csrf_exempt
@@ -184,7 +184,7 @@ def customerservice_set_profile(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_set_profile_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         json_receive['password'] = cs_generate_password(json_receive['email'], json_receive['password'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
@@ -192,8 +192,8 @@ def customerservice_set_profile(request):
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=401) # 401 just for test
-        return HttpResponse('ERROR, invalid data in serializer.', status=400)
+            return JsonResponse(serializer.data, status=200)
+        return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
 @csrf_exempt
@@ -203,13 +203,13 @@ def customerservice_login(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_login_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         sha512_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
         if cs_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
-            return HttpResponse("Valid.", status=401)  # 401 just for test
+            return HttpResponse("Valid.", status=200) 
         else:
-            return HttpResponse("ERROR, wrong email or password.", status=400)
+            return HttpResponse("ERROR, wrong email or password.", status=200)
 
 
 @csrf_exempt
@@ -219,62 +219,62 @@ def customerservice_reset_password(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_reset_password_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         sha512_old_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
         if cs_is_valid_by_email_password(json_receive['email'], sha512_old_final_password) == False:
-            return HttpResponse("ERROR, wrong email or password.", status=400)
+            return HttpResponse("ERROR, wrong email or password.", status=200)
         sha512_new_final_password = cs_generate_password(json_receive['email'], json_receive['newpassword'])
         instance = CustomerService.objects.get(email=json_receive['email'], password=sha512_old_final_password)
         json_receive['password'] = sha512_new_final_password
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=401) # 401 just for test
+            return JsonResponse(serializer.data, status=200)
         else:
-            return HttpResponse("ERROR, invalid data in serializer.", status=400)
+            return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
-def customerservice_find_password_email_request(request):
+def customerservice_forget_password_email_request(request):
     if request.method == 'POST':
         # CustomerService: email
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_find_password_email_request_check(json_receive)
+        is_correct, error_message = customerservice_forget_password_email_request_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         instance = CustomerService.objects.get(email=json_receive['email'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
-        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/customerservice_find_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/customerservice_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
-            cs_send_email_find_password(json_receive['email'], content)
-            return HttpResponse('Valid', status=401)
+            cs_send_email_forget_password(json_receive['email'], content)
+            return HttpResponse('Valid', status=200)
         else:
-            return HttpResponse("ERROR, invalid data in serializer.", status=400)
+            return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
-def customerservice_find_password_check_vid(request):
+def customerservice_forget_password_check_vid(request):
     if request.method == 'POST':
         # CustomerService: email vid
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_find_password_check_vid_check(json_receive)
+        is_correct, error_message = customerservice_forget_password_check_vid_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
-        return HttpResponse('Valid', status=401)
+            return HttpResponse(error_message, status=200)
+        return HttpResponse('Valid', status=200)
 
 
 @csrf_exempt
-def customerservice_find_password_save_data(request):
+def customerservice_forget_password_save_data(request):
     if request.method == 'POST':
         # CustomerService: email newpassword
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = cs_find_password_save_data_check(json_receive)
+        is_correct, error_message = cs_forget_password_save_data_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         instance = CustomerService.objects.get(email=json_receive['email'])
         sha512_new_final_password = cs_generate_password(json_receive['email'], json_receive['newpassword'])
@@ -283,8 +283,8 @@ def customerservice_find_password_save_data(request):
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=401) # 401 just for test
-        return HttpResponse("ERROR, invalid data in serializer.", status=400)
+            return JsonResponse(serializer.data, status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
@@ -294,14 +294,14 @@ def customerservice_show_status(request):
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_show_status_check(json_receive)
         if is_correct == 0:
-            return HttpResponse(error_message, status=400)
+            return HttpResponse(error_message, status=200)
 
         instance_admin = Admin.objects.get(email=json_receive['admin_email'])
         instance_customerservice = CustomerService.objects.filter(enterprise=instance_admin.id)
         json_send = list()
         for i in instance_customerservice:
             json_send.append({'email': i.email, 'is_register': i.is_register, 'is_online': i.is_online, 'connection_num': i.connection_num, 'nickname': i.nickname})
-        return JsonResponse(json_send, safe=False, status=401)
+        return JsonResponse(json_send, safe=False, status=200)
 
 
 @csrf_exempt
@@ -319,8 +319,8 @@ def chattinglog_send_message(request):
         serializer = ChattingLogSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return JsonResponse(serializer.data, status=200)
+        return JsonResponse(serializer.errors, status=200)
 
 
 @csrf_exempt
@@ -328,7 +328,7 @@ def chattinglog_delete_record(request):
     if request.method == 'DELETE':
         chattinglogs = ChattingLog.objects.all()
         chattinglogs.delete()
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)
 
 
 @csrf_exempt
@@ -339,7 +339,7 @@ def chattinglog_delete_record_ontime(request):
         start_date = end_date - timedelta(days=100)
         chattinglogs = ChattingLog.objects.filter(time__range=[start_date, end_date])
         chattinglogs.delete()
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)
 
 
 @csrf_exempt
@@ -353,4 +353,4 @@ def chattinglog_status_change(request):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, safe=False)
-        return JsonResponse(serializer1.errors, status=400)
+        return JsonResponse(serializer1.errors, status=200)
