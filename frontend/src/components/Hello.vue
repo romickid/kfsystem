@@ -44,6 +44,8 @@
       <button @click="test3()">Test3</button>
       <button @click="test4()">Test4</button>
       <button @click="test5()">Test5</button>
+      <button @click="test6()">Test6</button>
+      <button @click="test7()">Test7</button>
     </div>
 
   </div>
@@ -57,6 +59,8 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       // for test, do not delete it.
       api_admin_create: './api/admin_create/',
+      api_admin_login: './api/admin_login/',
+      api_admin_reset_password: './api/admin_reset_password/',
       api_admin_show_communication_key: './api/admin_show_communication_key/',
       api_admin_reset_communication_key: './api/admin_reset_communication_key/',
       api_admin_find_password_email_request: './api/admin_find_password_email_request/',
@@ -78,11 +82,11 @@ export default {
   },
 
   // FOR TEST, DO NOT DELETE IT!
-  methods: {
+  methods: {    
     test1: function () {
       var vm = this
-      this.item = { 'email': 'cs1@a.com', 'admin_email': 'test1@a.com' }
-      vm.$http.post(vm.api_customerservice_create, this.item)
+      this.item = { 'email': 'test1@a.com', 'password': 'pass1' }
+      vm.$http.post(vm.api_admin_login, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -90,8 +94,8 @@ export default {
 
     test2: function () {
       var vm = this
-      this.item = { 'email': 'cs2@a.com' }
-      vm.$http.post(vm.api_customerservice_create, this.item)
+      this.item = { 'email': 'test2@a.com', 'password': 'pass2' }
+      vm.$http.post(vm.api_admin_login, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -99,8 +103,8 @@ export default {
 
     test3: function () {
       var vm = this
-      this.item = { 'email': 'cs3@a.com', 'admin_email': 'test1@a.com', 'nickname': 'cs3' }
-      vm.$http.post(vm.api_customerservice_create, this.item)
+      this.item = { 'email': 'test1@a.com', 'password': 'pass1', 'newpassword': 'newpass1' }
+      vm.$http.post(vm.api_admin_reset_password, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -108,21 +112,12 @@ export default {
 
     test4: function () {
       var vm = this
-      this.item = { 'email': 'cs4@a.com', 'admin_email': 'test3@a.com' }
-      vm.$http.post(vm.api_customerservice_create, this.item)
+      this.item = { 'email': 'test2@a.com', 'password': 'pass2', 'newpassword': 'newpass2' }
+      vm.$http.post(vm.api_admin_reset_password, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
-
-    test5: function () {
-      var vm = this
-      this.item = { 'email': 'cs1@a.com', 'admin_email': 'test1@a.com' }
-      vm.$http.post(vm.api_customerservice_create, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    }
   }
 }
 </script>
