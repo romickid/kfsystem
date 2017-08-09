@@ -37,7 +37,9 @@ export default {
       newPassword: '',
       newPasswordConfirm: '',
       passwordNonStandard: false,
-      passwordInConsistent: false
+      passwordInConsistent: false,
+      adminFindPssword: {},
+      apiAdminFindPasswordCheckVid: '../api/admin_find_password_check_vid/',
     }
   },
   methods: {
@@ -64,7 +66,29 @@ export default {
           // 与后端链接进行信息传输和验证
         }
       }
+    },
+    verify () {
+      this.$http.post(this.apiAdminFindPasswordCheckVid, this.adminFindPssword)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong vid.') {
+            window.location.href = '../main'
+          } else {
+            return
+          }
+        }, (response) => {
+          window.location.href = '../main'
+        })
     }
+  },
+  created () {
+    this.adminFindPssword = {
+      'vid': this.$utils.getUrlKey('key')
+    }
+    this.verify()
   }
 }
 </script>
