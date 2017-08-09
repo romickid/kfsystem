@@ -2,10 +2,10 @@ from .views_helper_functions import *
 
 
 def admin_create_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'nickname', 'password', 'serials'], 4)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'nickname', 'password', 'serials'], 4)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if sn_is_serials_valid(json_receive['serials']) == False:
         return 0, 'ERROR, serials is invalid.'
@@ -17,28 +17,31 @@ def admin_create_check(json_receive):
 
 
 def admin_login_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'password'], 2)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'password'], 2)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     return 1, 'No ERROR.'
 
 
-def admin_reset_password_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'password', 'newpassword'], 3)
-    if test_result == 1:
+def admin_reset_password_check(json_receive, request):
+    test_json = json_testing(json_receive, ['password', 'newpassword'], 2)
+    test_sessions = admin_sessions_check(request)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
     return 1, 'No ERROR.'
 
 
 def admin_forget_password_email_request_check(json_receive):
-    test_result = json_testing(json_receive, ['email'], 1)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email'], 1)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if admin_is_existent_by_email(json_receive['email']) == False:
         return 0, 'ERROR, wrong email.'
@@ -46,10 +49,10 @@ def admin_forget_password_email_request_check(json_receive):
 
 
 def admin_forget_password_check_vid_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'vid'], 2)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'vid'], 2)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if admin_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
         return 0, 'ERROR, wrong email or vid.'
@@ -57,41 +60,39 @@ def admin_forget_password_check_vid_check(json_receive):
 
 
 def admin_forget_password_save_data_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'newpassword'], 2)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'newpassword'], 2)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if admin_is_existent_by_email(json_receive['email']) == False:
         return 0, 'ERROR, wrong email.'
     return 1, 'No ERROR.'
 
 
-def admin_show_communication_key_check(json_receive):
-    test_result = json_testing(json_receive, ['email'], 1)
-    if test_result == 1:
-        return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
-        return 0, 'ERROR, wrong information.'
+def admin_show_communication_key_check(request):
+    test_sessions = admin_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
     return 1, 'No ERROR.'
 
 
-def admin_reset_communication_key_check(json_receive):
-    test_result = json_testing(json_receive, ['email'], 1)
-    if test_result == 1:
-        return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
-        return 0, 'ERROR, wrong information.'
-    if admin_is_existent_by_email(json_receive['email']) == False:
+def admin_reset_communication_key_check(request):
+    test_sessions = admin_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
         return 0, 'ERROR, wrong email.'
     return 1, 'No ERROR.'
 
 
 def customerservice_create_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'admin_email'], 2)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'admin_email'], 2)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email(json_receive['email']) == True:
         return 0, 'ERROR, email has been registered.'
@@ -101,10 +102,10 @@ def customerservice_create_check(json_receive):
 
 
 def customerservice_set_profile_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'password', 'nickname'], 3)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'password', 'nickname'], 3)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email(json_receive['email']) == False:
         return 0, 'ERROR, email has not been registered.'
@@ -114,28 +115,28 @@ def customerservice_set_profile_check(json_receive):
 
 
 def customerservice_login_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'password'], 2)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'password'], 2)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     return 1, 'No ERROR.'
 
 
 def customerservice_reset_password_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'password', 'newpassword'], 3)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'password', 'newpassword'], 3)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     return 1, 'No ERROR.'
 
 
 def customerservice_forget_password_email_request_check(json_receive):
-    test_result = json_testing(json_receive, ['email'], 1)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email'], 1)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email(json_receive['email']) == False:
         return 0, 'ERROR, wrong email.'
@@ -143,10 +144,10 @@ def customerservice_forget_password_email_request_check(json_receive):
 
 
 def customerservice_forget_password_check_vid_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'vid'], 2)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'vid'], 2)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
         return 0, 'ERROR, wrong email or vid.'
@@ -154,10 +155,10 @@ def customerservice_forget_password_check_vid_check(json_receive):
 
 
 def customerservice_forget_password_save_data_check(json_receive):
-    test_result = json_testing(json_receive, ['email', 'newpassword'], 2)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['email', 'newpassword'], 2)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email(json_receive['email']) == False:
         return 0, 'ERROR, wrong email.'
@@ -165,10 +166,10 @@ def customerservice_forget_password_save_data_check(json_receive):
 
 
 def customerservice_show_status_check(json_receive):
-    test_result = json_testing(json_receive, ['admin_email'], 1)
-    if test_result == 1:
+    test_json = json_testing(json_receive, ['admin_email'], 1)
+    if test_json == 1:
         return 0, 'ERROR, incomplete information.'
-    if test_result == 2:
+    if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if admin_is_existent_by_email(json_receive['admin_email']) == False:
         return 0, 'ERROR, wrong admin_email.'
