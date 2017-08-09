@@ -36,7 +36,7 @@ export default {
     emailInput () {
       this.emailIllegal = false
     },
-    ok () {            
+    ok () {
       if (this.email === '') {
         this.emailIllegal = false
         this.$Message.info('您的信息不完善！')
