@@ -3,7 +3,7 @@
     <div class='team-content'>
       <div class='title'>
         <h2>客服人员列表</h2>
-         <i-button type='text' @click='refresh'>刷新</i-button>
+        <i-button type='text' @click='refresh'>刷新</i-button>
         <div class='add'>
           <Icon type='person-add' class='add-icon'></Icon>
           <i-button type='text' @click='addModal = true'>添加客服
@@ -53,7 +53,7 @@ export default {
       apiCustomerserviceCreate: '../api/customerservice_create/',
       apiCustomerserviceShowStatus: '../api/customerservice_show_status/',
       adminEmail: {},
-      customerService: {}
+      customerService: {},
     }
   },
   methods: {
@@ -61,12 +61,14 @@ export default {
       if (this.kf === '') {
         return
       }
-      var vm = this
       this.customerService = {
         'email': this.kf,
         'admin_email': this.adminEmail.admin_email
       }
-      vm.$http.post(vm.apiCustomerserviceCreate, this.customerService)
+      this.communicate()
+    },
+    communicate () {
+      this.vm.$http.post(this.vm.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../en_login'
@@ -93,8 +95,7 @@ export default {
       this.kfstaff.splice(index, 1)
     },
     refresh () {
-      var vm = this
-      vm.$http.post(vm.apiCustomerserviceShowStatus, this.adminEmail)
+      this.$http.post(this.apiCustomerserviceShowStatus, this.adminEmail)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../en_login'
