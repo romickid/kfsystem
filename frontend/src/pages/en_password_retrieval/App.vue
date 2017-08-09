@@ -38,8 +38,10 @@ export default {
       newPasswordConfirm: '',
       passwordNonStandard: false,
       passwordInConsistent: false,
-      adminFindPssword: {},
-      apiAdminFindPasswordCheckVid: '../api/admin_find_password_check_vid/',
+      adminFindPassword: {},
+      adminResetPassword: {},
+      apiAdminFindPasswordCheckVid: '../api/admin_forget_password_check_vid/',
+      apiAdminForgetPasswordSaveData: '../api/admin_forget_password_save_data/'
     }
   },
   methods: {
@@ -64,20 +66,41 @@ export default {
       } else {
         if (this.passwordInConsistent === false) {
           // 与后端链接进行信息传输和验证
+          this.adminResetPassword = {
+            'email': this.adminFindPassword.email,
+            'newpassword': this.newPassword
+          }
+          this.resetPassword()
         }
       }
     },
     verify () {
-      this.$http.post(this.apiAdminFindPasswordCheckVid, this.adminFindPssword)
+      this.$http.post(this.apiAdminFindPasswordCheckVid, this.adminFindPassword)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../main'
           } else if (response.data === 'ERROR, wrong information.') {
             window.location.href = '../main'
-          } else if (response.data === 'ERROR, wrong vid.') {
+          } else if (response.data === 'ERROR, wrong email or vid.') {
+            window.location.href = '../main'
+          }
+        }, (response) => {
+          window.location.href = '../main'
+        })
+    },
+    resetPassword () {
+      this.$http.post(this.apiAdminForgetPasswordSaveData, this.adminResetPassword)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../main'
           } else {
-            return
+            window.location.href = '../en_login'
           }
         }, (response) => {
           window.location.href = '../main'
@@ -85,7 +108,8 @@ export default {
     }
   },
   created () {
-    this.adminFindPssword = {
+    this.adminFindPassword = {
+      'email': this.$utils.getUrlKey('email'),
       'vid': this.$utils.getUrlKey('key')
     }
     this.verify()
