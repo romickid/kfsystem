@@ -39,7 +39,9 @@ export default {
       passwordNonStandard: false,
       passwordInConsistent: false,
       apiCustomerserviceForgetPasswordCheckVid: '../api/customerservice_forget_password_check_vid/',
-      customerserviceFindPassword: {}
+      apiCustomerserviceForgetPasswordSaveData: '../api/customerservice_forget_password_save_data/',
+      customerserviceFindPassword: {},
+      customerserviceResetPassword: {}
     }
   },
   methods: {
@@ -64,11 +66,16 @@ export default {
       } else {
         if (this.passwordInConsistent === false) {
           // 与后端链接进行信息传输和验证
+          this.customerserviceResetPassword = {
+            'email': this.customerserviceFindPassword.email,
+            'newpassword': this.newPassword
+          }
+          this.resetPassword()
         }
       }
     },
     verify () {
-      this.$http.post(this.apiCustomerserviceForgetPasswordCheckVid, this.customerserviceFindPassword)
+      this.$http.post(this.apiCustomerserviceForgetPasswordCheckVid, this.customerserviceResetPassword)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../main'
@@ -76,6 +83,24 @@ export default {
             window.location.href = '../main'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../main'
+          }
+        }, (response) => {
+          window.location.href = '../main'
+        })
+    },
+    resetPassword () {
+      this.$http.post(this.apiCustomerserviceForgetPasswordSaveData, this.adminResetPassword)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../main'
+          } else if (response.data === 'ERROR, invalid data in serializer.') {
+            window.location.href = '../main'
+          } else {
+            window.location.href = '../se_login'
           }
         }, (response) => {
           window.location.href = '../main'
