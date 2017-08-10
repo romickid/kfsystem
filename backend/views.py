@@ -430,6 +430,3 @@ def chattinglog_show_history(request):
         instances = ChattingLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
         serializer = ChattingLogSerializer(instances,many=True)
         return JsonResponse(serializer.data,safe=False,status=200)
-
-
-
