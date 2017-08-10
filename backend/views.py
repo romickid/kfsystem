@@ -174,6 +174,20 @@ def admin_show_cs_status(request):
 
 
 @csrf_exempt
+def admin_show_user_status(request):
+    if request.method == 'POST':
+        # no json
+        is_correct, error_message = admin_show_user_status_check(request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['a_email']
+        instance = Admin.objects.get(email=data_email)
+        json_send = {'email': instance.email, 'nickname': instance.nickname}
+        return JsonResponse(json_send, status=200)
+
+
+@csrf_exempt
 def admin_logout(request):
     if request.method == 'POST':
         # no json
@@ -318,6 +332,20 @@ def customerservice_forget_password_save_data(request):
             serializer.save()
             return JsonResponse(serializer.data, status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
+
+
+@csrf_exempt
+def customerservice_show_user_status(request):
+    if request.method == 'POST':
+        # no json
+        is_correct, error_message = customerservice_show_user_status_check(request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['c_email']
+        instance = CustomerService.objects.get(email=data_email)
+        json_send = {'email': instance.email, 'nickname': instance.nickname}
+        return JsonResponse(json_send, status=200)
 
 
 @csrf_exempt
