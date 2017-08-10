@@ -60,7 +60,7 @@ export default {
           } else if (response.data === 'ERROR, wrong information.') {
             window.location.href = '../notfound'
           } else {
-            window.location.href = '../en_login'
+            this.$Message.info('验证邮件已发送至您的邮箱')
           }
         }, (response) => {
           window.location.href = '../notfound'
