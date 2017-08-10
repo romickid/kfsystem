@@ -48,8 +48,8 @@ export default {
       } else {
         // 与后端链接进行信息传输和验证
         this.item = {
-          'password': this.oldPassword,
-          'newpassword': this.newPassword
+          'password': this.hashPassword(oldPassword),
+          'newpassword': this.hashedPassword(newPassword)
         }
         this.communicate()
       }
@@ -77,6 +77,13 @@ export default {
       this.oldPassword = ''
       this.newPassword = ''
       this.passwordNonstandard = false
+    },
+    hashPassword (str) {
+      var sha512 = require('js-sha512').sha512
+      var hash = sha512.create()
+      hash.update(str)
+      str = hash.hex()
+      return str
     }
   }
 }
