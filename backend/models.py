@@ -44,13 +44,13 @@ class SerialNumber(models.Model):
 
 class ImageLog(models.Model):
     client_id = models.CharField(max_length=100, default='empty')
-    service_id = models.ForeignKey('CustomerService')
+    service_id = models.ForeignKey('CustomerService', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='screenshots') # TODO need to modify
     is_client = models.BooleanField(default=None)
     time = models.DateTimeField(auto_now_add=True)
 
 
-class EnterpriseInfoType(models.Model):
-    attri_name= models.CharField(max_length=50, default='empty')
-    attri_type= models.CharField(max_length=50, default='empty')
-    en_name= models.CharField(max_length=50, default='empty')
+class EnterpriseDisplayInfo(models.Model):
+    enterprise = models.ForeignKey('Admin', on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, default='empty')
+    comment = models.CharField(max_length=200, default='', blank=True)
