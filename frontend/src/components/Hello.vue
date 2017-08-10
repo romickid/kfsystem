@@ -134,6 +134,9 @@ export default {
       vm.$http.post(vm.api_chattinglog_show_history, this.item)
         .then((response) => {
           vm.$set(this, 'gridData', response.data)
+          for(var p in response.data){
+            alert(response.data[p].time + " " + response.data[p].content);
+          }
           console.log("aaaa")
         })
     }
