@@ -29,6 +29,7 @@
 <script>
 import * as io from 'socket.io-client'
 const key = 'VUE-Customer1'
+localStorage.clear()
 // 虚拟数据
 if (!localStorage.getItem(key)) {
   let now = new Date()
@@ -94,16 +95,27 @@ export default {
   created () {
     const that = this
     this.socket = io('http://localhost:3000')
-    that.socket.id = '24'
+    that.socket.id = (Math.random() * 1000).toString()
+    this.user.id = that.socket.id
+    this.user.name = that.socket.id
     // 接收消息
-    this.socket.on('server message', function (msg, id) {
+    this.socket.on('server message', function (msg, fromId, toId) {
       that.sessionList[0].messages.push({
         text: msg,
         date: new Date(),
         image: that.userList[0].image
       })
     })
+    this.socket.on('connect to server', function (toId) {
+      that.userList[0].id = toId
+      that.sessionList[0].messages.push({
+        text: '已成功为您转接客服' + toId,
+        date: new Date(),
+        image: that.userList[0].image
+      })
+    })
     this.socket.emit('customer set id', that.socket.id)
+    this.socket.emit('assigned to server', that.socket.id)
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
@@ -127,7 +139,7 @@ export default {
           self: true,
           image: this.user.image
         })
-        this.socket.emit('customer message', this.text, '4')
+        this.socket.emit('customer message', this.text, this.user.id, this.userList[0].id)
         this.text = ''
       }
     },
@@ -139,7 +151,7 @@ export default {
           self: true,
           image: this.user.image
         })
-        this.socket.emit('customer message', this.text, '4')
+        this.socket.emit('customer message', this.text, this.user.id, this.userList[0].id)
         this.text = ''
       }
     }
@@ -188,15 +200,15 @@ ul {
 
 /*主要界面*/
 .container {
-  height: 90%;
+  height: 70%;
   width: 80%;
-  margin: 5% auto 5%;
+  margin: 10% auto 10%;
   vertical-align: center;
   border-radius: 4px;
 }
 
 .main {
-  height: 95%;
+  height: 100%;
   position: relative;
   overflow: hidden;
   background-color: #eee;
@@ -207,12 +219,12 @@ ul {
   width: 100%;
   bottom: 0;
   left: 0;
-  height: 20%;
+  height: 160px;
 }
 
 /*似乎没有用到？*/
 .main-message {
-  height: 80%;
+  height: calc(100% - 180px);
 }
 
 .main-message {

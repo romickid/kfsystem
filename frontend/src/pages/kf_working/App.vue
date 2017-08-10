@@ -93,6 +93,7 @@
 <script>
 import * as io from 'socket.io-client'
 const key = 'VUE-CHAT-v6'
+localStorage.clear()
 // 虚拟数据
 if (!localStorage.getItem(key)) {
   let now = new Date()
@@ -124,12 +125,12 @@ if (!localStorage.getItem(key)) {
       },
       {
         id: 5,
-        name: 'yayaya',
+        name: '独角兽🦄',
         image: '../../../static/3.jpg'
       },
       {
         id: 6,
-        name: 'haha',
+        name: '飞天小女警',
         image: '../../../static/1.jpg'
       }
     ],
@@ -207,6 +208,26 @@ if (!localStorage.getItem(key)) {
             image: '../../../static/3.jpg'
           }
         ]
+      },
+      {
+        userId: 6,
+        messages: [
+          {
+            text: '你好，我是客户飞天小女警',
+            date: now,
+            image: '../../../static/3.jpg'
+          },
+          {
+            text: '你可以帮我嘛~~',
+            date: now,
+            image: '../../../static/3.jpg'
+          },
+          {
+            text: '嘻嘻嘻',
+            date: now,
+            image: '../../../static/3.jpg'
+          }
+        ]
       }
     ]
   }
@@ -225,8 +246,6 @@ export default {
       // 会话列表
       sessionList: dataserver.sessionList,
       hangoffSessionList: dataserver.hangoffSessionList,
-      // 搜索key
-      searchname: '',
       // 选中的会话Index
       sessionIndex: 0,
       // 文本框中输入的内容
@@ -235,7 +254,10 @@ export default {
       hangon: true,
       // 设置机器人
       modal1: false,
-      socket: ''
+      // 客服对应的socket
+      socket: '',
+      // 当前正在服务人数
+      customerNumber: 2
     }
   },
   computed: {
@@ -250,11 +272,35 @@ export default {
   created () {
     const that = this
     this.socket = io('http://localhost:3000')
-    that.socket.id = '4'
+    that.socket.id = (Math.random() * 1000).toString()
+    this.user.id = that.socket.id
+    this.user.name = that.socket.id
     // 接收消息
-    this.socket.on('customer message', function (msg, id) {
-      that.sessionList[0].messages.push({
-        text: msg,
+    this.socket.on('customer message', function (msg, fromId, toId) {
+      for (let i = 0; i < that.sessionList.length; i++) {
+        if (that.sessionList[i].userId == fromId) {
+          that.sessionList[i].messages.push({
+            text: msg,
+            date: new Date(),
+            image: that.userList[0].image
+          })
+        }
+      }
+
+    })
+    this.socket.on('add client', function (fromId) {
+      that.userList.push({
+        id: fromId,
+        name: fromId,
+        image: '../../../static/2.png'
+      })
+      that.customerNumber += 1
+      that.sessionList.push({
+        userId: fromId,
+        messages: []
+      })
+      that.sessionList[that.customerNumber - 1].messages.push({
+        text: '用户' + fromId + '已上线',
         date: new Date(),
         image: that.userList[0].image
       })
@@ -278,7 +324,11 @@ export default {
   },
   methods: {
     select (value) {
-      this.sessionIndex = this.userList.indexOf(value)
+      if (this.hangon) {
+        this.sessionIndex = this.userList.indexOf(value)
+      } else {
+        this.sessionIndex = this.hangoffUserList.indexOf(value)
+      }
     },
     inputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
@@ -288,7 +338,7 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        this.socket.emit('server message', this.text, '24')
+        this.socket.emit('server message', this.text, this.user.id, this.session.userId)
         this.text = ''
       }
     },
@@ -300,7 +350,7 @@ export default {
           self: true,
           image: this.user.image
         })
-        this.socket.emit('server message', this.text, '24')
+        this.socket.emit('server message', this.text, this.user.id, this.session.userId)
         this.text = ''
       }
     },
@@ -309,15 +359,6 @@ export default {
     }
   },
   filters: {
-    search (list) {
-      let arr = []
-      for (var i = 0; i < list.length; i++) {
-        if (list[i].name.indexOf(this.searchname) > -1) {
-          arr.push(list[i])
-        }
-      }
-      return arr
-    },
     // 将日期过滤为 hour:minutes
     time (date) {
       if (typeof date === 'string') {
