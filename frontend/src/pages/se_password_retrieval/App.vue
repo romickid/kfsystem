@@ -78,32 +78,32 @@ export default {
       this.$http.post(this.apiCustomerserviceForgetPasswordCheckVid, this.customerserviceResetPassword)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../main'
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../main'
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
-            window.location.href = '../main'
+            window.location.href = '../notfound'
           }
         }, (response) => {
-          window.location.href = '../main'
+          window.location.href = '../notfound'
         })
     },
     resetPassword () {
       this.$http.post(this.apiCustomerserviceForgetPasswordSaveData, this.adminResetPassword)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../main'
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../main'
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../main'
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../main'
+            window.location.href = '../notfound'
           } else {
             window.location.href = '../se_login'
           }
         }, (response) => {
-          window.location.href = '../main'
+          window.location.href = '../notfound'
         })
     }
   },

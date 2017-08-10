@@ -3,13 +3,6 @@
     <Button type="text" @click="find = true">修改密码</Button>
     <Modal v-model="find" title="修改密码页" @on-ok="ok" @on-cancel="cancel">
       <div class="div">
-        <p>登录邮箱：</p>
-        <i-input v-model="email" class="input" @on-blur="checkEmail" @on-focus="emailInput"></i-input>
-        <i-label v-if="emailIllegal">
-          <p class="p">请输入正确的邮箱！</p>
-        </i-label>
-      </div>
-      <div class="div">
         <p>旧密码：</p>
         <i-input type="password" class="input" v-model="oldPassword"></i-input>
       </div>
@@ -29,28 +22,14 @@ export default {
   data () {
     return {
       find: false,
-      email: '',
       oldPassword: '',
       newPassword: '',
       passwordNonstandard: false,
-      emailIllegal: false,
       api_reset_password: '../api/customerservice_reset_password/',
       item: {}
     }
   },
   methods: {
-    checkEmail () {
-      let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
-      let legal = reg.test(this.email)
-      if (legal === false && this.email !== '') {
-        this.emailIllegal = true
-      } else {
-        this.emailIllegal = false
-      }
-    },
-    emailInput () {
-      this.emailIllegal = false
-    },
     checkNewPassword () {
       let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
       let standardContent = reg.test(this.newPassword)
@@ -61,16 +40,13 @@ export default {
       }
     },
     ok () {
-      if (this.email === '' || this.oldPassword === '' || this.newPassword === '') {
+      if (this.oldPassword === '' || this.newPassword === '') {
         this.$Message.info('您的信息不完善！')
-      } else if (this.emailIllegal === true) {
-        this.$Message.info('您的输入的邮箱格式不正确！')
       } else if (this.passwordNonstandard === true) {
         this.$Message.info('您的输入的密码格式不正确！')
       } else {
         // 与后端链接进行信息传输和验证
         this.item = {
-          'email': this.email,
           'password': this.oldPassword,
           'newpassword': this.newPassword
         }
@@ -82,26 +58,23 @@ export default {
       this.$http.post(this.api_reset_password, this.item)
         .then((response) => {
           if (response.data === 'ERROR, wrong email or password.') {
-            this.$Message.info('错误的账号或密码！')
+            window.location.href = '../se_login'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../se_login'
           } else if (response.data === 'ERROR, incomplete information.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../se_login'
           } else if (response.data === 'ERROR, wrong information.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../se_login'
           } else {
             this.$Message.info('密码修改成功！')
-            // window.location.href = '../en_login'
           }
         }, (response) => {
-          this.$Message.info('未知错误！')
+          window.location.href = '../se_login'
         })
     },
     cancel () {
-      this.email = ''
       this.oldPassword = ''
       this.newPassword = ''
-      this.emailIllegal = false
       this.passwordNonstandard = false
     }
   }
