@@ -81,6 +81,7 @@ DATABASES = {
         'NAME': 'db_kfsystem',
         'USER': 'root',
         'PASSWORD': '',
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
 
