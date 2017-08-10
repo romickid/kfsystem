@@ -83,10 +83,16 @@ export default {
         // 与后端链接进行信息传输和验证
         this.item = {
           'email': this.email,
-          'password': this.password
+          'password': this.hashPassword()
         }
         this.communicate()
       }
+    },
+    hashPassword () {
+      var sha512 = require('js-sha512').sha512
+      var hash = sha512.create()
+      hash.update(this.password)
+      return hash.hex()
     }
   }
 }
