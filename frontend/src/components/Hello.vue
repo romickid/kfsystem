@@ -46,6 +46,7 @@
       <button @click="test5()">Test5</button>
       <button @click="test6()">Test6</button>
       <button @click="test7()">Test7</button>
+      <button @click="test8()">History</button>
     </div>
 
   </div>
@@ -75,6 +76,8 @@ export default {
       api_chattinglog_get_data: './api/chattinglog_get_data/',
       api_chattinglog_delete_record_ontime: './api/chattinglog_delete_record_ontime/',
       api_chattinglog_status_change: './api/chattinglog_status_change/',
+      api_chattinglog_show_history: './api/chattinglog_show_history/',
+
 
       item: {},
       gridData: '',
@@ -123,6 +126,17 @@ export default {
       vm.$http.post(vm.api_customerservice_login, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
+        })
+    },
+    test8: function () {
+      var vm = this
+      this.item = { 'client_id': '1', 'service_id': '1' }
+      vm.$http.post(vm.api_chattinglog_show_history, this.item)
+        .then((response) => {
+          vm.$set(this, 'gridData', response.data)
+          for(var p in response.data){
+            alert(response.data[p].time + " " + response.data[p].content);
+          }
         })
     }
   }

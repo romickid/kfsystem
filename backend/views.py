@@ -456,3 +456,12 @@ def chattinglog_status_change(request):
             serializer.save()
             return JsonResponse(serializer.data, safe=False)
         return JsonResponse(serializer1.errors, status=200)
+
+@csrf_exempt
+def chattinglog_show_history(request):
+    if request.method == 'POST':
+        # Chattinglog: client_id service_id
+        json_receive = JSONParser().parse(request)
+        instances = ChattingLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
+        serializer = ChattingLogSerializer(instances,many=True)
+        return JsonResponse(serializer.data,safe=False,status=200)
