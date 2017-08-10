@@ -1,0 +1,14 @@
+stages: 
+  - run
+  - test
+
+deploy:
+  stage: run
+  script:
+    - pip install Django==1.11.2
+    - pip install Django==1.11.2 mysqlclient
+    - cd frontend
+    - cnpm install
+    - cnpm install vue-resource
+    - cnpm install iview --save
+    - cnpm run build
