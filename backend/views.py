@@ -2,8 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .models import Admin, CustomerService, ChattingLog, SerialNumber
-from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo
+from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer
 from datetime import datetime, timedelta
 from .views_helper_functions import *
 from .views_check_functions import *
@@ -185,6 +185,41 @@ def admin_show_user_status(request):
         instance = Admin.objects.get(email=data_email)
         json_send = {'email': instance.email, 'nickname': instance.nickname}
         return JsonResponse(json_send, status=200)
+
+
+@csrf_exempt
+def admin_display_info_create(request):
+    if request.method == 'POST':
+        # EnterpriseInfoType: name comment
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = admin_display_info_create_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['a_email']
+        instance_admin = Admin.objects.get(email=data_email)
+        json_receive['enterprise'] = instance_admin.id
+        serializer = EnterpriseDisplayInfoSerializer(data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=200)
+        return HttpResponse('ERROR, invalid data in serializer.', status=200)
+
+
+@csrf_exempt
+def admin_display_info_delete(request):
+    if request.method == 'POST':
+        # EnterpriseInfoType: name
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = admin_display_info_delete_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['a_email']
+        instance_admin = Admin.objects.get(email=data_email)
+        instance_displayinfo = EnterpriseDisplayInfo.objects.filter(enterprise=instance_admin.id, name=json_receive['name'])
+        instance_displayinfo.delete()
+        return HttpResponse('Delete successfully.', status=200)
 
 
 @csrf_exempt

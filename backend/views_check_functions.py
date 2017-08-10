@@ -110,6 +110,30 @@ def admin_show_user_status_check(request):
     return 1, 'No ERROR.'
 
 
+def admin_display_info_create_check(json_receive, request):
+    test_sessions = admin_sessions_check(request)
+    test_json = json_testing(json_receive, ['name', 'comment'], 2)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    if displayinfo_is_existent_by_name(request.session['a_email'], json_receive['name']) == True:
+        return 0, 'ERROR, attribute name has been used.'
+    return 1, 'No ERROR'
+
+
+def admin_display_info_delete_check(json_receive, request):
+    test_sessions = admin_sessions_check(request)
+    test_json = json_testing(json_receive, ['name'], 1)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    if displayinfo_is_existent_by_name(request.session['a_email'], json_receive['name']) == False:
+        return 0, 'ERROR, attribute is not existent.'
+    return 1, 'No ERROR'
+
+
 def admin_logout_check(request):
     test_sessions = admin_sessions_check(request)
     if test_sessions == False:
