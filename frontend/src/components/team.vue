@@ -51,7 +51,7 @@ export default {
       kf: '',
       kfstaff: [],
       apiCustomerserviceCreate: '../api/customerservice_create/',
-      apiCustomerserviceShowStatus: '../api/customerservice_show_status/',
+      apiCustomerserviceShowStatus: '../api/admin_show_cs_status/',
       adminEmail: {},
       customerService: {}
     }
@@ -68,24 +68,29 @@ export default {
       this.communicate()
     },
     communicate () {
-      this.vm.$http.post(this.vm.apiCustomerserviceCreate, this.customerService)
+      this.$http.post(this.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../en_login'
+            // window.location.href = '../en_login'
+            console.log(1)
           } else if (response.data === 'ERROR, email has been registered.') {
             this.$Message.info('该客服邮箱已被注册')
             this.kf = ''
           } else if (response.data === 'ERROR, admin_email is wrong.') {
-            window.location.href = '../en_login'
+            // window.location.href = '../en_login'
+            console.log(2)
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../en_login'
+            // window.location.href = '../en_login'
+            console.log(3)
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../en_login'
+            // window.location.href = '../en_login'
+            console.log(4)
           } else {
             this.$Message.info('添加成功')
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          // window.location.href = '../en_login'
+          console.log(5)
         })
     },
     cancel () {
@@ -95,26 +100,24 @@ export default {
       this.kfstaff.splice(index, 1)
     },
     refresh () {
-      this.$http.post(this.apiCustomerserviceShowStatus, this.adminEmail)
+      this.$http.post(this.apiCustomerserviceShowStatus)
         .then((response) => {
-          if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../en_login'
-          } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../en_login'
-          } else if (response.data === 'ERROR, wrong admin_email.') {
-            window.location.href = '../en_login'
+          if (response.data === 'ERROR, session is broken.') {
+            // window.location.href = '../en_login'
+            console.log(6)
+          } else if (response.data === 'ERROR, wrong email.') {
+            // window.location.href = '../en_login'
+            console.log(7)
           } else {
             this.kfstaff = response.data
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          // window.location.href = '../en_login'
+          console.log(8)
         })
     }
   },
   created () {
-    this.adminEmail = {
-      'admin_email': '1234444@123.com'
-    }
     this.refresh()
   }
 }

@@ -97,9 +97,9 @@ export default {
       this.$http.post(this.api_create1, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            this.$Message.info('未知错误!')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, incomplete information.' || response.data === 'ERROR, wrong information.') {
-            this.$Message.info('未知错误!')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, serials is invalid.') {
             this.$Message.info('请输入正确的产品序列号！')
           } else if (response.data === 'ERROR, email has been registered.') {
@@ -110,7 +110,7 @@ export default {
             window.location.href = '../en_login'
           }
         }, (response) => {
-          this.$Message.info('未知错误!')
+          window.location.href = '../notfound'
         })
     },
     register () {
