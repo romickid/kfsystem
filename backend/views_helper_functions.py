@@ -1,4 +1,4 @@
-from .models import Admin, CustomerService, SerialNumber
+from .models import Admin, CustomerService, SerialNumber, EnterpriseDisplayInfo
 from django.core.mail import send_mail
 import hashlib, random, string
 
@@ -182,3 +182,12 @@ def cs_sessions_del(request):
         del request.session['c_email']
     except KeyError:
         pass
+
+
+def displayinfo_is_existent_by_name(enterprise_email, name):
+    try:
+        instance_admin = Admin.objects.get(email=enterprise_email)
+        instance_displayinfo = EnterpriseDisplayInfo.objects.get(enterprise=instance_admin.id, name=name)
+        return True
+    except EnterpriseDisplayInfo.DoesNotExist:
+        return False
