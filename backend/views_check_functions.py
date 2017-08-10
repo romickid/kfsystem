@@ -36,6 +36,8 @@ def admin_reset_password_check(json_receive, request):
         return 0, 'ERROR, wrong information.'
     if test_sessions == False:
         return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
     return 1, 'No ERROR.'
 
 
@@ -99,6 +101,15 @@ def admin_show_cs_status_check(request):
     return 1, 'No ERROR.'
 
 
+def admin_logout_check(request):
+    test_sessions = admin_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    return 1, 'No ERROR.'
+
+
 def customerservice_create_check(json_receive):
     test_json = json_testing(json_receive, ['email', 'admin_email'], 2)
     if test_json == 1:
@@ -145,6 +156,8 @@ def customerservice_reset_password_check(json_receive, request):
         return 0, 'ERROR, wrong information.'
     if test_sessions == False:
         return 0, 'ERROR, session is broken.'
+    if cs_is_existent_by_email(request.session['c_email']) == False:
+        return 0, 'ERROR, wrong email.'
     return 1, 'No ERROR.'
 
 
@@ -181,3 +194,10 @@ def customerservice_forget_password_save_data_check(json_receive):
     return 1, 'No ERROR.'
 
 
+def customerservice_logout_check(request):
+    test_sessions = cs_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if cs_is_existent_by_email(request.session['c_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    return 1, 'No ERROR.'
