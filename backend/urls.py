@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^api/chattinglog_delete_record/$', views.chattinglog_delete_record),
     url(r'^api/chattinglog_delete_record_ontime/$', views.chattinglog_delete_record_ontime),
     url(r'^api/chattinglog_status_change/$', views.chattinglog_status_change),
+    url(r'^api/chattinglog_show_history/$', views.chattinglog_show_history),
 ]
