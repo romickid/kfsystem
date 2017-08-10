@@ -147,6 +147,17 @@ def customerservice_set_profile_check(json_receive):
     return 1, 'No ERROR.'
 
 
+def customerservice_set_profile_check_vid_check(json_receive):
+    test_json = json_testing(json_receive, ['email', 'vid'], 2)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
+    if cs_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
+        return 0, 'ERROR, wrong email or vid.'
+    return 1, 'No ERROR.'
+
+
 def customerservice_login_check(json_receive):
     test_json = json_testing(json_receive, ['email', 'password'], 2)
     if test_json == 1:

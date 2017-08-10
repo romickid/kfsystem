@@ -241,6 +241,17 @@ def customerservice_set_profile(request):
 
 
 @csrf_exempt
+def customerservice_set_profile_check_vid(request):
+    if request.method == 'POST':
+        # CustomerService: email vid
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customerservice_set_profile_check_vid_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+        return HttpResponse('Valid', status=200)
+
+
+@csrf_exempt
 def customerservice_login(request):
     if request.method == 'POST':
         # CustomerService: email password
