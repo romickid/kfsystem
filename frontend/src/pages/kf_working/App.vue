@@ -67,6 +67,17 @@
     <div class="main">
       <div class="main-message" v-scroll-bottom="session.messages">
         <ul>
+          <li v-if="is_show" class="message-list" v-for="item in hsession.messages">
+            <p class="message-time">
+              <span class="time-span">{{ item.date | time }}</span>
+            </p>
+            <div class="massage-main" :class="{ self: item.self }">
+              <img class="massage-avatar" width="30" height="30" :src="item.image" />
+              <div class="massage-text">
+                <li>{{ item.text }}</li>
+              </div>
+            </div>
+          </li>
           <li class="message-list" v-for="item in session.messages">
             <p class="message-time">
               <span class="time-span">{{ item.date | time }}</span>
@@ -84,6 +95,7 @@
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
+        <Button @click="hbuttoninputing">历史消息</Button>
         <button class="submit-button" @click="buttoninputing">发送</button>
       </div>
     </div>
@@ -229,6 +241,13 @@ if (!localStorage.getItem(key)) {
           }
         ]
       }
+    ],
+    historySessionList: [
+      {
+        userId: 2,
+        messages: [
+        ]
+      }
     ]
   }
   localStorage.setItem(key, JSON.stringify(userData))
@@ -246,6 +265,7 @@ export default {
       // 会话列表
       sessionList: dataserver.sessionList,
       hangoffSessionList: dataserver.hangoffSessionList,
+      historySessionList: dataserver.historySessionList,
       // 选中的会话Index
       sessionIndex: 0,
       // 文本框中输入的内容
@@ -257,7 +277,11 @@ export default {
       // 客服对应的socket
       socket: '',
       // 当前正在服务人数
-      customerNumber: 2
+      customerNumber: 2,
+      // test
+      item: {},
+      api_chattinglog_show_history: '../api/chattinglog_show_history/',
+      is_show: false
     }
   },
   computed: {
@@ -267,6 +291,9 @@ export default {
       } else {
         return this.hangoffSessionList[this.sessionIndex]
       }
+    },
+    hsession () {
+      return this.historySessionList[this.sessionIndex]
     }
   },
   created () {
@@ -278,7 +305,7 @@ export default {
     // 接收消息
     this.socket.on('customer message', function (msg, fromId, toId) {
       for (let i = 0; i < that.sessionList.length; i++) {
-        if (that.sessionList[i].userId == fromId) {
+        if (that.sessionList[i].userId === fromId) {
           that.sessionList[i].messages.push({
             text: msg,
             date: new Date(),
@@ -286,7 +313,6 @@ export default {
           })
         }
       }
-
     })
     this.socket.on('add client', function (fromId) {
       that.userList.push({
@@ -317,7 +343,9 @@ export default {
           userList: this.userList,
           hangoffUserList: this.hangoffUserList,
           sessionList: this.sessionList,
-          hangoffSessionList: this.hangoffSessionList
+          hangoffSessionList: this.hangoffSessionList,
+          // test
+          historySessionList: this.historySessionList
         }))
       }
     }
@@ -342,20 +370,48 @@ export default {
         this.text = ''
       }
     },
-    buttoninputing (e) {
-      if (this.text.length !== 0) {
-        this.session.messages.push({
-          text: this.text,
-          date: new Date(),
-          self: true,
-          image: this.user.image
+    // test
+    hbuttoninputing (e) {
+      this.is_show = true
+      var vm = this
+      this.item = { 'client_id': '1', 'service_id': '1' }
+      vm.$http.post(vm.api_chattinglog_show_history, this.item)
+        .then((response) => {
+          vm.$set(this, 'my_test', response.data)
+          console.log('接收到啦！')
+          console.log(this.my_test)
+          for (var p in response.data) {
+            alert(response.data[p].time + ' ' + response.data[p].content)
+            this.hsession.messages.push({
+              text: response.data[p].content,
+              date: response.data[p].time,
+              self: response.data[p].is_client,
+              image: this.user.image
+            })
+          }
         })
-        this.socket.emit('server message', this.text, this.user.id, this.session.userId)
-        this.text = ''
-      }
     },
     switchoff () {
       this.hangon = !this.hangon
+    },
+    // test
+    hbuttoninputting (e) {
+      this.is_show = true
+      var vm = this
+      this.item = { 'client_id': '1', 'service_id': '1' }
+      vm.$http.post(vm.api_chattinglog_show_history, this.item)
+        .then((response) => {
+          console.log('接收到啦！')
+          for (var p in response.data) {
+            alert(response.data[p].time + ' ' + response.data[p].content)
+            this.hsession.messages.push({
+              text: response.data[p].content,
+              date: response.data[p].time,
+              self: response.data[p].is_client,
+              image: this.user.image
+            })
+          }
+        })
     }
   },
   filters: {
@@ -421,6 +477,7 @@ ul {
  ::-webkit-scrollbar-thumb:active {
   background-color: #00aff0
 }
+
 
 /*主要界面*/
 
