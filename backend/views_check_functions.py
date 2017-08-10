@@ -11,6 +11,8 @@ def admin_create_check(json_receive):
         return 0, 'ERROR, serials is invalid.'
     if admin_is_existent_by_email(json_receive['email']) == True:
         return 0, 'ERROR, email has been registered.'
+    if cs_is_existent_by_email(json_receive['email']) == True:
+        return 0, 'ERROR, email has been registered.'
     if admin_is_existent_by_nickname(json_receive['nickname']) == True:
         return 0, 'ERROR, nickname has been used.'
     return 1, 'No ERROR.'
@@ -104,6 +106,8 @@ def customerservice_create_check(json_receive):
     if test_json == 2:
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email(json_receive['email']) == True:
+        return 0, 'ERROR, email has been registered.'
+    if admin_is_existent_by_email(json_receive['email']) == True:
         return 0, 'ERROR, email has been registered.'
     if admin_is_existent_by_email(json_receive['admin_email']) == False:
         return 0, 'ERROR, admin_email is wrong.'
