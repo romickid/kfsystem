@@ -78,7 +78,6 @@ export default {
       api_chattinglog_status_change: './api/chattinglog_status_change/',
       api_chattinglog_show_history: './api/chattinglog_show_history/',
 
-
       item: {},
       gridData: '',
       test: {}
@@ -134,8 +133,8 @@ export default {
       vm.$http.post(vm.api_chattinglog_show_history, this.item)
         .then((response) => {
           vm.$set(this, 'gridData', response.data)
-          for(var p in response.data){
-            alert(response.data[p].time + " " + response.data[p].content);
+          for (var p in response.data) {
+            alert(response.data[p].time + '' + response.data[p].content)
           }
         })
     }
