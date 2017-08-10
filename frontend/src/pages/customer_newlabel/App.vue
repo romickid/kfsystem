@@ -188,15 +188,15 @@ ul {
 
 /*主要界面*/
 .container {
-  height: 70%;
+  height: 90%;
   width: 80%;
-  margin: 10% auto 10%;
+  margin: 5% auto 5%;
   vertical-align: center;
   border-radius: 4px;
 }
 
 .main {
-  height: 100%;
+  height: 95%;
   position: relative;
   overflow: hidden;
   background-color: #eee;
@@ -207,12 +207,12 @@ ul {
   width: 100%;
   bottom: 0;
   left: 0;
-  height: 160px;
+  height: 20%;
 }
 
 /*似乎没有用到？*/
 .main-message {
-  height: calc(100% - 180px);
+  height: 80%;
 }
 
 .main-message {
