@@ -7,10 +7,6 @@
             <label id="title">客服信息完善</label>
           </div>
           <div class="div">
-            <label class="label">登录邮箱：</label>
-            <input type="text" v-model="email" name="email" class="text" readonly="true">
-          </div>
-          <div class="div">
             <label class="label">登录密码：</label>
             <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput">
             <i-label v-if="passwordNonStandard">
@@ -46,13 +42,14 @@ export default {
   name: 'app',
   data () {
     return {
-      email: '123@qq.com', // 接收传进来的email
       password: '',
       passwordConfirm: '',
       nickname: '',
       passwordNonStandard: false,
       passwordInConsistent: false,
       api_set_profile: '../api/customerservice_set_profile/',
+      api_customerservice_set_profile_check_vid: '../api/customerservice_set_profile_check_vid/',
+      customerserviceVerify: {},
       item: {}
     }
   },
@@ -76,28 +73,25 @@ export default {
       this.$http.post(this.set_profile, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, incomplete information.' || response.data === 'ERROR, wrong information.') {
-            this.$Message.info('未知错误!')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, admin_email is wrong.') {
-            this.$Message.info('邀请您的企业邮箱有误！')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, email has not been registered.') {
             this.$Message.info('该邮箱未被注册！')
           } else if (response.data === 'ERROR, nickname has been used.') {
             this.$Message.info('该昵称已被注册！')
           } else {
-            this.$Message.info('完善信息成功！')
-            // window.location.href = '../en_login'
+            window.location.href = '../se_login'
           }
         }, (response) => {
-          this.$Message.info('未知错误！')
+          window.location.href = '../notfound'
         })
     },
     finish () {
-      if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '') {
+      if (this.password === '' || this.passwordConfirm === '' || this.nickname === '') {
         this.$Message.info('您的信息不完善！')
-      } else if (this.emailIllegal === true) {
-        this.$Message.info('您的输入的邮箱格式不正确！')
       } else if (this.passwordNonstandard === true) {
         this.$Message.info('您的输入的密码格式不正确！')
       } else if (this.passwordInconsistent === true) {
@@ -105,13 +99,34 @@ export default {
       } else {
         // 与后端链接进行信息传输和验证
         this.item = {
-          'email': this.email,
+          'email': this.customerserviceVerify.email,
           'password': this.password,
           'nickname': this.nickname
         }
         this.communicate()
       }
+    },
+    verify () {
+      this.$http.post(this.api_customerservice_set_profile_check_vid, this.customerserviceVerify)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, wrong email or vid.') {
+            window.location.href = '../notfound'
+          }
+        }, (response) => {
+          window.location.href = '../notfound'
+        })
     }
+  },
+  created () {
+    this.customerserviceVerify = {
+      'email': this.$utils.getUrlKey('email'),
+      'vid': this.$utils.getUrlKey('key')
+    }
+    this.verify()
   }
 }
 </script>

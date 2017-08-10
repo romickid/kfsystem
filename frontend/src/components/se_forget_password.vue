@@ -37,9 +37,8 @@ export default {
       this.emailIllegal = false
     },
     ok () {
-      if (this.email === '') {
-        this.emailIllegal = false
-        this.$Message.info('您的信息不完善！')
+      if (this.email === '' || this.emailIllegal === true) {
+        this.$Message.info('您的邮箱不正确！')
       } else {
         // 与后端链接进行信息传输和验证
         this.item = {
@@ -55,17 +54,16 @@ export default {
           if (response.data === 'ERROR, wrong email.') {
             this.$Message.info('错误的账号！')
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, incomplete information.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong information.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../notfound'
           } else {
-            this.$Message.info(response.data)
-            // window.location.href = '../en_login'
+            this.$Message.info('验证邮件已发送至您的邮箱')
           }
         }, (response) => {
-          this.$Message.info('未知错误！')
+          window.location.href = '../notfound'
         })
     },
     cancel () {
