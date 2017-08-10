@@ -84,7 +84,7 @@ export default {
   },
 
   // FOR TEST, DO NOT DELETE IT!
-  methods: {    
+  methods: {
     test1: function () {
       var vm = this
       this.item = { 'email': 'test1@a.com', 'nickname': 'nick1', 'password': 'pass1', 'serials': 's1' }
@@ -93,7 +93,6 @@ export default {
           vm.$set(this, 'item', {})
         })
     },
-    
     test2: function () {
       var vm = this
       this.item = { 'email': 'test1@a.com', 'password': 'pass1' }
@@ -102,16 +101,14 @@ export default {
           vm.$set(this, 'item', {})
         })
     },
-    
     test3: function () {
       var vm = this
-      this.item = { 'email': 'cs1@a.com' ,'admin_email': 'test1@a.com'}
+      this.item = { 'email': 'cs1@a.com', 'admin_email': 'test1@a.com' }
       vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
-    
     test4: function () {
       var vm = this
       this.item = { 'email': 'cs1@a.com', 'password': 'pass1', 'nickname': 'nickname1' }
@@ -120,7 +117,6 @@ export default {
           vm.$set(this, 'item', {})
         })
     },
-    
     test5: function () {
       var vm = this
       this.item = { 'email': 'cs1@a.com', 'password': 'pass1' }
@@ -128,7 +124,7 @@ export default {
         .then((response) => {
           vm.$set(this, 'item', {})
         })
-    },
+    }
   }
 }
 </script>
