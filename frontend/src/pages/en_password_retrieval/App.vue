@@ -68,7 +68,7 @@ export default {
           // 与后端链接进行信息传输和验证
           this.adminResetPassword = {
             'email': this.adminFindPassword.email,
-            'newpassword': this.newPassword
+            'newpassword': this.hashPassword()
           }
           this.resetPassword()
         }
@@ -105,6 +105,12 @@ export default {
         }, (response) => {
           window.location.href = '../notfound'
         })
+    },
+    hashPassword () {
+      var sha512 = require('js-sha512').sha512
+      var hash = sha512.create()
+      hash.update(this.newPassword)
+      return hash.hex()
     }
   },
   created () {
