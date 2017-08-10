@@ -34,12 +34,9 @@
             </a>
           </div>
         </header>
-        <footer>
-          <input class="search" type="text" placeholder="search user..." v-model="searchname">
-        </footer>
       </div>
-      <div>
-        <ul class="main-ul" v-if="hangon">
+      <div class="main-ul">
+        <ul v-if="hangon">
           <div>
             <p @click="switchoff">
               <a>点击切换已挂断聊天消息</a>
@@ -52,7 +49,7 @@
             </a>
           </li>
         </ul>
-        <ul class="main-ul" v-if="!hangon">
+        <ul v-if="!hangon">
           <div>
             <p @click="switchoff">
               <a>点击切换活跃聊天消息</a>
@@ -332,6 +329,7 @@ export default {
   components: {}
 }
 </script>
+
 <style>
 /*开头*/
 
@@ -383,11 +381,11 @@ ul {
   background-color: #00aff0
 }
 
-
 /*主要界面*/
 
 .container {
   height: 100%;
+  width: 100%;
 }
 
 .sidebar,
@@ -398,10 +396,10 @@ ul {
 
 .sidebar {
   float: left;
-  width: 200px;
+  width: 20%;
   color: #f4f4f4;
   background-color: #2e3238;
-  overflow-x: visible;
+  overflow-x: hidden;
   overflow-y: visible;
 }
 
@@ -409,11 +407,12 @@ ul {
   position: relative;
   overflow: hidden;
   background-color: #eee;
+  width: 60%;
 }
 
 .information {
   float: right;
-  width: 200px;
+  width: 20%;
   color: #f4f4f4;
   background-color: #2e3238;
   overflow: hidden;
@@ -470,10 +469,6 @@ ul {
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
-}
-
-footer {
-  margin-top: 10px;
 }
 
 .user-avatar,
@@ -540,8 +535,9 @@ footer {
 }
 
 .main-ul {
-  height: 600px;
+  height: calc(100% - 105px);
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .main-ul a:hover {
