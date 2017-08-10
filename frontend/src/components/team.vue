@@ -10,7 +10,13 @@
           </i-button>
           <Modal v-model='addModal' title='添加客服' @on-ok='ok' @on-cancel='cancel'>
             <form>
-              <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf'></i-input>
+              <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf' @on-blur='check_email' @on-focus='email_inputing'></i-input>
+              <i-label v-if='emailIsNull'>
+                <p>邮箱不能为空</p>
+              </i-label>
+              <i-label v-if='emailIsNotStandard'>
+                <p>邮箱格式不正确</p>
+              </i-label>
             </form>
           </Modal>
         </div>
@@ -50,6 +56,8 @@ export default {
       addModal: false,
       kf: '',
       kfstaff: [],
+      emailIsNotStandard: false
+      emailIsNull: false
       apiCustomerserviceCreate: '../api/customerservice_create/',
       apiCustomerserviceShowStatus: '../api/admin_show_cs_status/',
       adminEmail: {},
@@ -67,30 +75,38 @@ export default {
       }
       this.communicate()
     },
+    check_email () {
+      let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
+      let legal = reg.test(this.kf)
+      if (this.kf === '') {
+        emailIsNull = true
+      } else if (legal === false) {
+        emailIsNotStandard = true
+      }
+    },
+    email_inputing () {
+      emailIsNull = false
+      emailIsNotStandard = false
+    }
     communicate () {
       this.$http.post(this.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            // window.location.href = '../en_login'
-            console.log(1)
+            window.location.href = '../en_login'
           } else if (response.data === 'ERROR, email has been registered.') {
             this.$Message.info('该客服邮箱已被注册')
             this.kf = ''
           } else if (response.data === 'ERROR, admin_email is wrong.') {
-            // window.location.href = '../en_login'
-            console.log(2)
+            window.location.href = '../en_login'
           } else if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../en_login'
-            console.log(3)
+            window.location.href = '../en_login'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../en_login'
-            console.log(4)
+            window.location.href = '../en_login'
           } else {
             this.$Message.info('添加成功')
           }
         }, (response) => {
-          // window.location.href = '../en_login'
-          console.log(5)
+          window.location.href = '../en_login'
         })
     },
     cancel () {
@@ -103,17 +119,14 @@ export default {
       this.$http.post(this.apiCustomerserviceShowStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../en_login'
-            console.log(6)
+            window.location.href = '../en_login'
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../en_login'
-            console.log(7)
+            window.location.href = '../en_login'
           } else {
             this.kfstaff = response.data
           }
         }, (response) => {
-          // window.location.href = '../en_login'
-          console.log(8)
+          window.location.href = '../en_login'
         })
     }
   },

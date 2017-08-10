@@ -24,15 +24,15 @@
           <Modal v-model='modal' title='普通的Modal对话框标题' @on-ok='ok' @on-cancel='cancel'>
             <Form :model='formItem' :label-width='80'>
               <Form-item label='名称'>
-                <Input v-model='formItem.name' placeholder='请输入' @on-blur="check_name" @on-focus="name_inputing"></Input>
-                <i-label v-if="nameIsNull">
+                <Input v-model='formItem.name' placeholder='请输入' @on-blur='check_name' @on-focus='name_inputing'></Input>
+                <i-label v-if='nameIsNull'>
                   <p>名称不能为空</p>
                 </i-label>
               </Form-item>
               <Form-item label='自定义说明'>
                 <Input v-model='formItem.comment' placeholder='请输入'
-                @on-blur="check_comment" @on-focus="comment_inputing"></Input>
-                <i-label v-if="commentIsNull">
+                @on-blur='check_comment' @on-focus='comment_inputing'></Input>
+                <i-label v-if='commentIsNull'>
                   <p>自定义信息不能为空</p>
                 </i-label>
               </Form-item>
