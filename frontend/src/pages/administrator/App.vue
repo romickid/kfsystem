@@ -47,6 +47,9 @@
             <i-button type='text' @click='toggleClick'>
               <Icon type='navicon' size='32'></Icon>
             </i-button>
+            <div class='components'>
+              <en-reset-password ref="enResetPassword"></en-reset-password>
+            <div>
           </div>
           <div class='main-content'>
             <router-view></router-view>
@@ -61,8 +64,12 @@
 </template>
 
 <script>
+import enResetPassword from '../../components/en_reset_password'
 export default {
   name: 'app',
+  components: {
+    enResetPassword
+  },
   data () {
     return {
       spanLeft: 5,
@@ -176,6 +183,10 @@ export default {
 
 .main-hide-text .main-text {
   display: none;
+}
+
+.components {
+  display: inline;
 }
 
 .ivu-col {

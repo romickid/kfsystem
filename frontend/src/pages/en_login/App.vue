@@ -22,7 +22,6 @@
           </div>
           <div id="butt">
             <en-forget-password ref="enForgetPassword"></en-forget-password>
-            <en-reset-password ref="enResetPassword"></en-reset-password>
           </div>
         </div>
       </div>
@@ -31,12 +30,10 @@
 </template>
 
 <script>
-import enResetPassword from '../../components/en_reset_password'
 import enForgetPassword from '../../components/en_forget_password'
 export default {
   name: 'app',
   components: {
-    enResetPassword,
     enForgetPassword
   },
   data () {
