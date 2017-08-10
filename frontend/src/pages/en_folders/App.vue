@@ -61,7 +61,8 @@ export default {
       emailIllegal: false,
       passwordNonstandard: false,
       passwordInconsistent: false,
-      api_create1: '../api/admin_create/',
+      apiCreate: '../api/admin_create/',
+      hashedPassword: ''
       item: {}
     }
   },
@@ -94,7 +95,7 @@ export default {
       this.passwordInconsistent = false
     },
     communicate () {
-      this.$http.post(this.api_create1, this.item)
+      this.$http.post(this.apiCreate, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
@@ -124,14 +125,21 @@ export default {
         this.$Message.info('您两次输入的密码不一致！')
       } else {
         // 与后端链接进行信息传输和验证
+        this.hashPassword()
         this.item = {
           'email': this.email,
           'nickname': this.nickname,
-          'password': this.password,
+          'password': this.hashedPassword,
           'serials': this.serialNumber
         }
         this.communicate()
       }
+    },
+    hashPassword () {
+      var sha512 = require('js-sha512').sha512
+      var hash = sha512.create()
+      hash.update(this.password)
+      this.hashedPassword = hash.hex()
     }
   }
 }
