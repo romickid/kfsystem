@@ -115,7 +115,7 @@ class TestAdminResetPasswordCheck(TestCase):
         self.assertEqual(errormessage5, 'ERROR, session is broken.')
 
 
-class TestForgetPasswordEmailRequestCheck(TestCase):
+class TestAdminForgetPasswordEmailRequestCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
 
@@ -141,7 +141,7 @@ class TestForgetPasswordEmailRequestCheck(TestCase):
         self.assertEqual(errormessage4, 'ERROR, wrong email.')
 
 
-class TestForgetPasswordCheckVidCheck(TestCase):
+class TestAdminForgetPasswordCheckVidCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
 
@@ -172,7 +172,7 @@ class TestForgetPasswordCheckVidCheck(TestCase):
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
 
 
-class TestForgetPasswordSaveDataCheck(TestCase):
+class TestAdminForgetPasswordSaveDataCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
 
@@ -198,7 +198,7 @@ class TestForgetPasswordSaveDataCheck(TestCase):
         self.assertEqual(errormessage4, 'ERROR, wrong email.')
 
 
-class TestShowCommunicationKeyCheck(TestCase):
+class TestAdminShowCommunicationKeyCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
 
@@ -224,7 +224,7 @@ class TestShowCommunicationKeyCheck(TestCase):
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
 
-class TestResetCommunicationKeyCheck(TestCase):
+class TestAdminResetCommunicationKeyCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
 
@@ -250,7 +250,7 @@ class TestResetCommunicationKeyCheck(TestCase):
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
 
-class TestShowCsStatusCheck(TestCase):
+class TestAdminShowCsStatusCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
 
@@ -276,7 +276,7 @@ class TestShowCsStatusCheck(TestCase):
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
 
-class TestShowUserStatusCheck(TestCase):
+class TestAdminShowUserStatusCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
 
@@ -302,7 +302,7 @@ class TestShowUserStatusCheck(TestCase):
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
 
-class TestDisplayInfoCreateCheck(TestCase):
+class TestAdminDisplayInfoCreateCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
         instance = Admin.objects.get(id=1)
@@ -342,7 +342,7 @@ class TestDisplayInfoCreateCheck(TestCase):
         self.assertEqual(errormessage4, 'ERROR, attribute name has been used.')
 
 
-class TestDisplayInfoDeleteCheck(TestCase):
+class TestAdminDisplayInfoDeleteCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Cnick1', password='Cpass1', web_url='Cweb_url1', widget_url='Cwidget_url1', mobile_url='Cmobile_url1', communication_key='Ckey1', vid='vid1')
         instance = Admin.objects.get(id=1)
