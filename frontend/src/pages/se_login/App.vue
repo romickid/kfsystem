@@ -63,18 +63,15 @@ export default {
         .then((response) => {
           if (response.data === 'ERROR, wrong email or password.') {
             this.$Message.info('错误的账号或密码！')
-          } else if (response.data === 'ERROR, wrong email or password.') {
-            this.$Message.info('未知错误！')
           } else if (response.data === 'ERROR, wrong information.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, incomplete information.') {
-            this.$Message.info('未知错误！')
+            window.location.href = '../notfound'
           } else {
-            this.$Message.info('登陆成功！')
-            // window.location.href = '../en_login'
+            window.location.href = '../kf_working'
           }
         }, (response) => {
-          this.$Message.info('未知错误！')
+          window.location.href = '../notfound'
         })
     },
     login () {
