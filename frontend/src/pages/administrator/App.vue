@@ -17,7 +17,7 @@
           <Menu active-name='1' theme='dark' width='auto' @on-select='select'>
             <div class='main-logo-left'>
               <span>logo</span>
-              <p class='main-text'>jisuanke</p>
+              <p class='main-text'>{{ adminName }}</p>
             </div>
             <Menu-item name=''>
               <Icon type='ios-navigate' :size='iconSize'></Icon>
@@ -50,6 +50,9 @@
             <div class='components'>
               <en-reset-password ref="enResetPassword"></en-reset-password>
             </div>
+            <div>
+              <p>{{ adminEmail }}</p>
+            </div>
           </div>
           <div class='main-content'>
             <router-view></router-view>
@@ -73,7 +76,10 @@ export default {
   data () {
     return {
       spanLeft: 5,
-      spanRight: 19
+      spanRight: 19,
+      apiAdminShowUserStatus: '../api/admin_show_user_status/',
+      adminEmail: '',
+      adminName: ''
     }
   },
   computed: {
@@ -93,7 +99,23 @@ export default {
     },
     select (name) {
       this.$router.push('/' + name)
+    },
+    getAdminInfomation () {
+      this.$http.post(this.apiAdminShowUserStatus)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else {
+            adminEmail = response.data.email
+            adminName = response.data.nickname
+          }
+        })
     }
+  },
+  create () {
+    this.getAdminInfomation()
   }
 }
 </script>
