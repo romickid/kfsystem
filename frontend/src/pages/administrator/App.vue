@@ -49,7 +49,7 @@
             </i-button>
             <div class='components'>
               <en-reset-password ref="enResetPassword"></en-reset-password>
-            <div>
+            </div>
           </div>
           <div class='main-content'>
             <router-view></router-view>
