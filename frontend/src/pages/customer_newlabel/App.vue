@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="main">
-      <div class="m-message" v-scroll-bottom="session.messages">
+      <div class="main-message" v-scroll-bottom="session.messages">
         <ul>
           <li class="message-list" v-for="item in session.messages">
             <p class="message-time">
@@ -16,7 +16,7 @@
           </li>
         </ul>
       </div>
-      <div class="m-text">
+      <div class="main-text">
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
@@ -202,16 +202,7 @@ ul {
   background-color: #eee;
 }
 
-.m-menu {
-  position: absolute;
-  width: 100%;
-  bottom: 160px;
-  left: 0;
-  height: 20px;
-  background-color: white;
-}
-
-.m-text {
+.main-text {
   position: absolute;
   width: 100%;
   bottom: 0;
@@ -220,11 +211,11 @@ ul {
 }
 
 /*似乎没有用到？*/
-.m-message {
+.main-message {
   height: calc(100% - 180px);
 }
 
-.m-message {
+.main-message {
   padding: 10px 15px;
   overflow-y: scroll;
 }
@@ -310,7 +301,7 @@ ul {
   border-left-color: #b2e281;
 }
 
-.m-text {
+.main-text {
   height: 160px;
   border-top: solid 1px #ddd;
   background: white;
