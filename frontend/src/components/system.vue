@@ -22,14 +22,19 @@
           <Icon type='person-ad'></Icon>
           <i-button type='text' @click='modal = true'>添加用户信息</i-button>
           <Modal v-model='modal' title='普通的Modal对话框标题' @on-ok='ok' @on-cancel='cancel'>
-            <Form :model='formItem' :label-width='80'>
-              <Form-item label='信息种类'>
-                <Checkbox-group v-model='formItem.checkbox'>
-                  <Checkbox label='Email'></Checkbox>
-                  <Checkbox label='Phonenumber'></Checkbox>
-                  <Checkbox label='Location'></Checkbox>
-                  <Checkbox label='Date'></Checkbox>
-                </Checkbox-group>
+            <Form :model='formItem' :label-width='80' class='input'>
+              <Form-item label='名称'>
+                <Input v-model='formItem.name' placeholder='请输入' @on-blur='check_name' @on-focus='name_inputing'></Input>
+                <i-label v-if='nameIsNull'>
+                  <p>名称不能为空</p>
+                </i-label>
+              </Form-item>
+              <Form-item label='自定义说明'>
+                <Input v-model='formItem.comment' placeholder='请输入'
+                @on-blur='check_comment' @on-focus='comment_inputing'></Input>
+                <i-label v-if='commentIsNull'>
+                  <p>自定义信息不能为空</p>
+                </i-label>
               </Form-item>
             </Form>
           </Modal>
@@ -38,20 +43,20 @@
       <div class='info-list'>
         <table cellspacing='0'>
           <tr>
-            <th>种类</th>
-            <th>例子</th>
+            <th>名称</th>
+            <th>说明</th>
             <th>操作</th>
           </tr>
           <tr class='list-item'>
             <td>Id</td>
-            <td>例：001</td>
+            <td></td>
             <td>
               <i-button type='text' disabled>删除</i-button>
             </td>
           </tr>
           <tr class='list-item'>
-            <td>Username</td>
-            <td>例：Archangel</td>
+            <td>用户名</td>
+            <td></td>
             <td>
               <i-button type='text' disabled>删除</i-button>
             </td>
@@ -76,34 +81,91 @@ export default {
     return {
       modal: false,
       formItem: {
-        checkbox: []
+        name: '',
+        comment: ''
       },
-      example: {
-        'Email': '例：1234567@163.com',
-        'Phonenumber': '例：1234567',
-        'Location': '例：xx省xx市xxx街xxx号',
-        'Date': '例：xxxx年xx月xx日'
-      },
-      infomationTypes: [],
-      examples: [],
+      nameIsNull: false,
+      commentIsNull: false,
       apiShowCommunicationKey: '../api/admin_show_communication_key/',
       apiResetCommunicationKey: '../api/admin_reset_communication_key/',
-      communicationKey: ''
+      apiAdminDisplayInfoCreate: '../api/admin_display_info_create/',
+      apiAdminDisplayInfoDelete: '../api/admin_display_info_delete/',
+      communicationKey: '',
+      infomationItem: {},
+      deleteName: {}
     }
   },
   methods: {
-    ok () {
-      this.infomationTypes = this.formItem.checkbox
-      for (let i = 0; i < this.infomationTypes.length; i++) {
-        this.examples[i] = this.example[this.infomationTypes[i]]
+    check_name () {
+      if (this.formItem.name === '') {
+        this.nameIsNull = true
       }
     },
+    name_inputing () {
+      this.nameIsNull = false
+    },
+    check_comment () {
+      if (this.formItem.comment === '') {
+        this.commentIsNull = true
+      }
+    },
+    comment_inputing () {
+      this.commentIsNull = false
+    },
+    ok () {
+      if (this.commentIsNull || this.nameIsNull) {
+        this.$Message.info('您的信息不完善')
+      } else {
+        this.infomationItem = {
+          'name': this.formItem.name,
+          'comment': this.formItem.comment
+        }
+        this.add_info()
+      }
+      this.cancel()
+    },
+    add_info () {
+      this.$http.post(this.apiAdminDisplayInfoCreate, this.infomationItem)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, attribute name has been used.') {
+            this.$Message.info('该名称已存在')
+          } else if (response.data === 'ERROR, invalid data in serializer.') {
+            window.location.href = '../en_login'
+          } else {
+            this.$Message.info('添加成功')
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
+    },
     cancel () {
-      this.formItem.checkbox = this.infomationTypes
+      this.formItem.name = ''
+      this.formItem.comment = ''
+      this.nameIsNull = false
+      this.commentIsNull = false
     },
     delete_info (index) {
-      this.infomationTypes.splice(index, 1)
-      this.examples.splice(index, 1)
+      this.infomationItem = {
+        'name': ''
+      }
+      this.$http.post(this.apiAdminDisplayInfoCreate, this.deleteName)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, attribute is not existent.') {
+            this.$Message.info('该名称不存在')
+          } else {
+            this.$Message.info('删除成功')
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
     },
     reset_key () {
       this.$http.post(this.apiResetCommunicationKey)
@@ -232,5 +294,9 @@ export default {
   border-bottom: 0;
   border-left: 0;
   padding: 0.5em 0;
+}
+
+.input p {
+  color: red;
 }
 </style>
