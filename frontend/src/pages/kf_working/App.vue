@@ -104,6 +104,7 @@
 
 <script>
 import * as io from 'socket.io-client'
+import {formatDate} from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
 localStorage.clear()
 // 虚拟数据
@@ -429,7 +430,7 @@ export default {
       if (typeof date === 'string') {
         date = new Date(date)
       }
-      return date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes()
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
   components: {}
