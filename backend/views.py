@@ -254,13 +254,14 @@ def admin_logout(request):
 @csrf_exempt
 def customerservice_create(request):
     if request.method == 'POST':
-        # CustomerService: email  Admin: admin_email
+        # CustomerService: email
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_create_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
-        instance_admin = Admin.objects.get(email=json_receive['admin_email'])
+        admin_email = request.session['a_email']
+        instance_admin = Admin.objects.get(email=admin_email)
         json_receive['nickname'] = json_receive['email']
         json_receive['enterprise'] = instance_admin.id
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
