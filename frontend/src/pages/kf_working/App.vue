@@ -315,21 +315,49 @@ export default {
       }
     })
     this.socket.on('add client', function (fromId) {
-      that.userList.push({
+      that.userList.splice(0, 0, {
         id: fromId,
         name: fromId,
         image: '../../../static/2.png'
       })
       that.customerNumber += 1
-      that.sessionList.push({
+      that.sessionList.splice(0, 0, {
         userId: fromId,
         messages: []
       })
-      that.sessionList[that.customerNumber - 1].messages.push({
+      that.sessionList[0].messages.push({
         text: '用户' + fromId + '已上线',
         date: new Date(),
         image: that.userList[0].image
       })
+    })
+    this.socket.on('customer hang off', function (customerId) {
+      let customer = ''
+      let customerSession = ''
+      console.log(customerId + 'hangoff')
+      for (let i = 0; i < that.userList.length; i++) {
+        if (that.userList[i].id === customerId) {
+          customer = that.userList[i]
+          that.userList.splice(i, 1)
+          break
+        }
+      }
+      console.log(that.userList.length)
+      for (let i = 0; i < that.sessionList.length; i++) {
+        if (that.sessionList[i].userId === customerId) {
+          that.sessionList[i].messages.push({
+            text: '用户' + customerId + '已挂断',
+            date: new Date(),
+            image: that.userList[0].image
+          })
+          customerSession = that.sessionList[i]
+          that.sessionList.splice(i, 1)
+          break
+        }
+      }
+      console.log(that.sessionList.length)
+      that.hangoffUserList.splice(0, 0, customer)
+      that.hangoffSessionList.splice(0, 0, customerSession)
     })
     this.socket.emit('server set id', that.socket.id)
   },
@@ -393,25 +421,6 @@ export default {
     },
     switchoff () {
       this.hangon = !this.hangon
-    },
-    // test
-    hbuttoninputting (e) {
-      this.is_show = true
-      var vm = this
-      this.item = { 'client_id': '1', 'service_id': '1' }
-      vm.$http.post(vm.api_chattinglog_show_history, this.item)
-        .then((response) => {
-          console.log('接收到啦！')
-          for (var p in response.data) {
-            alert(response.data[p].time + ' ' + response.data[p].content)
-            this.hsession.messages.push({
-              text: response.data[p].content,
-              date: response.data[p].time,
-              self: response.data[p].is_client,
-              image: this.user.image
-            })
-          }
-        })
     }
   },
   filters: {
