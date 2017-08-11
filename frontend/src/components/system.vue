@@ -22,7 +22,7 @@
           <Icon type='person-ad'></Icon>
           <i-button type='text' @click='modal = true'>添加用户信息</i-button>
           <Modal v-model='modal' title='普通的Modal对话框标题' @on-ok='ok' @on-cancel='cancel'>
-            <Form :model='formItem' :label-width='80'>
+            <Form :model='formItem' :label-width='80' class='input'>
               <Form-item label='名称'>
                 <Input v-model='formItem.name' placeholder='请输入' @on-blur='check_name' @on-focus='name_inputing'></Input>
                 <i-label v-if='nameIsNull'>
@@ -98,22 +98,22 @@ export default {
   methods: {
     check_name () {
       if (this.formItem.name === '') {
-        nameIsNull = true
+        this.nameIsNull = true
       }
     },
     name_inputing () {
-      nameIsNull = false
+      this.nameIsNull = false
     },
     check_comment () {
       if (this.formItem.comment === '') {
-        commentIsNull = true
+        this.commentIsNull = true
       }
     },
     comment_inputing () {
-      commentIsNull = false
+      this.commentIsNull = false
     },
     ok () {
-      if (commentIsNull || nameIsNull) {
+      if (this.commentIsNull || this.nameIsNull) {
         this.$Message.info('您的信息不完善')
       } else {
         this.infomationItem = {
@@ -150,7 +150,7 @@ export default {
     },
     delete_info (index) {
       this.infomationItem = {
-        'name' = ''
+        'name': ''
       }
       this.$http.post(this.apiAdminDisplayInfoCreate, this.deleteName)
         .then((response) => {
@@ -294,5 +294,9 @@ export default {
   border-bottom: 0;
   border-left: 0;
   padding: 0.5em 0;
+}
+
+.input p {
+  color: red;
 }
 </style>

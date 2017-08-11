@@ -47,17 +47,15 @@
             <i-button type='text' @click='toggleClick'>
               <Icon type='navicon' size='32'></Icon>
             </i-button>
-            <div class='components'>
-              <en-reset-password ref="enResetPassword"></en-reset-password>
-            </div>
-            <div>
+            <div class='email'>
               <Dropdown style="margin-left: 20px">
                 <a href="javascript:void(0)">
-                    <Icon type="arrow-down-b"></Icon>
+                  {{ adminEmail }}
+                  <Icon type="arrow-down-b"></Icon>
                 </a>
                 <Dropdown-menu slot="list">
                   <Dropdown-item>
-                    <Button type='text' @click='logout'>登出<Button>
+                    <Button type='text' @click='logout'>登出</Button>
                   </Dropdown-item>
                   <Dropdown-item>
                     <en-reset-password ref="enResetPassword"></en-reset-password>
@@ -121,8 +119,8 @@ export default {
           } else if (response.data === 'ERROR, wrong email.') {
             window.location.href = '../en_login'
           } else {
-            adminEmail = response.data.email
-            adminName = response.data.nickname
+            this.adminEmail = response.data.email
+            this.adminName = response.data.nickname
           }
         }, (response) => {
           window.location.href = '../en_login'
@@ -143,7 +141,7 @@ export default {
         })
     }
   },
-  create () {
+  created () {
     this.getAdminInfomation()
   }
 }
@@ -234,6 +232,10 @@ export default {
 
 .main-hide-text .main-text {
   display: none;
+}
+
+.email {
+  display: inline;
 }
 
 .ivu-col {

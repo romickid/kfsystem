@@ -9,15 +9,17 @@
           <i-button type='text' @click='addModal = true'>添加客服
           </i-button>
           <Modal v-model='addModal' title='添加客服' @on-ok='ok' @on-cancel='cancel'>
-            <form>
-              <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf' @on-blur='check_email' @on-focus='email_inputing'></i-input>
-              <i-label v-if='emailIsNull'>
-                <p>邮箱不能为空</p>
-              </i-label>
-              <i-label v-if='emailIsNotStandard'>
-                <p>邮箱格式不正确</p>
-              </i-label>
-            </form>
+            <Form class='input'>
+              <Form-item>
+                <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf' @on-blur='check_email' @on-focus='email_inputing'></i-input>
+                <i-label v-if='emailIsNull'>
+                  <p>邮箱不能为空</p>
+                </i-label>
+                <i-label v-if='emailIsNotStandard'>
+                  <p>邮箱格式不正确</p>
+                </i-label>
+              </Form-item>
+            </Form>
           </Modal>
         </div>
       </div>
@@ -56,38 +58,40 @@ export default {
       addModal: false,
       kf: '',
       kfstaff: [],
-      emailIsNotStandard: false
-      emailIsNull: false
+      emailIsNotStandard: false,
+      emailIsNull: false,
       apiCustomerserviceCreate: '../api/customerservice_create/',
       apiCustomerserviceShowStatus: '../api/admin_show_cs_status/',
-      adminEmail: {},
       customerService: {}
     }
   },
   methods: {
     ok () {
       if (this.kf === '') {
-        return
+        this.$Message.info('邮箱不能为空')
+      } else if (this.emailIsNotStandard === true) {
+        this.$Message.info('您输入的邮箱格式不正确')
+      } else {
+        this.customerService = {
+          'email': this.kf
+        }
+        this.communicate()
       }
-      this.customerService = {
-        'email': this.kf,
-        'admin_email': this.adminEmail.admin_email
-      }
-      this.communicate()
+      this.cancel()
     },
     check_email () {
       let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
       let legal = reg.test(this.kf)
       if (this.kf === '') {
-        emailIsNull = true
+        this.emailIsNull = true
       } else if (legal === false) {
-        emailIsNotStandard = true
+        this.emailIsNotStandard = true
       }
     },
     email_inputing () {
-      emailIsNull = false
-      emailIsNotStandard = false
-    }
+      this.emailIsNull = false
+      this.emailIsNotStandard = false
+    },
     communicate () {
       this.$http.post(this.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
@@ -111,6 +115,8 @@ export default {
     },
     cancel () {
       this.kf = ''
+      this.emailIsNull = false
+      this.emailIsNotStandard = false
     },
     deleteKf (index) {
       this.kfstaff.splice(index, 1)
@@ -182,5 +188,9 @@ export default {
   border-bottom: 0;
   border-left: 0;
   padding: 0.5em 0;
+}
+
+.input p{
+  color: red;
 }
 </style>
