@@ -382,15 +382,22 @@ def customerservice_forget_password_check_vid(request):
         is_correct, error_message = customerservice_forget_password_check_vid_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
-        return HttpResponse('Valid', status=200)
+
+        json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        instance = CustomerService.objects.get(email=json_receive['email'])
+        serializer = CustomerServiceSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse(json_receive['vid'], status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
 def customerservice_forget_password_save_data(request):
     if request.method == 'POST':
-        # CustomerService: email newpassword
+        # CustomerService: email newpassword vid
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = cs_forget_password_save_data_check(json_receive)
+        is_correct, error_message = customerservice_forget_password_save_data_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
@@ -401,7 +408,7 @@ def customerservice_forget_password_save_data(request):
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse('OK', status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 

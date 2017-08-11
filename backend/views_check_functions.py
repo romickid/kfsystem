@@ -227,13 +227,13 @@ def customerservice_forget_password_check_vid_check(json_receive):
 
 
 def customerservice_forget_password_save_data_check(json_receive):
-    test_json = json_testing(json_receive, ['email', 'newpassword'], 2)
+    test_json = json_testing(json_receive, ['email', 'newpassword', 'vid'], 3)
     if test_json == 1:
         return 0, 'ERROR, incomplete information.'
     if test_json == 2:
         return 0, 'ERROR, wrong information.'
-    if cs_is_existent_by_email(json_receive['email']) == False:
-        return 0, 'ERROR, wrong email.'
+    if cs_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
+        return 0, 'ERROR, wrong email or vid.'
     return 1, 'No ERROR.'
 
 
