@@ -382,7 +382,44 @@ class TestAdminDisplayInfoDeleteCheck(TestCase):
         self.assertEqual(errormessage4, 'ERROR, attribute is not existent.')
 
 
-# TODO customerservice_set_profile_check
+class TestAdminDisplayInfoShowCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=2, email='admin2@a.com', nickname='Anick2', password='Apass2', web_url='Aweb_url2', widget_url='Awidget_url2', mobile_url='Amobile_url2', communication_key='Akey2', vid='Avid2')
+        instance = Admin.objects.get(id=1)
+        EnterpriseDisplayInfo.objects.create(id=1, enterprise=instance, name='id_used', comment='this is id')
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['a_email'] = 'admin1@a.com'
+        session.save()
+
+        errorcode1, errormessage1 = admin_display_info_show_check(c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        session['a_email'] = 'admin_not_exist@a.com'
+        session.save()
+        errorcode2, errormessage2 = admin_display_info_show_check(c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, wrong email.')
+
+        session.delete()
+        errorcode3, errormessage3 = admin_display_info_show_check(c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, session is broken.')
+
+        c1 = Client()
+        session1 = c1.session
+        session1['a_email'] = 'admin2@a.com'
+        session1.save()
+        errorcode4, errormessage4 = admin_display_info_show_check(c1)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, display info is empty.')
+
+
+# TODO customerservice_create_check
 
 
 class TestCsCreateCheck(TestCase):
