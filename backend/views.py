@@ -100,13 +100,20 @@ def admin_forget_password_check_vid(request):
         is_correct, error_message = admin_forget_password_check_vid_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
-        return HttpResponse('Valid', status=200)
+
+        json_receive['vid'] = admin_generate_vid(json_receive['email'])
+        instance = Admin.objects.get(email=json_receive['email'])
+        serializer = AdminSerializer(instance, data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse(json_receive['vid'], status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
 def admin_forget_password_save_data(request):
     if request.method == 'POST':
-        # Admin: email newpassword
+        # Admin: email newpassword vid
         json_receive = JSONParser().parse(request)
         is_correct, error_message = admin_forget_password_save_data_check(json_receive)
         if is_correct == 0:
@@ -119,7 +126,7 @@ def admin_forget_password_save_data(request):
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse('OK', status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
