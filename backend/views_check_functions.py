@@ -64,13 +64,13 @@ def admin_forget_password_check_vid_check(json_receive):
 
 
 def admin_forget_password_save_data_check(json_receive):
-    test_json = json_testing(json_receive, ['email', 'newpassword'], 2)
+    test_json = json_testing(json_receive, ['email', 'newpassword', 'vid'], 3)
     if test_json == 1:
         return 0, 'ERROR, incomplete information.'
     if test_json == 2:
         return 0, 'ERROR, wrong information.'
-    if admin_is_existent_by_email(json_receive['email']) == False:
-        return 0, 'ERROR, wrong email.'
+    if admin_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
+        return 0, 'ERROR, wrong email or vid.'
     return 1, 'No ERROR.'
 
 
@@ -84,15 +84,30 @@ def admin_show_communication_key_check(request):
 
 
 def admin_reset_communication_key_check(request):
-    return admin_show_communication_key_check(request)
+    test_sessions = admin_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    return 1, 'No ERROR.'
 
 
 def admin_show_cs_status_check(request):
-    return admin_show_communication_key_check(request)
+    test_sessions = admin_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    return 1, 'No ERROR.'
 
 
 def admin_show_user_status_check(request):
-    return admin_show_communication_key_check(request)
+    test_sessions = admin_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    return 1, 'No ERROR.'
 
 
 def admin_display_info_create_check(json_receive, request):
