@@ -9,29 +9,27 @@
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
           <p class="user-name">{{ user.name }}</p>
           <div class="status-manage">
-            <a>
-              <i class="iconfont1">&#xe6a6;</i>
-              <ul class="managebox">
-                <li>
-                  <Button>
-                    <a href="../se_login">退出账号</a>
-                  </Button>
-                </li>
-                <li>
-                  <Button @click="modal1 = true">机器人设置</Button>
-                  <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
-                    <p>增添预料</p>
-                    <input type="text" placeholder="请输入需要增添的语料">
-                    <button>确认增添</button>
-                    <div>
-                      <p>更改语料</p>
-                      <br>
-                      <p>删除语料</p>
-                    </div>
-                  </Modal>
-                </li>
-              </ul>
-            </a>
+            <i class="iconfont1">&#xe6a6;</i>
+            <ul class="managebox">
+              <li>
+                <Button>
+                  <a href="../se_login">退出账号</a>
+                </Button>
+              </li>
+              <li>
+                <Button @click="modal1 = true">机器人设置</Button>
+                <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
+                  <p>增添预料</p>
+                  <input type="text" placeholder="请输入需要增添的语料">
+                  <button>确认增添</button>
+                  <div>
+                    <p>更改语料</p>
+                    <br>
+                    <p>删除语料</p>
+                  </div>
+                </Modal>
+              </li>
+            </ul>
           </div>
         </header>
       </div>
@@ -624,7 +622,7 @@ ul {
   float: right;
 }
 
-.status-manage a:hover .managebox {
+.status-manage:hover .managebox {
   display: block;
   float: left;
 }
