@@ -90,11 +90,11 @@
         </ul>
       </div>
       <div class="main-text">
+        <Button @click="hbuttoninputing">历史消息</Button>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
-        <Button @click="hbuttoninputing">历史消息</Button>
-        <button class="submit-button" @click="buttoninputing">发送</button>
+        <Button class="submit-button" @click="buttoninputing">发送</Button>
       </div>
     </div>
   </div>
@@ -789,8 +789,6 @@ ul {
   position: absolute;
   right: 2px;
   bottom: 2px;
-  border-radius: 14px;
-  color: white;
 }
 
 .r-modal {
