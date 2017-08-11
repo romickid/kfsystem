@@ -41,7 +41,8 @@ export default {
       apiCustomerserviceForgetPasswordCheckVid: '../api/customerservice_forget_password_check_vid/',
       apiCustomerserviceForgetPasswordSaveData: '../api/customerservice_forget_password_save_data/',
       customerserviceFindPassword: {},
-      customerserviceResetPassword: {}
+      customerserviceResetPassword: {},
+      newVid: ''
     }
   },
   methods: {
@@ -68,7 +69,8 @@ export default {
           // 与后端链接进行信息传输和验证
           this.customerserviceResetPassword = {
             'email': this.customerserviceFindPassword.email,
-            'newpassword': this.hashPassword()
+            'newpassword': this.hashPassword(),
+            'vid': this.hashNewVid
           }
           this.resetPassword()
         }
@@ -83,6 +85,8 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
+          } else {
+             this.newVid = response.data
           }
         }, (response) => {
           window.location.href = '../notfound'
@@ -110,6 +114,12 @@ export default {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
       hash.update(this.newPassword)
+      return hash.hex()
+    },
+    hashNewVid () {
+      var sha512 = require('js-sha512').sha512
+      var hash = sha512.create()
+      hash.update(this.newVid)
       return hash.hex()
     }
   },
