@@ -158,13 +158,13 @@ def customerservice_create_check(json_receive, request):
 
 
 def customerservice_set_profile_check(json_receive):
-    test_json = json_testing(json_receive, ['email', 'password', 'nickname'], 3)
+    test_json = json_testing(json_receive, ['email', 'password', 'nickname', 'vid'], 4)
     if test_json == 1:
         return 0, 'ERROR, incomplete information.'
     if test_json == 2:
         return 0, 'ERROR, wrong information.'
-    if cs_is_existent_by_email(json_receive['email']) == False:
-        return 0, 'ERROR, email has not been registered.'
+    if cs_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
+        return 0, 'ERROR, wrong email or vid.'
     if cs_is_existent_by_nickname(json_receive['nickname']) == True:
         return 0, 'ERROR, nickname has been used.'
     return 1, 'No ERROR.'
