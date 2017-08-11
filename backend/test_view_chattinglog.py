@@ -53,3 +53,33 @@ class Test_chattinglog_delete_record(TestCase):
         self.assertEqual(response.status_code, 200)
         response = c.post('/api/chattinglog_delete_record/')
         self.assertEqual(response.status_code, 201)
+
+
+class Test_chattinglog_delete_record_ontime(TestCase):   
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+
+    def test(self):
+        c = Client()
+        response = c.post('/api/chattinglog_delete_record_ontime/')
+        self.assertEqual(response.status_code, 201)
+        service_instance = CustomerService.objects.get(id=1)
+        ChattingLog.objects.create(id=1,client_id='1',service_id=service_instance,content='hahaha',is_client=1,time='2017-06-11 13:33:33')
+        response = c.post('/api/chattinglog_delete_record_ontime/')
+        self.assertEqual(response.status_code, 201)
+        ChattingLog.objects.create(id=2,client_id='2',service_id=service_instance,content='hahaha',is_client=1,time='2017-03-11 00:00:00')
+        ChattingLog.objects.create(id=3,client_id='3',service_id=service_instance,content='hahaha',is_client=0,time='2017-08-11 00:00:00')
+        ChattingLog.objects.create(id=4,client_id='4',service_id=service_instance,content='hahaha',is_client=1,time='2017-08-11 00:00:00')
+        response = c.post('/api/chattinglog_delete_record_ontime/')
+        self.assertEqual(response.status_code, 201)
+        ChattingLog.objects.create(id=5,client_id='2',service_id=service_instance,content='hahaha',is_client=1,time='2007-07-11 13:33:33')
+        ChattingLog.objects.create(id=6,client_id='3',service_id=service_instance,content='hahaha',is_client=0,time='2012-08-11 13:33:33')
+        ChattingLog.objects.create(id=7,client_id='4',service_id=service_instance,content='hahaha',is_client=1,time='2011-08-11 13:33:33')
+        response = c.post('/api/chattinglog_delete_record_ontime/')
+        self.assertEqual(response.status_code, 201)
+        response = c.post('/api/chattinglog_delete_record_ontime/')
+        self.assertEqual(response.status_code, 201)
+
+
