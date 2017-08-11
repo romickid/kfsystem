@@ -61,7 +61,7 @@ export default {
       emailIsNotStandard: false,
       emailIsNull: false,
       apiCustomerserviceCreate: '../api/customerservice_create/',
-      apiCustomerserviceShowStatus: '../api/admin_show_cs_status/',
+      apiAdminShowCsStatus: '../api/admin_show_cs_status/',
       customerService: {}
     }
   },
@@ -124,7 +124,7 @@ export default {
       this.kfstaff.splice(index, 1)
     },
     refresh () {
-      this.$http.post(this.apiCustomerserviceShowStatus)
+      this.$http.post(this.apiAdminShowCsStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
             window.location.href = '../en_login'

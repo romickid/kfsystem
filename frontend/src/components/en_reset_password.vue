@@ -66,6 +66,10 @@ export default {
             window.location.href = '../en_login'
           } else if (response.data === 'ERROR, wrong information.') {
             window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email or password.') {
+            this.$Message.info('您输入的旧密码不正确')
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
           } else {
             this.$Message.info('密码修改成功！')
           }
