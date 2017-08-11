@@ -154,7 +154,7 @@ export default {
       this.deleteName = {
         'name': this.infomations[index].name
       }
-      this.$http.post(this.apiAdminDisplayInfoCreate, this.deleteName)
+      this.$http.post(this.apiAdminDisplayInfoDelete, this.deleteName)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
             window.location.href = '../en_login'
