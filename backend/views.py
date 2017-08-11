@@ -446,14 +446,6 @@ def customerservice_logout(request):
 
 
 @csrf_exempt
-def chattinglog_get_data(request):
-    if request.method == 'GET':
-        chattinglogs = ChattingLog.objects.all()
-        serializer = ChattingLogSerializer(chattinglogs, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-
-@csrf_exempt
 def chattinglog_send_message(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
@@ -461,15 +453,19 @@ def chattinglog_send_message(request):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=200)
-        return JsonResponse(serializer.errors, status=200)
+        return JsonResponse(serializer.errors, status=201)
 
 
 @csrf_exempt
 def chattinglog_delete_record(request):
-    if request.method == 'DELETE':
+    if request.method == 'POST':
         chattinglogs = ChattingLog.objects.all()
-        chattinglogs.delete()
-        return HttpResponse(status=200)
+        if chattinglogs.exists():
+            chattinglogs.delete()   
+            return HttpResponse('Clear', status=200)     
+        else:
+            return HttpResponse('No data to be Clear.', status=201)
+        
 
 
 @csrf_exempt
@@ -479,13 +475,17 @@ def chattinglog_delete_record_ontime(request):
         end_date = datetime(now.year, now.month, now.day, 0, 0)
         start_date = end_date - timedelta(days=100)
         chattinglogs = ChattingLog.objects.filter(time__range=[start_date, end_date])
-        chattinglogs.delete()
-        return HttpResponse(status=200)
+        if chattinglogs.exists():
+            chattinglogs.delete()   
+            return HttpResponse('Clear', status=200)     
+        else:
+            return HttpResponse('No data to be Clear.', status=201)
 
 
 @csrf_exempt
 def chattinglog_status_change(request):
     if request.method == 'GET':
+
         customerservice = CustomerService.objects.get(nickname='lala')
         if customerservice.is_online == True:
             serializer = CustomerServiceSerializer(customerservice, data={'is_online': False}, partial=True)
@@ -493,8 +493,8 @@ def chattinglog_status_change(request):
             serializer = CustomerServiceSerializer(customerservice, data={'is_online': True}, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, safe=False)
-        return JsonResponse(serializer1.errors, status=200)
+            return JsonResponse(serializer.data, safe=False,status=200)
+        return JsonResponse(serializer.errors, status=201)
 
 @csrf_exempt
 def chattinglog_show_history(request):
@@ -502,5 +502,8 @@ def chattinglog_show_history(request):
         # Chattinglog: client_id service_id
         json_receive = JSONParser().parse(request)
         instances = ChattingLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
-        serializer = ChattingLogSerializer(instances,many=True)
-        return JsonResponse(serializer.data,safe=False,status=200)
+        if instances.exists():
+            serializer = ChattingLogSerializer(instances,many=True)
+            return JsonResponse(serializer.data,safe=False,status=200)
+        else:
+            return HttpResponse('No history.', status=201)
