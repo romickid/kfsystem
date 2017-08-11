@@ -88,7 +88,7 @@ export default {
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
           } else {
-            this.newVid = response.data
+             this.newVid = response.data
           }
         }, (response) => {
           window.location.href = '../notfound'
