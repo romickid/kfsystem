@@ -20,18 +20,18 @@
         <h2>客服可获取用户信息种类设置</h2>
         <div class='add'>
           <Icon type='person-ad'></Icon>
-          <i-button type='text' @click='modal = true' id='add-info-button'>添加用户信息</i-button>
-          <Modal v-model='modal' title='添加用户信息' @on-ok='ok' @on-cancel='cancel' id='add-info-modal'>
+          <i-button type='text' @click='modal = true'>添加用户信息</i-button>
+          <Modal v-model='modal' title='普通的Modal对话框标题' @on-ok='ok' @on-cancel='cancel'>
             <Form :model='formItem' :label-width='80' class='input'>
               <Form-item label='名称'>
-                <Input v-model='formItem.name' placeholder='请输入' @on-blur='check_name' @on-focus='name_inputing' id='input-name'></Input>
+                <Input v-model='formItem.name' placeholder='请输入' @on-blur='check_name' @on-focus='name_inputing'></Input>
                 <i-label v-if='nameIsNull'>
                   <p>名称不能为空</p>
                 </i-label>
               </Form-item>
               <Form-item label='自定义说明'>
                 <Input v-model='formItem.comment' placeholder='请输入'
-                @on-blur='check_comment' @on-focus='comment_inputing' id='input-comment'></Input>
+                @on-blur='check_comment' @on-focus='comment_inputing'></Input>
                 <i-label v-if='commentIsNull'>
                   <p>自定义信息不能为空</p>
                 </i-label>
@@ -94,7 +94,7 @@ export default {
       communicationKey: '',
       infomationItem: {},
       deleteName: {},
-      infomations: []
+      infomations: [],
     }
   },
   methods: {
@@ -115,19 +115,18 @@ export default {
       this.commentIsNull = false
     },
     ok () {
-      if (this.formItem.name === '' || this.formItem.comment === '') {
+      if (this.commentIsNull || this.nameIsNull) {
         this.$Message.info('您的信息不完善')
       } else {
         this.infomationItem = {
           'name': this.formItem.name,
           'comment': this.formItem.comment
         }
-        this.add_api()
-        this.show_info()
+        this.add_info()
       }
       this.cancel()
     },
-    add_api () {
+    add_info () {
       this.$http.post(this.apiAdminDisplayInfoCreate, this.infomationItem)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
@@ -155,10 +154,6 @@ export default {
       this.deleteName = {
         'name': this.infomations[index].name
       }
-      this.delete_api()
-      this.show_info()
-    },
-    delete_api () {
       this.$http.post(this.apiAdminDisplayInfoDelete, this.deleteName)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
@@ -208,17 +203,17 @@ export default {
       },
       show_key () {
         this.$http.post(this.apiShowCommunicationKey)
-          .then((response) => {
-            if (response.data === 'ERROR, session is broken.') {
-              window.location.href = '../en_login'
-            } else if (response.data === 'ERROR, wrong email.') {
-              window.location.href = '../en_login'
-            } else {
-              this.communicationKey = response.data.communication_key
-            }
-          }, (response) => {
-            window.location.href = '../en_login'
-          })
+      .then((response) => {
+        if (response.data === 'ERROR, session is broken.') {
+          window.location.href = '../en_login'
+        } else if (response.data === 'ERROR, wrong email.') {
+          window.location.href = '../en_login'
+        } else {
+          this.communicationKey = response.data.communication_key
+        }
+      }, (response) => {
+        window.location.href = '../en_login'
+      })
       }
   },
   created () {
