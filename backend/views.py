@@ -231,7 +231,7 @@ def admin_display_info_show(request):
             return HttpResponse(error_message, status=200)
 
         admin_email = request.session['a_email']
-        instance_admin = Admin.objects.get(email=data_email)
+        instance_admin = Admin.objects.get(email=admin_email)
         instance_displayinfo = EnterpriseDisplayInfo.objects.filter(enterprise=instance_admin.id)
         json_send = list()
         for i in instance_displayinfo:
