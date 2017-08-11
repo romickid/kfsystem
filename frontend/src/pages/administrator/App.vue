@@ -17,7 +17,7 @@
           <Menu active-name='1' theme='dark' width='auto' @on-select='select'>
             <div class='main-logo-left'>
               <span>logo</span>
-              <p class='main-text'>jisuanke</p>
+              <p class='main-text'>{{ adminName }}</p>
             </div>
             <Menu-item name=''>
               <Icon type='ios-navigate' :size='iconSize'></Icon>
@@ -47,8 +47,21 @@
             <i-button type='text' @click='toggleClick'>
               <Icon type='navicon' size='32'></Icon>
             </i-button>
-            <div class='components'>
-              <en-reset-password ref="enResetPassword"></en-reset-password>
+            <div class='email'>
+              <Dropdown style="margin-left: 20px">
+                <a href="javascript:void(0)">
+                  {{ adminEmail }}
+                  <Icon type="arrow-down-b"></Icon>
+                </a>
+                <Dropdown-menu slot="list">
+                  <Dropdown-item>
+                    <Button type='text' @click='logout'>登出</Button>
+                  </Dropdown-item>
+                  <Dropdown-item>
+                    <en-reset-password ref="enResetPassword"></en-reset-password>
+                  </Dropdown-item>
+                </Dropdown-menu>
+              </Dropdown>
             </div>
           </div>
           <div class='main-content'>
@@ -73,7 +86,11 @@ export default {
   data () {
     return {
       spanLeft: 5,
-      spanRight: 19
+      spanRight: 19,
+      apiAdminShowUserStatus: '../api/admin_show_user_status/',
+      apiAdminLogout: '../api/admin_logout/',
+      adminEmail: '',
+      adminName: ''
     }
   },
   computed: {
@@ -93,7 +110,39 @@ export default {
     },
     select (name) {
       this.$router.push('/' + name)
+    },
+    getAdminInfomation () {
+      this.$http.post(this.apiAdminShowUserStatus)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else {
+            this.adminEmail = response.data.email
+            this.adminName = response.data.nickname
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
+    },
+    logout () {
+      this.$http.post(this.apiAdminLogout)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else {
+            window.location.href = '../en_login'
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
     }
+  },
+  created () {
+    this.getAdminInfomation()
   }
 }
 </script>
@@ -185,7 +234,7 @@ export default {
   display: none;
 }
 
-.components {
+.email {
   display: inline;
 }
 

@@ -48,8 +48,8 @@ export default {
       } else {
         // 与后端链接进行信息传输和验证
         this.item = {
-          'password': this.hashPassword(oldPassword),
-          'newpassword': this.hashedPassword(newPassword)
+          'password': this.hashPassword(this.oldPassword),
+          'newpassword': this.hashPassword(this.newPassword)
         }
         this.communicate()
       }
