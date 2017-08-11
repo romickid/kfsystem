@@ -382,7 +382,60 @@ class TestAdminDisplayInfoDeleteCheck(TestCase):
         self.assertEqual(errormessage4, 'ERROR, attribute is not existent.')
 
 
-# TODO customerservice_create_check
+class TestCsCreateCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['a_email'] = 'admin1@a.com'
+        session.save()
+
+        json1 = {'email': 'test1@a.com'}
+        errorcode1, errormessage1 = customerservice_create_check(json1, c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {}
+        errorcode2, errormessage2 = customerservice_create_check(json2, c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'email': 'test1@a.com', 'other': 'other'}
+        errorcode3, errormessage3 = customerservice_create_check(json3, c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        session['a_email'] = 'admin2@a.com'
+        session.save()
+        json4 = {'email': 'test1@a.com'}
+        errorcode4, errormessage4 = customerservice_create_check(json4, c)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, admin_email is wrong.')
+
+        session.delete()
+        json5 = {'email': 'test1@a.com'}
+        errorcode5, errormessage5 = customerservice_create_check(json5, c)
+        self.assertEqual(errorcode5, 0)
+        self.assertEqual(errormessage5, 'ERROR, session is broken.')
+
+        c1 = Client()
+        session = c1.session
+        session['a_email'] = 'admin1@a.com'
+        session.save()
+
+        json6 = {'email': 'cs1@a.com'}
+        errorcode6, errormessage6 = customerservice_create_check(json6, c1)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, email has been registered.')
+
+        json7 = {'email': 'admin1@a.com'}
+        errorcode7, errormessage7 = customerservice_create_check(json7, c1)
+        self.assertEqual(errorcode7, 0)
+        self.assertEqual(errormessage7, 'ERROR, email has been registered.')
 
 
 # TODO customerservice_set_profile_check
