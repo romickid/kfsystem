@@ -113,6 +113,10 @@ def admin_show_user_status_check(request):
 def admin_display_info_create_check(json_receive, request):
     test_sessions = admin_sessions_check(request)
     test_json = json_testing(json_receive, ['name', 'comment'], 2)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
     if test_sessions == False:
         return 0, 'ERROR, session is broken.'
     if admin_is_existent_by_email(request.session['a_email']) == False:
@@ -125,6 +129,10 @@ def admin_display_info_create_check(json_receive, request):
 def admin_display_info_delete_check(json_receive, request):
     test_sessions = admin_sessions_check(request)
     test_json = json_testing(json_receive, ['name'], 1)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
     if test_sessions == False:
         return 0, 'ERROR, session is broken.'
     if admin_is_existent_by_email(request.session['a_email']) == False:
