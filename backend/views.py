@@ -27,7 +27,7 @@ def admin_create(request):
         if serializer.is_valid():
             serializer.save()
             sn_mark_used(json_receive['serials'])
-            return JsonResponse(serializer.data, status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
@@ -43,7 +43,7 @@ def admin_login(request):
         if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
             cs_sessions_del(request)
             request.session['a_email'] = json_receive['email']
-            return HttpResponse(request.session['a_email'], status=200)
+            return HttpResponse('OK', status=200)
         else:
             return HttpResponse("ERROR, wrong email or password.", status=200)
 
@@ -67,7 +67,7 @@ def admin_reset_password(request):
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
@@ -87,9 +87,8 @@ def admin_forget_password_email_request(request):
         if serializer.is_valid():
             serializer.save()
             admin_send_email_forget_password(json_receive['email'], content)
-            return HttpResponse('Valid', status=200)
-        else:
-            return HttpResponse("ERROR, invalid data in serializer.", status=200)
+            return HttpResponse('OK', status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
@@ -126,7 +125,7 @@ def admin_forget_password_save_data(request):
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse('OK', status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
@@ -159,7 +158,7 @@ def admin_reset_communication_key(request):
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
@@ -209,7 +208,7 @@ def admin_display_info_create(request):
         serializer = EnterpriseDisplayInfoSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
@@ -226,7 +225,7 @@ def admin_display_info_delete(request):
         instance_admin = Admin.objects.get(email=data_email)
         instance_displayinfo = EnterpriseDisplayInfo.objects.filter(enterprise=instance_admin.id, name=json_receive['name'])
         instance_displayinfo.delete()
-        return HttpResponse('Delete successfully.', status=200)
+        return HttpResponse('OK', status=200)
 
 
 @csrf_exempt
@@ -255,7 +254,7 @@ def admin_logout(request):
             return HttpResponse(error_message, status=200)
 
         del request.session['a_email']
-        return HttpResponse('Logout ok.', status=200)
+        return HttpResponse('OK', status=200)
 
 
 @csrf_exempt
