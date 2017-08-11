@@ -97,13 +97,15 @@ export default {
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, admin_email is wrong.') {
+            window.location.href = '../en_login'
           } else if (response.data === 'ERROR, email has been registered.') {
             this.$Message.info('该客服邮箱已被注册')
             this.kf = ''
-          } else if (response.data === 'ERROR, admin_email is wrong.') {
-            window.location.href = '../en_login'
-          } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../en_login'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../en_login'
           } else {

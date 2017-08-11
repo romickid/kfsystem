@@ -61,9 +61,9 @@
               <i-button type='text' disabled>删除</i-button>
             </td>
           </tr>
-          <tr class='list-item' v-for='(infomationType, id) in infomationTypes'>
-            <td>{{ infomationType }}</td>
-            <td>{{ examples[id] }}</td>
+          <tr class='list-item' v-for='(infomation, id) in infomations'>
+            <td>{{ infomation.name }}</td>
+            <td>{{ infomation.comment }}</td>
             <td>
               <i-button type='text' @click='delete_info(id)'>删除</i-button>
             </td>
@@ -90,9 +90,11 @@ export default {
       apiResetCommunicationKey: '../api/admin_reset_communication_key/',
       apiAdminDisplayInfoCreate: '../api/admin_display_info_create/',
       apiAdminDisplayInfoDelete: '../api/admin_display_info_delete/',
+      apiAdminDisplayInfoShow: '../api/admin_display_info_show/',
       communicationKey: '',
       infomationItem: {},
-      deleteName: {}
+      deleteName: {},
+      infomations: [],
     }
   },
   methods: {
@@ -149,8 +151,8 @@ export default {
       this.commentIsNull = false
     },
     delete_info (index) {
-      this.infomationItem = {
-        'name': ''
+      this.deleteName = {
+        'name': this.infomations[index].name
       }
       this.$http.post(this.apiAdminDisplayInfoCreate, this.deleteName)
         .then((response) => {
@@ -182,10 +184,25 @@ export default {
         }, (response) => {
           window.location.href = '../en_login'
         })
-    }
-  },
-  created () {
-    this.$http.post(this.apiShowCommunicationKey)
+    },
+    show_info () {
+      this.$http.post(this.apiAdminDisplayInfoShow)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, display info is empty.') {
+            this.infomations = []
+          } else {
+            this.infomations = response.data
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
+      },
+      show_key () {
+        this.$http.post(this.apiShowCommunicationKey)
       .then((response) => {
         if (response.data === 'ERROR, session is broken.') {
           window.location.href = '../en_login'
@@ -197,6 +214,11 @@ export default {
       }, (response) => {
         window.location.href = '../en_login'
       })
+      }
+  },
+  created () {
+    this.show_key()
+    this.show_info()
   }
 }
 </script>
