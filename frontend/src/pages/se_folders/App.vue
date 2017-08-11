@@ -50,7 +50,8 @@ export default {
       api_set_profile: '../api/customerservice_set_profile/',
       api_customerservice_set_profile_check_vid: '../api/customerservice_set_profile_check_vid/',
       customerserviceVerify: {},
-      item: {}
+      item: {},
+      newVid: ''
     }
   },
   methods: {
@@ -78,8 +79,8 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, admin_email is wrong.') {
             window.location.href = '../notfound'
-          } else if (response.data === 'ERROR, email has not been registered.') {
-            this.$Message.info('该邮箱未被注册！')
+          } else if (response.data === 'ERROR, wrong email or vid.') {
+            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, nickname has been used.') {
             this.$Message.info('该昵称已被注册！')
           } else {
@@ -101,7 +102,8 @@ export default {
         this.item = {
           'email': this.customerserviceVerify.email,
           'password': this.hashPassword(),
-          'nickname': this.nickname
+          'nickname': this.nickname,
+          'vid': this.hashNewVid()
         }
         this.communicate()
       }
@@ -115,6 +117,8 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
+          } else {
+            this.newVid = response.data
           }
         }, (response) => {
           window.location.href = '../notfound'
@@ -124,6 +128,12 @@ export default {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
       hash.update(this.password)
+      return hash.hex()
+    },
+    hashNewVid () {
+      var sha512 = require('js-sha512').sha512
+      var hash = sha512.create()
+      hash.update(this.newVid)
       return hash.hex()
     }
   },
