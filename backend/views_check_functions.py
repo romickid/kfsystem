@@ -119,6 +119,17 @@ def admin_display_info_delete_check(json_receive, request):
     return 1, 'No ERROR.'
 
 
+def admin_display_info_show_check(request):
+    test_sessions = admin_sessions_check(request)
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    if displayinfo_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, display info is empty.'
+    return 1, 'No ERROR.'
+
+
 def admin_logout_check(request):
     test_sessions = admin_sessions_check(request)
     if test_sessions == False:

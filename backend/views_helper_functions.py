@@ -191,3 +191,11 @@ def displayinfo_is_existent_by_name(enterprise_email, name):
         return True
     except EnterpriseDisplayInfo.DoesNotExist:
         return False
+
+
+def displayinfo_is_existent_by_email(enterprise_email):
+    instance_admin = Admin.objects.get(email=enterprise_email)
+    if EnterpriseDisplayInfo.objects.filter(enterprise=instance_admin.id).exists():
+        return True
+    else:
+        return False
