@@ -41,7 +41,8 @@ export default {
       adminFindPassword: {},
       adminResetPassword: {},
       apiAdminFindPasswordCheckVid: '../api/admin_forget_password_check_vid/',
-      apiAdminForgetPasswordSaveData: '../api/admin_forget_password_save_data/'
+      apiAdminForgetPasswordSaveData: '../api/admin_forget_password_save_data/',
+      newVid: ''
     }
   },
   methods: {
@@ -68,7 +69,8 @@ export default {
           // 与后端链接进行信息传输和验证
           this.adminResetPassword = {
             'email': this.adminFindPassword.email,
-            'newpassword': this.hashPassword()
+            'newpassword': this.hashPassword(),
+            'vid': this.hashNewVid()
           }
           this.resetPassword()
         }
@@ -83,6 +85,10 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, invalid data in serializer.') {
+            window.location.href = '../notfound'
+          } else {
+            this.newVid = response.data
           }
         }, (response) => {
           window.location.href = '../notfound'
@@ -95,7 +101,7 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong information.') {
             window.location.href = '../notfound'
-          } else if (response.data === 'ERROR, wrong email.') {
+          } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
@@ -110,6 +116,12 @@ export default {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
       hash.update(this.newPassword)
+      return hash.hex()
+    },
+    hashNewVid () {
+      var sha512 = require('js-sha512').sha512
+      var hash = sha512.create()
+      hash.update(this.newVid)
       return hash.hex()
     }
   },
