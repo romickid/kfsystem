@@ -79,7 +79,7 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, admin_email is wrong.') {
             window.location.href = '../notfound'
-          } else if (response.data === 'ERROR, wrong email or vid') {
+          } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, nickname has been used.') {
             this.$Message.info('该昵称已被注册！')
