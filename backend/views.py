@@ -223,6 +223,23 @@ def admin_display_info_delete(request):
 
 
 @csrf_exempt
+def admin_display_info_show(request):
+    if request.method == 'POST':
+        # no json
+        is_correct, error_message = admin_display_info_show_check(request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        admin_email = request.session['a_email']
+        instance_admin = Admin.objects.get(email=data_email)
+        instance_displayinfo = EnterpriseDisplayInfo.objects.filter(enterprise=instance_admin.id)
+        json_send = list()
+        for i in instance_displayinfo:
+            json_send.append({'name': i.name, 'comment': i.comment})
+        return JsonResponse(json_send, safe=False, status=200)
+
+
+@csrf_exempt
 def admin_logout(request):
     if request.method == 'POST':
         # no json
