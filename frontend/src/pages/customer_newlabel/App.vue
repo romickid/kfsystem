@@ -28,6 +28,7 @@
 
 <script>
 import * as io from 'socket.io-client'
+import {formatDate} from '../../../static/js/date.js'
 const key = 'VUE-Customer1'
 localStorage.clear()
 // 虚拟数据
@@ -114,6 +115,16 @@ export default {
         image: that.userList[0].image
       })
     })
+    this.socket.on('no server available', function () {
+      that.sessionList[0].messages.push({
+        text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
+        date: new Date(),
+        image: that.userList[0].image
+      })
+    })
+    this.socket.on('switch server', function (formerId) {
+      that.socket.emit('switch server', formerId)
+    })
     this.socket.emit('customer set id', that.socket.id)
     this.socket.emit('assigned to server', that.socket.id)
   },
@@ -161,7 +172,7 @@ export default {
       if (typeof date === 'string') {
         date = new Date(date)
       }
-      return date.getYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes()
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
   components: {}
