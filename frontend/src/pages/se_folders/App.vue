@@ -77,8 +77,6 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, incomplete information.' || response.data === 'ERROR, wrong information.') {
             window.location.href = '../notfound'
-          } else if (response.data === 'ERROR, admin_email is wrong.') {
-            window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, nickname has been used.') {
@@ -116,6 +114,8 @@ export default {
           } else if (response.data === 'ERROR, wrong information.') {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
+            window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
           } else {
             this.newVid = response.data
