@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^api/admin_show_user_status/', views.admin_show_user_status),
     url(r'^api/admin_display_info_create/', views.admin_display_info_create),
     url(r'^api/admin_display_info_delete/', views.admin_display_info_delete),
+    url(r'^api/admin_display_info_show/', views.admin_display_info_show),
     url(r'^api/admin_logout/', views.admin_logout),
 
     url(r'^api/customerservice_create/$', views.customerservice_create),
