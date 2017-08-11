@@ -9,27 +9,27 @@
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
           <p class="user-name">{{ user.name }}</p>
           <div class="status-manage">
-            <i class="iconfont1">&#xe6a6;</i>
-            <ul class="managebox">
-              <li>
-                <Button>
-                  <a href="../se_login">退出账号</a>
-                </Button>
-              </li>
-              <li>
-                <Button @click="modal1 = true">机器人设置</Button>
-                <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
-                  <p>增添预料</p>
-                  <input type="text" placeholder="请输入需要增添的语料">
-                  <button>确认增添</button>
-                  <div>
-                    <p>更改语料</p>
-                    <br>
-                    <p>删除语料</p>
-                  </div>
-                </Modal>
-              </li>
-            </ul>
+              <i class="iconfont1">&#xe6a6;</i>
+              <ul class="managebox">
+                <li>
+                  <Button>
+                    <a href="../se_login">退出账号</a>
+                  </Button>
+                </li>
+                <li>
+                  <Button @click="modal1 = true">机器人设置</Button>
+                  <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
+                    <p>增添预料</p>
+                    <input type="text" placeholder="请输入需要增添的语料">
+                    <button>确认增添</button>
+                    <div>
+                      <p>更改语料</p>
+                      <br>
+                      <p>删除语料</p>
+                    </div>
+                  </Modal>
+                </li>
+              </ul>
           </div>
         </header>
       </div>
@@ -65,7 +65,7 @@
     <div class="main">
       <div class="main-message" v-scroll-bottom="session.messages">
         <ul>
-          <li v-if="is_show" class="message-list" v-for="item in hsession.messages">
+          <li v-if="history" class="message-list" v-for="item in hsession.messages">
             <p class="message-time">
               <span class="time-span">{{ item.date | time }}</span>
             </p>
@@ -90,7 +90,8 @@
         </ul>
       </div>
       <div class="main-text">
-        <Button @click="hbuttoninputing">历史消息</Button>
+        <Button @click="showHistory">历史消息</Button>
+        <Button @click="switchServer">转接</Button>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
@@ -104,6 +105,71 @@
 import * as io from 'socket.io-client'
 import {formatDate} from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
+// 通过id找聊天记录的索引
+function findSessionIndexById (session, id) {
+  for (let i = 0; i < session.length; i++) {
+    if (session[i].userId === id) {
+      return i
+    }
+  }
+}
+// 通过id找客服的索引
+function findUserIndexById (users, id) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].id === id) {
+      return i
+    }
+  }
+}
+// 接受消息放进消息列表
+function pushMessages (sessionList, index, msg) {
+  sessionList[index].messages.push({
+    text: msg,
+    date: new Date(),
+    image: '../../../static/3.jpg'
+  })
+}
+// 创建用户
+function createUser (userId, name) {
+  return {
+    id: userId,
+    name: name,
+    image: '../../../static/3.jpg'
+  }
+}
+// 在列表中添加用户
+function addCustomer (userList, sessionList, historySessionList, customer) {
+  userList.splice(0, 0, customer)
+  sessionList.splice(0, 0, {
+    userId: customer.id,
+    messages: []
+  })
+  historySessionList.splice(0, 0, {
+    userId: customer.id,
+    messages: []
+  })
+}
+// 消息和用户的上浮
+function popUp (list, index) {
+  let item = list[index]
+  list.splice(index, 1)
+  list.splice(0, 0, item)
+}
+// 用户挂断
+function customerHangoff (userList, hangoffUserList,
+   sessionList, hangoffSessionList,
+    historySessionList, id) {
+  let userIndex = findUserIndexById(id)
+  let sessionIndex = findSessionIndexById(id)
+  let customer = userList[userIndex]
+  let session = sessionList[sessionIndex]
+  pushMessages(sessionList, sessionIndex, '用户' + id + '已挂断')
+  userList.splice(userIndex, 1)
+  sessionList.splice(sessionIndex, 1)
+  historySessionList.splice(sessionIndex, 1)
+  hangoffUserList.splice(0, 0, customer)
+  hangoffSessionList.splice(0, 0, session)
+}
 localStorage.clear()
 // 虚拟数据
 if (!localStorage.getItem(key)) {
@@ -245,6 +311,16 @@ if (!localStorage.getItem(key)) {
       {
         userId: 2,
         messages: [
+          {
+            text: 'This is a history message',
+            date: now,
+            image: '../../../static/3.jpg'
+          }
+        ]
+      },
+      {
+        userId: 3,
+        messages: [
         ]
       }
     ]
@@ -267,6 +343,7 @@ export default {
       historySessionList: dataserver.historySessionList,
       // 选中的会话Index
       sessionIndex: 0,
+      hangoffSessionIndex: 0,
       // 文本框中输入的内容
       text: '',
       // 显示活跃消息
@@ -277,10 +354,11 @@ export default {
       socket: '',
       // 当前正在服务人数
       customerNumber: 2,
+      transferable: true,
       // test
       item: {},
       api_chattinglog_show_history: '../api/chattinglog_show_history/',
-      is_show: false
+      history: false
     }
   },
   computed: {
@@ -288,7 +366,7 @@ export default {
       if (this.hangon) {
         return this.sessionList[this.sessionIndex]
       } else {
-        return this.hangoffSessionList[this.sessionIndex]
+        return this.hangoffSessionList[this.hangoffSessionIndex]
       }
     },
     hsession () {
@@ -303,60 +381,26 @@ export default {
     this.user.name = that.socket.id
     // 接收消息
     this.socket.on('customer message', function (msg, fromId, toId) {
-      for (let i = 0; i < that.sessionList.length; i++) {
-        if (that.sessionList[i].userId === fromId) {
-          that.sessionList[i].messages.push({
-            text: msg,
-            date: new Date(),
-            image: that.userList[0].image
-          })
-        }
-      }
+      let index = findSessionIndexById(that.sessionList, fromId)
+      pushMessages(that.sessionList, index, msg)
+      popUp(that.userList, index)
+      popUp(that.sessionList, index)
+      popUp(that.historySessionList, index)
     })
     this.socket.on('add client', function (fromId) {
-      that.userList.splice(0, 0, {
-        id: fromId,
-        name: fromId,
-        image: '../../../static/2.png'
-      })
-      that.customerNumber += 1
-      that.sessionList.splice(0, 0, {
-        userId: fromId,
-        messages: []
-      })
-      that.sessionList[0].messages.push({
-        text: '用户' + fromId + '已上线',
-        date: new Date(),
-        image: that.userList[0].image
-      })
+      let customer = createUser(fromId, fromId)
+      addCustomer(that.userList, that.sessionList, that.historySessionList, customer)
+      that.customerNumber++
+      pushMessages(that.sessionList, 0, '用户' + fromId + '已上线')
     })
     this.socket.on('customer hang off', function (customerId) {
-      let customer = ''
-      let customerSession = ''
-      console.log(customerId + 'hangoff')
-      for (let i = 0; i < that.userList.length; i++) {
-        if (that.userList[i].id === customerId) {
-          customer = that.userList[i]
-          that.userList.splice(i, 1)
-          break
-        }
-      }
-      console.log(that.userList.length)
-      for (let i = 0; i < that.sessionList.length; i++) {
-        if (that.sessionList[i].userId === customerId) {
-          that.sessionList[i].messages.push({
-            text: '用户' + customerId + '已挂断',
-            date: new Date(),
-            image: that.userList[0].image
-          })
-          customerSession = that.sessionList[i]
-          that.sessionList.splice(i, 1)
-          break
-        }
-      }
-      console.log(that.sessionList.length)
-      that.hangoffUserList.splice(0, 0, customer)
-      that.hangoffSessionList.splice(0, 0, customerSession)
+      customerHangoff(that.userList, that.hangoffUserList,
+        that.sessionList, that.hangoffSessionList,
+         that.historySessionList, customerId)
+    })
+    this.socket.on('switch failed', function () {
+      alert('当前无可转接客服！')
+      that.transferable = false
     })
     this.socket.emit('server set id', that.socket.id)
   },
@@ -371,7 +415,6 @@ export default {
           hangoffUserList: this.hangoffUserList,
           sessionList: this.sessionList,
           hangoffSessionList: this.hangoffSessionList,
-          // test
           historySessionList: this.historySessionList
         }))
       }
@@ -382,11 +425,16 @@ export default {
       if (this.hangon) {
         this.sessionIndex = this.userList.indexOf(value)
       } else {
-        this.sessionIndex = this.hangoffUserList.indexOf(value)
+        this.hangoffSessionIndex = this.hangoffUserList.indexOf(value)
       }
     },
     inputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
+        if (!this.hangon) {
+          alert('该用户已挂断！')
+          this.text = ''
+          return
+        }
         this.session.messages.push({
           text: this.text,
           date: new Date(),
@@ -397,29 +445,67 @@ export default {
         this.text = ''
       }
     },
-    // test
-    hbuttoninputing (e) {
-      this.is_show = true
-      var vm = this
-      this.item = { 'client_id': '1', 'service_id': '1' }
-      vm.$http.post(vm.api_chattinglog_show_history, this.item)
-        .then((response) => {
-          vm.$set(this, 'my_test', response.data)
-          console.log('接收到啦！')
-          console.log(this.my_test)
-          for (var p in response.data) {
-            alert(response.data[p].time + ' ' + response.data[p].content)
-            this.hsession.messages.push({
-              text: response.data[p].content,
-              date: response.data[p].time,
-              self: response.data[p].is_client,
-              image: this.user.image
-            })
-          }
+    buttoninputing (e) {
+      if (!this.hangon) {
+        alert('该用户已挂断！')
+        this.text = ''
+        return
+      }
+      if (this.text.length !== 0) {
+        this.session.messages.push({
+          text: this.text,
+          date: new Date(),
+          self: true,
+          image: this.user.image
         })
+        this.socket.emit('server message', this.text, this.user.id, this.session.userId)
+        this.text = ''
+      }
     },
     switchoff () {
       this.hangon = !this.hangon
+      this.sessionIndex = 0
+      this.hangoffSessionIndex = 0
+    },
+    showHistory (e) {
+      if (!this.hangon) {
+        alert('无法获取历史消息！')
+        return
+      }
+      this.history = !this.history
+      // var vm = this
+      // this.item = { 'client_id': '1', 'service_id': '1' }
+      // vm.$http.post(vm.api_chattinglog_show_history, this.item)
+      //   .then((response) => {
+      //     vm.$set(this, 'my_test', response.data)
+      //     console.log('接收到啦！')
+      //     console.log(this.my_test)
+      //     for (var p in response.data) {
+      //       alert(response.data[p].time + ' ' + response.data[p].content)
+      //       this.hsession.messages.push({
+      //         text: response.data[p].content,
+      //         date: response.data[p].time,
+      //         self: response.data[p].is_client,
+      //         image: this.user.image
+      //       })
+      //     }
+      //   })
+    },
+    switchServer (e) {
+      if (!this.hangon) {
+        alert('无法为已挂断的用户进行转接！')
+        return
+      }
+      this.socket.emit('switch server from server', this.session.userId)
+      if (!this.transferable) {
+        this.transferable = true
+        return
+      }
+      pushMessages(this.sessionList, this.sessionIndex, '已成功为用户转接！')
+      customerHangoff(this.userList, this.hangoffUserList,
+        this.sessionList, this.hangoffSessionList,
+         this.historySessionList, this.session.userId)
+      this.transferable = true
     }
   },
   filters: {
@@ -485,7 +571,6 @@ ul {
  ::-webkit-scrollbar-thumb:active {
   background-color: #00aff0
 }
-
 
 /*主要界面*/
 
