@@ -144,7 +144,7 @@ export default {
         }, (response) => {
           window.location.href = '../en_login'
         })
-    }
+    },
     cancel () {
       this.formItem.name = ''
       this.formItem.comment = ''
@@ -173,7 +173,7 @@ export default {
         }, (response) => {
           window.location.href = '../en_login'
         })
-    }
+    },
     reset_key () {
       this.$http.post(this.apiResetCommunicationKey)
         .then((response) => {
