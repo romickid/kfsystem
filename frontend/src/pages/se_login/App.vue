@@ -15,7 +15,7 @@
           </div>
           <div class="div">
             <label class="label">登录密码：</label>
-            <input type="text" v-model="password" name="password" class="text" id="password">
+            <input type="password" v-model="password" name="password" class="text" id="password">
           </div>
           <div class="div">
             <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
