@@ -262,7 +262,7 @@ def customerservice_create(request):
     if request.method == 'POST':
         # CustomerService: email
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_create_check(json_receive)
+        is_correct, error_message = customerservice_create_check(json_receive, request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
@@ -276,7 +276,7 @@ def customerservice_create(request):
         if serializer.is_valid():
             serializer.save()
             cs_send_email_create_account(json_receive['email'], content)
-            return JsonResponse(serializer.data, status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
@@ -313,7 +313,7 @@ def customerservice_set_profile_check_vid(request):
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return HttpResponse(json_receive['vid'], status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
@@ -330,9 +330,8 @@ def customerservice_login(request):
         if cs_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
             admin_sessions_del(request)
             request.session['c_email'] = json_receive['email']
-            return HttpResponse('Valid', status=200) 
-        else:
-            return HttpResponse("ERROR, wrong email or password.", status=200)
+            return HttpResponse('OK', status=200) 
+        return HttpResponse("ERROR, wrong email or password.", status=200)
 
 
 @csrf_exempt
@@ -354,9 +353,8 @@ def customerservice_reset_password(request):
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=200)
-        else:
-            return HttpResponse("ERROR, invalid data in serializer.", status=200)
+            return HttpResponse('OK', status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
@@ -375,9 +373,8 @@ def customerservice_forget_password_email_request(request):
         if serializer.is_valid():
             serializer.save()
             cs_send_email_forget_password(json_receive['email'], content)
-            return HttpResponse('Valid', status=200)
-        else:
-            return HttpResponse("ERROR, invalid data in serializer.", status=200)
+            return HttpResponse('OK', status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
 @csrf_exempt
@@ -414,7 +411,7 @@ def customerservice_forget_password_save_data(request):
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse('OK', status=200)
+            return HttpResponse('OK', status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
 
@@ -441,7 +438,7 @@ def customerservice_logout(request):
             return HttpResponse(error_message, status=200)
 
         del request.session['c_email']
-        return HttpResponse('Logout ok.', status=200)
+        return HttpResponse('OK', status=200)
 
 
 @csrf_exempt
