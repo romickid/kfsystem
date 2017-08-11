@@ -30,7 +30,6 @@ urlpatterns = [
     url(r'^api/customerservice_logout/', views.customerservice_logout),
 
     url(r'^api/chattinglog_send_message/$', views.chattinglog_send_message),
-    url(r'^api/chattinglog_get_data/$', views.chattinglog_get_data),
     url(r'^api/chattinglog_delete_record/$', views.chattinglog_delete_record),
     url(r'^api/chattinglog_delete_record_ontime/$', views.chattinglog_delete_record_ontime),
     url(r'^api/chattinglog_status_change/$', views.chattinglog_status_change),
