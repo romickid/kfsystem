@@ -382,6 +382,9 @@ class TestAdminDisplayInfoDeleteCheck(TestCase):
         self.assertEqual(errormessage4, 'ERROR, attribute is not existent.')
 
 
+# TODO customerservice_set_profile_check
+
+
 class TestCsCreateCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
@@ -436,9 +439,6 @@ class TestCsCreateCheck(TestCase):
         errorcode7, errormessage7 = customerservice_create_check(json7, c1)
         self.assertEqual(errorcode7, 0)
         self.assertEqual(errormessage7, 'ERROR, email has been registered.')
-
-
-# TODO customerservice_set_profile_check
 
 
 class TestCsSetProfileCheckVidCheck(TestCase):
