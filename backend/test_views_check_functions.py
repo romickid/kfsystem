@@ -419,9 +419,6 @@ class TestAdminDisplayInfoShowCheck(TestCase):
         self.assertEqual(errormessage4, 'ERROR, display info is empty.')
 
 
-# TODO customerservice_create_check
-
-
 class TestCsCreateCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
@@ -476,6 +473,45 @@ class TestCsCreateCheck(TestCase):
         errorcode7, errormessage7 = customerservice_create_check(json7, c1)
         self.assertEqual(errorcode7, 0)
         self.assertEqual(errormessage7, 'ERROR, email has been registered.')
+
+
+class TestCsSetProfileCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance, nickname='Cnick2', password='Cpass2', is_register=False, is_online=False, connection_num=0, vid='Cvid2')
+
+    def test(self):
+        json1 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'Cvid1'}
+        errorcode1, errormessage1 = customerservice_set_profile_check(json1)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {'email': 'cs1@a.com', 'password': 't1_pass', 'vid': 'Cvid1'}
+        errorcode2, errormessage2 = customerservice_set_profile_check(json2)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'Cvid1', 'other': 'other'}
+        errorcode3, errormessage3 = customerservice_set_profile_check(json3)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        json4 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 'Cnick2', 'vid': 'Cvid1'}
+        errorcode4, errormessage4 = customerservice_set_profile_check(json4)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, nickname has been used.')
+
+        json5 = {'email': 'email_not_exist@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'Cvid1'}
+        errorcode5, errormessage5 = customerservice_set_profile_check(json5)
+        self.assertEqual(errorcode5, 0)
+        self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
+
+        json6 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'vid_not_exist'}
+        errorcode6, errormessage6 = customerservice_set_profile_check(json6)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, wrong email or vid.')
 
 
 class TestCsSetProfileCheckVidCheck(TestCase):
