@@ -8,14 +8,14 @@
           </div>
           <div class="div">
             <label class="label">新密码：</label>
-            <input type="password" v-model="newPassword" name="newPassword" class="text" @blur="checkNewPassword" @focus="newPasswordInput">
+            <input type="password" v-model="newPassword" name="newPassword" class="text" @blur="checkNewPassword" @focus="newPasswordInput" id="input-password">
             <i-label v-if="passwordNonStandard">
               <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
             </i-label>
           </div>
           <div class="div">
             <label class="label">确认密码：</label>
-            <input type="password" v-model="newPasswordConfirm" name="newPasswordConfirm" class="text" @blur="checkNewPassword" @focus="newPasswordInput">
+            <input type="password" v-model="newPasswordConfirm" name="newPasswordConfirm" class="text" @blur="checkNewPassword" @focus="newPasswordInput" id="input-password-confirm">
             <i-label v-if="passwordInConsistent">
               <p>两次密码输入不一致！</p>
             </i-label>
@@ -60,12 +60,13 @@ export default {
     },
     newPasswordInput () {
       this.passwordInConsistent = false
+      this.passwordNonStandard = false
     },
     finish () {
       if (this.newPassword === '' || this.newPasswordConfirm === '') {
         this.$Message.info('您的信息不完善！')
       } else {
-        if (this.passwordInConsistent === false) {
+        if (this.passwordInConsistent === false && this.passwordNonStandard === false) {
           // 与后端链接进行信息传输和验证
           this.adminResetPassword = {
             'email': this.adminFindPassword.email,
@@ -73,6 +74,8 @@ export default {
             'vid': this.hashNewVid()
           }
           this.resetPassword()
+        } else {
+          this.$Message.info('您输入的密码不合法！')
         }
       }
     },

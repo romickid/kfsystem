@@ -94,7 +94,7 @@ export default {
       communicationKey: '',
       infomationItem: {},
       deleteName: {},
-      infomations: [],
+      infomations: []
     }
   },
   methods: {
@@ -200,21 +200,21 @@ export default {
         }, (response) => {
           window.location.href = '../en_login'
         })
-      },
-      show_key () {
-        this.$http.post(this.apiShowCommunicationKey)
-      .then((response) => {
-        if (response.data === 'ERROR, session is broken.') {
+    },
+    show_key () {
+      this.$http.post(this.apiShowCommunicationKey)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../en_login'
+          } else {
+            this.communicationKey = response.data.communication_key
+          }
+        }, (response) => {
           window.location.href = '../en_login'
-        } else if (response.data === 'ERROR, wrong email.') {
-          window.location.href = '../en_login'
-        } else {
-          this.communicationKey = response.data.communication_key
-        }
-      }, (response) => {
-        window.location.href = '../en_login'
-      })
-      }
+        })
+    }
   },
   created () {
     this.show_key()

@@ -8,22 +8,22 @@
           </div>
           <div class="div">
             <label class="label">登录邮箱：</label>
-            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput">
+            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput" id="input-email">
             <i-label v-if="emailIllegal">
               <p>请输入正确的邮箱！</p>
             </i-label>
           </div>
           <div class="div">
             <label class="label">登录密码：</label>
-            <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput">
-            <i-label v-if="passwordNonstandard">
+            <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput" id="input-password">
+            <i-label v-if="passwordNonStandard">
               <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
             </i-label>
           </div>
           <div class="div">
             <label class="label">确认密码：</label>
-            <input type="password" v-model="passwordConfirm" name="passwordConfirm" class="text" @blur="checkPassword" @focus="passwordInput">
-            <i-label v-if="passwordInconsistent">
+            <input type="password" v-model="passwordConfirm" name="passwordConfirm" class="text" @blur="checkPassword" @focus="passwordInput" id="input-password-confirm">
+            <i-label v-if="passwordInConsistent">
               <p>两次密码输入不一致！</p>
             </i-label>
           </div>
@@ -59,8 +59,8 @@ export default {
       nickname: '',
       serialNumber: '',
       emailIllegal: false,
-      passwordNonstandard: false,
-      passwordInconsistent: false,
+      passwordNonStandard: false,
+      passwordInConsistent: false,
       apiCreate: '../api/admin_create/',
       item: {}
     }
@@ -80,18 +80,19 @@ export default {
     },
     checkPassword () {
       if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
-        this.passwordInconsistent = true
+        this.passwordInConsistent = true
       }
       let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
       let standardContent = reg.test(this.password)
       if (standardContent === false && this.password !== '') {
-        this.passwordNonstandard = true
+        this.passwordNonStandard = true
       } else {
-        this.passwordNonstandard = false
+        this.passwordNonStandard = false
       }
     },
     passwordInput () {
-      this.passwordInconsistent = false
+      this.passwordInConsistent = false
+      this.passwordNonStandard = false
     },
     communicate () {
       this.$http.post(this.apiCreate, this.item)
@@ -118,9 +119,9 @@ export default {
         this.$Message.info('您的信息不完善！')
       } else if (this.emailIllegal === true) {
         this.$Message.info('您的输入的邮箱格式不正确！')
-      } else if (this.passwordNonstandard === true) {
+      } else if (this.passwordNonStandard === true) {
         this.$Message.info('您的输入的密码格式不正确！')
-      } else if (this.passwordInconsistent === true) {
+      } else if (this.passwordInConsistent === true) {
         this.$Message.info('您两次输入的密码不一致！')
       } else {
         // 与后端链接进行信息传输和验证
