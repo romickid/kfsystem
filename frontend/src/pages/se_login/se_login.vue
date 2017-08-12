@@ -8,7 +8,7 @@
           </div>
           <div class="div">
             <label class="label">登录邮箱：</label>
-            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput">
+            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput" id='input-email'>
             <i-label v-if="emailIllegal">
               <p id="p">请输入正确的邮箱！</p>
             </i-label>
