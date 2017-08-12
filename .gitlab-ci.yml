@@ -7,6 +7,7 @@ deploy:
   script:
     - pip install Django==1.11.2
     - pip install Django==1.11.2 mysqlclient
+    - pip install djangorestframework
     - cd frontend
     - cnpm install
     - cnpm install vue-resource
