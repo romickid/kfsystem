@@ -5,6 +5,7 @@ stages:
 deploy:
   stage: run
   script:
+    - pip --default-timeout=100 install -U pip
     - pip install Django==1.11.2
     - pip install Django==1.11.2 mysqlclient
     - pip install djangorestframework
