@@ -35,7 +35,7 @@ class SerialNumberSerializer(serializers.ModelSerializer):
 class ImageLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageLog
-        fields = ('id', 'client_id', 'service_id', 'content', 'is_client', 'time')
+        fields = ('id', 'client_id', 'service_id', 'is_client', 'time') # TODO image
 
 
 class EnterpriseDisplayInfoSerializer(serializers.ModelSerializer):
