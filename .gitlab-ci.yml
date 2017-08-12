@@ -9,6 +9,8 @@ deploy:
     - pip install Django==1.11.2
     - pip install Django==1.11.2 mysqlclient
     - pip install djangorestframework
+    - pip install markdown
+    - pip install django-filter
     - cd frontend
     - cnpm install
     - cnpm install vue-resource
