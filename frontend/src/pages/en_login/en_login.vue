@@ -8,7 +8,7 @@
           </div>
           <div class="div">
             <label class="label">登录邮箱：</label>
-            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput">
+            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput" id='input-email'>
             <i-label v-if="emailIllegal">
               <p id="p">请输入正确的邮箱！</p>
             </i-label>
@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     checkEmail () {
-      let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2,3})?$/i
+      let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.email)
       if (legal === false && this.email !== '') {
         this.emailIllegal = true
