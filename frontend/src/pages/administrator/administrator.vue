@@ -44,7 +44,7 @@
         </i-col>
         <i-col :span='spanRight' class='content'>
           <div class='main-header'>
-            <i-button type='text' @click='toggleClick'>
+            <i-button type='text' @click='toggleClick' id='toggle-click'>
               <Icon type='navicon' size='32'></Icon>
             </i-button>
             <div class='email'>
