@@ -11,6 +11,7 @@ deploy:
     - pip install djangorestframework
     - pip install markdown
     - pip install django-filter
+    - pip install Pillow
     - cd frontend
     - cnpm install
     - cnpm install vue-resource
