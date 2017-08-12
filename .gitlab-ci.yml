@@ -5,10 +5,20 @@ stages:
 deploy:
   stage: run
   script:
+    - pip --default-timeout=100 install -U pip
     - pip install Django==1.11.2
     - pip install Django==1.11.2 mysqlclient
+    - pip install djangorestframework
+    - pip install markdown
+    - pip install django-filter
+    - pip install Pillow
     - cd frontend
     - cnpm install
     - cnpm install vue-resource
     - cnpm install iview --save
     - cnpm run build
+
+backend_test:
+  stage: test
+  script:
+    - python manage.py test backend

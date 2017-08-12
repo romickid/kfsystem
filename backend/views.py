@@ -84,7 +84,7 @@ def admin_forget_password_email_request(request):
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
         serializer = AdminSerializer(instance, data=json_receive)
-        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/admin_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval,Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/admin_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             admin_send_email_forget_password(json_receive['email'], content)
@@ -273,7 +273,7 @@ def customerservice_create(request):
         json_receive['enterprise'] = instance_admin.id
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
         serializer = CustomerServiceCreateSerializer(data=json_receive)
-        content = '尊敬的客服您好' + ':\n' + '请点击以下链接完成账号创建的剩余工作。\n' + 'http://192.168.55.33:8000/customerservice_create_page/?mail=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = 'Dear customerservice' + ':\n' + 'Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/customerservice_create_page/?mail=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             cs_send_email_create_account(json_receive['email'], content)
@@ -370,7 +370,7 @@ def customerservice_forget_password_email_request(request):
         instance = CustomerService.objects.get(email=json_receive['email'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
-        content = '尊敬的' + instance.nickname + ':\n' + '您提交了找回密码的请求，请点击如下链接，对密码进行修改。\n' + 'http://192.168.55.33:8000/customerservice_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval,Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/customerservice_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             cs_send_email_forget_password(json_receive['email'], content)
