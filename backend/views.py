@@ -7,6 +7,7 @@ from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerSer
 from datetime import datetime, timedelta
 from .views_helper_functions import *
 from .views_check_functions import *
+from django.utils import timezone
 
 
 @csrf_exempt
@@ -466,13 +467,14 @@ def chattinglog_delete_record(request):
 
 @csrf_exempt
 def chattinglog_delete_record_ontime(request):
-    if request.method == 'DELETE':
-        now = datetime.now()
-        end_date = datetime(now.year, now.month, now.day, 0, 0)
-        start_date = end_date - timedelta(days=100)
-        chattinglogs = ChattingLog.objects.filter(time__range=[start_date, end_date])
+    if request.method == 'POST':
+        # now = timezone.now()
+        # end_date = datetime(now.year, now.month, now.day, 0, 0)
+        end_date = timezone.now()
+        start_date = end_date + timedelta(days=-100)
+        chattinglogs = ChattingLog.objects.exclude(time__range=(start_date, end_date))
         if chattinglogs.exists():
-            chattinglogs.delete()   
+            chattinglogs.delete()
             return HttpResponse('Clear', status=200)     
         else:
             return HttpResponse('No data to be Clear.', status=201)
@@ -480,18 +482,24 @@ def chattinglog_delete_record_ontime(request):
 
 @csrf_exempt
 def chattinglog_status_change(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
+        json_receive = JSONParser().parse(request)
+        customerservices = CustomerService.objects.filter(id=json_receive['service_id'])
+        if customerservices.exists():
+            customerservice = CustomerService.objects.get(id=json_receive['service_id'])
+            if customerservice.is_online == True:
+                serializer = CustomerServiceSerializer(customerservice, data={'is_online': False}, partial=True)
+            if customerservice.is_online == False:
+                serializer = CustomerServiceSerializer(customerservice, data={'is_online': True}, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, safe=False,status=200)
+            return JsonResponse(serializer.errors, status=201)
+        else:
+            return HttpResponse('Not found.', status=202)
 
-        customerservice = CustomerService.objects.get(nickname='lala')
-        if customerservice.is_online == True:
-            serializer = CustomerServiceSerializer(customerservice, data={'is_online': False}, partial=True)
-        if customerservice.is_online == False:
-            serializer = CustomerServiceSerializer(customerservice, data={'is_online': True}, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, safe=False,status=200)
-        return JsonResponse(serializer.errors, status=201)
 
+        
 @csrf_exempt
 def chattinglog_show_history(request):
     if request.method == 'POST':
