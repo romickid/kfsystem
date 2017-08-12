@@ -63,7 +63,7 @@ io.on('connection', function (socket) {
       })
       let to = serverSocket[0]
       to.customers.push(socket)
-      to.customerNumber ++
+      to.customerNumber++
       console.log(to.id + 'have customer：' + to.customerNumber)
       toId = to.id
       to.emit('add client', fromId)
@@ -87,7 +87,7 @@ io.on('connection', function (socket) {
       }
       let to = serverSocket[i]
       to.customers.push(socket)
-      to.customerNumber ++
+      to.customerNumber++
       console.log('After add transfer,' + to.id + 'have customer：' + to.customerNumber)
       toId = to.id
       to.emit('add client', socket.id)
@@ -98,6 +98,18 @@ io.on('connection', function (socket) {
     }
   })
 
+  socket.on('switch server from server', function(id) {
+    console.log(socket.id + 'switch server for' + id)
+    if (serverSocket.length === 1) {
+      socket.emit('switch failed')
+      console.log('switch failed!')
+      return
+    }
+    let customer = socket.customers.filter(function (item) {
+      return item && item.id === id
+    })
+    customer[0].emit('switch server', socket.id)
+  })
   // 离开
   socket.on('disconnect', function () {
     if (socket.isConnect) {
@@ -109,7 +121,7 @@ io.on('connection', function (socket) {
             return item && item.id === socket.serverId
           })
           removeById(server[0].customers, socket.id)
-          server.customerNumber --
+          server.customerNumber--
           console.log(server[0].customers.length)
           server[0].emit('customer hang off', socket.id)
         }
