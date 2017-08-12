@@ -12,3 +12,8 @@ deploy:
     - cnpm install vue-resource
     - cnpm install iview --save
     - cnpm run build
+
+backend_test:
+  stage: test
+  script:
+    - python manage.py test backend
