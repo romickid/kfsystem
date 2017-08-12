@@ -6,12 +6,12 @@
         <i-button type='text' @click='refresh'>刷新</i-button>
         <div class='add'>
           <Icon type='person-add' class='add-icon'></Icon>
-          <i-button type='text' @click='addModal = true'>添加客服
+          <i-button type='text' @click='addModal = true' id='add-cs-button'>添加客服
           </i-button>
-          <Modal v-model='addModal' title='添加客服' @on-ok='ok' @on-cancel='cancel'>
+          <Modal v-model='addModal' title='添加客服' @on-ok='ok' @on-cancel='cancel' id='add-cs-modal'>
             <Form class='input'>
               <Form-item>
-                <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf' @on-blur='check_email' @on-focus='email_inputing'></i-input>
+                <i-input placeholder='在此输入您要添加的客服邮箱' size=large v-model='kf' @on-blur='check_email' @on-focus='email_inputing' id='input-email'></i-input>
                 <i-label v-if='emailIsNull'>
                   <p>邮箱不能为空</p>
                 </i-label>
@@ -80,7 +80,7 @@ export default {
       this.cancel()
     },
     check_email () {
-      let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
+      let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.kf)
       if (this.kf === '') {
         this.emailIsNull = true

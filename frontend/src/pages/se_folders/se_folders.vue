@@ -8,14 +8,14 @@
           </div>
           <div class="div">
             <label class="label">登录密码：</label>
-            <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput">
+            <input type="password" v-model="password" name="password" class="text" @blur="checkPassword" @focus="passwordInput" id="input-password">
             <i-label v-if="passwordNonStandard">
               <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
             </i-label>
           </div>
           <div class="div">
             <label class="label">确认密码：</label>
-            <input type="password" v-model="passwordConfirm" name="passwordConfirm" class="text" @blur="checkPassword" @focus="passwordInput">
+            <input type="password" v-model="passwordConfirm" name="passwordConfirm" class="text" @blur="checkPassword" @focus="passwordInput" id="input-password-confirm">
             <i-label v-if="passwordInConsistent">
               <p>两次密码输入不一致！</p>
             </i-label>
@@ -69,6 +69,7 @@ export default {
     },
     passwordInput () {
       this.passwordInConsistent = false
+      this.passwordNonStandard = false
     },
     communicate () {
       this.$http.post(this.set_profile, this.item)
