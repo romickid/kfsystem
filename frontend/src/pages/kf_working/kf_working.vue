@@ -90,8 +90,8 @@
         </ul>
       </div>
       <div class="main-text">
-        <Button @click="showHistory" class="history-message">历史消息</Button>
-        <Button @click="switchServer" class="switchoff">转接</Button>
+        <Button @click="showHistory">历史消息</Button>
+        <Button @click="switchServer">转接</Button>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
@@ -261,7 +261,7 @@ export default {
     }
   },
   created () {
-    this.getCsInfomation ()
+    this.getCsInfomation()
     const that = this
     this.socket = io('http://localhost:3000')
     // that.socket.id = (Math.random() * 1000).toString()
@@ -316,17 +316,16 @@ export default {
         }))
         let vm = this
         let index = this.session.messages.length - 1
-        if(this.session.messages[index].self)
-        {
+        if (this.session.messages[index].self) {
           this.turn = 0
-        }else{
+        } else {
           this.turn = 1
         }
-        this.item = {'client_id':this.session.userId, 'service_id':this.user.id, 'content':this.session.messages[index].text, 'is_client':this.turn }
+        this.item = { 'client_id': this.session.userId, 'service_id': this.user.id, 'content': this.session.messages[index].text, 'is_client': this.turn }
         vm.$http.post(vm.api_chattinglog_send_message, this.item)
         .then((response) => {
-        vm.$set(this, 'item', {})
-        console.log("hhhhhhhhhhhhh.你怎么啦！")
+          vm.$set(this, 'item', {})
+          console.log('hhhhhhhhhhhh.你怎么啦！')
         })
       }
     }
@@ -384,6 +383,31 @@ export default {
         return
       }
       this.history = !this.history
+      var vm = this
+      this.item = { 'client_id': this.session.userId, 'service_id': this.user.id }
+      vm.$http.post(vm.api_chattinglog_show_history, this.item)
+        .then((response) => {
+          console.log('接收到啦！')
+          for (var p in response.data) {
+            alert(response.data[p].time + ' ' + response.data[p].content + '##' + response.data[p].is_client)
+            if (response.data[p].is_client === false) {
+              console.log('cs：' + response.data[p].content)
+              this.hsession.messages.push({
+                text: response.data[p].content,
+                date: response.data[p].time,
+                self: true,
+                image: this.user.image
+              })
+            } else {
+              console.log('客户：' + response.data[p].content)
+              this.hsession.messages.push({
+                text: response.data[p].content,
+                date: response.data[p].time,
+                image: '../../../static/3.jpg'
+              })
+            }
+          }
+        })
     },
     getCsInfomation () {
       this.$http.post(this.apiCustomerserviceShowUserStatus)
