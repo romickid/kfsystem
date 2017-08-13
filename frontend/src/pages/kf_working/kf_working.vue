@@ -282,7 +282,7 @@ export default {
       customerHangoff(that.userList, that.hangoffUserList,
         that.sessionList, that.hangoffSessionList,
          that.historySessionList, customerId)
-      if (that.sessionIndex === that.userList.length - 1) {
+      if (that.sessionIndex !== 0) {
         that.sessionIndex--
       }
       deleteCustomer(that.userList, that.sessionList, that.historySessionList, customerId)
@@ -400,7 +400,7 @@ export default {
         customerHangoff(that.userList, that.hangoffUserList,
           that.sessionList, that.hangoffSessionList,
            that.historySessionList, that.session.userId)
-        if (that.sessionIndex === that.userList.length - 1) {
+        if (that.sessionIndex !== 0) {
           that.sessionIndex--
         }
         deleteCustomer(that.userList, that.sessionList, that.historySessionList, id)
