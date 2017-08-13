@@ -54,3 +54,11 @@ class EnterpriseDisplayInfo(models.Model):
     enterprise = models.ForeignKey('Admin', on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default='empty')
     comment = models.CharField(max_length=200, default='', blank=True)
+
+
+class RobotInfo(models.Model):
+    enterprise = models.ForeignKey('Admin', on_delete=models.CASCADE)
+    question = models.CharField(max_length=150, default='empty')
+    answer = models.CharField(max_length=500, default='empty')
+    keyword = models.CharField(max_length=100, default='empty')
+    weight = models.IntegerField(default=0)
