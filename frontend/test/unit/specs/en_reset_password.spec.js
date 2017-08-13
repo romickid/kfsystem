@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import reset from '@/components/en_reset_password'
+import reset from '../../../src/components/en_reset_password.vue'
 
 describe('en_reset_password.vue', () => {
   it('对点击忘记密码窗口弹出功能的检查', () => {
