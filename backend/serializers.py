@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, LANGUAGE_CHOICES, STYLE_CHOICES
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 class AdminSerializer(serializers.ModelSerializer):
@@ -42,3 +42,8 @@ class EnterpriseDisplayInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = EnterpriseDisplayInfo
         fields = ('id', 'enterprise', 'name', 'comment')
+
+class RobotInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RobotInfo
+        fields = ('enterprise', 'question', 'answer', 'keyword', 'weight')

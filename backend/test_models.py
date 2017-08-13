@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test import Client
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
 
 
 class TestModelAdmin(TestCase):
@@ -90,3 +90,18 @@ class TestModelEnterpriseDisplayInfo(TestCase):
         self.assertEqual(displayinfo_instance.enterprise, admin_instance)
         self.assertEqual(displayinfo_instance.name, "info1")
         self.assertEqual(displayinfo_instance.comment, "this is info1")
+
+
+class TestModelRobotInfo(TestCase):
+    def test(self):
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        admin_instance = Admin.objects.get(id=1)
+        RobotInfo.objects.create(id=1, enterprise=admin_instance, question="question1", answer="this is answer1", keyword='keyword1', weight=0)
+        robotinfo_instance = RobotInfo.objects.get(id=1)
+
+        self.assertEqual(robotinfo_instance.id, 1)
+        self.assertEqual(robotinfo_instance.enterprise, admin_instance)
+        self.assertEqual(robotinfo_instance.question, "question1")
+        self.assertEqual(robotinfo_instance.answer, "this is answer1")
+        self.assertEqual(robotinfo_instance.keyword, "keyword1")
+        self.assertEqual(robotinfo_instance.weight, 0)
