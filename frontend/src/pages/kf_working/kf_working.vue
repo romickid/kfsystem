@@ -63,9 +63,9 @@
       </div>
     </div>
     <div class="main">
-      <div class="main-message" v-scroll-bottom="session.messages">
+      <div class="main-message">
         <ul>
-          <li v-if="history" class="message-list" v-for="item in hsession.messages">
+          <li class="message-list" v-for="item in hsession.messages">
             <p class="message-time">
               <span class="time-span">{{ item.date | time }}</span>
             </p>
@@ -76,7 +76,7 @@
               </div>
             </div>
           </li>
-          <li class="message-list" v-for="item in session.messages">
+          <li v-if="currentNumber" class="message-list" v-for="item in session.messages">
             <p class="message-time">
               <span class="time-span">{{ item.date | time }}</span>
             </p>
@@ -123,6 +123,7 @@ function findUserIndexById (users, id) {
 }
 // 接受消息放进消息列表
 function pushMessages (sessionList, index, msg) {
+  console.log(msg)
   sessionList[index].messages.push({
     text: msg,
     date: new Date(),
@@ -159,21 +160,24 @@ function popUp (list, index) {
 function customerHangoff (userList, hangoffUserList,
    sessionList, hangoffSessionList,
     historySessionList, id) {
-  let userIndex = findUserIndexById(id)
-  let sessionIndex = findSessionIndexById(id)
+  let userIndex = findUserIndexById(userList, id)
+  let sessionIndex = findSessionIndexById(sessionList, id)
   let customer = userList[userIndex]
   let session = sessionList[sessionIndex]
   pushMessages(sessionList, sessionIndex, '用户' + id + '已挂断')
+  hangoffUserList.splice(0, 0, customer)
+  hangoffSessionList.splice(0, 0, session)
+}
+function deleteCustomer (userList, sessionList, historySessionList, id) {
+  let userIndex = findUserIndexById(userList, id)
+  let sessionIndex = findSessionIndexById(sessionList, id)
   userList.splice(userIndex, 1)
   sessionList.splice(sessionIndex, 1)
   historySessionList.splice(sessionIndex, 1)
-  hangoffUserList.splice(0, 0, customer)
-  hangoffSessionList.splice(0, 0, session)
 }
 localStorage.clear()
 // 虚拟数据
 if (!localStorage.getItem(key)) {
-  let now = new Date()
   let userData = {
     // 登录用户
     user: {
@@ -182,148 +186,13 @@ if (!localStorage.getItem(key)) {
       image: '../../../static/1.jpg'
     },
     // 用户列表
-    userList: [
-      {
-        id: 2,
-        name: '小怪兽',
-        image: '../../../static/2.png'
-      },
-      {
-        id: 3,
-        name: '独角兽',
-        image: '../../../static/3.jpg'
-      }
-    ],
-    hangoffUserList: [
-      {
-        id: 4,
-        name: 'MonsterSXF',
-        image: '../../../static/2.png'
-      },
-      {
-        id: 5,
-        name: '独角兽🦄',
-        image: '../../../static/3.jpg'
-      },
-      {
-        id: 6,
-        name: '飞天小女警',
-        image: '../../../static/1.jpg'
-      }
-    ],
+    userList: [],
+    hangoffUserList: [],
     // 会话列表
-    sessionList: [
-      {
-        userId: 2,
-        messages: [
-          {
-            text: '你好，我是客户小怪兽！！',
-            date: now,
-            image: '../../../static/2.png'
-          },
-          {
-            text: '有个问题想请你帮助我~',
-            date: now,
-            image: '../../../static/2.png'
-          }
-        ]
-      },
-      {
-        userId: 3,
-        messages: [
-          {
-            text: '你好，我是客户独角兽🦄',
-            date: now,
-            image: '../../../static/3.jpg'
-          },
-          {
-            text: '你可以帮我嘛~',
-            date: now,
-            image: '../../../static/3.jpg'
-          },
-          {
-            text: '嘻嘻嘻',
-            date: now,
-            image: '../../../static/3.jpg'
-          }
-        ]
-      }
-    ],
+    sessionList: [],
     // 已挂断会话列表
-    hangoffSessionList: [
-      {
-        userId: 4,
-        messages: [
-          {
-            text: '你好，我是客户小怪兽！！',
-            date: now,
-            image: '../../../static/2.png'
-          },
-          {
-            text: '我已经挂断了哦',
-            date: now,
-            image: '../../../static/2.png'
-          }
-        ]
-      },
-      {
-        userId: 5,
-        messages: [
-          {
-            text: '你好，我是客户独角兽🦄',
-            date: now,
-            image: '../../../static/3.jpg'
-          },
-          {
-            text: '你可以帮我嘛~',
-            date: now,
-            image: '../../../static/3.jpg'
-          },
-          {
-            text: '嘻嘻嘻',
-            date: now,
-            image: '../../../static/3.jpg'
-          }
-        ]
-      },
-      {
-        userId: 6,
-        messages: [
-          {
-            text: '你好，我是客户飞天小女警',
-            date: now,
-            image: '../../../static/3.jpg'
-          },
-          {
-            text: '你可以帮我嘛~~',
-            date: now,
-            image: '../../../static/3.jpg'
-          },
-          {
-            text: '嘻嘻嘻',
-            date: now,
-            image: '../../../static/3.jpg'
-          }
-        ]
-      }
-    ],
-    historySessionList: [
-      {
-        userId: 2,
-        messages: [
-          {
-            text: 'This is a history message',
-            date: now,
-            image: '../../../static/3.jpg'
-          }
-        ]
-      },
-      {
-        userId: 3,
-        messages: [
-        ]
-      }
-    ]
+    hangoffSessionList: [],
+    historySessionList: []
   }
   localStorage.setItem(key, JSON.stringify(userData))
 }
@@ -353,7 +222,8 @@ export default {
       // 客服对应的socket
       socket: '',
       // 当前正在服务人数
-      customerNumber: 2,
+      customerNumber: 0,
+      hangoffCustomerNumber: 0,
       transferable: true,
       // test
       item: {},
@@ -363,14 +233,28 @@ export default {
   },
   computed: {
     session () {
-      if (this.hangon) {
+      if (this.hangon && this.userList.length) {
         return this.sessionList[this.sessionIndex]
-      } else {
+      } else if (!this.hangon && this.hangoffUserList.length) {
         return this.hangoffSessionList[this.hangoffSessionIndex]
+      } else {
+        return {
+          userId: -1,
+          messages: []
+        }
       }
     },
     hsession () {
+      if (!this.userList.length) {
+        return {
+          userId: -1,
+          messages: []
+        }
+      }
       return this.historySessionList[this.sessionIndex]
+    },
+    currentNumber () {
+      return (this.hangon && this.userList.length) || (!this.hangon && this.hangoffUserList.length)
     }
   },
   created () {
@@ -387,20 +271,27 @@ export default {
       popUp(that.sessionList, index)
       popUp(that.historySessionList, index)
     })
+    // 添加用户
     this.socket.on('add client', function (fromId) {
       let customer = createUser(fromId, fromId)
       addCustomer(that.userList, that.sessionList, that.historySessionList, customer)
-      that.customerNumber++
       pushMessages(that.sessionList, 0, '用户' + fromId + '已上线')
     })
+    // 客户挂断
     this.socket.on('customer hang off', function (customerId) {
       customerHangoff(that.userList, that.hangoffUserList,
         that.sessionList, that.hangoffSessionList,
          that.historySessionList, customerId)
+      if (that.sessionIndex === that.userList.length - 1) {
+        that.sessionIndex--
+      }
+      deleteCustomer(that.userList, that.sessionList, that.historySessionList, customerId)
     })
+    // 无法转接
     this.socket.on('switch failed', function () {
       alert('当前无可转接客服！')
       that.transferable = false
+      console.log('created')
     })
     this.socket.emit('server set id', that.socket.id)
   },
@@ -496,16 +387,25 @@ export default {
         alert('无法为已挂断的用户进行转接！')
         return
       }
-      this.socket.emit('switch server from server', this.session.userId)
-      if (!this.transferable) {
-        this.transferable = true
-        return
-      }
-      pushMessages(this.sessionList, this.sessionIndex, '已成功为用户转接！')
-      customerHangoff(this.userList, this.hangoffUserList,
-        this.sessionList, this.hangoffSessionList,
-         this.historySessionList, this.session.userId)
-      this.transferable = true
+      let that = this
+      let id = that.userList[that.sessionIndex].id
+      this.socket.emit('switch server from server', that.userList[that.sessionIndex].id)
+      setTimeout(function () {
+        if (!that.transferable) {
+          that.transferable = true
+          console.log('transferable')
+          return
+        }
+        pushMessages(that.sessionList, that.sessionIndex, '已成功为用户转接！')
+        customerHangoff(that.userList, that.hangoffUserList,
+          that.sessionList, that.hangoffSessionList,
+           that.historySessionList, that.session.userId)
+        if (that.sessionIndex === that.userList.length - 1) {
+          that.sessionIndex--
+        }
+        deleteCustomer(that.userList, that.sessionList, that.historySessionList, id)
+        that.transferable = true
+      }, 1000)
     }
   },
   filters: {
