@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 from .views_helper_functions import *
 from .views_check_functions import *
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
 
 
 class TestAdminCreateCheck(TestCase):
@@ -762,6 +762,129 @@ class TestCsShowUserStatusCheck(TestCase):
 
         session.delete()
         errorcode3, errormessage3 = customerservice_show_user_status_check(c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, session is broken.')
+
+
+class TestCsRobotinfoCreateCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question2', answer='answer2', keyword='keyword2', weight=0)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@a.com'
+        session.save()
+
+        json1 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        errorcode1, errormessage1 = customerservice_robotinfo_create_check(json1, c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {'question': 'question1', 'answer': 'answer1', 'weight': 0}
+        errorcode2, errormessage2 = customerservice_robotinfo_create_check(json2, c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0, 'other': 'other'}
+        errorcode3, errormessage3 = customerservice_robotinfo_create_check(json3, c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        json4 = {'question': 'question2', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        errorcode4, errormessage4 = customerservice_robotinfo_create_check(json4, c)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, info is exist.')
+
+        session['c_email'] = 'cs2@a.com'
+        session.save()
+        json5 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        errorcode5, errormessage5 = customerservice_robotinfo_create_check(json5, c)
+        self.assertEqual(errorcode5, 0)
+        self.assertEqual(errormessage5, 'ERROR, wrong email.')
+
+        session.delete()
+        json6 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        errorcode6, errormessage6 = customerservice_robotinfo_create_check(json6, c)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, session is broken.')
+
+
+class TestCsRobotinfoDeleteCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question1', answer='answer1', keyword='keyword1', weight=0)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@a.com'
+        session.save()
+
+        json1 = {'question': 'question1'}
+        errorcode1, errormessage1 = customerservice_robotinfo_delete_check(json1, c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {}
+        errorcode2, errormessage2 = customerservice_robotinfo_delete_check(json2, c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'question': 'question1', 'other': 'other'}
+        errorcode3, errormessage3 = customerservice_robotinfo_delete_check(json3, c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        json4 = {'question': 'question2'}
+        errorcode4, errormessage4 = customerservice_robotinfo_delete_check(json4, c)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, info is not exist.')
+
+        session['c_email'] = 'cs2@a.com'
+        session.save()
+        json5 = {'question': 'question1'}
+        errorcode5, errormessage5 = customerservice_robotinfo_delete_check(json5, c)
+        self.assertEqual(errorcode5, 0)
+        self.assertEqual(errormessage5, 'ERROR, wrong email.')
+
+        session.delete()
+        json6 = {'question': 'question1'}
+        errorcode6, errormessage6 = customerservice_robotinfo_delete_check(json6, c)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, session is broken.')
+
+
+class TestCsRobotinfoShowCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question1', answer='answer1', keyword='keyword1', weight=0)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@a.com'
+        session.save()
+
+        errorcode1, errormessage1 = customerservice_robotinfo_show_check(c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        session['c_email'] = 'cs2@a.com'
+        session.save()
+        errorcode2, errormessage2 = customerservice_robotinfo_show_check(c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, wrong email.')
+
+        session.delete()
+        errorcode3, errormessage3 = customerservice_robotinfo_show_check(c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
