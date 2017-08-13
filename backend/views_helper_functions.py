@@ -1,4 +1,4 @@
-from .models import Admin, CustomerService, SerialNumber, EnterpriseDisplayInfo
+from .models import Admin, CustomerService, SerialNumber, EnterpriseDisplayInfo, RobotInfo
 from django.core.mail import send_mail
 import hashlib, random, string
 
@@ -198,4 +198,12 @@ def displayinfo_is_existent_by_email(enterprise_email):
     if EnterpriseDisplayInfo.objects.filter(enterprise=instance_admin.id).exists():
         return True
     else:
+        return False
+
+
+def robotinfo_is_existent_by_enterprise_question(enterprise_id, question):
+    try:
+        instance_robotinfo = RobotInfo.objects.get(enterprise=enterprise_id, question=question)
+        return True
+    except RobotInfo.DoesNotExist:
         return False
