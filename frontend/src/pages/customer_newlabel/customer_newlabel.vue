@@ -17,6 +17,7 @@
         </ul>
       </div>
       <div class="main-text">
+        <Button @click="switchServer">转接人工客服</Button>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
@@ -30,6 +31,50 @@
 import * as io from 'socket.io-client'
 import {formatDate} from '../../../static/js/date.js'
 const key = 'VUE-Customer1'
+function serverMessage (sessionList, msg, fromId, toId) {
+  sessionList[0].messages.push({
+    text: msg,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+}
+function connectToServer (userList, sessionList, toId) {
+  userList[0].id = toId
+  sessionList[0].messages.push({
+    text: '已成功为您转接客服' + toId,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+}
+function noServerAvailable (userList, sessionList) {
+  sessionList[0].messages.push({
+    text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+  userList[0].id = -1
+}
+// 初始化Socket
+function initSocket (userList, sessionList, socket, user) {
+  socket.on('server message', function (msg, fromId, toId) {
+    serverMessage(sessionList, msg, fromId, toId)
+  })
+  socket.on('connect to server', function (toId) {
+    connectToServer(userList, sessionList, toId)
+  })
+  socket.on('no server available', function () {
+    noServerAvailable(userList, sessionList)
+  })
+  socket.on('switch server', function (formerId) {
+    socket.emit('switch server', formerId)
+  })
+  socket.id = (Math.random() * 1000).toString()
+  console.log(user)
+  user.id = socket.id
+  user.name = socket.id
+  socket.emit('customer set id', user.id)
+  socket.emit('assigned to server', user.id)
+}
 localStorage.clear()
 // 虚拟数据
 if (!localStorage.getItem(key)) {
@@ -44,7 +89,7 @@ if (!localStorage.getItem(key)) {
     // 用户列表
     userList: [
       {
-        id: 2,
+        id: -1,
         name: 'MonsterSXF',
         image: '../../../static/2.png'
       }
@@ -55,12 +100,7 @@ if (!localStorage.getItem(key)) {
         userId: 2,
         messages: [
           {
-            text: 'Hello，这是一个基于Vue + Webpack构建的简单chat示例，聊天记录保存在localStorge。简单演示了Vue的基础特性和webpack配置。',
-            date: now,
-            image: '../../../static/2.png'
-          },
-          {
-            text: '项目地址: https://sc.chinaz.com/jiaoben/',
+            text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
             date: now,
             image: '../../../static/2.png'
           }
@@ -93,41 +133,7 @@ export default {
       return this.sessionList[this.sessionIndex]
     }
   },
-  created () {
-    const that = this
-    this.socket = io('http://localhost:3000')
-    that.socket.id = (Math.random() * 1000).toString()
-    this.user.id = that.socket.id
-    this.user.name = that.socket.id
-    // 接收消息
-    this.socket.on('server message', function (msg, fromId, toId) {
-      that.sessionList[0].messages.push({
-        text: msg,
-        date: new Date(),
-        image: that.userList[0].image
-      })
-    })
-    this.socket.on('connect to server', function (toId) {
-      that.userList[0].id = toId
-      that.sessionList[0].messages.push({
-        text: '已成功为您转接客服' + toId,
-        date: new Date(),
-        image: that.userList[0].image
-      })
-    })
-    this.socket.on('no server available', function () {
-      that.sessionList[0].messages.push({
-        text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
-        date: new Date(),
-        image: that.userList[0].image
-      })
-    })
-    this.socket.on('switch server', function (formerId) {
-      that.socket.emit('switch server', formerId)
-    })
-    this.socket.emit('customer set id', that.socket.id)
-    this.socket.emit('assigned to server', that.socket.id)
-  },
+  created () {},
   watch: {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
@@ -148,7 +154,7 @@ export default {
           text: this.text,
           date: new Date(),
           self: true,
-          image: this.user.image
+          image: '../../../static/1.jpg'
         })
         this.socket.emit('customer message', this.text, this.user.id, this.userList[0].id)
         this.text = ''
@@ -160,11 +166,21 @@ export default {
           text: this.text,
           date: new Date(),
           self: true,
-          image: this.user.image
+          image: '../../../static/1.jpg'
         })
         this.socket.emit('customer message', this.text, this.user.id, this.userList[0].id)
         this.text = ''
       }
+    },
+    switchServer (e) {
+      if (this.userList[0].id !== -1) {
+        alert('当前已为人工客服！')
+        return
+      }
+      let that = this
+      this.socket = io('http://localhost:3000')
+      initSocket(that.userList, that.sessionList, this.socket, that.user)
+      this.isRobot = false
     }
   },
   filters: {
