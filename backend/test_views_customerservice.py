@@ -114,7 +114,7 @@ class TestCsSetProfileCheckVid(TestCase):
         json1 = {'email': 'cs1@a.com', 'vid': 'c_vid1'}
         request1 = c.post("/api/customerservice_set_profile_check_vid/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
-        self.assertEqual(request1.content.decode('utf-8'), "OK")
+        self.assertEqual(len(request1.content.decode('utf-8')), 32)
 
         json2 = {'email': 'cs2@a.com'}
         request2 = c.post("/api/customerservice_set_profile_check_vid/", data=json.dumps(json2), content_type='json')
