@@ -68,10 +68,10 @@ function initSocket (userList, sessionList, socket, user) {
   socket.on('switch server', function (formerId) {
     socket.emit('switch server', formerId)
   })
-  socket.id = (Math.random() * 1000).toString()
+  // socket.id = (Math.random() * 1000).toString()
   console.log(user)
-  user.id = socket.id
-  user.name = socket.id
+  // user.id = socket.id
+  // user.name = socket.id
   socket.emit('customer set id', user.id)
   socket.emit('assigned to server', user.id)
 }
@@ -135,7 +135,10 @@ export default {
       return this.sessionList[this.sessionIndex]
     }
   },
-  created () {},
+  created () {
+    this.user.id=this.$utils.getUrlKey('email')
+    this.user.name=this.$utils.getUrlKey('nickname')
+  },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
@@ -146,14 +149,14 @@ export default {
           userList: this.userList,
           sessionList: this.sessionList
         }))
-        if (this.userList[0].id !== -1) {
-          clearTimeout(this.timer)
-          let that = this
-          this.timer = setTimeout(function () {
-            that.socket.close()
-            noServerAvailable(that.userList, that.sessionList)
-          }, 4000)
-        }
+        // if (this.userList[0].id !== -1) {
+        //   clearTimeout(this.timer)
+        //   let that = this
+        //   this.timer = setTimeout(function () {
+        //     that.socket.close()
+        //     noServerAvailable(that.userList, that.sessionList)
+        //   }, 4000)
+        // }
       }
     }
   },
@@ -191,10 +194,10 @@ export default {
       this.socket = io('http://localhost:3000')
       initSocket(that.userList, that.sessionList, this.socket, that.user)
       // this.isRobot = false
-      this.timer = setTimeout(function () {
-        that.socket.close()
-        noServerAvailable(this.userList, this.sessionList)
-      }, 4000)
+      // this.timer = setTimeout(function () {
+      //   that.socket.close()
+      //   noServerAvailable(this.userList, this.sessionList)
+      // }, 4000)
     }
   },
   filters: {
