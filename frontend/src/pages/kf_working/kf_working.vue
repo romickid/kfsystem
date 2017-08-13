@@ -228,7 +228,10 @@ export default {
       // test
       item: {},
       api_chattinglog_show_history: '../api/chattinglog_show_history/',
-      history: false
+      apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
+      history: false,
+      csEmail: '',
+      csName: ''
     }
   },
   computed: {
@@ -258,11 +261,14 @@ export default {
     }
   },
   created () {
+    this.getCsInfomation ()
     const that = this
     this.socket = io('http://localhost:3000')
-    that.socket.id = (Math.random() * 1000).toString()
-    this.user.id = that.socket.id
-    this.user.name = that.socket.id
+    // that.socket.id = (Math.random() * 1000).toString()
+    // this.user.id = that.socket.id
+    // this.user.name = that.socket.id
+    this.user.id = that.csEmail
+    this.user.name = that.csName
     // 接收消息
     this.socket.on('customer message', function (msg, fromId, toId) {
       let index = findSessionIndexById(that.sessionList, fromId)
@@ -308,6 +314,20 @@ export default {
           hangoffSessionList: this.hangoffSessionList,
           historySessionList: this.historySessionList
         }))
+        let vm = this
+        let index = this.session.messages.length - 1
+        if(this.session.messages[index].self)
+        {
+          this.turn = 0
+        }else{
+          this.turn = 1
+        }
+        this.item = {'client_id':this.session.userId, 'service_id':this.user.id, 'content':this.session.messages[index].text, 'is_client':this.turn }
+        vm.$http.post(vm.api_chattinglog_send_message, this.item)
+        .then((response) => {
+        vm.$set(this, 'item', {})
+        console.log("hhhhhhhhhhhhh.你怎么啦！")
+        })
       }
     }
   },
@@ -364,23 +384,21 @@ export default {
         return
       }
       this.history = !this.history
-      // var vm = this
-      // this.item = { 'client_id': '1', 'service_id': '1' }
-      // vm.$http.post(vm.api_chattinglog_show_history, this.item)
-      //   .then((response) => {
-      //     vm.$set(this, 'my_test', response.data)
-      //     console.log('接收到啦！')
-      //     console.log(this.my_test)
-      //     for (var p in response.data) {
-      //       alert(response.data[p].time + ' ' + response.data[p].content)
-      //       this.hsession.messages.push({
-      //         text: response.data[p].content,
-      //         date: response.data[p].time,
-      //         self: response.data[p].is_client,
-      //         image: this.user.image
-      //       })
-      //     }
-      //   })
+    },
+    getCsInfomation () {
+      this.$http.post(this.apiCustomerserviceShowUserStatus)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../se_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../se_login'
+          } else {
+            this.csEmail = response.data.email
+            this.csName = response.data.nickname
+          }
+        }, (response) => {
+          window.location.href = '../se_login'
+        })
     },
     switchServer (e) {
       if (!this.hangon) {
