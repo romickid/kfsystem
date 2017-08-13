@@ -314,7 +314,7 @@ def customerservice_set_profile_check_vid(request):
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
-            return HttpResponse('OK', status=200)
+            return HttpResponse(json_receive['vid'], status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
 
 
