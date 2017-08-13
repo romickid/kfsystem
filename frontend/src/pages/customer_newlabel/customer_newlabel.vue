@@ -125,7 +125,9 @@ export default {
       sessionIndex: 0,
       // 文本框中输入的内容
       text: '',
-      socket: ''
+      socket: '',
+      // 计时器
+      timer: ''
     }
   },
   computed: {
@@ -144,6 +146,14 @@ export default {
           userList: this.userList,
           sessionList: this.sessionList
         }))
+        if (this.userList[0].id !== -1) {
+          clearTimeout(this.timer)
+          let that = this
+          this.timer = setTimeout(function () {
+            that.socket.close()
+            noServerAvailable(that.userList, that.sessionList)
+          }, 4000)
+        }
       }
     }
   },
@@ -180,7 +190,11 @@ export default {
       let that = this
       this.socket = io('http://localhost:3000')
       initSocket(that.userList, that.sessionList, this.socket, that.user)
-      this.isRobot = false
+      // this.isRobot = false
+      this.timer = setTimeout(function () {
+        that.socket.close()
+        noServerAvailable(this.userList, this.sessionList)
+      }, 4000)
     }
   },
   filters: {
