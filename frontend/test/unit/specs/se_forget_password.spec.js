@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import forget from '@/components/se_forget_password'
+import forget from '../../../src/components/se_forget_password.vue'
 
 describe('se_forget_password.vue', () => {
   it('对点击忘记密码窗口弹出功能的检查', () => {

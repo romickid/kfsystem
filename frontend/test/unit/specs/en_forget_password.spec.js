@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import forget from '@/components/en_forget_password'
+import forget from '../../../src/components/en_forget_password.vue'
 
 describe('en_forget_password.vue', () => {
   it('对点击忘记密码窗口弹出功能的检查', () => {
@@ -35,7 +35,7 @@ describe('en_forget_password.vue', () => {
     vm.email = 'w123_@nankai.edu.cn'
     vm.checkEmail()
     expect(vm.emailIllegal)
-      .to.not.be.ok
+      .to.be.ok
   })
   it('判断含有不允许的特殊符号的错误格式', () => {
     const Constructor = Vue.extend(forget)
@@ -43,7 +43,7 @@ describe('en_forget_password.vue', () => {
     vm.email = 'w1.234$56@nankai.edu.cn'
     vm.checkEmail()
     expect(vm.emailIllegal)
-      .to.not.be.ok
+      .to.be.ok
   })
   it('判断含有三个.的错误格式', () => {
     const Constructor = Vue.extend(forget)
@@ -51,7 +51,7 @@ describe('en_forget_password.vue', () => {
     vm.email = 'w123456@nan.kai.edu.cn'
     vm.checkEmail()
     expect(vm.emailIllegal)
-      .to.not.be.ok
+      .to.be.ok
   })
   it('判断域名缺失的错误格式', () => {
     const Constructor = Vue.extend(forget)
@@ -59,7 +59,7 @@ describe('en_forget_password.vue', () => {
     vm.email = 'w123456@nankai'
     vm.checkEmail()
     expect(vm.emailIllegal)
-      .to.not.be.ok
+      .to.be.ok
   })
   it('判断聚焦函数对变量的修改', () => {
     const Constructor = Vue.extend(forget)
