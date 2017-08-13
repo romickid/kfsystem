@@ -90,8 +90,8 @@
         </ul>
       </div>
       <div class="main-text">
-        <Button @click="showHistory">历史消息</Button>
-        <Button @click="switchServer">转接</Button>
+        <Button @click="showHistory" class="history-message">历史消息</Button>
+        <Button @click="switchServer" class="switchoff">转接</Button>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
