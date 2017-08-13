@@ -1,6 +1,6 @@
 from django.test import TestCase
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo
-from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, ImageLogSerializer, EnterpriseDisplayInfoSerializer
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
+from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, ImageLogSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
 
 
 class TestAdminSerializer(TestCase):
@@ -228,3 +228,46 @@ class TestEnterpriseDisplayInfoSerializer(TestCase):
         self.assertEqual(instance.enterprise, admin_instance2)
         self.assertEqual(instance.name, 'info2')
         self.assertEqual(instance.comment, 'this is info2')
+
+
+class TestEnterpriseDisplayInfoSerializer(TestCase):
+    def test(self):
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        Admin.objects.create(id=2, email="admin2@test.com", nickname="a_nick2", password="a_pass2", web_url="a_weburl2", widget_url="a_weidgeturl2", mobile_url="a_mobileurl2", communication_key="a_key2", vid="a_vid2")
+        admin_instance1 = Admin.objects.get(id=1)
+        admin_instance2 = Admin.objects.get(id=2)
+
+        json_create = dict()
+        json_create['enterprise'] = 1
+        json_create['question'] = 'question1'
+        json_create['answer'] = 'this is answer1'
+        json_create['keyword'] = 'keyword1'
+        json_create['weight'] = 0
+
+        serializer = RobotInfoSerializer(data=json_create)
+        if serializer.is_valid():
+            serializer.save()
+        instance = RobotInfo.objects.get(question='question1')
+        instance_id = instance.id
+        self.assertEqual(instance.enterprise, admin_instance1)
+        self.assertEqual(instance.question, "question1")
+        self.assertEqual(instance.answer, "this is answer1")
+        self.assertEqual(instance.keyword, "keyword1")
+        self.assertEqual(instance.weight, 0)
+
+        json_modify = dict()
+        json_modify['enterprise'] = 2
+        json_modify['question'] = 'question2'
+        json_modify['answer'] = 'this is answer2'
+        json_modify['keyword'] = 'keyword2'
+        json_modify['weight'] = 1
+
+        instance = RobotInfo.objects.get(id=instance_id)
+        serializer = RobotInfoSerializer(instance, data=json_modify)
+        if serializer.is_valid():
+            serializer.save()
+        self.assertEqual(instance.enterprise, admin_instance2)
+        self.assertEqual(instance.question, "question2")
+        self.assertEqual(instance.answer, "this is answer2")
+        self.assertEqual(instance.keyword, "keyword2")
+        self.assertEqual(instance.weight, 1)
