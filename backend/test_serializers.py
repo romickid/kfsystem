@@ -1,6 +1,7 @@
 from django.test import TestCase
 from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
 from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, ImageLogSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
+from django.utils import timezone
 
 
 class TestAdminSerializer(TestCase):
@@ -14,7 +15,8 @@ class TestAdminSerializer(TestCase):
         json_create['mobile_url'] = "a_mobileurl1"
         json_create['communication_key'] = 'a_key1'
         json_create['vid'] = 'a_vid1'
-        
+        json_create['vid_createtime'] = timezone.now()
+
         serializer = AdminSerializer(data=json_create)
         if serializer.is_valid():
             serializer.save()
@@ -44,7 +46,8 @@ class TestCustomerServiceCreateSerializer(TestCase):
         json_create['is_online'] = False
         json_create['connection_num'] = 0
         json_create['vid'] = 'c_vid1'
-        
+        json_create['vid_createtime'] = timezone.now()
+
         serializer = CustomerServiceCreateSerializer(data=json_create)
         if serializer.is_valid():
             serializer.save()
@@ -75,6 +78,7 @@ class TestCustomerServiceSerializer(TestCase):
         json_modify['is_online'] = True
         json_modify['connection_num'] = 1
         json_modify['vid'] = 'c_vid2'
+        json_modify['vid_createtime'] = timezone.now()
 
         instance = CustomerService.objects.get(id=1)
         serializer = CustomerServiceSerializer(instance, data=json_modify)
