@@ -378,4 +378,3 @@ class TestCsLogout(TestCase):
         request3 = c.post("/api/customerservice_logout/")
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, session is broken.')
-
