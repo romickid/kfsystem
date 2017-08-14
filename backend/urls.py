@@ -27,9 +27,10 @@ urlpatterns = [
     url(r'^api/customerservice_forget_password_check_vid/', views.customerservice_forget_password_check_vid),
     url(r'^api/customerservice_forget_password_save_data/', views.customerservice_forget_password_save_data),
     url(r'^api/customerservice_show_user_status/', views.customerservice_show_user_status),
-    url(r'^api/customerservice_robotinfo_create/', views.customerservice_robotinfo_create),
-    url(r'^api/customerservice_robotinfo_delete/', views.customerservice_robotinfo_delete),
-    url(r'^api/customerservice_robotinfo_show/', views.customerservice_robotinfo_show),
+    url(r'^api/customerservice_setrobotinfo_create/', views.customerservice_setrobotinfo_create),
+    url(r'^api/customerservice_setrobotinfo_delete/', views.customerservice_setrobotinfo_delete),
+    url(r'^api/customerservice_setrobotinfo_show/', views.customerservice_setrobotinfo_show),
+    url(r'^api/customerservice_displayrobotreply_show/', views.customerservice_displayrobotreply_show),
     url(r'^api/customerservice_logout/', views.customerservice_logout),
 
     url(r'^api/chattinglog_send_message/$', views.chattinglog_send_message),
