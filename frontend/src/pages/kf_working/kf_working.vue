@@ -28,8 +28,12 @@
                     <Button @click="addSentence=true">增添语料</Button>
                     <Modal v-model="addSentence" title="增添语料" @on-ok="ok" @on-cancel="cancel">
                       <p>增添语料</p>
-                      <Input type="text" placeholder="请输入问题">
+                      <div>
+                        <Input type="text" placeholder="请输入问题">
+                      </div>
+                      <div>
                       <Input type="text" placeholder="请输入回答">
+                      </div>
                       <Button>确认增添</Button>
                     </Modal>
                   </Dropdown-item>
@@ -118,7 +122,7 @@
 <script>
 import * as io from 'socket.io-client'
 import robotSetting from '../../components/robot_setting'
-import {formatDate} from '../../../static/js/date.js'
+import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
 // 通过id找聊天记录的索引
 function findSessionIndexById (session, id) {
