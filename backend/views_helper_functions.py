@@ -207,3 +207,10 @@ def robotinfo_is_existent_by_enterprise_question(enterprise_id, question):
         return True
     except RobotInfo.DoesNotExist:
         return False
+
+
+def robotinfo_is_existent_by_enterprise(enterprise_id):
+    if RobotInfo.objects.filter(enterprise=enterprise_id).exists():
+        return True
+    else:
+        return False

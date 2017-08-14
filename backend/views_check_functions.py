@@ -269,7 +269,7 @@ def customerservice_show_user_status_check(request):
     return 1, 'No ERROR.'
 
 
-def customerservice_robotinfo_create_check(json_receive, request):
+def customerservice_setrobotinfo_create_check(json_receive, request):
     test_json = json_testing(json_receive, ['question', 'answer', 'keyword', 'weight'], 4)
     test_sessions = cs_sessions_check(request)
     if test_json == 1:
@@ -287,7 +287,7 @@ def customerservice_robotinfo_create_check(json_receive, request):
     return 1, 'No ERROR.'
 
 
-def customerservice_robotinfo_delete_check(json_receive, request):
+def customerservice_setrobotinfo_delete_check(json_receive, request):
     test_json = json_testing(json_receive, ['question'], 1)
     test_sessions = cs_sessions_check(request)
     if test_json == 1:
@@ -305,12 +305,30 @@ def customerservice_robotinfo_delete_check(json_receive, request):
     return 1, 'No ERROR.'
 
 
-def customerservice_robotinfo_show_check(request):
+def customerservice_setrobotinfo_show_check(request):
     test_sessions = cs_sessions_check(request)
     if test_sessions == False:
         return 0, 'ERROR, session is broken.'
     if cs_is_existent_by_email(request.session['c_email']) == False:
         return 0, 'ERROR, wrong email.'
+    return 1, 'No ERROR.'
+
+
+def customerservice_displayrobotreply_show_check(json_receive, request):
+    test_json = json_testing(json_receive, ['customer_input'], 1)
+    test_sessions = cs_sessions_check(request)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if cs_is_existent_by_email(request.session['c_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    instance_cs = CustomerService.objects.get(email=request.session['c_email'])
+    instance_admin = instance_cs.enterprise
+    if robotinfo_is_existent_by_enterprise(instance_admin.id) == False:
+        return 0, 'ERROR, info is not exist.'
     return 1, 'No ERROR.'
 
 
