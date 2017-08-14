@@ -29,7 +29,7 @@
 
 <script>
 import * as io from 'socket.io-client'
-import {formatDate} from '../../../static/js/date.js'
+import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-Customer1'
 function serverMessage (sessionList, msg, fromId, toId) {
   sessionList[0].messages.push({
@@ -69,7 +69,6 @@ function initSocket (userList, sessionList, socket, user) {
     socket.emit('switch server', formerId)
   })
   // socket.id = (Math.random() * 1000).toString()
-  console.log(user)
   // user.id = socket.id
   // user.name = socket.id
   socket.emit('customer set id', user.id)
