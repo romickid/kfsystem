@@ -142,7 +142,6 @@ function findUserIndexById (users, id) {
 }
 // 接受消息放进消息列表
 function pushMessages (sessionList, index, msg) {
-  console.log(msg)
   sessionList[index].messages.push({
     text: msg,
     date: new Date(),
