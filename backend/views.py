@@ -586,3 +586,11 @@ def chattinglog_show_history(request):
             return JsonResponse(serializer.data,safe=False,status=200)
         else:
             return HttpResponse('No history.', status=201)
+
+
+@csrf_exempt
+def chattinglog_get_cs_id(request):
+    if request.method == 'POST':
+        json_receive = JSONParser().parse(request)
+        customerservices = CustomerService.objects.get(email=json_receive['email'])
+        return HttpResponse(customerservices.id,status=200)
