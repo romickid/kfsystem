@@ -3,7 +3,6 @@
 </template>
 <script>
 import 'iview/dist/styles/iview.css'
-import editrobot from './edit_robot'
 export default {
   data () {
     return {
@@ -15,7 +14,7 @@ export default {
           render: (h, params) => {
             return h('div', [
               h('strong', params.row.question)
-            ]);
+            ])
           }
         },
         {
@@ -55,7 +54,7 @@ export default {
                   }
                 }
               }, '删除')
-            ]);
+            ])
           }
         }
       ],
@@ -87,7 +86,7 @@ export default {
               },
               on: {
                 input: (val) => {
-                  this.data6[index].question = val;
+                  this.data6[index].question = val
                 }
               }
             }),
@@ -99,7 +98,7 @@ export default {
               },
               on: {
                 input: (val) => {
-                  this.data6[index].answer = val;
+                  this.data6[index].answer = val
                 }
               }
             })
@@ -108,11 +107,8 @@ export default {
       })
     },
     remove (index) {
-      this.data6.splice(index, 1);
+      this.data6.splice(index, 1)
     }
-  },
-  components: {
-    editrobot
   }
 }
 </script>
