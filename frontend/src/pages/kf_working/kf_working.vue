@@ -7,30 +7,42 @@
       <div class="main-card">
         <header>
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
-          <p class="user-name">{{ user.name }}</p>
-          <div class="status-manage">
-            <i class="iconfont1">&#xe6a6;</i>
-            <ul class="managebox">
-              <li>
+          <Dropdown>
+            <a href="javascript:void(0)">
+              <p class="user-name">{{ user.name }}</p>
+              <Icon type="arrow-down-b"></Icon>
+            </a>
+            <Dropdown-menu slot="list">
+              <Dropdown-item>
                 <Button>
                   <a href="../se_login">退出账号</a>
                 </Button>
-              </li>
-              <li>
-                <Button @click="modal1 = true">机器人设置</Button>
-                <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
-                  <p>增添预料</p>
-                  <input type="text" placeholder="请输入需要增添的语料">
-                  <button>确认增添</button>
-                  <div>
-                    <p>更改语料</p>
-                    <br>
-                    <p>删除语料</p>
-                  </div>
-                </Modal>
-              </li>
-            </ul>
-          </div>
+              </Dropdown-item>
+              <Dropdown placement="right-start">
+                <Dropdown-item>
+                  机器人设置
+                  <Icon type="ios-arrow-right"></Icon>
+                </Dropdown-item>
+                <Dropdown-menu slot="list">
+                  <Dropdown-item>
+                    <Button @click="addSentence=true">增添语料</Button>
+                    <Modal v-model="addSentence" title="增添语料" @on-ok="ok" @on-cancel="cancel">
+                      <p>增添语料</p>
+                      <Input type="text" placeholder="请输入问题">
+                      <Input type="text" placeholder="请输入回答">
+                      <Button>确认增添</Button>
+                    </Modal>
+                  </Dropdown-item>
+                  <Dropdown-item>
+                    <Button @click="modifySentence=true">编辑语料</Button>
+                    <Modal v-model="modifySentence" title="编辑语料" @on-ok="ok" @on-cancel="cancel" z-index=40>
+                      <robot-setting ref="robotSetting"></robot-setting>
+                    </Modal>
+                  </Dropdown-item>
+                </Dropdown-menu>
+              </Dropdown>
+            </Dropdown-menu>
+          </Dropdown>
         </header>
       </div>
       <div class="main-ul">
@@ -42,7 +54,9 @@
           </div>
           <li class="main-list" v-for="item in userList" :class="{ choosed: session.userId === item.id }" @click="select(item)">
             <a>
-              <img class="main-avatar" width="30" height="30" :alt="item.name" :src="item.image">
+              <Badge :count="item.uncheck" overflow-count="999">
+                <img class="main-avatar" width="30" height="30" :alt="item.name" :src="item.image">
+              </Badge>
               <p class="main-name">{{ item.name }}</p>
             </a>
           </li>
@@ -103,7 +117,8 @@
 
 <script>
 import * as io from 'socket.io-client'
-import { formatDate } from '../../../static/js/date.js'
+import robotSetting from '../../components/robot_setting'
+import {formatDate} from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
 // 通过id找聊天记录的索引
 function findSessionIndexById (session, id) {
@@ -135,7 +150,8 @@ function createUser (userId, name) {
   return {
     id: userId,
     name: name,
-    image: '../../../static/3.jpg'
+    image: '../../../static/3.jpg',
+    uncheck: 0
   }
 }
 // 在列表中添加用户
@@ -158,8 +174,8 @@ function popUp (list, index) {
 }
 // 用户挂断
 function customerHangoff (userList, hangoffUserList,
-  sessionList, hangoffSessionList,
-  historySessionList, id) {
+   sessionList, hangoffSessionList,
+    historySessionList, id) {
   let userIndex = findUserIndexById(userList, id)
   let sessionIndex = findSessionIndexById(sessionList, id)
   let customer = userList[userIndex]
@@ -217,6 +233,10 @@ export default {
       text: '',
       // 显示活跃消息
       hangon: true,
+      // 增添语料对话框
+      addSentence: false,
+      // 修改语料对话框
+      modifySentence: false,
       // 设置机器人
       modal1: false,
       // 客服对应的socket
@@ -261,14 +281,16 @@ export default {
     }
   },
   created () {
-    this.getCsInfomation()
+    // this.getCsInfomation()
     const that = this
     this.socket = io('http://localhost:3000')
-    // that.socket.id = (Math.random() * 1000).toString()
-    // this.user.id = that.socket.id
-    // this.user.name = that.socket.id
-    this.user.id = that.csEmail
-    this.user.name = that.csName
+
+    that.socket.id = (Math.random() * 1000).toString()
+    this.user.id = that.socket.id
+    this.user.name = that.socket.id
+    
+    // this.user.id = that.csEmail
+    // this.user.name = that.csName
     // 接收消息
     this.socket.on('customer message', function (msg, fromId, toId) {
       let index = findSessionIndexById(that.sessionList, fromId)
@@ -281,13 +303,14 @@ export default {
     this.socket.on('add client', function (fromId) {
       let customer = createUser(fromId, fromId)
       addCustomer(that.userList, that.sessionList, that.historySessionList, customer)
+      customer.uncheck++
       pushMessages(that.sessionList, 0, '用户' + fromId + '已上线')
     })
     // 客户挂断
     this.socket.on('customer hang off', function (customerId) {
       customerHangoff(that.userList, that.hangoffUserList,
         that.sessionList, that.hangoffSessionList,
-        that.historySessionList, customerId)
+         that.historySessionList, customerId)
       if (that.sessionIndex !== 0) {
         that.sessionIndex--
       }
@@ -323,10 +346,10 @@ export default {
         }
         this.item = { 'client_id': this.session.userId, 'service_id': this.user.id, 'content': this.session.messages[index].text, 'is_client': this.turn }
         vm.$http.post(vm.api_chattinglog_send_message, this.item)
-          .then((response) => {
-            vm.$set(this, 'item', {})
-            console.log('hhhhhhhhhhhh.你怎么啦！')
-          })
+        .then((response) => {
+          vm.$set(this, 'item', {})
+          console.log('hhhhhhhhhhhh.你怎么啦！')
+        })
       }
     }
   },
@@ -334,6 +357,7 @@ export default {
     select (value) {
       if (this.hangon) {
         this.sessionIndex = this.userList.indexOf(value)
+        this.userList[this.sessionIndex].uncheck = 0
       } else {
         this.hangoffSessionIndex = this.hangoffUserList.indexOf(value)
       }
@@ -383,47 +407,47 @@ export default {
         return
       }
       this.history = !this.history
-      var vm = this
-      this.item = { 'client_id': this.session.userId, 'service_id': this.user.id }
-      vm.$http.post(vm.api_chattinglog_show_history, this.item)
-        .then((response) => {
-          console.log('接收到啦！')
-          for (var p in response.data) {
-            alert(response.data[p].time + ' ' + response.data[p].content + '##' + response.data[p].is_client)
-            if (response.data[p].is_client === false) {
-              console.log('cs：' + response.data[p].content)
-              this.hsession.messages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                self: true,
-                image: this.user.image
-              })
-            } else {
-              console.log('客户：' + response.data[p].content)
-              this.hsession.messages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                image: '../../../static/3.jpg'
-              })
-            }
-          }
-        })
+      // var vm = this
+      // this.item = { 'client_id': this.session.userId, 'service_id': this.user.id }
+      // vm.$http.post(vm.api_chattinglog_show_history, this.item)
+      //   .then((response) => {
+      //     console.log('接收到啦！')
+      //     for (var p in response.data) {
+      //       alert(response.data[p].time + ' ' + response.data[p].content + '##' + response.data[p].is_client)
+      //       if (response.data[p].is_client === false) {
+      //         console.log('cs：' + response.data[p].content)
+      //         this.hsession.messages.push({
+      //           text: response.data[p].content,
+      //           date: response.data[p].time,
+      //           self: true,
+      //           image: this.user.image
+      //         })
+      //       } else {
+      //         console.log('客户：' + response.data[p].content)
+      //         this.hsession.messages.push({
+      //           text: response.data[p].content,
+      //           date: response.data[p].time,
+      //           image: '../../../static/3.jpg'
+      //         })
+      //       }
+      //     }
+      //   })
     },
-    getCsInfomation () {
-      this.$http.post(this.apiCustomerserviceShowUserStatus)
-        .then((response) => {
-          if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login'
-          } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login'
-          } else {
-            this.csEmail = response.data.email
-            this.csName = response.data.nickname
-          }
-        }, (response) => {
-          window.location.href = '../se_login'
-        })
-    },
+    // getCsInfomation () {
+    //   this.$http.post(this.apiCustomerserviceShowUserStatus)
+    //     .then((response) => {
+    //       if (response.data === 'ERROR, session is broken.') {
+    //         window.location.href = '../se_login'
+    //       } else if (response.data === 'ERROR, wrong email.') {
+    //         window.location.href = '../se_login'
+    //       } else {
+    //         this.csEmail = response.data.email
+    //         this.csName = response.data.nickname
+    //       }
+    //     }, (response) => {
+    //       window.location.href = '../se_login'
+    //     })
+    // },
     switchServer (e) {
       if (!this.hangon) {
         alert('无法为已挂断的用户进行转接！')
@@ -441,7 +465,7 @@ export default {
         pushMessages(that.sessionList, that.sessionIndex, '已成功为用户转接！')
         customerHangoff(that.userList, that.hangoffUserList,
           that.sessionList, that.hangoffSessionList,
-          that.historySessionList, that.session.userId)
+           that.historySessionList, that.session.userId)
         if (that.sessionIndex !== 0) {
           that.sessionIndex--
         }
@@ -459,7 +483,9 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
-  components: {}
+  components: {
+    robotSetting
+  }
 }
 </script>
 
@@ -513,7 +539,6 @@ ul {
  ::-webkit-scrollbar-thumb:active {
   background-color: #00aff0
 }
-
 
 /*主要界面*/
 
