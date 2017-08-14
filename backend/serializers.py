@@ -46,4 +46,4 @@ class EnterpriseDisplayInfoSerializer(serializers.ModelSerializer):
 class RobotInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = RobotInfo
-        fields = ('enterprise', 'question', 'answer', 'keyword', 'weight')
+        fields = ('id', 'enterprise', 'question', 'answer', 'keyword', 'weight')
