@@ -2,8 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo
-from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo, RobotInfo
+from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
 from datetime import datetime, timedelta
 from .views_helper_functions import *
 from .views_check_functions import *
@@ -428,6 +428,60 @@ def customerservice_show_user_status(request):
         instance = CustomerService.objects.get(email=data_email)
         json_send = {'email': instance.email, 'nickname': instance.nickname}
         return JsonResponse(json_send, status=200)
+
+
+@csrf_exempt
+def customerservice_robotinfo_create(request):
+    if request.method == 'POST':
+        # RobotInfo: question answer keyword weight
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customerservice_robotinfo_create_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['c_email']
+        instance_customerservice = CustomerService.objects.get(email=data_email)
+        json_receive['enterprise'] = instance_customerservice.enterprise.id
+        serializer = RobotInfoSerializer(data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse('OK', status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
+
+
+@csrf_exempt
+def customerservice_robotinfo_delete(request):
+    if request.method == 'POST':
+        # RobotInfo: question
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customerservice_robotinfo_delete_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['c_email']
+        instance_customerservice = CustomerService.objects.get(email=data_email)
+        data_enterprise = instance_customerservice.enterprise
+        instance_robotinfo = RobotInfo.objects.filter(enterprise=data_enterprise, question=json_receive['question'])
+        instance_robotinfo.delete()
+        return HttpResponse('OK', status=200)
+
+
+@csrf_exempt
+def customerservice_robotinfo_show(request):
+    if request.method == 'POST':
+        # no json
+        is_correct, error_message = customerservice_robotinfo_show_check(request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['c_email']
+        instance_customerservice = CustomerService.objects.get(email=data_email)
+        data_enterprise = instance_customerservice.enterprise
+        instance_alldata = RobotInfo.objects.filter(enterprise=data_enterprise)
+        json_send = list()
+        for i in instance_alldata:
+            json_send.append({'question': i.question, 'answer': i.answer, 'keyword': i.keyword, 'weight': i.weight})
+        return JsonResponse(json_send, safe=False, status=200)
 
 
 @csrf_exempt

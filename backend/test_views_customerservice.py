@@ -353,6 +353,128 @@ class TestCsShowUserStatus(TestCase):
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, session is broken.')
 
 
+class TestCsRobotInfoCreate(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        RobotInfo.objects.create(id=2, enterprise=admin_instance, question='question2', answer='answer1', keyword='keyword1', weight=0)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@test.com'
+        session.save()
+
+        json1 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        request1 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json1), content_type='json')
+        self.assertEqual(request1.status_code, 200)
+        self.assertEqual(request1.content.decode('utf-8'), "OK")
+
+        json2 = {'question': 'question1', 'answer': 'answer1', 'weight': 0}
+        request2 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json2), content_type='json')
+        self.assertEqual(request2.status_code, 200)
+        self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
+
+        json3 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0, 'other': 'other'}
+        request3 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json3), content_type='json')
+        self.assertEqual(request3.status_code, 200)
+        self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
+
+        json4 = {'question': 'question2', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        request4 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json4), content_type='json')
+        self.assertEqual(request4.status_code, 200)
+        self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is exist.")
+
+        session['c_email'] = 'cs2@a.com'
+        session.save()
+        json5 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        request5 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json5), content_type='json')
+        self.assertEqual(request5.status_code, 200)
+        self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email.')
+
+        session.delete()
+        json6 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        request6 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json6), content_type='json')
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
+
+
+class TestCsRobotInfoDelete(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question1', answer='answer1', keyword='keyword1', weight=0)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@test.com'
+        session.save()
+
+        json1 = {'question': 'question1'}
+        request1 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json1), content_type='json')
+        self.assertEqual(request1.status_code, 200)
+        self.assertEqual(request1.content.decode('utf-8'), "OK")
+
+        json2 = {}
+        request2 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json2), content_type='json')
+        self.assertEqual(request2.status_code, 200)
+        self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
+
+        json3 = {'question': 'question1', 'other': 'other'}
+        request3 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json3), content_type='json')
+        self.assertEqual(request3.status_code, 200)
+        self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
+
+        json4 = {'question': 'question2'}
+        request4 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json4), content_type='json')
+        self.assertEqual(request4.status_code, 200)
+        self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is not exist.")
+
+        session['c_email'] = 'cs2@a.com'
+        session.save()
+        json5 = {'question': 'question1'}
+        request5 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json5), content_type='json')
+        self.assertEqual(request5.status_code, 200)
+        self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email.')
+
+        session.delete()
+        json6 = {'question': 'question1'}
+        request6 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json6), content_type='json')
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
+
+
+class TestCsRobotInfoShow(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question1', answer='answer1', keyword='keyword1', weight=0)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@test.com'
+        session.save()
+
+        request1 = c.post("/api/customerservice_robotinfo_show/")
+        self.assertEqual(request1.status_code, 200)
+
+        session['c_email'] = 'cs2@a.com'
+        session.save()
+        request5 = c.post("/api/customerservice_robotinfo_show/")
+        self.assertEqual(request5.status_code, 200)
+        self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email.')
+
+        session.delete()
+        request6 = c.post("/api/customerservice_robotinfo_show/")
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
+
+
 class TestCsLogout(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
@@ -378,4 +500,3 @@ class TestCsLogout(TestCase):
         request3 = c.post("/api/customerservice_logout/")
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, session is broken.')
-
