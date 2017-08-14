@@ -905,7 +905,7 @@ class TestCsDisplayrobotreplyShowCheck(TestCase):
         session['c_email'] = 'cs1@a.com'
         session.save()
 
-        json1 = {'customer_input': '你好'}
+        json1 = {'customer_input': 'nihao'}
         errorcode1, errormessage1 = customerservice_displayrobotreply_show_check(json1, c)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
@@ -915,27 +915,27 @@ class TestCsDisplayrobotreplyShowCheck(TestCase):
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'customer_input': '你好', 'other': 'other'}
+        json3 = {'customer_input': 'nihao', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_displayrobotreply_show_check(json3, c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
         session['c_email'] = 'cs2@a.com'
         session.save()
-        json4 = {'customer_input': '你好'}
+        json4 = {'customer_input': 'nihao'}
         errorcode4, errormessage4 = customerservice_displayrobotreply_show_check(json4, c)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, info is not exist.')
 
         session['c_email'] = 'cs3@a.com'
         session.save()
-        json5 = {'customer_input': '你好'}
+        json5 = {'customer_input': 'nihao'}
         errorcode5, errormessage5 = customerservice_displayrobotreply_show_check(json5, c)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email.')
 
         session.delete()
-        json6 = {'customer_input': '你好'}
+        json6 = {'customer_input': 'nihao'}
         errorcode6, errormessage6 = customerservice_displayrobotreply_show_check(json6, c)
         self.assertEqual(errorcode6, 0)
         self.assertEqual(errormessage6, 'ERROR, session is broken.')
