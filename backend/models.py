@@ -1,6 +1,8 @@
 from django.db import models
+from datetime import datetime, timedelta
 from pygments.lexers import get_all_lexers
 from pygments.styles import get_all_styles
+from django.utils import timezone
 
 LEXERS = [item for item in get_all_lexers() if item[1]]
 LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
@@ -16,6 +18,7 @@ class Admin(models.Model):
     mobile_url = models.CharField(max_length=200, default='empty', unique=True)
     communication_key = models.CharField(max_length=32, default='empty', unique=True)
     vid = models.CharField(max_length=32, default='empty')
+    vid_createtime = models.DateTimeField(default=timezone.now, blank=True)
 
 
 class CustomerService(models.Model):
@@ -27,6 +30,7 @@ class CustomerService(models.Model):
     is_online = models.BooleanField(default=False)
     connection_num = models.IntegerField(default=0)
     vid = models.CharField(max_length=32, default='empty')
+    vid_createtime = models.DateTimeField(default=timezone.now, blank=True)
 
 
 class ChattingLog(models.Model):
