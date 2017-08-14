@@ -39,8 +39,8 @@ def robot_weight_list(admin_id, customer_input):
 
 def robot_return_answer(admin_id, customer_input, max_answer_num):
     weight_list = robot_weight_list(admin_id, customer_input)
-    weight_list.sort(reverse=False)
+    weight_list.sort(reverse=True)
     if len(weight_list) > max_answer_num:
-        return weight_list[0:max_answer_num+1]
+        return weight_list[0:max_answer_num]
     else:
         return weight_list
