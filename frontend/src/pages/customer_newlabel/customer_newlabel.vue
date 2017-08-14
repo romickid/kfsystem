@@ -136,8 +136,8 @@ export default {
     }
   },
   created () {
-    this.user.id=this.$utils.getUrlKey('email')
-    this.user.name=this.$utils.getUrlKey('nickname')
+    this.user.id = this.$utils.getUrlKey('email')
+    this.user.name = this.$utils.getUrlKey('nickname')
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
