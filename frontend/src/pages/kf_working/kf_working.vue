@@ -174,8 +174,8 @@ function popUp (list, index) {
 }
 // 用户挂断
 function customerHangoff (userList, hangoffUserList,
-   sessionList, hangoffSessionList,
-    historySessionList, id) {
+  sessionList, hangoffSessionList,
+  historySessionList, id) {
   let userIndex = findUserIndexById(userList, id)
   let sessionIndex = findSessionIndexById(sessionList, id)
   let customer = userList[userIndex]
@@ -288,29 +288,40 @@ export default {
     that.socket.id = (Math.random() * 1000).toString()
     this.user.id = that.socket.id
     this.user.name = that.socket.id
-    
+
     // this.user.id = that.csEmail
     // this.user.name = that.csName
     // 接收消息
     this.socket.on('customer message', function (msg, fromId, toId) {
       let index = findSessionIndexById(that.sessionList, fromId)
       pushMessages(that.sessionList, index, msg)
-      popUp(that.userList, index)
-      popUp(that.sessionList, index)
-      popUp(that.historySessionList, index)
+      if (index !== that.sessionIndex) {
+        popUp(that.userList, index)
+        popUp(that.sessionList, index)
+        popUp(that.historySessionList, index)
+        if (that.sessionIndex < index) {
+          that.sessionIndex++
+        }
+        that.userList[0].uncheck++
+      }
     })
     // 添加用户
     this.socket.on('add client', function (fromId) {
       let customer = createUser(fromId, fromId)
       addCustomer(that.userList, that.sessionList, that.historySessionList, customer)
-      customer.uncheck++
+      if (that.userList.length !== 1) {
+        customer.uncheck++
+      }
+      if (that.hangon && that.userList.length !== 1) {
+        that.sessionIndex++
+      }
       pushMessages(that.sessionList, 0, '用户' + fromId + '已上线')
     })
     // 客户挂断
     this.socket.on('customer hang off', function (customerId) {
       customerHangoff(that.userList, that.hangoffUserList,
         that.sessionList, that.hangoffSessionList,
-         that.historySessionList, customerId)
+        that.historySessionList, customerId)
       if (that.sessionIndex !== 0) {
         that.sessionIndex--
       }
@@ -320,7 +331,6 @@ export default {
     this.socket.on('switch failed', function () {
       alert('当前无可转接客服！')
       that.transferable = false
-      console.log('created')
     })
     this.socket.emit('server set id', that.socket.id)
   },
@@ -337,19 +347,19 @@ export default {
           hangoffSessionList: this.hangoffSessionList,
           historySessionList: this.historySessionList
         }))
-        let vm = this
-        let index = this.session.messages.length - 1
-        if (this.session.messages[index].self) {
-          this.turn = 0
-        } else {
-          this.turn = 1
-        }
-        this.item = { 'client_id': this.session.userId, 'service_id': this.user.id, 'content': this.session.messages[index].text, 'is_client': this.turn }
-        vm.$http.post(vm.api_chattinglog_send_message, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-          console.log('hhhhhhhhhhhh.你怎么啦！')
-        })
+        // let vm = this
+        // let index = this.session.messages.length - 1
+        // if (this.session.messages[index].self) {
+        //   this.turn = 0
+        // } else {
+        //   this.turn = 1
+        // }
+        // this.item = { 'client_id': this.session.userId, 'service_id': this.user.id, 'content': this.session.messages[index].text, 'is_client': this.turn }
+        // vm.$http.post(vm.api_chattinglog_send_message, this.item)
+        //   .then((response) => {
+        //     vm.$set(this, 'item', {})
+        //     console.log('hhhhhhhhhhhh.你怎么啦！')
+        //   })
       }
     }
   },
@@ -459,13 +469,12 @@ export default {
       setTimeout(function () {
         if (!that.transferable) {
           that.transferable = true
-          console.log('transferable')
           return
         }
         pushMessages(that.sessionList, that.sessionIndex, '已成功为用户转接！')
         customerHangoff(that.userList, that.hangoffUserList,
           that.sessionList, that.hangoffSessionList,
-           that.historySessionList, that.session.userId)
+          that.historySessionList, that.session.userId)
         if (that.sessionIndex !== 0) {
           that.sessionIndex--
         }
@@ -539,6 +548,7 @@ ul {
  ::-webkit-scrollbar-thumb:active {
   background-color: #00aff0
 }
+
 
 /*主要界面*/
 
