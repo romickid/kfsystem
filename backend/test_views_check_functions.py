@@ -14,9 +14,9 @@ class TestAdminCreateCheck(TestCase):
         SerialNumber.objects.create(serials='s5', is_used=False)
         SerialNumber.objects.create(serials='s6', is_used=False)
         SerialNumber.objects.create(serials='s7', is_used=False)
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
         json1 = {'email': 'test1@a.com', 'nickname': 'nick1', 'password': 'pass1', 'serials': 's1'}
@@ -39,17 +39,17 @@ class TestAdminCreateCheck(TestCase):
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, serials is invalid.')
 
-        json5 = {'email': 'admin1@a.com', 'nickname': 'nick5', 'password': 'pass5', 'serials': 's5'}
+        json5 = {'email': 'admin1@test.com', 'nickname': 'nick5', 'password': 'pass5', 'serials': 's5'}
         errorcode5, errormessage5 = admin_create_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, email has been registered.')
 
-        json6 = {'email': 'cs1@a.com', 'nickname': 'nick6', 'password': 'pass6', 'serials': 's6'}
+        json6 = {'email': 'cs1@test.com', 'nickname': 'nick6', 'password': 'pass6', 'serials': 's6'}
         errorcode6, errormessage6 = admin_create_check(json6)
         self.assertEqual(errorcode6, 0)
         self.assertEqual(errormessage6, 'ERROR, email has been registered.')
 
-        json7 = {'email': 'test7@a.com', 'nickname': 'Anick1', 'password': 'pass7', 'serials': 's7'}
+        json7 = {'email': 'test7@a.com', 'nickname': 'a_nick1', 'password': 'pass7', 'serials': 's7'}
         errorcode7, errormessage7 = admin_create_check(json7)
         self.assertEqual(errorcode7, 0)
         self.assertEqual(errormessage7, 'ERROR, nickname has been used.')
@@ -57,20 +57,20 @@ class TestAdminCreateCheck(TestCase):
 
 class TestAdminLoginCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
-        json1 = {'email': 'admin1@a.com', 'password': 'Apass1'}
+        json1 = {'email': 'admin1@test.com', 'password': 'a_pass1'}
         errorcode1, errormessage1 = admin_login_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'admin1@a.com'}
+        json2 = {'email': 'admin1@test.com'}
         errorcode2, errormessage2 = admin_login_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'admin1@a.com', 'nickname': 'nick3', 'password': 'Apass1'}
+        json3 = {'email': 'admin1@test.com', 'nickname': 'nick3', 'password': 'a_pass1'}
         errorcode3, errormessage3 = admin_login_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
@@ -78,37 +78,37 @@ class TestAdminLoginCheck(TestCase):
 
 class TestAdminResetPasswordCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
-        json1 = {'password': 'Apass1', 'newpassword': 'Anewpass1'}
+        json1 = {'password': 'a_pass1', 'newpassword': 'Anewpass1'}
         errorcode1, errormessage1 = admin_reset_password_check(json1, c)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'password': 'Apass1'}
+        json2 = {'password': 'a_pass1'}
         errorcode2, errormessage2 = admin_reset_password_check(json2, c)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'password': 'Apass1', 'newpassword': 'Anewpass1', 'other': 'other'}
+        json3 = {'password': 'a_pass1', 'newpassword': 'Anewpass1', 'other': 'other'}
         errorcode3, errormessage3 = admin_reset_password_check(json3, c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'password': 'Apass1', 'newpassword': 'Anewpass1'}
+        json4 = {'password': 'a_pass1', 'newpassword': 'Anewpass1'}
         session['a_email'] = 'admin2@a.com'
         session.save()
         errorcode4, errormessage4 = admin_reset_password_check(json4, c)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email.')
 
-        json5 = {'password': 'Apass1', 'newpassword': 'Anewpass1'}
+        json5 = {'password': 'a_pass1', 'newpassword': 'Anewpass1'}
         session.delete()
         errorcode5, errormessage5 = admin_reset_password_check(json5, c)
         self.assertEqual(errorcode5, 0)
@@ -117,10 +117,10 @@ class TestAdminResetPasswordCheck(TestCase):
 
 class TestAdminForgetPasswordEmailRequestCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
-        json1 = {'email': 'admin1@a.com'}
+        json1 = {'email': 'admin1@test.com'}
         errorcode1, errormessage1 = admin_forget_password_email_request_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
@@ -130,7 +130,7 @@ class TestAdminForgetPasswordEmailRequestCheck(TestCase):
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'admin1@a.com', 'password': 'Apass1'}
+        json3 = {'email': 'admin1@test.com', 'password': 'a_pass1'}
         errorcode3, errormessage3 = admin_forget_password_email_request_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
@@ -143,30 +143,30 @@ class TestAdminForgetPasswordEmailRequestCheck(TestCase):
 
 class TestAdminForgetPasswordCheckVidCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
-        json1 = {'email': 'admin1@a.com', 'vid': 'Avid1'}
+        json1 = {'email': 'admin1@test.com', 'vid': 'a_vid1'}
         errorcode1, errormessage1 = admin_forget_password_check_vid_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'admin1@a.com'}
+        json2 = {'email': 'admin1@test.com'}
         errorcode2, errormessage2 = admin_forget_password_check_vid_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'admin1@a.com', 'password': 'Apass1', 'vid': 'Avid1'}
+        json3 = {'email': 'admin1@test.com', 'password': 'a_pass1', 'vid': 'a_vid1'}
         errorcode3, errormessage3 = admin_forget_password_check_vid_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'admin2@a.com', 'vid': 'Avid1'}
+        json4 = {'email': 'admin2@a.com', 'vid': 'a_vid1'}
         errorcode4, errormessage4 = admin_forget_password_check_vid_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json5 = {'email': 'admin1@a.com', 'vid': 'vid1'}
+        json5 = {'email': 'admin1@test.com', 'vid': 'vid1'}
         errorcode5, errormessage5 = admin_forget_password_check_vid_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
@@ -174,30 +174,30 @@ class TestAdminForgetPasswordCheckVidCheck(TestCase):
 
 class TestAdminForgetPasswordSaveDataCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
-        json1 = {'email': 'admin1@a.com', 'newpassword': 'Anewpass1', 'vid': 'Avid1'}
+        json1 = {'email': 'admin1@test.com', 'newpassword': 'Anewpass1', 'vid': 'a_vid1'}
         errorcode1, errormessage1 = admin_forget_password_save_data_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'admin1@a.com', 'newpassword': 'Anewpass1'}
+        json2 = {'email': 'admin1@test.com', 'newpassword': 'Anewpass1'}
         errorcode2, errormessage2 = admin_forget_password_save_data_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'admin1@a.com', 'newpassword': 'Anewpass1', 'vid': 'Avid1', 'other': 'other'}
+        json3 = {'email': 'admin1@test.com', 'newpassword': 'Anewpass1', 'vid': 'a_vid1', 'other': 'other'}
         errorcode3, errormessage3 = admin_forget_password_save_data_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'admin2@a.com', 'newpassword': 'Anewpass1', 'vid': 'Avid1'}
+        json4 = {'email': 'admin2@a.com', 'newpassword': 'Anewpass1', 'vid': 'a_vid1'}
         errorcode4, errormessage4 = admin_forget_password_save_data_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json5 = {'email': 'admin1@a.com', 'newpassword': 'Anewpass1', 'vid': 'Avid2'}
+        json5 = {'email': 'admin1@test.com', 'newpassword': 'Anewpass1', 'vid': 'Avid2'}
         errorcode5, errormessage5 = admin_forget_password_save_data_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
@@ -205,12 +205,12 @@ class TestAdminForgetPasswordSaveDataCheck(TestCase):
 
 class TestAdminShowCommunicationKeyCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         errorcode1, errormessage1 = admin_show_user_status_check(c)
@@ -231,12 +231,12 @@ class TestAdminShowCommunicationKeyCheck(TestCase):
 
 class TestAdminResetCommunicationKeyCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         errorcode1, errormessage1 = admin_show_user_status_check(c)
@@ -257,12 +257,12 @@ class TestAdminResetCommunicationKeyCheck(TestCase):
 
 class TestAdminShowCsStatusCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         errorcode1, errormessage1 = admin_show_user_status_check(c)
@@ -283,12 +283,12 @@ class TestAdminShowCsStatusCheck(TestCase):
 
 class TestAdminShowUserStatusCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         errorcode1, errormessage1 = admin_show_user_status_check(c)
@@ -309,14 +309,14 @@ class TestAdminShowUserStatusCheck(TestCase):
 
 class TestAdminDisplayInfoCreateCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         instance = Admin.objects.get(id=1)
         EnterpriseDisplayInfo.objects.create(id=1, enterprise=instance, name='id_used', comment='this is id')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         json1 = {'name': 'id', 'comment': 'this is id'}
@@ -339,7 +339,7 @@ class TestAdminDisplayInfoCreateCheck(TestCase):
 
         c1 = Client()
         session1 = c1.session
-        session1['a_email'] = 'admin1@a.com'
+        session1['a_email'] = 'admin1@test.com'
         session1.save()
         json4 = {'name': 'id_used', 'comment': 'this is id'}
         errorcode4, errormessage4 = admin_display_info_create_check(json4, c1)
@@ -349,14 +349,14 @@ class TestAdminDisplayInfoCreateCheck(TestCase):
 
 class TestAdminDisplayInfoDeleteCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         instance = Admin.objects.get(id=1)
         EnterpriseDisplayInfo.objects.create(id=1, enterprise=instance, name='id_used', comment='this is id')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         json1 = {'name': 'id_used'}
@@ -379,7 +379,7 @@ class TestAdminDisplayInfoDeleteCheck(TestCase):
 
         c1 = Client()
         session1 = c1.session
-        session1['a_email'] = 'admin1@a.com'
+        session1['a_email'] = 'admin1@test.com'
         session1.save()
         json4 = {'name': 'id'}
         errorcode4, errormessage4 = admin_display_info_delete_check(json4, c1)
@@ -389,7 +389,7 @@ class TestAdminDisplayInfoDeleteCheck(TestCase):
 
 class TestAdminDisplayInfoShowCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         Admin.objects.create(id=2, email='admin2@a.com', nickname='Anick2', password='Apass2', web_url='Aweb_url2', widget_url='Awidget_url2', mobile_url='Amobile_url2', communication_key='Akey2', vid='Avid2')
         instance = Admin.objects.get(id=1)
         EnterpriseDisplayInfo.objects.create(id=1, enterprise=instance, name='id_used', comment='this is id')
@@ -397,7 +397,7 @@ class TestAdminDisplayInfoShowCheck(TestCase):
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         errorcode1, errormessage1 = admin_display_info_show_check(c)
@@ -426,12 +426,12 @@ class TestAdminDisplayInfoShowCheck(TestCase):
 
 class TestAdminLogoutChekc(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         errorcode1, errormessage1 = admin_logout_check(c)
@@ -452,14 +452,14 @@ class TestAdminLogoutChekc(TestCase):
 
 class TestCsCreateCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
         json1 = {'email': 'test1@a.com'}
@@ -492,15 +492,15 @@ class TestCsCreateCheck(TestCase):
 
         c1 = Client()
         session = c1.session
-        session['a_email'] = 'admin1@a.com'
+        session['a_email'] = 'admin1@test.com'
         session.save()
 
-        json6 = {'email': 'cs1@a.com'}
+        json6 = {'email': 'cs1@test.com'}
         errorcode6, errormessage6 = customerservice_create_check(json6, c1)
         self.assertEqual(errorcode6, 0)
         self.assertEqual(errormessage6, 'ERROR, email has been registered.')
 
-        json7 = {'email': 'admin1@a.com'}
+        json7 = {'email': 'admin1@test.com'}
         errorcode7, errormessage7 = customerservice_create_check(json7, c1)
         self.assertEqual(errorcode7, 0)
         self.assertEqual(errormessage7, 'ERROR, email has been registered.')
@@ -508,38 +508,38 @@ class TestCsCreateCheck(TestCase):
 
 class TestCsSetProfileCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
         CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance, nickname='Cnick2', password='Cpass2', is_register=False, is_online=False, connection_num=0, vid='Cvid2')
 
     def test(self):
-        json1 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'Cvid1'}
+        json1 = {'email': 'cs1@test.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'c_vid1'}
         errorcode1, errormessage1 = customerservice_set_profile_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'cs1@a.com', 'password': 't1_pass', 'vid': 'Cvid1'}
+        json2 = {'email': 'cs1@test.com', 'password': 't1_pass', 'vid': 'c_vid1'}
         errorcode2, errormessage2 = customerservice_set_profile_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'Cvid1', 'other': 'other'}
+        json3 = {'email': 'cs1@test.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'c_vid1', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_set_profile_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 'Cnick2', 'vid': 'Cvid1'}
+        json4 = {'email': 'cs1@test.com', 'password': 't1_pass', 'nickname': 'Cnick2', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_set_profile_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, nickname has been used.')
 
-        json5 = {'email': 'email_not_exist@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'Cvid1'}
+        json5 = {'email': 'email_not_exist@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'c_vid1'}
         errorcode5, errormessage5 = customerservice_set_profile_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
 
-        json6 = {'email': 'cs1@a.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'vid_not_exist'}
+        json6 = {'email': 'cs1@test.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'vid_not_exist'}
         errorcode6, errormessage6 = customerservice_set_profile_check(json6)
         self.assertEqual(errorcode6, 0)
         self.assertEqual(errormessage6, 'ERROR, wrong email or vid.')
@@ -547,32 +547,32 @@ class TestCsSetProfileCheck(TestCase):
 
 class TestCsSetProfileCheckVidCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
-        json1 = {'email': 'cs1@a.com', 'vid': 'Cvid1'}
+        json1 = {'email': 'cs1@test.com', 'vid': 'c_vid1'}
         errorcode1, errormessage1 = customerservice_set_profile_check_vid_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'cs1@a.com'}
+        json2 = {'email': 'cs1@test.com'}
         errorcode2, errormessage2 = customerservice_set_profile_check_vid_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'cs1@a.com', 'vid': 'Cvid1', 'other': 'other'}
+        json3 = {'email': 'cs1@test.com', 'vid': 'c_vid1', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_set_profile_check_vid_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com', 'vid': 'Cvid1'}
+        json4 = {'email': 'cs2@a.com', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_set_profile_check_vid_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json5 = {'email': 'cs1@a.com', 'vid': 'Cvid2'}
+        json5 = {'email': 'cs1@test.com', 'vid': 'Cvid2'}
         errorcode5, errormessage5 = customerservice_set_profile_check_vid_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
@@ -580,22 +580,22 @@ class TestCsSetProfileCheckVidCheck(TestCase):
 
 class TestCsLoginCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
-        json1 = {'email': 'cs1@a.com', 'password': 'Cpass1'}
+        json1 = {'email': 'cs1@test.com', 'password': 'c_pass1'}
         errorcode1, errormessage1 = customerservice_login_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'cs1@a.com'}
+        json2 = {'email': 'cs1@test.com'}
         errorcode2, errormessage2 = customerservice_login_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'cs1@a.com', 'password': 'Cpass1', 'other': 'other'}
+        json3 = {'email': 'cs1@test.com', 'password': 'c_pass1', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_login_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
@@ -603,33 +603,33 @@ class TestCsLoginCheck(TestCase):
 
 class TestCsResetPasswordCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
-        json1 = {'password': 'Cpass1', 'newpassword': 'Cnewpass1'}
+        json1 = {'password': 'c_pass1', 'newpassword': 'Cnewpass1'}
         errorcode1, errormessage1 = customerservice_reset_password_check(json1, c)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'password': 'Cpass1'}
+        json2 = {'password': 'c_pass1'}
         errorcode2, errormessage2 = customerservice_reset_password_check(json2, c)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'password': 'Cpass1', 'newpassword': 'Cnewpass1', 'other': 'other'}
+        json3 = {'password': 'c_pass1', 'newpassword': 'Cnewpass1', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_reset_password_check(json3, c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
         session.delete()
-        json4 = {'password': 'Cpass1', 'newpassword': 'Cnewpass1'}
+        json4 = {'password': 'c_pass1', 'newpassword': 'Cnewpass1'}
         errorcode4, errormessage4 = customerservice_reset_password_check(json4, c)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, session is broken.')
@@ -638,7 +638,7 @@ class TestCsResetPasswordCheck(TestCase):
         session1 = c1.session
         session1['c_email'] = 'cs2@a.com'
         session1.save()
-        json5 = {'password': 'Cpass1', 'newpassword': 'Cnewpass1'}
+        json5 = {'password': 'c_pass1', 'newpassword': 'Cnewpass1'}
         errorcode5, errormessage5 = customerservice_reset_password_check(json5, c1)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email.')
@@ -646,12 +646,12 @@ class TestCsResetPasswordCheck(TestCase):
 
 class TestCsForgetPasswordEmailRequestCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
-        json1 = {'email': 'cs1@a.com'}
+        json1 = {'email': 'cs1@test.com'}
         errorcode1, errormessage1 = customerservice_forget_password_email_request_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
@@ -661,7 +661,7 @@ class TestCsForgetPasswordEmailRequestCheck(TestCase):
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'cs1@a.com', 'other': 'other'}
+        json3 = {'email': 'cs1@test.com', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_forget_password_email_request_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
@@ -674,32 +674,32 @@ class TestCsForgetPasswordEmailRequestCheck(TestCase):
 
 class TestCsForgetPasswordCheckVidCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
-        json1 = {'email': 'cs1@a.com', 'vid': 'Cvid1'}
+        json1 = {'email': 'cs1@test.com', 'vid': 'c_vid1'}
         errorcode1, errormessage1 = customerservice_forget_password_check_vid_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'cs1@a.com'}
+        json2 = {'email': 'cs1@test.com'}
         errorcode2, errormessage2 = customerservice_forget_password_check_vid_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'cs1@a.com', 'vid': 'Cvid1', 'other': 'other'}
+        json3 = {'email': 'cs1@test.com', 'vid': 'c_vid1', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_forget_password_check_vid_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com', 'vid': 'Cvid1'}
+        json4 = {'email': 'cs2@a.com', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_forget_password_check_vid_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json4 = {'email': 'cs1@a.com', 'vid': 'Cvid2'}
+        json4 = {'email': 'cs1@test.com', 'vid': 'Cvid2'}
         errorcode4, errormessage4 = customerservice_forget_password_check_vid_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
@@ -707,32 +707,32 @@ class TestCsForgetPasswordCheckVidCheck(TestCase):
 
 class TestCsForgetPasswordSaveDataCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
-        json1 = {'email': 'cs1@a.com', 'newpassword': 'Cnewpass1', 'vid': 'Cvid1'}
+        json1 = {'email': 'cs1@test.com', 'newpassword': 'Cnewpass1', 'vid': 'c_vid1'}
         errorcode1, errormessage1 = customerservice_forget_password_save_data_check(json1)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        json2 = {'email': 'cs1@a.com', 'vid': 'Cvid1'}
+        json2 = {'email': 'cs1@test.com', 'vid': 'c_vid1'}
         errorcode2, errormessage2 = customerservice_forget_password_save_data_check(json2)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, incomplete information.')
 
-        json3 = {'email': 'cs1@a.com', 'newpassword': 'Cnewpass1', 'vid': 'Cvid1', 'other': 'other'}
+        json3 = {'email': 'cs1@test.com', 'newpassword': 'Cnewpass1', 'vid': 'c_vid1', 'other': 'other'}
         errorcode3, errormessage3 = customerservice_forget_password_save_data_check(json3)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com', 'newpassword': 'Cnewpass1', 'vid': 'Cvid1'}
+        json4 = {'email': 'cs2@a.com', 'newpassword': 'Cnewpass1', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_forget_password_save_data_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json5 = {'email': 'cs1@a.com', 'newpassword': 'Cnewpass1', 'vid': 'Cvid2'}
+        json5 = {'email': 'cs1@test.com', 'newpassword': 'Cnewpass1', 'vid': 'Cvid2'}
         errorcode5, errormessage5 = customerservice_forget_password_save_data_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
@@ -740,14 +740,14 @@ class TestCsForgetPasswordSaveDataCheck(TestCase):
 
 class TestCsShowUserStatusCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
         errorcode1, errormessage1 = customerservice_show_user_status_check(c)
@@ -768,15 +768,15 @@ class TestCsShowUserStatusCheck(TestCase):
 
 class TestCsRobotinfoCreateCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
         RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question2', answer='answer2', keyword='keyword2', weight=0)
 
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
         json1 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
@@ -815,15 +815,15 @@ class TestCsRobotinfoCreateCheck(TestCase):
 
 class TestCsRobotinfoDeleteCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
         RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question1', answer='answer1', keyword='keyword1', weight=0)
 
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
         json1 = {'question': 'question1'}
@@ -862,15 +862,15 @@ class TestCsRobotinfoDeleteCheck(TestCase):
 
 class TestCsRobotinfoShowCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
         RobotInfo.objects.create(id=1, enterprise=admin_instance, question='question1', answer='answer1', keyword='keyword1', weight=0)
 
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
         errorcode1, errormessage1 = customerservice_setrobotinfo_show_check(c)
@@ -891,18 +891,18 @@ class TestCsRobotinfoShowCheck(TestCase):
 
 class TestCsDisplayrobotreplyShowCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         Admin.objects.create(id=2, email='admin2@a.com', nickname='Anick2', password='Apass2', web_url='Aweb_url2', widget_url='Awidget_url2', mobile_url='Amobile_url2', communication_key='Akey2', vid='Avid2')
         admin_instance1 = Admin.objects.get(id=1)
         admin_instance2 = Admin.objects.get(id=2)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance1, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance1, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
         CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance2, nickname='Cnick2', password='Cpass2', is_register=False, is_online=False, connection_num=0, vid='Cvid2')
         RobotInfo.objects.create(id=1, enterprise=admin_instance1, question='question1', answer='answer1', keyword='keyword1', weight=0)
 
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
         json1 = {'customer_input': 'nihao'}
@@ -943,14 +943,14 @@ class TestCsDisplayrobotreplyShowCheck(TestCase):
 
 class TestCsLogoutCheck(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
 
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
         errorcode1, errormessage1 = customerservice_logout_check(c)
