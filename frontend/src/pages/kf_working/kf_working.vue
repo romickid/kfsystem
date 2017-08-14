@@ -9,27 +9,27 @@
           <img class="user-avatar" width="40" height="40" :alt="user.name" :src="user.image">
           <p class="user-name">{{ user.name }}</p>
           <div class="status-manage">
-              <i class="iconfont1">&#xe6a6;</i>
-              <ul class="managebox">
-                <li>
-                  <Button>
-                    <a href="../se_login">退出账号</a>
-                  </Button>
-                </li>
-                <li>
-                  <Button @click="modal1 = true">机器人设置</Button>
-                  <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
-                    <p>增添预料</p>
-                    <input type="text" placeholder="请输入需要增添的语料">
-                    <button>确认增添</button>
-                    <div>
-                      <p>更改语料</p>
-                      <br>
-                      <p>删除语料</p>
-                    </div>
-                  </Modal>
-                </li>
-              </ul>
+            <i class="iconfont1">&#xe6a6;</i>
+            <ul class="managebox">
+              <li>
+                <Button>
+                  <a href="../se_login">退出账号</a>
+                </Button>
+              </li>
+              <li>
+                <Button @click="modal1 = true">机器人设置</Button>
+                <Modal v-model="modal1" title="机器人设置" @on-ok="ok" @on-cancel="cancel">
+                  <p>增添预料</p>
+                  <input type="text" placeholder="请输入需要增添的语料">
+                  <button>确认增添</button>
+                  <div>
+                    <p>更改语料</p>
+                    <br>
+                    <p>删除语料</p>
+                  </div>
+                </Modal>
+              </li>
+            </ul>
           </div>
         </header>
       </div>
@@ -103,7 +103,7 @@
 
 <script>
 import * as io from 'socket.io-client'
-import {formatDate} from '../../../static/js/date.js'
+import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
 // 通过id找聊天记录的索引
 function findSessionIndexById (session, id) {
@@ -158,8 +158,8 @@ function popUp (list, index) {
 }
 // 用户挂断
 function customerHangoff (userList, hangoffUserList,
-   sessionList, hangoffSessionList,
-    historySessionList, id) {
+  sessionList, hangoffSessionList,
+  historySessionList, id) {
   let userIndex = findUserIndexById(userList, id)
   let sessionIndex = findSessionIndexById(sessionList, id)
   let customer = userList[userIndex]
@@ -287,7 +287,7 @@ export default {
     this.socket.on('customer hang off', function (customerId) {
       customerHangoff(that.userList, that.hangoffUserList,
         that.sessionList, that.hangoffSessionList,
-         that.historySessionList, customerId)
+        that.historySessionList, customerId)
       if (that.sessionIndex !== 0) {
         that.sessionIndex--
       }
@@ -323,10 +323,10 @@ export default {
         }
         this.item = { 'client_id': this.session.userId, 'service_id': this.user.id, 'content': this.session.messages[index].text, 'is_client': this.turn }
         vm.$http.post(vm.api_chattinglog_send_message, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-          console.log('hhhhhhhhhhhh.你怎么啦！')
-        })
+          .then((response) => {
+            vm.$set(this, 'item', {})
+            console.log('hhhhhhhhhhhh.你怎么啦！')
+          })
       }
     }
   },
@@ -441,7 +441,7 @@ export default {
         pushMessages(that.sessionList, that.sessionIndex, '已成功为用户转接！')
         customerHangoff(that.userList, that.hangoffUserList,
           that.sessionList, that.hangoffSessionList,
-           that.historySessionList, that.session.userId)
+          that.historySessionList, that.session.userId)
         if (that.sessionIndex !== 0) {
           that.sessionIndex--
         }
@@ -513,6 +513,7 @@ ul {
  ::-webkit-scrollbar-thumb:active {
   background-color: #00aff0
 }
+
 
 /*主要界面*/
 
