@@ -64,28 +64,28 @@ class TestCsSetProfile(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
-        CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
 
     def test(self):
         c = Client()
 
-        json1 = {'email': 'cs1@a.com', 'password': 'pass1', 'nickname': 'nick1', 'vid': 'c_vid1'}
+        json1 = {'email': 'cs1@test.com', 'password': 'pass1', 'nickname': 'nick1', 'vid': 'c_vid1'}
         request1 = c.post("/api/customerservice_set_profile/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
 
-        json2 = {'email': 'cs2@a.com', 'password': 'pass2', 'vid': 'c_vid2'}
+        json2 = {'email': 'cs2@test.com', 'password': 'pass2', 'vid': 'c_vid2'}
         request2 = c.post("/api/customerservice_set_profile/", data=json.dumps(json2), content_type='json')
         self.assertEqual(request2.status_code, 200)
         self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
 
-        json3 = {'email': 'cs2@a.com', 'password': 'pass2', 'nickname': 'nick2', 'vid': 'c_vid2', 'other': 'other'}
+        json3 = {'email': 'cs2@test.com', 'password': 'pass2', 'nickname': 'nick2', 'vid': 'c_vid2', 'other': 'other'}
         request3 = c.post("/api/customerservice_set_profile/", data=json.dumps(json3), content_type='json')
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com', 'password': 'pass2', 'nickname': 'nick1', 'vid': 'c_vid2'}
+        json4 = {'email': 'cs2@test.com', 'password': 'pass2', 'nickname': 'nick1', 'vid': 'c_vid2'}
         request4 = c.post("/api/customerservice_set_profile/", data=json.dumps(json4), content_type='json')
         self.assertEqual(request4.status_code, 200)
         self.assertEqual(request4.content.decode('utf-8'), 'ERROR, nickname has been used.')
@@ -95,7 +95,7 @@ class TestCsSetProfile(TestCase):
         self.assertEqual(request5.status_code, 200)
         self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email or vid.')
 
-        json6 = {'email': 'cs2@a.com', 'password': 'pass2', 'nickname': 'nick2', 'vid': 'c_vid3'}
+        json6 = {'email': 'cs2@test.com', 'password': 'pass2', 'nickname': 'nick2', 'vid': 'c_vid3'}
         request6 = c.post("/api/customerservice_set_profile/", data=json.dumps(json6), content_type='json')
         self.assertEqual(request6.status_code, 200)
         self.assertEqual(request6.content.decode('utf-8'), "ERROR, wrong email or vid.")
@@ -105,23 +105,23 @@ class TestCsSetProfileCheckVid(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
-        CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
 
     def test(self):
         c = Client()
 
-        json1 = {'email': 'cs1@a.com', 'vid': 'c_vid1'}
+        json1 = {'email': 'cs1@test.com', 'vid': 'c_vid1'}
         request1 = c.post("/api/customerservice_set_profile_check_vid/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(len(request1.content.decode('utf-8')), 32)
 
-        json2 = {'email': 'cs2@a.com'}
+        json2 = {'email': 'cs2@test.com'}
         request2 = c.post("/api/customerservice_set_profile_check_vid/", data=json.dumps(json2), content_type='json')
         self.assertEqual(request2.status_code, 200)
         self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
 
-        json3 = {'email': 'cs2@a.com', 'vid': 'c_vid2', 'other': 'other'}
+        json3 = {'email': 'cs2@test.com', 'vid': 'c_vid2', 'other': 'other'}
         request3 = c.post("/api/customerservice_set_profile_check_vid/", data=json.dumps(json3), content_type='json')
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
@@ -131,7 +131,7 @@ class TestCsSetProfileCheckVid(TestCase):
         self.assertEqual(request5.status_code, 200)
         self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email or vid.')
 
-        json6 = {'email': 'cs2@a.com', 'vid': 'c_vid3'}
+        json6 = {'email': 'cs2@test.com', 'vid': 'c_vid3'}
         request6 = c.post("/api/customerservice_set_profile_check_vid/", data=json.dumps(json6), content_type='json')
         self.assertEqual(request6.status_code, 200)
         self.assertEqual(request6.content.decode('utf-8'), "ERROR, wrong email or vid.")
@@ -386,7 +386,7 @@ class TestCsRobotInfoCreate(TestCase):
         self.assertEqual(request4.status_code, 200)
         self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is exist.")
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         json5 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
         request5 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json5), content_type='json')
@@ -433,7 +433,7 @@ class TestCsRobotInfoDelete(TestCase):
         self.assertEqual(request4.status_code, 200)
         self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is not exist.")
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         json5 = {'question': 'question1'}
         request5 = c.post("/api/customerservice_setrobotinfo_delete/", data=json.dumps(json5), content_type='json')
@@ -463,7 +463,7 @@ class TestCsRobotInfoShow(TestCase):
         request1 = c.post("/api/customerservice_setrobotinfo_show/")
         self.assertEqual(request1.status_code, 200)
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         request5 = c.post("/api/customerservice_setrobotinfo_show/")
         self.assertEqual(request5.status_code, 200)
@@ -477,12 +477,12 @@ class TestCsRobotInfoShow(TestCase):
 
 class TestCsDisplayrobotreplyShow(TestCase):
     def setUp(self):
-        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
-        Admin.objects.create(id=2, email='admin2@a.com', nickname='Anick2', password='Apass2', web_url='Aweb_url2', widget_url='Awidget_url2', mobile_url='Amobile_url2', communication_key='Akey2', vid='Avid2')
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
+        Admin.objects.create(id=2, email='admin2@test.com', nickname='a_nick2', password='a_pass2', web_url='a_weburl2', widget_url='a_widgeturl2', mobile_url='a_mobileurl2', communication_key='a_key2', vid='a_vid2')
         admin_instance1 = Admin.objects.get(id=1)
         admin_instance2 = Admin.objects.get(id=2)
-        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance1, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
-        CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance2, nickname='Cnick2', password='Cpass2', is_register=False, is_online=False, connection_num=0, vid='Cvid2')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance1, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance2, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
         RobotInfo.objects.create(id=1, enterprise=admin_instance1, question='morning', answer='answer1', keyword='keyword1', weight=1)
         RobotInfo.objects.create(id=2, enterprise=admin_instance1, question='morning shanghai', answer='answer2', keyword='keyword2', weight=1)
         RobotInfo.objects.create(id=3, enterprise=admin_instance1, question='morning beijing', answer='answer3', keyword='keyword3', weight=1)
@@ -490,7 +490,7 @@ class TestCsDisplayrobotreplyShow(TestCase):
     def test(self):
         c = Client()
         session = c.session
-        session['c_email'] = 'cs1@a.com'
+        session['c_email'] = 'cs1@test.com'
         session.save()
 
         json1 = {'customer_input': 'morning'}
@@ -508,7 +508,7 @@ class TestCsDisplayrobotreplyShow(TestCase):
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), "ERROR, wrong information.")
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         json4 = {'customer_input': 'morning'}
         request4 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json4), content_type='json')
