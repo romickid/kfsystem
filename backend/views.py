@@ -7,6 +7,7 @@ from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerSer
 from datetime import datetime, timedelta
 from .views_helper_functions import *
 from .views_check_functions import *
+from .robot import *
 from django.utils import timezone
 
 
@@ -431,11 +432,11 @@ def customerservice_show_user_status(request):
 
 
 @csrf_exempt
-def customerservice_robotinfo_create(request):
+def customerservice_setrobotinfo_create(request):
     if request.method == 'POST':
         # RobotInfo: question answer keyword weight
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_robotinfo_create_check(json_receive, request)
+        is_correct, error_message = customerservice_setrobotinfo_create_check(json_receive, request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
@@ -450,11 +451,11 @@ def customerservice_robotinfo_create(request):
 
 
 @csrf_exempt
-def customerservice_robotinfo_delete(request):
+def customerservice_setrobotinfo_delete(request):
     if request.method == 'POST':
         # RobotInfo: question
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_robotinfo_delete_check(json_receive, request)
+        is_correct, error_message = customerservice_setrobotinfo_delete_check(json_receive, request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
@@ -467,10 +468,10 @@ def customerservice_robotinfo_delete(request):
 
 
 @csrf_exempt
-def customerservice_robotinfo_show(request):
+def customerservice_setrobotinfo_show(request):
     if request.method == 'POST':
         # no json
-        is_correct, error_message = customerservice_robotinfo_show_check(request)
+        is_correct, error_message = customerservice_setrobotinfo_show_check(request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
@@ -481,6 +482,27 @@ def customerservice_robotinfo_show(request):
         json_send = list()
         for i in instance_alldata:
             json_send.append({'question': i.question, 'answer': i.answer, 'keyword': i.keyword, 'weight': i.weight})
+        return JsonResponse(json_send, safe=False, status=200)
+
+
+@csrf_exempt
+def customerservice_displayrobotreply_show(request):
+    if request.method == 'POST':
+        # customer_input
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['c_email']
+        instance_customerservice = CustomerService.objects.get(email=data_email)
+        data_enterprise = instance_customerservice.enterprise
+        answer_list = robot_return_answer(data_enterprise.id, json_receive['customer_input'])
+        json_send = list()
+        for i in answer_list:
+            json_send.append({'weight': i[0], 'question': i[1], 'answer': i[2], 'keyword': i[3]})
+        # print(json_receive['customer_input'])
+        # print(json_send)
         return JsonResponse(json_send, safe=False, status=200)
 
 
@@ -553,7 +575,6 @@ def chattinglog_status_change(request):
             return HttpResponse('Not found.', status=202)
 
 
-        
 @csrf_exempt
 def chattinglog_show_history(request):
     if request.method == 'POST':
