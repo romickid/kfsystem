@@ -83,7 +83,7 @@ DATABASES = {
         'PASSWORD': '',
         'OPTIONS': {'charset': 'utf8mb4'},
         'TEST': { 
-            'CHARSET': 'utf8',        
+            'CHARSET': 'utf8',
             'COLLATION': 'utf8_general_ci',
         }
     }

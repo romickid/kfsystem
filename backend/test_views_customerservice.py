@@ -367,35 +367,35 @@ class TestCsRobotInfoCreate(TestCase):
         session.save()
 
         json1 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
-        request1 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json1), content_type='json')
+        request1 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
 
         json2 = {'question': 'question1', 'answer': 'answer1', 'weight': 0}
-        request2 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json2), content_type='json')
+        request2 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json2), content_type='json')
         self.assertEqual(request2.status_code, 200)
         self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
 
         json3 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0, 'other': 'other'}
-        request3 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json3), content_type='json')
+        request3 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json3), content_type='json')
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
 
         json4 = {'question': 'question2', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
-        request4 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json4), content_type='json')
+        request4 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json4), content_type='json')
         self.assertEqual(request4.status_code, 200)
         self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is exist.")
 
         session['c_email'] = 'cs2@a.com'
         session.save()
         json5 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
-        request5 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json5), content_type='json')
+        request5 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json5), content_type='json')
         self.assertEqual(request5.status_code, 200)
         self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email.')
 
         session.delete()
         json6 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
-        request6 = c.post("/api/customerservice_robotinfo_create/", data=json.dumps(json6), content_type='json')
+        request6 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json6), content_type='json')
         self.assertEqual(request6.status_code, 200)
         self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
 
@@ -414,35 +414,35 @@ class TestCsRobotInfoDelete(TestCase):
         session.save()
 
         json1 = {'question': 'question1'}
-        request1 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json1), content_type='json')
+        request1 = c.post("/api/customerservice_setrobotinfo_delete/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
 
         json2 = {}
-        request2 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json2), content_type='json')
+        request2 = c.post("/api/customerservice_setrobotinfo_delete/", data=json.dumps(json2), content_type='json')
         self.assertEqual(request2.status_code, 200)
         self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
 
         json3 = {'question': 'question1', 'other': 'other'}
-        request3 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json3), content_type='json')
+        request3 = c.post("/api/customerservice_setrobotinfo_delete/", data=json.dumps(json3), content_type='json')
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
 
         json4 = {'question': 'question2'}
-        request4 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json4), content_type='json')
+        request4 = c.post("/api/customerservice_setrobotinfo_delete/", data=json.dumps(json4), content_type='json')
         self.assertEqual(request4.status_code, 200)
         self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is not exist.")
 
         session['c_email'] = 'cs2@a.com'
         session.save()
         json5 = {'question': 'question1'}
-        request5 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json5), content_type='json')
+        request5 = c.post("/api/customerservice_setrobotinfo_delete/", data=json.dumps(json5), content_type='json')
         self.assertEqual(request5.status_code, 200)
         self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email.')
 
         session.delete()
         json6 = {'question': 'question1'}
-        request6 = c.post("/api/customerservice_robotinfo_delete/", data=json.dumps(json6), content_type='json')
+        request6 = c.post("/api/customerservice_setrobotinfo_delete/", data=json.dumps(json6), content_type='json')
         self.assertEqual(request6.status_code, 200)
         self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
 
@@ -460,17 +460,71 @@ class TestCsRobotInfoShow(TestCase):
         session['c_email'] = 'cs1@test.com'
         session.save()
 
-        request1 = c.post("/api/customerservice_robotinfo_show/")
+        request1 = c.post("/api/customerservice_setrobotinfo_show/")
         self.assertEqual(request1.status_code, 200)
 
         session['c_email'] = 'cs2@a.com'
         session.save()
-        request5 = c.post("/api/customerservice_robotinfo_show/")
+        request5 = c.post("/api/customerservice_setrobotinfo_show/")
         self.assertEqual(request5.status_code, 200)
         self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email.')
 
         session.delete()
-        request6 = c.post("/api/customerservice_robotinfo_show/")
+        request6 = c.post("/api/customerservice_setrobotinfo_show/")
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
+
+
+class TestCsDisplayrobotreplyShow(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@a.com', nickname='Anick1', password='Apass1', web_url='Aweb_url1', widget_url='Awidget_url1', mobile_url='Amobile_url1', communication_key='Akey1', vid='Avid1')
+        Admin.objects.create(id=2, email='admin2@a.com', nickname='Anick2', password='Apass2', web_url='Aweb_url2', widget_url='Awidget_url2', mobile_url='Amobile_url2', communication_key='Akey2', vid='Avid2')
+        admin_instance1 = Admin.objects.get(id=1)
+        admin_instance2 = Admin.objects.get(id=2)
+        CustomerService.objects.create(id=1, email='cs1@a.com', enterprise=admin_instance1, nickname='Cnick1', password='Cpass1', is_register=False, is_online=False, connection_num=0, vid='Cvid1')
+        CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance2, nickname='Cnick2', password='Cpass2', is_register=False, is_online=False, connection_num=0, vid='Cvid2')
+        RobotInfo.objects.create(id=1, enterprise=admin_instance1, question='morning', answer='answer1', keyword='keyword1', weight=1)
+        RobotInfo.objects.create(id=2, enterprise=admin_instance1, question='morning shanghai', answer='answer2', keyword='keyword2', weight=1)
+        RobotInfo.objects.create(id=3, enterprise=admin_instance1, question='morning beijing', answer='answer3', keyword='keyword3', weight=1)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@a.com'
+        session.save()
+
+        json1 = {'customer_input': 'morning'}
+        request1 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json1), content_type='json')
+        self.assertEqual(request1.status_code, 200)
+        # print(request1.content.decode('utf-8'))
+
+        json2 = {}
+        request2 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json2), content_type='json')
+        self.assertEqual(request2.status_code, 200)
+        self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
+
+        json3 = {'customer_input': 'morning', 'other': 'other'}
+        request3 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json3), content_type='json')
+        self.assertEqual(request3.status_code, 200)
+        self.assertEqual(request3.content.decode('utf-8'), "ERROR, wrong information.")
+
+        session['c_email'] = 'cs2@a.com'
+        session.save()
+        json4 = {'customer_input': 'morning'}
+        request4 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json4), content_type='json')
+        self.assertEqual(request4.status_code, 200)
+        self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is not exist.")
+
+        session['c_email'] = 'cs3@a.com'
+        session.save()
+        json5 = {'customer_input': 'morning'}
+        request5 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json5), content_type='json')
+        self.assertEqual(request5.status_code, 200)
+        self.assertEqual(request5.content.decode('utf-8'), "ERROR, wrong email.")
+
+        session.delete()
+        json6 = {'customer_input': 'morning'}
+        request6 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json6), content_type='json')
         self.assertEqual(request6.status_code, 200)
         self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
 

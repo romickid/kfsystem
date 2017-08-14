@@ -32,12 +32,12 @@ def robot_weight_list(admin_id, customer_input):
     weight_list = list()
     for i in instance_robotinfo:
         dict_questions_tags = robot_create_tags_withWeight(i.question)
-        weight = robot_similarity(array_input_tags, dict_questions_tags)* i.weight
+        weight = robot_similarity(array_input_tags, dict_questions_tags) * i.weight
         weight_list.append([weight, i.question, i.answer, i.keyword])
     return weight_list
 
 
-def robot_return_answer(admin_id, customer_input, max_answer_num):
+def robot_return_answer(admin_id, customer_input, max_answer_num=5):
     weight_list = robot_weight_list(admin_id, customer_input)
     weight_list.sort(reverse=True)
     if len(weight_list) > max_answer_num:
