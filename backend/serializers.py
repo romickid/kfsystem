@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo, LANGUAGE_CHOICES, STYLE_CHOICES
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, BigImageLog, SmallImageLog, EnterpriseDisplayInfo, RobotInfo, LANGUAGE_CHOICES, STYLE_CHOICES
+from drf_extra_fields.fields import Base64ImageField
 
 
 class AdminSerializer(serializers.ModelSerializer):
@@ -32,16 +33,25 @@ class SerialNumberSerializer(serializers.ModelSerializer):
         fields = ('id', 'serials', 'is_used')
 
 
-class ImageLogSerializer(serializers.ModelSerializer):
+class BigImageLogSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
     class Meta:
-        model = ImageLog
-        fields = ('id', 'client_id', 'service_id', 'is_client', 'time') # TODO image
+        model = BigImageLog
+        fields = ('id', 'client_id', 'service_id', 'image', 'extention', 'is_client', 'time', 'label')
+
+
+class SmallImageLogSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+    class Meta:
+        model = SmallImageLog
+        fields = ('id', 'client_id', 'service_id', 'image', 'extention', 'is_client', 'time', 'label')
 
 
 class EnterpriseDisplayInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = EnterpriseDisplayInfo
         fields = ('id', 'enterprise', 'name', 'comment')
+
 
 class RobotInfoSerializer(serializers.ModelSerializer):
     class Meta:
