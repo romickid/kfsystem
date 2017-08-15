@@ -80,6 +80,8 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, vid is expired.') {
+            window.location.href = '../timeout'
           } else if (response.data === 'ERROR, nickname has been used.') {
             this.$Message.info('该昵称已被注册！')
           } else {
@@ -102,7 +104,7 @@ export default {
           'email': this.customerserviceVerify.email,
           'password': this.hashPassword(),
           'nickname': this.nickname,
-          'vid': this.hashNewVid()
+          'vid': this.newVid
         }
         this.communicate()
       }
@@ -116,6 +118,8 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, vid is expired.') {
+            window.location.href = '../timeout'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
           } else {
