@@ -134,6 +134,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "frontend/dist/static"),
 ]
 
+MEDIA_ROOT = './media/'
+
 # email setting
 EMAIL_HOST = 'smtp.163.com'
 EMAIL_PORT = 25
