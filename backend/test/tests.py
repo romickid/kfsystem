@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .robot import *
+from ..robot import *
 import time
 
 '''

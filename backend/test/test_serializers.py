@@ -1,6 +1,6 @@
 from django.test import TestCase
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
-from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, ImageLogSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
+from ..models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
+from ..serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, ImageLogSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
 from django.utils import timezone
 
 
