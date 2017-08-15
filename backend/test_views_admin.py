@@ -4,7 +4,8 @@ from .views_helper_functions import *
 from .views_check_functions import *
 from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo
 from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer
-import json
+import json, time
+from django.utils import timezone
 
 
 class TestAdminCreate(TestCase):
@@ -16,9 +17,9 @@ class TestAdminCreate(TestCase):
         SerialNumber.objects.create(serials="s5", is_used=False)
         SerialNumber.objects.create(serials="s6", is_used=False)
         SerialNumber.objects.create(serials="s7", is_used=False)
-        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1", vid_createtime=timezone.now())
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email="cs1@test.com", enterprise=admin_instance, nickname="c_nick1", password="c_pass1", is_register=False, is_online=False, connection_num=0, vid="c_vid1")
+        CustomerService.objects.create(id=1, email="cs1@test.com", enterprise=admin_instance, nickname="c_nick1", password="c_pass1", is_register=False, is_online=False, connection_num=0, vid="c_vid1", vid_createtime=timezone.now())
 
     def test(self):
         c = Client()
@@ -169,6 +170,7 @@ class TestAdminForgetPasswordEmailRequest(TestCase):
 class TestAdminForgetPasswordCheckVid(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="03b7c09dc3533c22df04519db1d9b861e576356115da12682b39d8785885bc27ca566220c81a6abcd638e0da61d79474e2dfeeda3e86798d1374efbd6103e9b5", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        Admin.objects.create(id=2, email="admin2@test.com", nickname="a_nick2", password="03b7c09dc3533c22df04519db1d9b861e576356115da12682b39d8785885bc27ca566220c81a6abcd638e0da61d79474e2dfeeda3e86798d1374efbd6103e9b5", web_url="a_weburl2", widget_url="a_weidgeturl2", mobile_url="a_mobileurl2", communication_key="a_key2", vid="a_vid2")
         # actual password: a_pass1
 
     def test(self):
@@ -199,10 +201,19 @@ class TestAdminForgetPasswordCheckVid(TestCase):
         self.assertEqual(request5.status_code, 200)
         self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email or vid.')
 
+        instance = Admin.objects.get(id=2)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json6 = {'email': 'admin2@test.com', 'vid': 'a_vid2'}
+        request6 = c.post("/api/admin_forget_password_check_vid/", data=json.dumps(json6), content_type='json')
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), 'ERROR, vid is expired.')
+
 
 class TestAdminForgetPasswordSaveData(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="03b7c09dc3533c22df04519db1d9b861e576356115da12682b39d8785885bc27ca566220c81a6abcd638e0da61d79474e2dfeeda3e86798d1374efbd6103e9b5", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        Admin.objects.create(id=2, email="admin2@test.com", nickname="a_nick2", password="03b7c09dc3533c22df04519db1d9b861e576356115da12682b39d8785885bc27ca566220c81a6abcd638e0da61d79474e2dfeeda3e86798d1374efbd6103e9b5", web_url="a_weburl2", widget_url="a_weidgeturl2", mobile_url="a_mobileurl2", communication_key="a_key2", vid="a_vid2")
         # actual password: a_pass1
 
     def test(self):
@@ -230,10 +241,18 @@ class TestAdminForgetPasswordSaveData(TestCase):
         self.assertEqual(request4.status_code, 200)
         self.assertEqual(request4.content.decode('utf-8'), 'ERROR, wrong email or vid.')
 
-        json5 = {'email': 'admin2@test.com', 'newpassword': '52289478fa8154f22a6dad25ca77c565365234017658d55f62f6cc32327008290b828f4a7d2dddd0f1a821161ae80aff9608cd2233044fa4c0a18fa7a9dc8856', 'vid': 'a_vid2'}
+        json5 = {'email': 'admin1@test.com', 'newpassword': '52289478fa8154f22a6dad25ca77c565365234017658d55f62f6cc32327008290b828f4a7d2dddd0f1a821161ae80aff9608cd2233044fa4c0a18fa7a9dc8856', 'vid': 'a_vid2'}
         request5 = c.post("/api/admin_forget_password_save_data/", data=json.dumps(json5), content_type='json')
         self.assertEqual(request5.status_code, 200)
         self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email or vid.')
+
+        instance = Admin.objects.get(id=2)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json6 = {'email': 'admin2@test.com', 'newpassword': '52289478fa8154f22a6dad25ca77c565365234017658d55f62f6cc32327008290b828f4a7d2dddd0f1a821161ae80aff9608cd2233044fa4c0a18fa7a9dc8856', 'vid': 'a_vid2'}
+        request6 = c.post("/api/admin_forget_password_save_data/", data=json.dumps(json6), content_type='json')
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), 'ERROR, vid is expired.')
 
 
 class TestAdminShowCommunicationKey(TestCase):

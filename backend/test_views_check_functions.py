@@ -3,6 +3,8 @@ from django.test.client import Client
 from .views_helper_functions import *
 from .views_check_functions import *
 from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
+from django.utils import timezone
+import datetime
 
 
 class TestAdminCreateCheck(TestCase):
@@ -171,6 +173,14 @@ class TestAdminForgetPasswordCheckVidCheck(TestCase):
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
 
+        instance = Admin.objects.get(id=1)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json6 = {'email': 'admin1@test.com', 'vid': 'a_vid1'}
+        errorcode6, errormessage6 = admin_forget_password_check_vid_check(json6)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, vid is expired.')
+
 
 class TestAdminForgetPasswordSaveDataCheck(TestCase):
     def setUp(self):
@@ -201,6 +211,14 @@ class TestAdminForgetPasswordSaveDataCheck(TestCase):
         errorcode5, errormessage5 = admin_forget_password_save_data_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
+
+        instance = Admin.objects.get(id=1)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json6 = {'email': 'admin1@test.com', 'newpassword': 'Anewpass1', 'vid': 'a_vid1'}
+        errorcode6, errormessage6 = admin_forget_password_save_data_check(json6)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, vid is expired.')
 
 
 class TestAdminShowCommunicationKeyCheck(TestCase):
@@ -455,6 +473,7 @@ class TestCsCreateCheck(TestCase):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
         CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=True, is_online=False, connection_num=0, vid='c_vid2')
 
     def test(self):
         c = Client()
@@ -495,7 +514,7 @@ class TestCsCreateCheck(TestCase):
         session['a_email'] = 'admin1@test.com'
         session.save()
 
-        json6 = {'email': 'cs1@test.com'}
+        json6 = {'email': 'cs2@test.com'}
         errorcode6, errormessage6 = customerservice_create_check(json6, c1)
         self.assertEqual(errorcode6, 0)
         self.assertEqual(errormessage6, 'ERROR, email has been registered.')
@@ -511,7 +530,7 @@ class TestCsSetProfileCheck(TestCase):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
         CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
-        CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance, nickname='Cnick2', password='Cpass2', is_register=False, is_online=False, connection_num=0, vid='Cvid2')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
 
     def test(self):
         json1 = {'email': 'cs1@test.com', 'password': 't1_pass', 'nickname': 't1_nick', 'vid': 'c_vid1'}
@@ -529,7 +548,7 @@ class TestCsSetProfileCheck(TestCase):
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs1@test.com', 'password': 't1_pass', 'nickname': 'Cnick2', 'vid': 'c_vid1'}
+        json4 = {'email': 'cs1@test.com', 'password': 't1_pass', 'nickname': 'c_nick2', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_set_profile_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, nickname has been used.')
@@ -544,12 +563,21 @@ class TestCsSetProfileCheck(TestCase):
         self.assertEqual(errorcode6, 0)
         self.assertEqual(errormessage6, 'ERROR, wrong email or vid.')
 
+        instance = CustomerService.objects.get(id=2)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json7 = {'email': 'cs2@test.com', 'password': 't2_pass', 'nickname': 't2_nick', 'vid': 'c_vid2'}
+        errorcode7, errormessage7 = customerservice_set_profile_check(json7)
+        self.assertEqual(errorcode7, 0)
+        self.assertEqual(errormessage7, 'ERROR, vid is expired.')
+
 
 class TestCsSetProfileCheckVidCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
         CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
 
     def test(self):
         json1 = {'email': 'cs1@test.com', 'vid': 'c_vid1'}
@@ -567,15 +595,23 @@ class TestCsSetProfileCheckVidCheck(TestCase):
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com', 'vid': 'c_vid1'}
+        json4 = {'email': 'cs2@test.com', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_set_profile_check_vid_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json5 = {'email': 'cs1@test.com', 'vid': 'Cvid2'}
+        json5 = {'email': 'cs1@test.com', 'vid': 'c_vid2'}
         errorcode5, errormessage5 = customerservice_set_profile_check_vid_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
+
+        instance = CustomerService.objects.get(id=2)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json6 = {'email': 'cs2@test.com', 'vid': 'c_vid2'}
+        errorcode6, errormessage6 = customerservice_set_profile_check_vid_check(json6)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, vid is expired.')
 
 
 class TestCsLoginCheck(TestCase):
@@ -636,7 +672,7 @@ class TestCsResetPasswordCheck(TestCase):
 
         c1 = Client()
         session1 = c1.session
-        session1['c_email'] = 'cs2@a.com'
+        session1['c_email'] = 'cs2@test.com'
         session1.save()
         json5 = {'password': 'c_pass1', 'newpassword': 'Cnewpass1'}
         errorcode5, errormessage5 = customerservice_reset_password_check(json5, c1)
@@ -666,7 +702,7 @@ class TestCsForgetPasswordEmailRequestCheck(TestCase):
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com'}
+        json4 = {'email': 'cs2@test.com'}
         errorcode4, errormessage4 = customerservice_forget_password_email_request_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email.')
@@ -677,6 +713,7 @@ class TestCsForgetPasswordCheckVidCheck(TestCase):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
         CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
 
     def test(self):
         json1 = {'email': 'cs1@test.com', 'vid': 'c_vid1'}
@@ -694,15 +731,23 @@ class TestCsForgetPasswordCheckVidCheck(TestCase):
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com', 'vid': 'c_vid1'}
+        json4 = {'email': 'cs2@test.com', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_forget_password_check_vid_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json4 = {'email': 'cs1@test.com', 'vid': 'Cvid2'}
-        errorcode4, errormessage4 = customerservice_forget_password_check_vid_check(json4)
-        self.assertEqual(errorcode4, 0)
-        self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
+        json5 = {'email': 'cs1@test.com', 'vid': 'c_vid2'}
+        errorcode5, errormessage5 = customerservice_forget_password_check_vid_check(json5)
+        self.assertEqual(errorcode5, 0)
+        self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
+
+        instance = CustomerService.objects.get(id=2)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json7 = {'email': 'cs2@test.com', 'vid': 'c_vid2'}
+        errorcode7, errormessage7 = customerservice_forget_password_check_vid_check(json7)
+        self.assertEqual(errorcode7, 0)
+        self.assertEqual(errormessage7, 'ERROR, vid is expired.')
 
 
 class TestCsForgetPasswordSaveDataCheck(TestCase):
@@ -710,6 +755,7 @@ class TestCsForgetPasswordSaveDataCheck(TestCase):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
         admin_instance = Admin.objects.get(id=1)
         CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
 
     def test(self):
         json1 = {'email': 'cs1@test.com', 'newpassword': 'Cnewpass1', 'vid': 'c_vid1'}
@@ -727,15 +773,23 @@ class TestCsForgetPasswordSaveDataCheck(TestCase):
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'email': 'cs2@a.com', 'newpassword': 'Cnewpass1', 'vid': 'c_vid1'}
+        json4 = {'email': 'cs2@test.com', 'newpassword': 'Cnewpass1', 'vid': 'c_vid1'}
         errorcode4, errormessage4 = customerservice_forget_password_save_data_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong email or vid.')
 
-        json5 = {'email': 'cs1@test.com', 'newpassword': 'Cnewpass1', 'vid': 'Cvid2'}
+        json5 = {'email': 'cs1@test.com', 'newpassword': 'Cnewpass1', 'vid': 'c_vid2'}
         errorcode5, errormessage5 = customerservice_forget_password_save_data_check(json5)
         self.assertEqual(errorcode5, 0)
         self.assertEqual(errormessage5, 'ERROR, wrong email or vid.')
+
+        instance = CustomerService.objects.get(id=2)
+        instance.vid_createtime = timezone.now() - timezone.timedelta(days=3)
+        instance.save()
+        json7 = {'email': 'cs2@test.com', 'newpassword': 'Cnewpass2', 'vid': 'c_vid2'}
+        errorcode7, errormessage7 = customerservice_forget_password_save_data_check(json7)
+        self.assertEqual(errorcode7, 0)
+        self.assertEqual(errormessage7, 'ERROR, vid is expired.')
 
 
 class TestCsShowUserStatusCheck(TestCase):
@@ -754,7 +808,7 @@ class TestCsShowUserStatusCheck(TestCase):
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         errorcode2, errormessage2 = customerservice_show_user_status_check(c)
         self.assertEqual(errorcode2, 0)
@@ -799,7 +853,7 @@ class TestCsRobotinfoCreateCheck(TestCase):
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, info is exist.')
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         json5 = {'question': 'question3', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
         errorcode5, errormessage5 = customerservice_setrobotinfo_create_check(json5, c)
@@ -846,7 +900,7 @@ class TestCsRobotinfoDeleteCheck(TestCase):
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, info is not exist.')
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         json5 = {'question': 'question1'}
         errorcode5, errormessage5 = customerservice_setrobotinfo_delete_check(json5, c)
@@ -877,7 +931,7 @@ class TestCsRobotinfoShowCheck(TestCase):
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         errorcode2, errormessage2 = customerservice_setrobotinfo_show_check(c)
         self.assertEqual(errorcode2, 0)
@@ -896,7 +950,7 @@ class TestCsDisplayrobotreplyShowCheck(TestCase):
         admin_instance1 = Admin.objects.get(id=1)
         admin_instance2 = Admin.objects.get(id=2)
         CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance1, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
-        CustomerService.objects.create(id=2, email='cs2@a.com', enterprise=admin_instance2, nickname='Cnick2', password='Cpass2', is_register=False, is_online=False, connection_num=0, vid='Cvid2')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance2, nickname='c_nick2', password='c_pass2', is_register=False, is_online=False, connection_num=0, vid='c_vid2')
         RobotInfo.objects.create(id=1, enterprise=admin_instance1, question='question1', answer='answer1', keyword='keyword1', weight=0)
 
     def test(self):
@@ -920,7 +974,7 @@ class TestCsDisplayrobotreplyShowCheck(TestCase):
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         json4 = {'customer_input': 'nihao'}
         errorcode4, errormessage4 = customerservice_displayrobotreply_show_check(json4, c)
@@ -957,7 +1011,7 @@ class TestCsLogoutCheck(TestCase):
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
-        session['c_email'] = 'cs2@a.com'
+        session['c_email'] = 'cs2@test.com'
         session.save()
         errorcode2, errormessage2 = customerservice_logout_check(c)
         self.assertEqual(errorcode2, 0)
