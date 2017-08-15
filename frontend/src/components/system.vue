@@ -123,7 +123,6 @@ export default {
           'comment': this.formItem.comment
         }
         this.add_api()
-        this.show_info()
       }
       this.cancel()
     },
@@ -140,6 +139,7 @@ export default {
             window.location.href = '../en_login'
           } else {
             this.$Message.info('添加成功')
+            this.show_info()
           }
         }, (response) => {
           window.location.href = '../en_login'
@@ -156,7 +156,6 @@ export default {
         'name': this.infomations[index].name
       }
       this.delete_api()
-      this.show_info()
     },
     delete_api () {
       this.$http.post(this.apiAdminDisplayInfoDelete, this.deleteName)
@@ -169,6 +168,7 @@ export default {
             this.$Message.info('该名称不存在')
           } else {
             this.$Message.info('删除成功')
+            this.show_info()
           }
         }, (response) => {
           window.location.href = '../en_login'
@@ -184,7 +184,7 @@ export default {
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../en_login'
           } else {
-            this.communicationKey = response.data.communication_key
+            this.show_key()
           }
         }, (response) => {
           window.location.href = '../en_login'
