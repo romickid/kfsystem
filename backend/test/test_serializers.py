@@ -1,6 +1,6 @@
 from django.test import TestCase
-from ..models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
-from ..serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, ImageLogSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
+from ..models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo, RobotInfo
+from ..serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
 from django.utils import timezone
 
 
@@ -161,7 +161,7 @@ class TestSerialNumberSerializer(TestCase):
         self.assertEqual(instance.serials, 's2')
         self.assertEqual(instance.is_used, True)
 
-
+'''
 class TestImageLogSerializer(TestCase):
     def test(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
@@ -197,7 +197,7 @@ class TestImageLogSerializer(TestCase):
         self.assertEqual(instance.client_id, 'cid2')
         self.assertEqual(instance.service_id, cs_instance2)
         self.assertEqual(instance.is_client, True)
-
+'''
 
 class TestEnterpriseDisplayInfoSerializer(TestCase):
     def test(self):

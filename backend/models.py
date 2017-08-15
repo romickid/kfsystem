@@ -40,7 +40,7 @@ class ChattingLog(models.Model):
     service_id = models.ForeignKey('CustomerService', on_delete=models.CASCADE)
     content = models.CharField(max_length=500, default='empty')
     is_client = models.BooleanField(default=None)
-    time = models.DateTimeField()
+    time = models.DateTimeField(auto_now_add=True)
 
 
 class SerialNumber(models.Model):
@@ -54,7 +54,7 @@ class BigImageLog(models.Model):
     image = models.ImageField(upload_to=PathAndRename('user_image/Big/{}'.format(time.strftime("%Y/%m/%d"))))
     extention = models.CharField(max_length=10, default='empty')
     is_client = models.BooleanField(default=None)
-    time = models.DateTimeField()
+    time = models.DateTimeField(auto_now_add=True)
     label = models.CharField(max_length=100, default='empty')
 
 
@@ -64,7 +64,7 @@ class SmallImageLog(models.Model):
     image = models.ImageField(upload_to=PathAndRename('user_image/Small/{}'.format(time.strftime("%Y/%m/%d"))))
     extention = models.CharField(max_length=10, default='empty')
     is_client = models.BooleanField(default=None)
-    time = models.DateTimeField()
+    time = models.DateTimeField(auto_now_add=True)
     label = models.CharField(max_length=100, default='empty')
 
 
