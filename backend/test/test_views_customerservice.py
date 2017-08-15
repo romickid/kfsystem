@@ -4,7 +4,7 @@ import sys
 sys.path.append("..")
 from ..views_helper_functions import *
 from ..views_check_functions import *
-from ..models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo
+from ..models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo
 from ..serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer
 import json
 

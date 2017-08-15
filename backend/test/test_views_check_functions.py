@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 from ..views_helper_functions import *
 from ..views_check_functions import *
-from ..models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
+from ..models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo, RobotInfo
 from django.utils import timezone
 import datetime
 
