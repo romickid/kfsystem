@@ -2,13 +2,14 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo, RobotInfo
-from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer
+from .models import Admin, CustomerService, ChattingLog, SerialNumber, EnterpriseDisplayInfo, RobotInfo, BigImageLog, SmallImageLog
+from .serializers import AdminSerializer, CustomerServiceSerializer, CustomerServiceCreateSerializer, ChattingLogSerializer, SerialNumberSerializer, EnterpriseDisplayInfoSerializer, RobotInfoSerializer, BigImageLogSerializer, SmallImageLogSerializer
 from datetime import datetime, timedelta
 from .views_helper_functions import *
 from .views_check_functions import *
 from .robot import *
 from django.utils import timezone
+import os, base64
 
 
 @csrf_exempt
@@ -603,3 +604,62 @@ def chattinglog_get_cs_id(request):
         json_receive = JSONParser().parse(request)
         customerservices = CustomerService.objects.get(email=json_receive['email'])
         return HttpResponse(customerservices.id,status=200)
+
+
+@csrf_exempt
+def bigimagelog_send_image(request):
+    if request.method == 'POST':
+        # imagelog: client_id service_id image is_client
+        json_receive = JSONParser().parse(request)
+        json_receive['time'] = timezone.now()
+        serializer = BigImageLogSerializer(data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse('OK', status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
+
+
+@csrf_exempt
+def bigimagelog_show_single_history(request):
+    if request.method == 'POST':
+        # imagelog: client_id service_id label
+        json_receive = JSONParser().parse(request)
+        instances = BigImageLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id'], label=json_receive['label'])
+        if instances.exists():
+            serializer = BigImageLogSerializer(instances)
+            f = open('./media/user_image/Big/'+serializer.data[0]['image'],'rb')
+            ls_f = base64.b64encode(f.read())
+            f.close()
+            return HttpResponse(ls_f, status=200)
+        return HttpResponse('ERROR, no history.', status=200)
+
+
+@csrf_exempt
+def smallimagelog_send_image(request):
+    if request.method == 'POST':
+        # imagelog: client_id service_id image is_client
+        json_receive = JSONParser().parse(request)
+        json_receive['time'] = timezone.now()
+        serializer = SmallImageLogSerializer(data=json_receive)
+        if serializer.is_valid():
+            serializer.save()
+            return HttpResponse('OK', status=200)
+        return HttpResponse("ERROR, invalid data in serializer.", status=200)
+
+
+@csrf_exempt
+def log_show_history(request):
+    if request.method == 'POST':
+        # client_id service_id
+        json_receive = JSONParser().parse(request)
+        instance_image = SmallImageLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
+        instance_chat = ChattingLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
+        len_image = len(instance_image)
+        pointer_image = 0
+        len_chat = len(instance_chat)
+        pointer_chat = 0
+
+        json_send = list()
+        pointer_image, pointer_chat = log_show_history_while_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat)
+        log_show_history_if_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat)
+        return JsonResponse(json_send, safe=False, status=200)
