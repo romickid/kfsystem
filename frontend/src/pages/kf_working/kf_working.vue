@@ -371,6 +371,30 @@ export default {
     }
   },
   methods: {
+    getdata (obj) {
+      let vm = this
+      vm.$http.post(vm.apiChattinglogShowHistory, obj)
+        .then((response) => {
+          for (var p in response.data) {
+            if (response.data[p].is_client === false) {
+              console.log('cs：' + response.data[p].content)
+              this.hsession.messages.push({
+                text: response.data[p].content,
+                date: response.data[p].time,
+                self: true,
+                image: this.user.image
+              })
+            } else {
+              console.log('客户：' + response.data[p].content)
+              this.hsession.messages.push({
+                text: response.data[p].content,
+                date: response.data[p].time,
+                image: '../../../static/3.jpg'
+              })
+            }
+          }
+        })
+    },
     savedata (obj) {
       let vm = this
       vm.$http.post(vm.apiChattinglogSendMessage, obj)
@@ -441,6 +465,15 @@ export default {
         return
       }
       this.history = !this.history
+      var vm = this
+      console.log("执行啦！！")
+      this.item = { 'email': this.user.id }
+      vm.$http.post(vm.apiChattinglogGetCsId, this.item)
+        .then((response) => {
+          vm.$set(this, 'turnId', response.data)
+          vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId })
+          this.getdata(this.item)
+        })
     },
     getCsInfomation () {
       this.$http.post(this.apiCustomerserviceShowUserStatus)
