@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test import Client
-from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
+from ..models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog, EnterpriseDisplayInfo, RobotInfo
 from django.utils import timezone
 
 
