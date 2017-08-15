@@ -2,6 +2,7 @@ from .models import Admin, CustomerService, SerialNumber, EnterpriseDisplayInfo,
 from django.core.mail import send_mail
 import hashlib, random, string
 from django.utils import timezone
+import os, base64
 
 
 def json_testing(json_receive, array_str, json_length):
@@ -261,3 +262,34 @@ def robotinfo_is_existent_by_enterprise(enterprise_id):
         return True
     else:
         return False
+
+def log_show_history_while_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat):
+    while pointer_image < len_image and pointer_chat < len_chat:
+        if instance_image[pointer_image].time < instance_chat[pointer_chat].time:
+            instance = instance_image[pointer_image]
+            f = open('./media/'+instance.image.url,'rb')
+            image_base64 = 'data:image/' + instance.extention + ';base64,' + str(base64.b64encode(f.read()))
+            f.close()
+            str_send = {'client_id': instance.client_id, 'image': image_base64, 'is_client': instance.is_client, 'time': instance.time, 'label': instance.label}
+            json_send.append(str_send)
+            pointer_image = pointer_image + 1
+        else:
+            instance = instance_chat[pointer_chat]
+            str_send = {'client_id': instance.client_id, 'content': instance.content, 'is_client': instance.is_client, 'time': instance.time}
+            json_send.append(str_send)
+            pointer_chat = pointer_chat + 1
+    return pointer_image, pointer_chat
+
+
+def log_show_history_if_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat):
+    if pointer_chat == len_chat:
+        for i in instance_image[pointer_image:len_image]:
+            f = open('./media/'+i.image.url,'rb')
+            image_base64 = 'data:image/' + i.extention + ';base64,' + str(base64.b64encode(f.read()))
+            f.close()
+            str_send = {'client_id': i.client_id, 'image': image_base64, 'is_client': i.is_client, 'time': i.time, 'label': i.label}
+            json_send.append(str_send)
+    else:
+        for i in instance_chat[pointer_chat:len_chat]:
+            str_send = {'client_id': i.client_id, 'content': i.content, 'is_client': i.is_client, 'time': i.time}
+            json_send.append(str_send)
