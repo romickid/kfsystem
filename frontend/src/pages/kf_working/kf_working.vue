@@ -250,11 +250,14 @@ export default {
       transferable: true,
       // test
       item: {},
-      api_chattinglog_show_history: '../api/chattinglog_show_history/',
+      apiChattinglogSendMessage: '../api/chattinglog_send_message/',
+      apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
+      apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
       history: false,
       csEmail: '',
-      csName: ''
+      csName: '',
+      turnId: ''
     }
   },
   computed: {
@@ -284,20 +287,24 @@ export default {
     }
   },
   created () {
-    // this.getCsInfomation()
+    this.getCsInfomation()
     const that = this
     this.socket = io('http://localhost:3000')
-
-    that.socket.id = (Math.random() * 1000).toString()
-    this.user.id = that.socket.id
-    this.user.name = that.socket.id
-
-    // this.user.id = that.csEmail
-    // this.user.name = that.csName
     // 接收消息
     this.socket.on('customer message', function (msg, fromId, toId) {
       let index = findSessionIndexById(that.sessionList, fromId)
       pushMessages(that.sessionList, index, msg)
+      // 存入数据库
+      let vm = that
+      that.item = { 'email': toId }
+      vm.$http.post(vm.apiChattinglogGetCsId, that.item)
+        .then((response) => {
+          vm.$set(that, 'turnId', response.data)
+          vm.$set(that, 'item', { 'client_id': fromId, 'service_id': that.turnId, 'content': msg, 'is_client': 1 })
+          that.savedata(that.item)
+        }, (response) => {
+          window.location.href = '../se_login'
+        })
       if (index !== that.sessionIndex) {
         popUp(that.userList, index)
         popUp(that.sessionList, index)
@@ -335,7 +342,10 @@ export default {
       alert('当前无可转接客服！')
       that.transferable = false
     })
-    this.socket.emit('server set id', that.socket.id)
+    setTimeout(function () {
+      console.log('setTime 1:' + that.user.id)
+      that.socket.emit('server set id', that.user.id)
+    }, 1000)
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
@@ -350,23 +360,24 @@ export default {
           hangoffSessionList: this.hangoffSessionList,
           historySessionList: this.historySessionList
         }))
-        // let vm = this
-        // let index = this.session.messages.length - 1
-        // if (this.session.messages[index].self) {
-        //   this.turn = 0
-        // } else {
-        //   this.turn = 1
-        // }
-        // this.item = { 'client_id': this.session.userId, 'service_id': this.user.id, 'content': this.session.messages[index].text, 'is_client': this.turn }
-        // vm.$http.post(vm.api_chattinglog_send_message, this.item)
-        //   .then((response) => {
-        //     vm.$set(this, 'item', {})
-        //     console.log('hhhhhhhhhhhh.你怎么啦！')
-        //   })
+        this.item = { 'email': this.user.id }
+        let index = this.session.messages.length - 1
+        if (this.session.messages[index].self) {
+          this.turn = 0
+        } else {
+          this.turn = 1
+        }
       }
     }
   },
   methods: {
+    savedata (obj) {
+      let vm = this
+      vm.$http.post(vm.apiChattinglogSendMessage, obj)
+        .then((response) => {
+          vm.$set(this, 'item', {})
+        })
+    },
     select (value) {
       if (this.hangon) {
         this.sessionIndex = this.userList.indexOf(value)
@@ -398,6 +409,16 @@ export default {
         this.text = ''
         return
       }
+      // 存入数据库，下标考虑
+      let index = this.session.messages.length
+      let vm = this
+      this.item = { 'email': this.user.id }
+      vm.$http.post(vm.apiChattinglogGetCsId, this.item)
+        .then((response) => {
+          vm.$set(this, 'turnId', response.data)
+          vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
+          this.savedata(this.item)
+        })
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -420,47 +441,26 @@ export default {
         return
       }
       this.history = !this.history
-      // var vm = this
-      // this.item = { 'client_id': this.session.userId, 'service_id': this.user.id }
-      // vm.$http.post(vm.api_chattinglog_show_history, this.item)
-      //   .then((response) => {
-      //     console.log('接收到啦！')
-      //     for (var p in response.data) {
-      //       alert(response.data[p].time + ' ' + response.data[p].content + '##' + response.data[p].is_client)
-      //       if (response.data[p].is_client === false) {
-      //         console.log('cs：' + response.data[p].content)
-      //         this.hsession.messages.push({
-      //           text: response.data[p].content,
-      //           date: response.data[p].time,
-      //           self: true,
-      //           image: this.user.image
-      //         })
-      //       } else {
-      //         console.log('客户：' + response.data[p].content)
-      //         this.hsession.messages.push({
-      //           text: response.data[p].content,
-      //           date: response.data[p].time,
-      //           image: '../../../static/3.jpg'
-      //         })
-      //       }
-      //     }
-      //   })
     },
-    // getCsInfomation () {
-    //   this.$http.post(this.apiCustomerserviceShowUserStatus)
-    //     .then((response) => {
-    //       if (response.data === 'ERROR, session is broken.') {
-    //         window.location.href = '../se_login'
-    //       } else if (response.data === 'ERROR, wrong email.') {
-    //         window.location.href = '../se_login'
-    //       } else {
-    //         this.csEmail = response.data.email
-    //         this.csName = response.data.nickname
-    //       }
-    //     }, (response) => {
-    //       window.location.href = '../se_login'
-    //     })
-    // },
+    getCsInfomation () {
+      this.$http.post(this.apiCustomerserviceShowUserStatus)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../se_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../se_login'
+          } else {
+            this.csEmail = response.data.email
+            this.csName = response.data.nickname
+            this.user.id = this.csEmail
+            this.user.name = this.csName
+            this.socket.id = this.csEmail
+          }
+        }, (response) => {
+          window.location.href = '../se_login'
+        })
+    },
+
     switchServer (e) {
       if (!this.hangon) {
         alert('无法为已挂断的用户进行转接！')
