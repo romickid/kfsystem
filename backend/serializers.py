@@ -5,19 +5,19 @@ from .models import Admin, CustomerService, ChattingLog, SerialNumber, ImageLog,
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = ('id', 'email', 'nickname', 'password', 'web_url', 'widget_url', 'mobile_url', 'communication_key', 'vid')
+        fields = ('id', 'email', 'nickname', 'password', 'web_url', 'widget_url', 'mobile_url', 'communication_key', 'vid', 'vid_createtime')
 
 
 class CustomerServiceCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
-        fields = ('id', 'email', 'enterprise', 'nickname', 'password', 'is_register', 'is_online', 'connection_num', 'vid')
+        fields = ('id', 'email', 'enterprise', 'nickname', 'password', 'is_register', 'is_online', 'connection_num', 'vid', 'vid_createtime')
 
 
 class CustomerServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerService
-        fields = ('id', 'email', 'nickname', 'password', 'is_register', 'is_online', 'connection_num', 'vid')
+        fields = ('id', 'email', 'nickname', 'password', 'is_register', 'is_online', 'connection_num', 'vid', 'vid_createtime')
 
 
 class ChattingLogSerializer(serializers.ModelSerializer):

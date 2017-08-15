@@ -60,6 +60,8 @@ def admin_forget_password_check_vid_check(json_receive):
         return 0, 'ERROR, wrong information.'
     if admin_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
         return 0, 'ERROR, wrong email or vid.'
+    if admin_vid_is_expired(json_receive['email']) == True:
+        return 0, 'ERROR, vid is expired.'
     return 1, 'No ERROR.'
 
 
@@ -71,6 +73,8 @@ def admin_forget_password_save_data_check(json_receive):
         return 0, 'ERROR, wrong information.'
     if admin_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
         return 0, 'ERROR, wrong email or vid.'
+    if admin_vid_is_expired(json_receive['email']) == True:
+        return 0, 'ERROR, vid is expired.'
     return 1, 'No ERROR.'
 
 
@@ -173,7 +177,7 @@ def customerservice_create_check(json_receive, request):
         return 0, 'ERROR, session is broken.'
     if admin_is_existent_by_email(request.session['a_email']) == False:
         return 0, 'ERROR, admin_email is wrong.'
-    if cs_is_existent_by_email(json_receive['email']) == True:
+    if cs_is_registered_by_email(json_receive['email']) == True:
         return 0, 'ERROR, email has been registered.'
     if admin_is_existent_by_email(json_receive['email']) == True:
         return 0, 'ERROR, email has been registered.'
@@ -190,6 +194,8 @@ def customerservice_set_profile_check(json_receive):
         return 0, 'ERROR, wrong email or vid.'
     if cs_is_existent_by_nickname(json_receive['nickname']) == True:
         return 0, 'ERROR, nickname has been used.'
+    if cs_vid_is_expired(json_receive['email']) == True:
+        return 0, 'ERROR, vid is expired.'
     return 1, 'No ERROR.'
 
 
@@ -201,6 +207,8 @@ def customerservice_set_profile_check_vid_check(json_receive):
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
         return 0, 'ERROR, wrong email or vid.'
+    if cs_vid_is_expired(json_receive['email']) == True:
+        return 0, 'ERROR, vid is expired.'
     return 1, 'No ERROR.'
 
 
@@ -246,6 +254,8 @@ def customerservice_forget_password_check_vid_check(json_receive):
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
         return 0, 'ERROR, wrong email or vid.'
+    if cs_vid_is_expired(json_receive['email']) == True:
+        return 0, 'ERROR, vid is expired.'
     return 1, 'No ERROR.'
 
 
@@ -257,6 +267,8 @@ def customerservice_forget_password_save_data_check(json_receive):
         return 0, 'ERROR, wrong information.'
     if cs_is_existent_by_email_vid(json_receive['email'], json_receive['vid']) == False:
         return 0, 'ERROR, wrong email or vid.'
+    if cs_vid_is_expired(json_receive['email']) == True:
+        return 0, 'ERROR, vid is expired.'
     return 1, 'No ERROR.'
 
 

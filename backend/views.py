@@ -25,6 +25,7 @@ def admin_create(request):
         json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
         json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         serializer = AdminSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -84,8 +85,9 @@ def admin_forget_password_email_request(request):
 
         instance = Admin.objects.get(email=json_receive['email'])
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         serializer = AdminSerializer(instance, data=json_receive)
-        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval,Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/admin_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval, Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/admin_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             admin_send_email_forget_password(json_receive['email'], content)
@@ -103,6 +105,7 @@ def admin_forget_password_check_vid(request):
             return HttpResponse(error_message, status=200)
 
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         instance = Admin.objects.get(email=json_receive['email'])
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
@@ -124,6 +127,7 @@ def admin_forget_password_save_data(request):
         sha512_new_final_password = admin_generate_password(json_receive['email'], json_receive['newpassword'])
         json_receive['password'] = sha512_new_final_password
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         serializer = AdminSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -267,12 +271,13 @@ def customerservice_create(request):
         is_correct, error_message = customerservice_create_check(json_receive, request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
-
+        cs_reset_create(json_receive['email'])
         admin_email = request.session['a_email']
         instance_admin = Admin.objects.get(email=admin_email)
         json_receive['nickname'] = json_receive['email']
         json_receive['enterprise'] = instance_admin.id
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         serializer = CustomerServiceCreateSerializer(data=json_receive)
         content = 'Dear customerservice' + ':\n' + 'Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/customerservice_create_page/?mail=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
@@ -293,6 +298,7 @@ def customerservice_set_profile(request):
 
         json_receive['password'] = cs_generate_password(json_receive['email'], json_receive['password'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         instance = CustomerService.objects.get(email=json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
@@ -311,6 +317,7 @@ def customerservice_set_profile_check_vid(request):
             return HttpResponse(error_message, status=200)
 
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         instance = CustomerService.objects.get(email=json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
@@ -370,6 +377,7 @@ def customerservice_forget_password_email_request(request):
 
         instance = CustomerService.objects.get(email=json_receive['email'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval,Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/customerservice_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
@@ -389,6 +397,7 @@ def customerservice_forget_password_check_vid(request):
             return HttpResponse(error_message, status=200)
 
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         instance = CustomerService.objects.get(email=json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
@@ -410,6 +419,7 @@ def customerservice_forget_password_save_data(request):
         sha512_new_final_password = cs_generate_password(json_receive['email'], json_receive['newpassword'])
         json_receive['password'] = sha512_new_final_password
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
+        json_receive['vid_createtime'] = timezone.now()
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -538,7 +548,6 @@ def chattinglog_delete_record(request):
             return HttpResponse('Clear', status=200)     
         else:
             return HttpResponse('No data to be Clear.', status=201)
-        
 
 
 @csrf_exempt

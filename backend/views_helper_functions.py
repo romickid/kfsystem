@@ -1,6 +1,7 @@
 from .models import Admin, CustomerService, SerialNumber, EnterpriseDisplayInfo, RobotInfo
 from django.core.mail import send_mail
 import hashlib, random, string
+from django.utils import timezone
 
 
 def json_testing(json_receive, array_str, json_length):
@@ -78,6 +79,18 @@ def admin_is_existent_by_email_vid(email, vid):
         return True
     except Admin.DoesNotExist:
         return False
+
+
+def admin_vid_is_expired(email):
+    try:
+        instance = Admin.objects.get(email=email)
+        time_now = timezone.now()
+        if ((time_now - instance.vid_createtime).total_seconds()) > 3600:
+            return True
+        else:
+            return False
+    except:
+        return True
 
 
 def admin_sessions_check(request):
@@ -169,6 +182,30 @@ def cs_send_email_forget_password(email, content):
     send_mail('Customerservice system retrive password', content, 'big5_nankai@163.com', [email], fail_silently=True)
 
 
+def cs_vid_is_expired(email):
+    try:
+        instance = CustomerService.objects.get(email=email)
+        time_now = timezone.now()
+        if ((time_now - instance.vid_createtime).total_seconds()) > 3600:
+            return True
+        else:
+            return False
+    except:
+        return True
+
+
+def cs_is_registered_by_email(email):
+    try:
+        instance = CustomerService.objects.get(email=email)
+        if instance.is_register == True:
+            return True
+        else:
+            # print('cs_is_registered_by_email')
+            return False
+    except CustomerService.DoesNotExist:
+        return False
+
+
 def cs_sessions_check(request):
     try:
         request.session['c_email'] = request.session['c_email']
@@ -182,6 +219,16 @@ def cs_sessions_del(request):
         del request.session['c_email']
     except KeyError:
         pass
+
+
+def cs_reset_create(email):
+    try:
+        instance = CustomerService.objects.filter(email=email, is_register=False)
+        instance.delete()
+        # print('cs_reset_create')
+        return True
+    except CustomerService.DoesNotExist:
+        return True
 
 
 def displayinfo_is_existent_by_name(enterprise_email, name):
