@@ -39,16 +39,8 @@ function distributeCustomer (server) {
 io.on('connection', function (socket) {
 
   // 登陆设置id
-  socket.on('customer set id', function (msg) {
-    socket.isConnect = true
-    socket.isCustomer = true
-    socket.id = msg
-    console.log('customer set id: ' + socket.id)
-    customerSocket.push(socket)
-  })
   socket.on('server set id', function (msg) {
-    socket.isConnect = true
-    socket.isCustomer = false
+    socket.isServer = true
     socket.id = msg
     socket.customerNumber = 0
     socket.customers = []
@@ -58,7 +50,8 @@ io.on('connection', function (socket) {
 
   // 客服向用户发送消息
   socket.on('server message', function (msg, fromId, toId) {
-    let to = findById(customerSocket, toId)
+    let server = findById(serverSocket, fromId)
+    let to = findById(server[0].customers, toId)
     to[0].emit('server message', msg, fromId, toId)
     console.log('Server ' +  fromId + ' send message to customer ' + toId)
   })
@@ -78,14 +71,17 @@ io.on('connection', function (socket) {
       sortByCustomerNumber(serverSocket)
       let to = serverSocket[0]
       toId = to.id
+      socket.id = fromId
+      socket.serverId = toId
       to.emit('add client', fromId)
       console.log('Server ' + toId + ' add client ' + fromId)
       socket.emit('connect to server', toId)
-      socket.serverId = toId
       console.log('Customer ' + fromId + ' connect to server ' + toId)
       addCustomer(to, socket)
+      customerSocket.push(socket)
     }
   })
+
   // 为用户转接客服
   socket.on('switch server', function (formerId) {
     if (serverSocket.length === 0) {
@@ -108,7 +104,8 @@ io.on('connection', function (socket) {
     }
   })
 
-  socket.on('switch server from server', function(id) {
+  // 客服申请为用户转接客服
+  socket.on('switch server from server', function (id) {
     console.log('Server ' + socket.id + ' switch server for customer ' + id)
     if (serverSocket.length === 1) {
       socket.emit('switch failed')
@@ -120,24 +117,62 @@ io.on('connection', function (socket) {
     socket.customerNumber--
     console.log('After switch a customer out, server ' + socket.id + 'have customer: ' + socket.customerNumber)
   })
-  // 离开
-  socket.on('disconnect', function () {
-    if (socket.isConnect) {
-      if (socket.isCustomer) {
-        if (socket.serverId) {
-          console.log('Customer ' + socket.id + ' is left')
-          let server = findById(serverSocket, socket.serverId)
-          removeById(server[0].customers, socket.id)
-          server[0].customerNumber--
-          console.log('After one customer left,server ' + server[0].id + 'has customers: ' + server[0].customers.length)
-          server[0].emit('customer hang off', socket.id)
-        }
-      } else {
-        console.log('Server ' + socket.id + ' is left')
-        removeById(serverSocket, socket.id)
-        distributeCustomer(socket)
-      }
+
+  // 用户刷新
+  socket.on('customer come back', function (customerId, serverId) {
+    console.log('customer come back')
+    socket.id = customerId
+    socket.serverId = serverId
+    let server = findById(serverSocket, serverId)
+    console.log('findById server: ' + server[0].id)
+    removeById(server[0].customers, customerId)
+    console.log('After remove server.costomers.length: ' + server[0].customers.length)
+    server[0].customers.push(socket)
+  })
+
+  // 客服刷新
+  socket.on('server come back', function (serverId) {
+    console.log('server come back: ' + serverId)
+    let oldserver = findById(serverSocket, serverId)
+    removeById(serverSocket, serverId)
+    socket.isServer = true
+    socket.id = serverId
+    socket.customerNumber = 0
+    socket.customers = []
+    for (let i = 0; i < oldserver[0].customers.length; i++) {
+      socket.customers.push(oldserver[0].customers[i])
+      socket.customerNumber++
     }
+    serverSocket.push(socket)
+  })
+
+  // 离开
+  socket.on('log out', function () {
+    // 用户5分钟未说话自动断开
+    if (!socket.isServer) {
+      console.log('Customer ' + socket.id + ' is left')
+      let server = findById(serverSocket, socket.serverId)
+      removeById(server[0].customers, socket.id)
+      server[0].customerNumber--
+      console.log('After one customer left,server ' + server[0].id + 'has customers: ' + server[0].customers.length)
+      server[0].emit('customer hang off', socket.id)
+    } else {
+      // 客服登出
+      console.log('Server ' + socket.id + ' is left')
+      removeById(serverSocket, socket.id)
+      distributeCustomer(socket)
+    }
+  })
+  // 客户关闭页面：从客服端发出断开客户的信息
+  socket.on('customer out', function (customerId) {
+    console.log('Customer out: ' + customerId)
+    let server = findById(serverSocket, socket.id)
+    let customer = findById(server[0].customers, customerId)
+    customer[0].emit('no server available')
+    removeById(server[0].customers, customerId)
+    server[0].customerNumber--
+    server[0].emit('customer hang off', customerId)
+    console.log('After one customer left,server ' + server[0].id + 'has customers: ' + server[0].customers.length)
   })
 })
 
