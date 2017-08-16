@@ -315,6 +315,7 @@ def customerservice_set_profile(request):
         json_receive['password'] = cs_generate_password(json_receive['email'], json_receive['password'])
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
         json_receive['vid_createtime'] = timezone.now()
+        json_receive['is_register'] = True
         instance = CustomerService.objects.get(email=json_receive['email'])
         serializer = CustomerServiceSerializer(instance, data=json_receive)
         if serializer.is_valid():
@@ -355,6 +356,9 @@ def customerservice_login(request):
         if cs_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
             admin_sessions_del(request)
             request.session['c_email'] = json_receive['email']
+            instance_cs = CustomerService.objects.get(email=json_receive['email'])
+            instance_cs.is_online = True
+            instance_cs.save()
             return HttpResponse('OK', status=200) 
         return HttpResponse("ERROR, wrong email or password.", status=200)
 
@@ -458,6 +462,22 @@ def customerservice_show_user_status(request):
 
 
 @csrf_exempt
+def customerservice_update_connection_num(request):
+    if request.method == 'POST':
+        # CustomerService: connection_num
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customerservice_update_connection_num_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['c_email']
+        instance = CustomerService.objects.get(email=data_email)
+        instance.connection_num = json_receive['connection_num']
+        instance.save()
+        return HttpResponse('OK', status=200)
+
+
+@csrf_exempt
 def customerservice_setrobotinfo_create(request):
     if request.method == 'POST':
         # RobotInfo: question answer keyword weight
@@ -536,6 +556,9 @@ def customerservice_logout(request):
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
+        instance = CustomerService.objects.get(email=request.session['c_email'])
+        instance.is_online = False
+        instance.save()
         del request.session['c_email']
         return HttpResponse('OK', status=200)
 

@@ -301,6 +301,22 @@ def customerservice_show_user_status_check(request):
     return 1, 'No ERROR.'
 
 
+def customerservice_update_connection_num_check(json_receive, request):
+    test_json = json_testing(json_receive, ['connection_num'], 1)
+    test_sessions = cs_sessions_check(request)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if cs_is_existent_by_email(request.session['c_email']) == False:
+        return 0, 'ERROR, wrong email.'
+    if (type(json_receive['connection_num'])) != int:
+        return 0, 'ERROR, wrong type.'
+    return 1, 'No ERROR.'
+
+
 def customerservice_setrobotinfo_create_check(json_receive, request):
     test_json = json_testing(json_receive, ['question', 'answer', 'keyword', 'weight'], 4)
     test_sessions = cs_sessions_check(request)
