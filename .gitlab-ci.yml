@@ -13,7 +13,7 @@ deploy:
     - pip install django-filter
     - pip install Pillow
     - pip install jieba
-    - pip install drf_extra_fields
+    - pip install django-extra-fields
     - cd frontend
     - cnpm install
     - cnpm install vue-resource
