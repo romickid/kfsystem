@@ -29,6 +29,7 @@
 
 <script>
 import * as io from 'socket.io-client'
+import Vue from 'vue'
 import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-Customer1'
 function serverMessage (sessionList, msg, fromId, toId) {
@@ -238,7 +239,16 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
-  components: {}
+  components: {},
+  directives: {
+    // 发送消息后滚动到底部
+    'scroll-bottom' () {
+      Vue.nextTick(() => {
+        let message = document.getElementsByClassName('main-message')
+        message[0].scrollTop = message[0].scrollHeight
+      })
+    }
+  }
 }
 </script>
 <style>
