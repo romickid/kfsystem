@@ -105,6 +105,26 @@ def admin_show_cs_status_check(request):
     return 1, 'No ERROR.'
 
 
+def admin_delete_cs_check(json_receive, request):
+    test_json = json_testing(json_receive, ['email'], 1)
+    test_sessions = admin_sessions_check(request)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
+    if test_sessions == False:
+        return 0, 'ERROR, session is broken.'
+    if admin_is_existent_by_email(request.session['a_email']) == False:
+        return 0, 'ERROR, wrong admin email.'
+    if cs_is_existent_by_email(json_receive['email']) == False:
+        return 0, 'ERROR, wrong customerservice email.'
+    instance_cs = CustomerService.objects.get(email=json_receive['email'])
+    instance_admin = Admin.objects.get(email=request.session['a_email'])
+    if instance_cs.enterprise.id != instance_admin.id:
+        return 0, 'ERROR, customerservice is not belong to admin.'
+    return 1, 'No ERROR.'
+
+
 def admin_show_user_status_check(request):
     test_sessions = admin_sessions_check(request)
     if test_sessions == False:
