@@ -14,8 +14,9 @@
             </a>
             <Dropdown-menu slot="list">
               <Dropdown-item>
-                <Button>
-                  <a href="../se_login">退出账号</a>
+                <Button @click="logout">
+                  <!-- <a href="../se_login">退出账号</a> -->
+                  退出账号
                 </Button>
               </Dropdown-item>
               <Dropdown placement="right-start">
@@ -131,6 +132,7 @@ function findSessionIndexById (session, id) {
       return i
     }
   }
+  return -1
 }
 // 通过id找客服的索引
 function findUserIndexById (users, id) {
@@ -139,6 +141,7 @@ function findUserIndexById (users, id) {
       return i
     }
   }
+  return -1
 }
 // 接受消息放进消息列表
 function pushMessages (sessionList, index, msg) {
@@ -157,8 +160,13 @@ function createUser (userId, name) {
     uncheck: 0
   }
 }
+// 发送消息说用户已挂断
+function customerOutMessage (socket, customerId) {
+  socket.emit('customer out', customerId)
+}
 // 在列表中添加用户
-function addCustomer (userList, sessionList, historySessionList, customer) {
+function addCustomer (socket, userList, sessionList,
+   historySessionList, timers, customer) {
   userList.splice(0, 0, customer)
   sessionList.splice(0, 0, {
     userId: customer.id,
@@ -168,6 +176,11 @@ function addCustomer (userList, sessionList, historySessionList, customer) {
     userId: customer.id,
     messages: []
   })
+  // 从第一次添加用户开始计时
+  let timer = setTimeout(function () {
+    customerOutMessage(socket, customer.id)
+  }, 10000)
+  timers.splice(0, 0, timer)
 }
 // 消息和用户的上浮
 function popUp (list, index) {
@@ -187,16 +200,18 @@ function customerHangoff (userList, hangoffUserList,
   hangoffUserList.splice(0, 0, customer)
   hangoffSessionList.splice(0, 0, session)
 }
-function deleteCustomer (userList, sessionList, historySessionList, id) {
+function deleteCustomer (userList, sessionList, historySessionList, timers, id) {
   let userIndex = findUserIndexById(userList, id)
   let sessionIndex = findSessionIndexById(sessionList, id)
   userList.splice(userIndex, 1)
   sessionList.splice(sessionIndex, 1)
   historySessionList.splice(sessionIndex, 1)
+  let timer = timers.splice(sessionIndex, 1)
+  clearTimeout(timer)
 }
-localStorage.clear()
+
 // 虚拟数据
-if (!localStorage.getItem(key)) {
+if (!sessionStorage.getItem(key)) {
   let userData = {
     // 登录用户
     user: {
@@ -209,16 +224,23 @@ if (!localStorage.getItem(key)) {
     hangoffUserList: [],
     // 会话列表
     sessionList: [],
-    // 已挂断会话列表
     hangoffSessionList: [],
-    historySessionList: []
+    historySessionList: [],
+    sessionIndex: 0,
+    hangoffSessionIndex: 0,
+    hangon: true,
+    customerNumber: 0,
+    hangoffCustomerNumber: 0,
+    transferable: true,
+    isLogon: false,
+    timers: []
   }
-  localStorage.setItem(key, JSON.stringify(userData))
+  sessionStorage.setItem(key, JSON.stringify(userData))
 }
 export default {
   el: '#chat',
   data () {
-    let dataserver = JSON.parse(localStorage.getItem(key))
+    let dataserver = JSON.parse(sessionStorage.getItem(key))
     return {
       // 登录用户
       user: dataserver.user,
@@ -230,12 +252,12 @@ export default {
       hangoffSessionList: dataserver.hangoffSessionList,
       historySessionList: dataserver.historySessionList,
       // 选中的会话Index
-      sessionIndex: 0,
-      hangoffSessionIndex: 0,
+      sessionIndex: dataserver.sessionIndex,
+      hangoffSessionIndex: dataserver.hangoffSessionIndex,
       // 文本框中输入的内容
       text: '',
       // 显示活跃消息
-      hangon: true,
+      hangon: dataserver.hangon,
       // 增添语料对话框
       addSentence: false,
       // 修改语料对话框
@@ -245,9 +267,14 @@ export default {
       // 客服对应的socket
       socket: '',
       // 当前正在服务人数
-      customerNumber: 0,
-      hangoffCustomerNumber: 0,
-      transferable: true,
+      customerNumber: dataserver.customerNumber,
+      hangoffCustomerNumber: dataserver.hangoffCustomerNumber,
+      // 判断是否转接成功
+      transferable: dataserver.transferable,
+      // 判断刷新之前是否处于登录状态
+      isLogon: dataserver.isLogon,
+      // 记录每个用户计时器的ID
+      timers: dataserver.timers,
       // test
       item: {},
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
@@ -287,38 +314,57 @@ export default {
     }
   },
   created () {
-    this.getCsInfomation()
+    // this.getCsInfomation()
+
     const that = this
     this.socket = io('http://localhost:3000')
     // 接收消息
     this.socket.on('customer message', function (msg, fromId, toId) {
       let index = findSessionIndexById(that.sessionList, fromId)
       pushMessages(that.sessionList, index, msg)
+
       // 存入数据库
-      let vm = that
-      that.item = { 'email': toId }
-      vm.$http.post(vm.apiChattinglogGetCsId, that.item)
-        .then((response) => {
-          vm.$set(that, 'turnId', response.data)
-          vm.$set(that, 'item', { 'client_id': fromId, 'service_id': that.turnId, 'content': msg, 'is_client': 1 })
-          that.savedata(that.item)
-        }, (response) => {
-          window.location.href = '../se_login'
-        })
+      // let vm = that
+      // that.item = { 'email': toId }
+      // vm.$http.post(vm.apiChattinglogGetCsId, that.item)
+      //   .then((response) => {
+      //     vm.$set(that, 'turnId', response.data)
+      //     vm.$set(that, 'item', { 'client_id': fromId, 'service_id': that.turnId, 'content': msg, 'is_client': 1 })
+      //     that.savedata(that.item)
+      //   }, (response) => {
+      //     window.location.href = '../se_login'
+      //   })
       if (index !== that.sessionIndex) {
         popUp(that.userList, index)
         popUp(that.sessionList, index)
         popUp(that.historySessionList, index)
+        popUp(that.timers, index)
+        clearTimeout(this.timers[0])
+        let customerId = that.userList[0].id
+        let serverSocket = that.socket
+        that.timers[0] = setTimeout(
+          function () {
+            customerOutMessage(serverSocket, customerId)
+          }, 100000)
         if (that.sessionIndex < index) {
           that.sessionIndex++
         }
         that.userList[0].uncheck++
+      } else {
+        clearTimeout(this.timers[that.sessionIndex])
+        let customerId = that.userList[that.sessionIndex].id
+        let serverSocket = that.socket
+        that.timers[0] = setTimeout(
+          function () {
+            customerOutMessage(serverSocket, customerId)
+          }, 100000)
       }
     })
     // 添加用户
     this.socket.on('add client', function (fromId) {
       let customer = createUser(fromId, fromId)
-      addCustomer(that.userList, that.sessionList, that.historySessionList, customer)
+      addCustomer(that.socket, that.userList, that.sessionList,
+         that.historySessionList, that.timers, customer)
       if (that.userList.length !== 1) {
         customer.uncheck++
       }
@@ -335,38 +381,70 @@ export default {
       if (that.sessionIndex !== 0) {
         that.sessionIndex--
       }
-      deleteCustomer(that.userList, that.sessionList, that.historySessionList, customerId)
+      deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, customerId)
     })
     // 无法转接
     this.socket.on('switch failed', function () {
       alert('当前无可转接客服！')
       that.transferable = false
     })
-    setTimeout(function () {
-      console.log('setTime 1:' + that.user.id)
-      that.socket.emit('server set id', that.user.id)
-    }, 1000)
+    // 判断上次是刷新还是退出页面，并进行初始化
+    if (!this.isLogon) {
+      that.socket.id = (Math.random() * 1000).toString()
+      this.user.id = that.socket.id
+      this.user.name = that.socket.id
+      this.socket.emit('server set id', that.socket.id)
+      this.isLogon = true
+    } else {
+      this.socket.emit('server come back', that.user.id)
+    }
+    sessionStorage.setItem(key, JSON.stringify({
+      user: this.user,
+      userList: this.userList,
+      hangoffUserList: this.hangoffUserList,
+      sessionList: this.sessionList,
+      hangoffSessionList: this.hangoffSessionList,
+      historySessionList: this.historySessionList,
+      sessionIndex: this.sessionIndex,
+      hangoffSessionIndex: this.hangoffSessionIndex,
+      hangon: this.hangon,
+      customerNumber: this.customerNumber,
+      hangoffCustomerNumber: this.hangoffCustomerNumber,
+      transferable: this.transferable,
+      isLogon: this.isLogon,
+      timers: this.timers
+    }))
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
       deep: true,
       handler () {
-        localStorage.setItem(key, JSON.stringify({
+        sessionStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
           hangoffUserList: this.hangoffUserList,
           sessionList: this.sessionList,
           hangoffSessionList: this.hangoffSessionList,
-          historySessionList: this.historySessionList
+          historySessionList: this.historySessionList,
+          sessionIndex: this.sessionIndex,
+          hangoffSessionIndex: this.hangoffSessionIndex,
+          hangon: this.hangon,
+          customerNumber: this.customerNumber,
+          hangoffCustomerNumber: this.hangoffCustomerNumber,
+          transferable: this.transferable,
+          isLogon: this.isLogon,
+          timers: this.timers
         }))
-        this.item = { 'email': this.user.id }
-        let index = this.session.messages.length - 1
-        if (this.session.messages[index].self) {
-          this.turn = 0
-        } else {
-          this.turn = 1
-        }
+
+        // this.item = { 'email': this.user.id }
+        // let index = this.session.messages.length - 1
+        // if (this.session.messages[index].self) {
+        //   this.turn = 0
+        // } else {
+        //   this.turn = 1
+        // }
+
       }
     }
   },
@@ -424,6 +502,13 @@ export default {
           image: '../../../static/1.jpg'
         })
         this.socket.emit('server message', this.text, this.user.id, this.session.userId)
+        clearTimeout(this.timers[this.sessionIndex])
+        let customerId = this.userList[this.sessionIndex].id
+        let serverSocket = this.socket
+        this.timers[this.sessionIndex] = setTimeout(
+          function () {
+            customerOutMessage(serverSocket, customerId)
+          }, 100000)
         this.text = ''
       }
     },
@@ -433,16 +518,17 @@ export default {
         this.text = ''
         return
       }
+
       // 存入数据库，下标考虑
-      let index = this.session.messages.length
-      let vm = this
-      this.item = { 'email': this.user.id }
-      vm.$http.post(vm.apiChattinglogGetCsId, this.item)
-        .then((response) => {
-          vm.$set(this, 'turnId', response.data)
-          vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
-          this.savedata(this.item)
-        })
+      // let index = this.session.messages.length
+      // let vm = this
+      // this.item = { 'email': this.user.id }
+      // vm.$http.post(vm.apiChattinglogGetCsId, this.item)
+      //   .then((response) => {
+      //     vm.$set(this, 'turnId', response.data)
+      //     vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
+      //     this.savedata(this.item)
+      //   })
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -451,8 +537,16 @@ export default {
           image: this.user.image
         })
         this.socket.emit('server message', this.text, this.user.id, this.session.userId)
+        clearTimeout(this.timers[this.sessionIndex])
+        let customerId = this.userList[this.sessionIndex].id
+        let serverSocket = this.socket
+        this.timers[this.sessionIndex] = setTimeout(
+          function () {
+            customerOutMessage(serverSocket, customerId)
+          }, 100000)
         this.text = ''
       }
+
     },
     switchoff () {
       this.hangon = !this.hangon
@@ -465,34 +559,35 @@ export default {
         return
       }
       this.history = !this.history
-      var vm = this
-      console.log("执行啦！！")
-      this.item = { 'email': this.user.id }
-      vm.$http.post(vm.apiChattinglogGetCsId, this.item)
-        .then((response) => {
-          vm.$set(this, 'turnId', response.data)
-          vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId })
-          this.getdata(this.item)
-        })
+
+      // var vm = this
+      // console.log("执行啦！！")
+      // this.item = { 'email': this.user.id }
+      // vm.$http.post(vm.apiChattinglogGetCsId, this.item)
+      //   .then((response) => {
+      //     vm.$set(this, 'turnId', response.data)
+      //     vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId })
+      //     this.getdata(this.item)
+      //   })
     },
-    getCsInfomation () {
-      this.$http.post(this.apiCustomerserviceShowUserStatus)
-        .then((response) => {
-          if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login'
-          } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login'
-          } else {
-            this.csEmail = response.data.email
-            this.csName = response.data.nickname
-            this.user.id = this.csEmail
-            this.user.name = this.csName
-            this.socket.id = this.csEmail
-          }
-        }, (response) => {
-          window.location.href = '../se_login'
-        })
-    },
+    // getCsInfomation () {
+    //   this.$http.post(this.apiCustomerserviceShowUserStatus)
+    //     .then((response) => {
+    //       if (response.data === 'ERROR, session is broken.') {
+    //         window.location.href = '../se_login'
+    //       } else if (response.data === 'ERROR, wrong email.') {
+    //         window.location.href = '../se_login'
+    //       } else {
+    //         this.csEmail = response.data.email
+    //         this.csName = response.data.nickname
+    //         this.user.id = this.csEmail
+    //         this.user.name = this.csName
+    //         this.socket.id = this.csEmail
+    //       }
+    //     }, (response) => {
+    //       window.location.href = '../se_login'
+    //     })
+    // },
 
     switchServer (e) {
       if (!this.hangon) {
@@ -514,9 +609,16 @@ export default {
         if (that.sessionIndex !== 0) {
           that.sessionIndex--
         }
-        deleteCustomer(that.userList, that.sessionList, that.historySessionList, id)
+        deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, id)
         that.transferable = true
       }, 1000)
+    },
+    logout (e) {
+      this.socket.emit('log out')
+      for (let i = 0; i < this.timers.length; i++) {
+        clearTimeout(this.timers[i])
+      }
+      this.isLogon = false
     }
   },
   filters: {
