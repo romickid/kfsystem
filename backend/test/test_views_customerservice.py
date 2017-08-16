@@ -403,6 +403,52 @@ class TestCsShowUserStatus(TestCase):
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, session is broken.')
 
 
+class TestCsUpdateConnectionNum(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@test.com'
+        session.save()
+
+        json1 = {'connection_num': 10}
+        request1 = c.post("/api/customerservice_update_connection_num/", data=json.dumps(json1), content_type='json')
+        self.assertEqual(request1.status_code, 200)
+        self.assertEqual(request1.content.decode('utf-8'), "OK")
+
+        json2 = {}
+        request2 = c.post("/api/customerservice_update_connection_num/", data=json.dumps(json2), content_type='json')
+        self.assertEqual(request2.status_code, 200)
+        self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
+
+        json3 = {'connection_num': 10, 'other': 'other'}
+        request3 = c.post("/api/customerservice_update_connection_num/", data=json.dumps(json3), content_type='json')
+        self.assertEqual(request3.status_code, 200)
+        self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
+
+        json4 = {'connection_num': '10'}
+        request4 = c.post("/api/customerservice_update_connection_num/", data=json.dumps(json4), content_type='json')
+        self.assertEqual(request4.status_code, 200)
+        self.assertEqual(request4.content.decode('utf-8'), "ERROR, wrong type.")
+
+        session['c_email'] = 'cs2@test.com'
+        session.save()
+        json5 = {'connection_num': 10}
+        request5 = c.post("/api/customerservice_update_connection_num/", data=json.dumps(json5), content_type='json')
+        self.assertEqual(request5.status_code, 200)
+        self.assertEqual(request5.content.decode('utf-8'), 'ERROR, wrong email.')
+
+        session.delete()
+        json6 = {'connection_num': 10}
+        request6 = c.post("/api/customerservice_update_connection_num/", data=json.dumps(json6), content_type='json')
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
+
+
 class TestCsSetRobotInfoCreate(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
