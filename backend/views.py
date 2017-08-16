@@ -462,6 +462,22 @@ def customerservice_show_user_status(request):
 
 
 @csrf_exempt
+def customerservice_update_connection_num(request):
+    if request.method == 'POST':
+        # CustomerService: connection_num
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customerservice_update_connection_num_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['c_email']
+        instance = CustomerService.objects.get(email=data_email)
+        instance.connection_num = json_receive['connection_num']
+        instance.save()
+        return HttpResponse('OK', status=200)
+
+
+@csrf_exempt
 def customerservice_setrobotinfo_create(request):
     if request.method == 'POST':
         # RobotInfo: question answer keyword weight
