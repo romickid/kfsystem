@@ -23,8 +23,10 @@ def robot_similarity(array_input, dict_questions):
     return sim_sum
 
 
-def robot_add_keyword(keyword):
-    jieba.add_word(keyword)
+def robot_add_keyword(str_keyword):
+    list_keyword = str_keyword.split(' ')
+    for i in list_keyword:
+        jieba.add_word(i)
 
 
 def robot_weight_list(admin_id, customer_input):
