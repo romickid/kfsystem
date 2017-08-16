@@ -1,4 +1,6 @@
 from .models import RobotGossipInfo
+import jieba
+
 
 def robot_basic_read():
     list_file = list()
