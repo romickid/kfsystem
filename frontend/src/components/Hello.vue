@@ -74,6 +74,8 @@ export default {
       api_admin_find_password_email_request: './api/admin_find_password_email_request/',
       api_admin_find_password_check_vid: './api/admin_find_password_check_vid/',
 
+      api_admin_delete_cs: './api/admin_delete_cs/',
+
       api_customerservice_create: './api/customerservice_create/',
       api_customerservice_set_profile: './api/customerservice_set_profile/',
       api_customerservice_login: './api/customerservice_login/',
@@ -121,8 +123,8 @@ export default {
     },
     test3: function () {
       var vm = this
-      this.item = {'email': 'test1@a.com'}
-        vm.$http.post(vm.api_customerservice_create, this.item)
+      this.item = {'email': 'cs1@test.com'}
+        vm.$http.post(vm.api_admin_delete_cs, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
