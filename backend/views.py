@@ -187,6 +187,20 @@ def admin_show_cs_status(request):
 
 
 @csrf_exempt
+def admin_delete_cs(request):
+    if request.method == 'POST':
+        # CustomerService: email:
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = admin_delete_cs_check(json_receive, request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        instance_cs = CustomerService.objects.get(email=json_receive['email'])
+        instance_cs.delete()
+        return HttpResponse('OK', status=200)
+
+
+@csrf_exempt
 def admin_show_user_status(request):
     if request.method == 'POST':
         # no json
@@ -662,4 +676,4 @@ def log_show_history(request):
         json_send = list()
         pointer_image, pointer_chat = log_show_history_while_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat)
         log_show_history_if_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat)
-        return JsonResponse(json_send, safe=False, status=200)
+        return JsonResponse(json_send, safe=False, status=400)

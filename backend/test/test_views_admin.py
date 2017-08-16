@@ -341,6 +341,68 @@ class TestAdminShowCsStatus(TestCase):
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, session is broken.')
 
 
+class TestAdminDeleteCs(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
+        Admin.objects.create(id=2, email='admin2@test.com', nickname='a_nick2', password='a_pass2', web_url='a_weburl2', widget_url='a_widgeturl2', mobile_url='a_mobileurl2', communication_key='a_key2', vid='a_vid2')
+        admin_instance1 = Admin.objects.get(id=1)
+        admin_instance2 = Admin.objects.get(id=2)
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance1, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance2, nickname='c_nick2', password='c_pass2', is_register=True, is_online=False, connection_num=0, vid='c_vid2')
+        cs_instance1 = CustomerService.objects.get(id=1)
+        cs_instance2 = CustomerService.objects.get(id=2)
+        ChattingLog.objects.create(id=1, client_id='client1', service_id=cs_instance1, content='content1', is_client=False)
+        ChattingLog.objects.create(id=2, client_id='client2', service_id=cs_instance2, content='content2', is_client=False)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['a_email'] = 'admin1@test.com'
+        session.save()
+
+        json1 = {'email': 'cs1@test.com'}
+        request1 = c.post("/api/admin_delete_cs/", data=json.dumps(json1), content_type='json')
+        self.assertEqual(request1.status_code, 200)
+        self.assertEqual(request1.content.decode('utf-8'), 'OK')
+        cs_exist = CustomerService.objects.filter(email='cs1@test.com').exists()
+        cl_exist = ChattingLog.objects.filter(service_id=1).exists()
+        self.assertEqual(cs_exist, False)
+        self.assertEqual(cl_exist, False)
+
+        json2 = {}
+        request2 = c.post("/api/admin_delete_cs/", data=json.dumps(json2), content_type='json')
+        self.assertEqual(request2.status_code, 200)
+        self.assertEqual(request2.content.decode('utf-8'), 'ERROR, incomplete information.')
+
+        json3 = {'email': 'cs1@test.com', 'other': 'other'}
+        request3 = c.post("/api/admin_delete_cs/", data=json.dumps(json3), content_type='json')
+        self.assertEqual(request3.status_code, 200)
+        self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
+
+        json4 = {'email': 'cs3@test.com'}
+        request4 = c.post("/api/admin_delete_cs/", data=json.dumps(json4), content_type='json')
+        self.assertEqual(request4.status_code, 200)
+        self.assertEqual(request4.content.decode('utf-8'), 'ERROR, wrong customerservice email.')
+
+        json5 = {'email': 'cs2@test.com'}
+        request5 = c.post("/api/admin_delete_cs/", data=json.dumps(json5), content_type='json')
+        self.assertEqual(request5.status_code, 200)
+        self.assertEqual(request5.content.decode('utf-8'), 'ERROR, customerservice is not belong to admin.')
+
+        session['a_email'] = 'admin3@a.com'
+        session.save()
+        json6 = {'email': 'cs1@test.com'}
+        request6 = c.post("/api/admin_delete_cs/", data=json.dumps(json6), content_type='json')
+        self.assertEqual(request6.status_code, 200)
+        self.assertEqual(request6.content.decode('utf-8'), 'ERROR, wrong admin email.')
+
+        session.delete()
+        json7 = {'email': 'cs1@test.com'}
+        request7 = c.post("/api/admin_delete_cs/", data=json.dumps(json7), content_type='json')
+        self.assertEqual(request7.status_code, 200)
+        self.assertEqual(request7.content.decode('utf-8'), 'ERROR, session is broken.')
+
+
 class TestAdminShowUserStatus(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="03b7c09dc3533c22df04519db1d9b861e576356115da12682b39d8785885bc27ca566220c81a6abcd638e0da61d79474e2dfeeda3e86798d1374efbd6103e9b5", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")

@@ -299,6 +299,64 @@ class TestAdminShowCsStatusCheck(TestCase):
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
 
+class TestAdminDeleteCsCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
+        Admin.objects.create(id=2, email='admin2@test.com', nickname='a_nick2', password='a_pass2', web_url='a_weburl2', widget_url='a_widgeturl2', mobile_url='a_mobileurl2', communication_key='a_key2', vid='a_vid2')
+        admin_instance1 = Admin.objects.get(id=1)
+        admin_instance2 = Admin.objects.get(id=2)
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance1, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=2, email='cs2@test.com', enterprise=admin_instance2, nickname='c_nick2', password='c_pass2', is_register=True, is_online=False, connection_num=0, vid='c_vid2')
+        cs_instance1 = CustomerService.objects.get(id=1)
+        cs_instance2 = CustomerService.objects.get(id=2)
+        ChattingLog.objects.create(id=1, client_id='client1', service_id=cs_instance1, content='content1', is_client=False)
+        ChattingLog.objects.create(id=2, client_id='client2', service_id=cs_instance2, content='content2', is_client=False)
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['a_email'] = 'admin1@test.com'
+        session.save()
+
+        json1 = {'email': 'cs1@test.com'}
+        errorcode1, errormessage1 = admin_delete_cs_check(json1, c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {}
+        errorcode2, errormessage2 = admin_delete_cs_check(json2, c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'email': 'cs1@test.com', 'other': 'other'}
+        errorcode3, errormessage3 = admin_delete_cs_check(json3, c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        json4 = {'email': 'cs3@test.com'}
+        errorcode4, errormessage4 = admin_delete_cs_check(json4, c)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, wrong customerservice email.')
+
+        json5 = {'email': 'cs2@test.com'}
+        errorcode5, errormessage5 = admin_delete_cs_check(json5, c)
+        self.assertEqual(errorcode5, 0)
+        self.assertEqual(errormessage5, 'ERROR, customerservice is not belong to admin.')
+
+        session['a_email'] = 'admin3@a.com'
+        session.save()
+        json6 = {'email': 'cs1@test.com'}
+        errorcode6, errormessage6 = admin_delete_cs_check(json6, c)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, wrong admin email.')
+
+        session.delete()
+        json7 = {'email': 'cs1@test.com'}
+        errorcode7, errormessage7 = admin_delete_cs_check(json7, c)
+        self.assertEqual(errorcode7, 0)
+        self.assertEqual(errormessage7, 'ERROR, session is broken.')
+
+
 class TestAdminShowUserStatusCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
