@@ -53,7 +53,7 @@
       <div class="main-ul">
         <ul v-if="hangon">
           <div>
-            <p @click="switchoff">
+            <p align="center" color="#cccccc" @click="switchoff">
               <a>点击切换已挂断聊天消息</a>
             </p>
           </div>
@@ -68,7 +68,7 @@
         </ul>
         <ul v-if="!hangon">
           <div>
-            <p @click="switchoff">
+            <p align="center" color="#cccccc" @click="switchoff">
               <a>点击切换活跃聊天消息</a>
             </p>
           </div>
