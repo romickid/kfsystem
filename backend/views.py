@@ -472,6 +472,7 @@ def customerservice_setrobotinfo_create(request):
         serializer = RobotInfoSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
+            robot_add_keyword(json_receive['keyword'])
             return HttpResponse('OK', status=200)
         return HttpResponse("ERROR, invalid data in serializer.", status=200)
 
