@@ -49,6 +49,13 @@
       <button @click="test8()">History</button>
     </div>
 
+    <div>
+      <div class="functions">
+          <div @click="imgupload">发送图片</div>
+        </div>
+        <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
+    </div>
+
   </div>
 </template>
 
@@ -78,10 +85,19 @@ export default {
       api_chattinglog_status_change: './api/chattinglog_status_change/',
       api_chattinglog_show_history: './api/chattinglog_show_history/',
 
+      api_smallimagelog_send_image: './api/smallimagelog_send_image/',
+      api_smallimagelog_show_history: './api/smallimagelog_show_history/',
+
+
+      api_log_show_history: './api/log_show_history/',
+
+      api_test_file: './api/test_file/',
+
       item: {},
       gridData: '',
-      test: {}
-
+      test: {},
+      text: '',
+      isText: false,
     }
   },
 
@@ -89,24 +105,24 @@ export default {
   methods: {
     test1: function () {
       var vm = this
-      this.item = { 'email': 'test1@a.com', 'nickname': 'nick1', 'password': 'pass1', 'serials': 's1' }
-      vm.$http.post(vm.api_admin_create, this.item)
+      this.item = { 'client_id': '1', 'service_id': '1', 'image': this.text, 'is_client': false }
+      vm.$http.post(vm.api_smallimagelog_send_image, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
     test2: function () {
       var vm = this
-      this.item = { 'email': 'test1@a.com', 'password': 'pass1' }
-      vm.$http.post(vm.api_admin_login, this.item)
+      this.item = { 'client_id': '1', 'service_id': '1' }
+        vm.$http.post(vm.api_log_show_history, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
     },
     test3: function () {
       var vm = this
-      this.item = { 'email': 'cs1@a.com', 'admin_email': 'test1@a.com' }
-      vm.$http.post(vm.api_customerservice_create, this.item)
+      this.item = {'email': 'test1@a.com'}
+        vm.$http.post(vm.api_customerservice_create, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -114,7 +130,7 @@ export default {
     test4: function () {
       var vm = this
       this.item = { 'email': 'cs1@a.com', 'password': 'pass1', 'nickname': 'nickname1' }
-      vm.$http.post(vm.api_customerservice_set_profile, this.item)
+      vm.$http.post(vm.api_test_file, this.item)
         .then((response) => {
           vm.$set(this, 'item', {})
         })
@@ -137,7 +153,39 @@ export default {
             alert(response.data[p].time + '' + response.data[p].content)
           }
         })
-    }
+    },
+
+    fileup () {
+      var that = this
+      var file = document.getElementById('inputFile').files[0]
+      console.log('准备发送')
+      if (file) {
+        console.log('开始发送')
+        let self = this
+        if (/^image/.test(file.type)) {
+          // 创建一个reader
+          var reader = new FileReader()
+          // 将图片将转成 base64 格式
+          reader.readAsDataURL(file)
+          // 读取成功后的回调
+          reader.onloadend = function () {
+              self.text = this.result
+              self.isText = false
+              console.log(self.text)
+          }
+          console.log(self.text)
+        }
+      } else {
+          this.$Message.info('必须有文件')
+      }
+    },
+    imgupload () {
+      var file = document.getElementById('inputFile')
+      console.log('点击发送')
+      file.click()
+      this.fileup()
+    },
+
   }
 }
 </script>
