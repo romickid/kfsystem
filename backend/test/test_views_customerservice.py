@@ -397,7 +397,7 @@ class TestCsShowUserStatus(TestCase):
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, session is broken.')
 
 
-class TestCsRobotInfoCreate(TestCase):
+class TestCsSetRobotInfoCreate(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
         admin_instance = Admin.objects.get(id=1)
@@ -410,7 +410,7 @@ class TestCsRobotInfoCreate(TestCase):
         session['c_email'] = 'cs1@test.com'
         session.save()
 
-        json1 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1', 'weight': 0}
+        json1 = {'question': 'question1', 'answer': 'answer1', 'keyword': 'keyword1 keyword2', 'weight': 0}
         request1 = c.post("/api/customerservice_setrobotinfo_create/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
@@ -444,7 +444,7 @@ class TestCsRobotInfoCreate(TestCase):
         self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
 
 
-class TestCsRobotInfoDelete(TestCase):
+class TestCsSetRobotInfoDelete(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
         admin_instance = Admin.objects.get(id=1)
@@ -491,7 +491,7 @@ class TestCsRobotInfoDelete(TestCase):
         self.assertEqual(request6.content.decode('utf-8'), "ERROR, session is broken.")
 
 
-class TestCsRobotInfoShow(TestCase):
+class TestCsSetRobotInfoShow(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
         admin_instance = Admin.objects.get(id=1)
