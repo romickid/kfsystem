@@ -89,7 +89,7 @@ def admin_forget_password_email_request(request):
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
         json_receive['vid_createtime'] = timezone.now()
         serializer = AdminSerializer(instance, data=json_receive)
-        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval, Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/admin_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval, Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/en_password_retrieval/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             admin_send_email_forget_password(json_receive['email'], content)
@@ -295,7 +295,7 @@ def customerservice_create(request):
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
         json_receive['vid_createtime'] = timezone.now()
         serializer = CustomerServiceCreateSerializer(data=json_receive)
-        content = 'Dear customerservice' + ':\n' + 'Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/customerservice_create_page/?mail=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = 'Dear customerservice' + ':\n' + 'Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/se_folders/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             cs_send_email_create_account(json_receive['email'], content)
@@ -395,7 +395,7 @@ def customerservice_forget_password_email_request(request):
         json_receive['vid'] = cs_generate_vid(json_receive['email'])
         json_receive['vid_createtime'] = timezone.now()
         serializer = CustomerServiceSerializer(instance, data=json_receive)
-        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval,Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/customerservice_forget_password_page/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
+        content = 'Dear ' + instance.nickname + ':\n' + 'You have submitted a password retrieval, Please click the following links to finish the operation.\n' + 'http://192.168.55.33:8000/se_password_retrieval/?email=' + json_receive['email'] + '&key=' + json_receive['vid']
         if serializer.is_valid():
             serializer.save()
             cs_send_email_forget_password(json_receive['email'], content)
