@@ -79,4 +79,10 @@ class RobotInfo(models.Model):
     question = models.CharField(max_length=150, default='empty')
     answer = models.CharField(max_length=500, default='empty')
     keyword = models.CharField(max_length=100, default='empty')
-    weight = models.IntegerField(default=0)
+    weight = models.IntegerField(default=1)
+
+
+class RobotGossipInfo(models.Model):
+    question = models.CharField(max_length=150, default='empty')
+    answer = models.CharField(max_length=500, default='empty')
+    weight = models.IntegerField(default=1)
