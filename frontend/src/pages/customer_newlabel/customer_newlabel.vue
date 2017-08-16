@@ -68,51 +68,56 @@ function initSocket (userList, sessionList, socket, user) {
   socket.on('switch server', function (formerId) {
     socket.emit('switch server', formerId)
   })
-  // socket.id = (Math.random() * 1000).toString()
+
   // user.id = socket.id
   // user.name = socket.id
-  socket.emit('customer set id', user.id)
   socket.emit('assigned to server', user.id)
 }
-localStorage.clear()
-// 虚拟数据
-if (!localStorage.getItem(key)) {
-  let now = new Date()
-  let userData = {
-    // 登录用户
-    user: {
-      id: 1,
-      name: 'coffce',
-      image: '../../../static/1.jpg'
-    },
-    // 用户列表
-    userList: [
-      {
+// 数据初始化
+function initData (key) {
+  // 虚拟数据
+  if (!sessionStorage.getItem(key)) {
+    let now = new Date()
+    let userData = {
+      // 登录用户
+      user: {
         id: -1,
-        name: 'MonsterSXF',
-        image: '../../../static/2.png'
-      }
-    ],
-    // 会话列表
-    sessionList: [
-      {
-        userId: 2,
-        messages: [
-          {
-            text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
-            date: now,
-            image: '../../../static/2.png'
-          }
-        ]
-      }
-    ]
+        name: 'coffce',
+        image: '../../../static/1.jpg'
+      },
+      // 用户列表
+      userList: [
+        {
+          id: -1,
+          name: 'MonsterSXF',
+          image: '../../../static/2.png'
+        }
+      ],
+      // 会话列表
+      sessionList: [
+        {
+          userId: 2,
+          messages: [
+            {
+              text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
+              date: now,
+              image: '../../../static/2.png'
+            }
+          ]
+        }
+      ],
+      sessionIndex: 0,
+      timer: ''
+    }
+    sessionStorage.setItem(key, JSON.stringify(userData))
   }
-  localStorage.setItem(key, JSON.stringify(userData))
 }
+
 export default {
   el: '#chat',
   data () {
-    let dataserver = JSON.parse(localStorage.getItem(key))
+    initData(key)
+    let dataserver = JSON.parse(sessionStorage.getItem(key))
     return {
       // 登录用户
       user: dataserver.user,
@@ -121,12 +126,12 @@ export default {
       // 会话列表
       sessionList: dataserver.sessionList,
       // 选中的会话Index
-      sessionIndex: 0,
+      sessionIndex: dataserver.sessionIndex,
       // 文本框中输入的内容
       text: '',
       socket: '',
       // 计时器
-      timer: ''
+      timer: dataserver.timer
     }
   },
   computed: {
@@ -135,19 +140,45 @@ export default {
     }
   },
   created () {
-    this.user.id = this.$utils.getUrlKey('email')
-    this.user.name = this.$utils.getUrlKey('nickname')
+    // this.user.id = this.$utils.getUrlKey('email')
+    // this.user.name = this.$utils.getUrlKey('nickname')
+    // 如果初次登录， 初始化
+    if (this.user.id === -1) {
+      this.user.id = (Math.random() * 1000).toString()
+      this.user.name = this.user.id
+    }
+    // 如果刷新之前已转接为人工客服，自动连接服务器
+    if (this.userList[0].id !== -1) {
+      let that = this
+      this.socket = io('http://localhost:3000')
+      this.socket.on('server message', function (msg, fromId, toId) {
+        serverMessage(that.sessionList, msg, fromId, toId)
+      })
+      this.socket.on('connect to server', function (toId) {
+        connectToServer(that.userList, that.sessionList, toId)
+      })
+      this.socket.on('no server available', function () {
+        noServerAvailable(that.userList, that.sessionList)
+      })
+      this.socket.on('switch server', function (formerId) {
+        that.socket.emit('switch server', formerId)
+      })
+      this.socket.emit('customer come back', that.user.id, that.userList[0].id)
+    }
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
       deep: true,
       handler () {
-        localStorage.setItem(key, JSON.stringify({
+        sessionStorage.setItem(key, JSON.stringify({
           user: this.user,
           userList: this.userList,
-          sessionList: this.sessionList
+          sessionList: this.sessionList,
+          sessionIndex: this.sessionIndex,
+          timer: this.timer
         }))
+        // 重新开始计时
         // if (this.userList[0].id !== -1) {
         //   clearTimeout(this.timer)
         //   let that = this
