@@ -1,6 +1,7 @@
 import jieba.analyse
 from .models import Admin, RobotInfo
 from .serializers import AdminSerializer, RobotInfoSerializer
+from .robot_basic import *
 
 
 def robot_create_tags_withWeight(sentence):
@@ -33,14 +34,18 @@ def robot_weight_list(admin_id, customer_input):
     for i in instance_robotinfo:
         dict_questions_tags = robot_create_tags_withWeight(i.question)
         weight = robot_similarity(array_input_tags, dict_questions_tags) * i.weight
-        weight_list.append([weight, i.question, i.answer, i.keyword])
+        weight_list.append([weight, i.question, i.answer])
     return weight_list
 
 
-def robot_return_answer(admin_id, customer_input, max_answer_num=5):
-    weight_list = robot_weight_list(admin_id, customer_input)
-    weight_list.sort(reverse=True)
-    if len(weight_list) > max_answer_num:
-        return weight_list[0:max_answer_num]
+def robot_return_answer(admin_id, customer_input):
+    weight_robot = robot_weight_list(admin_id, customer_input)
+    weight_robot.sort(reverse=True)
+    weight_basic = robot_basic_weight_list(customer_input)
+    weight_basic.sort(reverse=True)
+    if weight_list[0][0] > 5:
+        return weight_list[0]
+    elif weight_basic[0][0] > 3:
+        return weight_basic[0]
     else:
-        return weight_list
+        return ['NO Reply.']
