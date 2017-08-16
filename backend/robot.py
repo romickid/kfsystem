@@ -43,8 +43,8 @@ def robot_return_answer(admin_id, customer_input):
     weight_robot.sort(reverse=True)
     weight_basic = robot_basic_weight_list(customer_input)
     weight_basic.sort(reverse=True)
-    if weight_list[0][0] > 5:
-        return weight_list[0]
+    if weight_robot[0][0] > 5:
+        return weight_robot[0]
     elif weight_basic[0][0] > 3:
         return weight_basic[0]
     else:

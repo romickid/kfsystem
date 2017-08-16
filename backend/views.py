@@ -524,12 +524,7 @@ def customerservice_displayrobotreply_show(request):
         instance_customerservice = CustomerService.objects.get(email=data_email)
         data_enterprise = instance_customerservice.enterprise
         answer_list = robot_return_answer(data_enterprise.id, json_receive['customer_input'])
-        json_send = list()
-        for i in answer_list:
-            json_send.append({'weight': i[0], 'question': i[1], 'answer': i[2], 'keyword': i[3]})
-        # print(json_receive['customer_input'])
-        # print(json_send)
-        return JsonResponse(json_send, safe=False, status=200)
+        return JsonResponse(answer_list, safe=False, status=200)
 
 
 @csrf_exempt
