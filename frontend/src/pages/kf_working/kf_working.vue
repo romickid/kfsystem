@@ -82,7 +82,7 @@
       </div>
     </div>
     <div class="main">
-      <div class="main-message">
+      <div class="main-message" v-scroll-bottom="session.messages">
         <ul>
           <li class="message-list" v-for="item in hsession.messages">
             <p class="message-time">
@@ -122,6 +122,7 @@
 
 <script>
 import * as io from 'socket.io-client'
+import Vue from 'vue'
 import robotSetting from '../../components/robot_setting'
 import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
@@ -632,6 +633,15 @@ export default {
   },
   components: {
     robotSetting
+  },
+  directives: {
+    // 发送消息后滚动到底部
+    'scroll-bottom' () {
+      Vue.nextTick(() => {
+        let message = document.getElementsByClassName('main-message')
+        message[0].scrollTop = message[0].scrollHeight
+      })
+    }
   }
 }
 </script>
