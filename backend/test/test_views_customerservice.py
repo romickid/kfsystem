@@ -26,6 +26,8 @@ class TestCsCreate(TestCase):
         request1 = c.post("/api/customerservice_create/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
+        instance = CustomerService.objects.get(email='test1@a.com')
+        self.assertEqual(instance.is_register, False)
 
         json2 = {}
         request2 = c.post("/api/customerservice_create/", data=json.dumps(json2), content_type='json')
@@ -83,6 +85,8 @@ class TestCsSetProfile(TestCase):
         request1 = c.post("/api/customerservice_set_profile/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
+        instance = CustomerService.objects.get(email='cs1@test.com')
+        self.assertEqual(instance.is_register, True)
 
         json2 = {'email': 'cs2@test.com', 'password': 'pass2', 'vid': 'c_vid2'}
         request2 = c.post("/api/customerservice_set_profile/", data=json.dumps(json2), content_type='json')
@@ -176,6 +180,8 @@ class TestCsLogin(TestCase):
         request1 = c.post("/api/customerservice_login/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
+        instance = CustomerService.objects.get(email='cs1@test.com')
+        self.assertEqual(instance.is_online, True)
 
         json2 = {'email': 'cs1@test.com'}
         request2 = c.post("/api/customerservice_login/", data=json.dumps(json2), content_type='json')
@@ -577,7 +583,7 @@ class TestCsLogout(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="a_pass1", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
         admin_instance = Admin.objects.get(id=1)
-        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=True, is_online=True, connection_num=0, vid='c_vid1')
 
     def test(self):
         c = Client()
@@ -587,6 +593,9 @@ class TestCsLogout(TestCase):
 
         request1 = c.post("/api/customerservice_logout/")
         self.assertEqual(request1.status_code, 200)
+        self.assertEqual(request1.content.decode('utf-8'), "OK")
+        instance = CustomerService.objects.get(email='cs1@test.com')
+        self.assertEqual(instance.is_online, False)
 
         session['c_email'] = 'cs2@test.com'
         session.save()
