@@ -47,5 +47,5 @@ urlpatterns = [
 
     url(r'^api/log_show_history/$', views.log_show_history),
 
-    url(r'^api/test_file/$', views.test_file),
+    # url(r'^api/test_file/$', views.test_file),
 ]
