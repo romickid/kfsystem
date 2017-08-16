@@ -78,7 +78,7 @@ class RobotInfo(models.Model):
     enterprise = models.ForeignKey('Admin', on_delete=models.CASCADE)
     question = models.CharField(max_length=150, default='empty')
     answer = models.CharField(max_length=500, default='empty')
-    keyword = models.CharField(max_length=100, default='empty')
+    keyword = models.CharField(max_length=100, default='empty', blank=True)
     weight = models.IntegerField(default=1)
 
 
