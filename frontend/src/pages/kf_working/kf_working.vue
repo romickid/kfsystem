@@ -325,16 +325,17 @@ export default {
       pushMessages(that.sessionList, index, msg)
 
       // 存入数据库
-      // let vm = that
-      // that.item = { 'email': toId }
-      // vm.$http.post(vm.apiChattinglogGetCsId, that.item)
-      //   .then((response) => {
-      //     vm.$set(that, 'turnId', response.data)
-      //     vm.$set(that, 'item', { 'client_id': fromId, 'service_id': that.turnId, 'content': msg, 'is_client': 1 })
-      //     that.savedata(that.item)
-      //   }, (response) => {
-      //     window.location.href = '../se_login'
-      //   })
+      let vm = that
+      that.item = { 'email': toId }
+      vm.$http.post(vm.apiChattinglogGetCsId, that.item)
+        .then((response) => {
+          vm.$set(that, 'turnId', response.data)
+          vm.$set(that, 'item', { 'client_id': fromId, 'service_id': that.turnId, 'content': msg, 'is_client': 1 })
+          that.savedata(that.item)
+        }, (response) => {
+          window.location.href = '../se_login'
+        })
+
       if (index !== that.sessionIndex) {
         popUp(that.userList, index)
         popUp(that.sessionList, index)
@@ -437,43 +438,10 @@ export default {
           isLogon: this.isLogon,
           timers: this.timers
         }))
-
-        // this.item = { 'email': this.user.id }
-        // let index = this.session.messages.length - 1
-        // if (this.session.messages[index].self) {
-        //   this.turn = 0
-        // } else {
-        //   this.turn = 1
-        // }
-
       }
     }
   },
   methods: {
-    getdata (obj) {
-      let vm = this
-      vm.$http.post(vm.apiChattinglogShowHistory, obj)
-        .then((response) => {
-          for (var p in response.data) {
-            if (response.data[p].is_client === false) {
-              console.log('cs：' + response.data[p].content)
-              this.hsession.messages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                self: true,
-                image: this.user.image
-              })
-            } else {
-              console.log('客户：' + response.data[p].content)
-              this.hsession.messages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                image: '../../../static/3.jpg'
-              })
-            }
-          }
-        })
-    },
     savedata (obj) {
       let vm = this
       vm.$http.post(vm.apiChattinglogSendMessage, obj)
@@ -496,6 +464,18 @@ export default {
           this.text = ''
           return
         }
+
+        // 存入数据库，下标考虑
+        let index = this.session.messages.length
+        let vm = this
+        this.item = { 'email': this.user.id }
+        vm.$http.post(vm.apiChattinglogGetCsId, this.item)
+          .then((response) => {
+            vm.$set(this, 'turnId', response.data)
+            vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
+            this.savedata(this.item)
+          })
+
         this.session.messages.push({
           text: this.text,
           date: new Date(),
@@ -521,15 +501,16 @@ export default {
       }
 
       // 存入数据库，下标考虑
-      // let index = this.session.messages.length
-      // let vm = this
-      // this.item = { 'email': this.user.id }
-      // vm.$http.post(vm.apiChattinglogGetCsId, this.item)
-      //   .then((response) => {
-      //     vm.$set(this, 'turnId', response.data)
-      //     vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
-      //     this.savedata(this.item)
-      //   })
+      let index = this.session.messages.length
+      let vm = this
+      this.item = { 'email': this.user.id }
+      vm.$http.post(vm.apiChattinglogGetCsId, this.item)
+        .then((response) => {
+          vm.$set(this, 'turnId', response.data)
+          vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
+          this.savedata(this.item)
+        })
+
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -560,16 +541,6 @@ export default {
         return
       }
       this.history = !this.history
-
-      // var vm = this
-      // console.log("执行啦！！")
-      // this.item = { 'email': this.user.id }
-      // vm.$http.post(vm.apiChattinglogGetCsId, this.item)
-      //   .then((response) => {
-      //     vm.$set(this, 'turnId', response.data)
-      //     vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId })
-      //     this.getdata(this.item)
-      //   })
     },
     // getCsInfomation () {
     //   this.$http.post(this.apiCustomerserviceShowUserStatus)
@@ -589,7 +560,6 @@ export default {
     //       window.location.href = '../se_login'
     //     })
     // },
-
     switchServer (e) {
       if (!this.hangon) {
         alert('无法为已挂断的用户进行转接！')
