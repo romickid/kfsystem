@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^api/admin_forget_password_check_vid/', views.admin_forget_password_check_vid),
     url(r'^api/admin_forget_password_save_data/', views.admin_forget_password_save_data),
     url(r'^api/admin_show_cs_status/', views.admin_show_cs_status),
+    url(r'^api/admin_delete_cs/', views.admin_delete_cs),
     url(r'^api/admin_show_user_status/', views.admin_show_user_status),
     url(r'^api/admin_display_info_create/', views.admin_display_info_create),
     url(r'^api/admin_display_info_delete/', views.admin_display_info_delete),
@@ -46,5 +47,5 @@ urlpatterns = [
 
     url(r'^api/log_show_history/$', views.log_show_history),
 
-    # url(r'^api/test_file/$', views.test_file),
+    url(r'^api/test_file/$', views.test_file),
 ]
