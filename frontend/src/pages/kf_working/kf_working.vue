@@ -283,8 +283,6 @@ export default {
       apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
       apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
       history: false,
-      csEmail: '',
-      csName: '',
       turnId: ''
     }
   },
@@ -315,8 +313,7 @@ export default {
     }
   },
   created () {
-    // this.getCsInfomation()
-
+    this.getCsInfomation()
     const that = this
     this.socket = io('http://localhost:3000')
     // 接收消息
@@ -392,11 +389,11 @@ export default {
     })
     // 判断上次是刷新还是退出页面，并进行初始化
     if (!this.isLogon) {
-      that.socket.id = (Math.random() * 1000).toString()
-      this.user.id = that.socket.id
-      this.user.name = that.socket.id
-      this.socket.emit('server set id', that.socket.id)
-      this.isLogon = true
+      setTimeout(function () {
+        that.socket.id = that.user.id
+        that.socket.emit('server set id', that.socket.id)
+        that.isLogon = true
+      }, 1000)
     } else {
       this.socket.emit('server come back', that.user.id)
     }
@@ -574,24 +571,21 @@ export default {
           this.getdata(this.item)
         })
     },
-    // getCsInfomation () {
-    //   this.$http.post(this.apiCustomerserviceShowUserStatus)
-    //     .then((response) => {
-    //       if (response.data === 'ERROR, session is broken.') {
-    //         window.location.href = '../se_login'
-    //       } else if (response.data === 'ERROR, wrong email.') {
-    //         window.location.href = '../se_login'
-    //       } else {
-    //         this.csEmail = response.data.email
-    //         this.csName = response.data.nickname
-    //         this.user.id = this.csEmail
-    //         this.user.name = this.csName
-    //         this.socket.id = this.csEmail
-    //       }
-    //     }, (response) => {
-    //       window.location.href = '../se_login'
-    //     })
-    // },
+    getCsInfomation () {
+      this.$http.post(this.apiCustomerserviceShowUserStatus)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../se_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../se_login'
+          } else {
+            this.user.id = response.data.email
+            this.user.name = response.data.nickname
+          }
+        }, (response) => {
+          window.location.href = '../se_login'
+        })
+    },
     switchServer (e) {
       if (!this.hangon) {
         alert('无法为已挂断的用户进行转接！')
