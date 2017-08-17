@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <div class="information">
-      Place Customer Information Here...
+      <ul v-if="hangon">
+        <li v-for="item in userInformation">{{ item }}</li>
+      </ul>
     </div>
     <div class="sidebar">
       <div class="main-card">
@@ -135,7 +137,7 @@ function findSessionIndexById (session, id) {
   }
   return -1
 }
-// 通过id找客服的索引
+// 通过id找客户的索引
 function findUserIndexById (users, id) {
   for (let i = 0; i < users.length; i++) {
     if (users[i].id === id) {
@@ -153,12 +155,14 @@ function pushMessages (sessionList, index, msg) {
   })
 }
 // 创建用户
-function createUser (userId, name) {
+function createUser (userId, name, informationString) {
+  let informationList = JSON.parse(informationString)
   return {
     id: userId,
     name: name,
     image: '../../../static/3.jpg',
     uncheck: 0
+    information: informationList
   }
 }
 // 发送消息说用户已挂断
@@ -167,7 +171,7 @@ function customerOutMessage (socket, customerId) {
 }
 // 在列表中添加用户
 function addCustomer (socket, userList, sessionList,
-   historySessionList, timers, customer) {
+   historySessionList, timers, informationList, customer) {
   userList.splice(0, 0, customer)
   sessionList.splice(0, 0, {
     userId: customer.id,
@@ -182,6 +186,11 @@ function addCustomer (socket, userList, sessionList,
     customerOutMessage(socket, customer.id)
   }, 10000)
   timers.splice(0, 0, timer)
+  informationList.splice(0, 0, [
+    '用户名： ' + customer.information.userName,
+    '用户ID： ' + customer.information.userId,
+    '详细信息： ' + customer.information.information
+  ])
 }
 // 消息和用户的上浮
 function popUp (list, index) {
@@ -201,12 +210,13 @@ function customerHangoff (userList, hangoffUserList,
   hangoffUserList.splice(0, 0, customer)
   hangoffSessionList.splice(0, 0, session)
 }
-function deleteCustomer (userList, sessionList, historySessionList, timers, id) {
+function deleteCustomer (userList, sessionList, historySessionList, timers, informationList, id) {
   let userIndex = findUserIndexById(userList, id)
   let sessionIndex = findSessionIndexById(sessionList, id)
   userList.splice(userIndex, 1)
   sessionList.splice(sessionIndex, 1)
   historySessionList.splice(sessionIndex, 1)
+  informationList.splice(sessionIndex, 1)
   let timer = timers.splice(sessionIndex, 1)
   clearTimeout(timer)
 }
@@ -227,6 +237,7 @@ if (!sessionStorage.getItem(key)) {
     sessionList: [],
     hangoffSessionList: [],
     historySessionList: [],
+    informationList: [],
     sessionIndex: 0,
     hangoffSessionIndex: 0,
     hangon: true,
@@ -252,6 +263,7 @@ export default {
       sessionList: dataserver.sessionList,
       hangoffSessionList: dataserver.hangoffSessionList,
       historySessionList: dataserver.historySessionList,
+      informationList: dataserver.informationList,
       // 选中的会话Index
       sessionIndex: dataserver.sessionIndex,
       hangoffSessionIndex: dataserver.hangoffSessionIndex,
@@ -308,6 +320,12 @@ export default {
       }
       return this.historySessionList[this.sessionIndex]
     },
+    userInformation () {
+      if (!this.userList.length) {
+        return []
+      }
+      return this.informationList[this.sessionIndex]
+    },
     currentNumber () {
       return (this.hangon && this.userList.length) || (!this.hangon && this.hangoffUserList.length)
     }
@@ -338,6 +356,7 @@ export default {
         popUp(that.sessionList, index)
         popUp(that.historySessionList, index)
         popUp(that.timers, index)
+        popUp(that.informationList, index)
         clearTimeout(this.timers[0])
         let customerId = that.userList[0].id
         let serverSocket = that.socket
@@ -360,10 +379,10 @@ export default {
       }
     })
     // 添加用户
-    this.socket.on('add client', function (fromId) {
-      let customer = createUser(fromId, fromId)
+    this.socket.on('add client', function (fromId, information) {
+      let customer = createUser(fromId, fromId, information)
       addCustomer(that.socket, that.userList, that.sessionList,
-         that.historySessionList, that.timers, customer)
+         that.historySessionList, that.timers, that.informationList, customer)
       if (that.userList.length !== 1) {
         customer.uncheck++
       }
@@ -380,7 +399,7 @@ export default {
       if (that.sessionIndex !== 0) {
         that.sessionIndex--
       }
-      deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, customerId)
+      deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, that.informationList, customerId)
     })
     // 无法转接
     this.socket.on('switch failed', function () {
@@ -404,6 +423,7 @@ export default {
       sessionList: this.sessionList,
       hangoffSessionList: this.hangoffSessionList,
       historySessionList: this.historySessionList,
+      informationList: this.informationList,
       sessionIndex: this.sessionIndex,
       hangoffSessionIndex: this.hangoffSessionIndex,
       hangon: this.hangon,
@@ -426,6 +446,7 @@ export default {
           sessionList: this.sessionList,
           hangoffSessionList: this.hangoffSessionList,
           historySessionList: this.historySessionList,
+          informationList: this.informationList,
           sessionIndex: this.sessionIndex,
           hangoffSessionIndex: this.hangoffSessionIndex,
           hangon: this.hangon,
@@ -606,7 +627,7 @@ export default {
         if (that.sessionIndex !== 0) {
           that.sessionIndex--
         }
-        deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, id)
+        deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, that.informationList, id)
         that.transferable = true
       }, 1000)
     },
