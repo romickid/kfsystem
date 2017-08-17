@@ -75,7 +75,7 @@ export default {
         this.customerService = {
           'email': this.kf
         }
-        this.communicate()
+        this.add_cs_api()
       }
       this.cancel()
     },
@@ -92,7 +92,7 @@ export default {
       this.emailIsNull = false
       this.emailIsNotStandard = false
     },
-    communicate () {
+    add_cs_api () {
       this.$http.post(this.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
@@ -110,6 +110,7 @@ export default {
             window.location.href = '../en_login'
           } else {
             this.$Message.info('添加成功')
+            this.refresh()
           }
         }, (response) => {
           window.location.href = '../en_login'
