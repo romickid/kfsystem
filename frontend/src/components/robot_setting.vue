@@ -1,12 +1,12 @@
 <template>
-  <Table border :height="400":columns="columns7" :data="data6"></Table>
+  <Table border stripe :height="400" :columns="columns" :data="data"></Table>
 </template>
 <script>
 import 'iview/dist/styles/iview.css'
 export default {
   data () {
     return {
-      columns7: [
+      columns: [
         {
           title: '问题',
           key: 'question',
@@ -20,6 +20,16 @@ export default {
         {
           title: '回答',
           key: 'answer',
+          ellipsis: 'true'
+        },
+        {
+          title: '关键词',
+          key: 'keyword',
+          ellipsis: 'true'
+        },
+        {
+          title: '权重',
+          key: 'weight',
           ellipsis: 'true'
         },
         {
@@ -42,7 +52,7 @@ export default {
                     this.show(params.index)
                   }
                 }
-              }, '编辑'),
+              }, '查看'),
               h('Button', {
                 props: {
                   type: 'error',
@@ -50,7 +60,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.remove(params.index)
+                    this.delete_robot(params.index)
                   }
                 }
               }, '删除')
@@ -58,57 +68,76 @@ export default {
           }
         }
       ],
-      data6: [
-        {
-          question: '问题一',
-          answer: '回答一'
-        },
-        {
-          question: '问题二',
-          answer: '回答二'
-        }
-      ],
+      data: [],
       index: 0,
       question: '',
-      answer: ''
+      answer: '',
+      apiCustomerserviceSetrobotinfoDelete: '../api/customerservice_setrobotinfo_delete/',
+      apiCustomerserviceSetrobotinfoShow: '../api/customerservice_setrobotinfo_show/',
+      robot_question_delete: {},
+      robot_question: {}
     }
   },
   methods: {
     show (index) {
-      this.$Modal.confirm({
-        render: (h) => {
-          return h('div', [
-            h('Input', {
-              props: {
-                value: this.data6[index].question,
-                autofocus: true,
-                placeholder: this.data6[index].question
-              },
-              on: {
-                input: (val) => {
-                  this.data6[index].question = val
-                }
-              }
-            }),
-            h('Input', {
-              props: {
-                value: this.data6[index].answer,
-                autofocus: true,
-                placeholder: this.data6[index].answer
-              },
-              on: {
-                input: (val) => {
-                  this.data6[index].answer = val
-                }
-              }
-            })
-          ])
-        }
+      this.$Modal.info({
+        title: '机器人语料库',
+        content: `问题：${this.data[index].question}<br>回答：${this.data[index].answer}<br>关键词：${this.data[index].keyword}<br>权重：${this.data[index].weight}`
       })
     },
-    remove (index) {
-      this.data6.splice(index, 1)
+    delete_robot_api () {
+      this.$http.post(this.apiCustomerserviceSetrobotinfoDelete, this.robot_question_delete)
+        .then((response) => {
+          if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../se_login'
+          } else if (response.data === 'ERROR, incomplete information.') {
+            this.$Message.info('您所填的信息不完整')
+          } else if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../se_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../se_login'
+          } else if (response.data === 'ERROR, info is not exist.') {
+            this.$Message.info('该问题不存在')
+          } else {
+            this.$Message.info('删除成功')
+            this.show_robot_question_api()
+          }
+        }, (response) => {
+          window.location.href = '../se_login'
+        })
+    },
+    show_robot_question_api () {
+      this.$http.post(this.apiCustomerserviceSetrobotinfoShow, this.robot_question)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../se_login'
+          } else if (response.data === 'ERROR, wrong email.') {
+            window.location.href = '../se_login'
+          } else {
+            this.data = response.data
+            for (var i = 0; i < this.data.length; i++) {
+              if (this.data[i].weight === 1) {
+                this.data[i].weight = '低'
+              } else if (this.data[i].weight === 2) {
+                this.data[i].weight = '中'
+              } else if (this.data[i].weight === 3) {
+                this.data[i].weight = '高'
+              }
+            }
+          }
+        }, (response) => {
+          window.location.href = '../se_login'
+        })
+    },
+    delete_robot (index) {
+      this.robot_question_delete = {
+        'question': this.data[index].question
+      }
+      this.delete_robot_api()
     }
+  },
+  created () {
+    this.show_robot_question_api()
   }
 }
 </script>
