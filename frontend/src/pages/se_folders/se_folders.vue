@@ -72,7 +72,7 @@ export default {
       this.passwordNonStandard = false
     },
     communicate () {
-      this.$http.post(this.set_profile, this.item)
+      this.$http.post(this.api_set_profile, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
