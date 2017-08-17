@@ -161,7 +161,7 @@ function createUser (userId, name, informationString) {
     id: userId,
     name: name,
     image: '../../../static/3.jpg',
-    uncheck: 0
+    uncheck: 0,
     information: informationList
   }
 }
@@ -184,7 +184,7 @@ function addCustomer (socket, userList, sessionList,
   // 从第一次添加用户开始计时
   let timer = setTimeout(function () {
     customerOutMessage(socket, customer.id)
-  }, 10000)
+  }, 10000000)
   timers.splice(0, 0, timer)
   informationList.splice(0, 0, [
     '用户名： ' + customer.information.userName,
@@ -363,7 +363,7 @@ export default {
         that.timers[0] = setTimeout(
           function () {
             customerOutMessage(serverSocket, customerId)
-          }, 100000)
+          }, 100000000)
         if (that.sessionIndex < index) {
           that.sessionIndex++
         }
@@ -375,7 +375,7 @@ export default {
         that.timers[0] = setTimeout(
           function () {
             customerOutMessage(serverSocket, customerId)
-          }, 100000)
+          }, 100000000)
       }
     })
     // 添加用户
@@ -531,7 +531,7 @@ export default {
         this.timers[this.sessionIndex] = setTimeout(
           function () {
             customerOutMessage(serverSocket, customerId)
-          }, 100000)
+          }, 100000000)
         this.text = ''
       }
     },
@@ -567,7 +567,7 @@ export default {
         this.timers[this.sessionIndex] = setTimeout(
           function () {
             customerOutMessage(serverSocket, customerId)
-          }, 100000)
+          }, 100000000)
         this.text = ''
       }
 
