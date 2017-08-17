@@ -129,7 +129,7 @@ export default {
       // 选中的会话Index
       sessionIndex: dataserver.sessionIndex,
       // 用户简介
-      information: ''
+      information: '',
       // 文本框中输入的内容
       text: '',
       socket: '',
@@ -143,9 +143,9 @@ export default {
     }
   },
   created () {
-    // this.user.id = this.$utils.getUrlKey('email')
-    // this.user.name = this.$utils.getUrlKey('nickname')
-    // this.user.information = this.$utils.getUrlKey('information')
+    this.user.id = this.$utils.getUrlKey('email')
+    this.user.name = this.$utils.getUrlKey('nickname')
+    this.information = this.$utils.getUrlKey('information')
     // 如果初次登录， 初始化
     if (this.user.id === -1) {
       this.user.id = (Math.random() * 1000).toString()
@@ -227,8 +227,8 @@ export default {
       let that = this
       this.socket = io('http://localhost:3000')
       let information = JSON.stringify({
-        userId: this.user.id
-        userName: this.user.name
+        userId: this.user.id,
+        userName: this.user.name,
         information: this.information
       })
       initSocket(that.userList, that.sessionList, this.socket, that.user, information)
