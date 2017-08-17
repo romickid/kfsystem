@@ -64,7 +64,7 @@ io.on('connection', function (socket) {
   })
 
   // 为用户分配客服
-  socket.on('assigned to server', function (fromId) {
+  socket.on('assigned to server', function (fromId, information) {
     if (serverSocket.length === 0) {
       socket.emit('no server available')
     } else {
@@ -73,7 +73,7 @@ io.on('connection', function (socket) {
       toId = to.id
       socket.id = fromId
       socket.serverId = toId
-      to.emit('add client', fromId)
+      to.emit('add client', fromId, information)
       console.log('Server ' + toId + ' add client ' + fromId)
       socket.emit('connect to server', toId)
       console.log('Customer ' + fromId + ' connect to server ' + toId)
@@ -83,7 +83,7 @@ io.on('connection', function (socket) {
   })
 
   // 为用户转接客服
-  socket.on('switch server', function (formerId) {
+  socket.on('switch server', function (formerId, information) {
     if (serverSocket.length === 0) {
       socket.emit('no server available')
     } else {
@@ -95,7 +95,7 @@ io.on('connection', function (socket) {
       let to = serverSocket[i]
       toId = to.id
       console.log('Transfer customer ' + socket.id + ' to server ' + to.id + ': ')
-      to.emit('add client', socket.id)
+      to.emit('add client', socket.id, information)
       console.log('    Server ' + toId + ' add client ' + socket.id)
       socket.emit('connect to server', toId)
       socket.serverId = toId
