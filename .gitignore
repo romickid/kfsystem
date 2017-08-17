@@ -120,3 +120,4 @@ yarn.lock
 .DS_Store
 /.vagrant/
 /media/
+/backend/document/
