@@ -29,21 +29,42 @@
                 <Dropdown-menu slot="list">
                   <Dropdown-item>
                     <Button @click="addSentence=true">增添语料</Button>
-                    <Modal v-model="addSentence" title="增添语料" @on-ok="ok" @on-cancel="cancel">
-                      <p>增添语料</p>
-                      <div>
-                        <Input type="text" placeholder="请输入问题">
-                      </div>
-                      <div>
-                      <Input type="text" placeholder="请输入回答">
-                      </div>
-                      <Button>确认增添</Button>
+                    <Modal v-model="addSentence" title="增添语料" @on-ok="ok_add" @on-cancel="cancel_add">
+                      <Form :label-width="80">
+                        <Form-item label="问题">
+                          <Input type="text" placeholder="请输入问题" v-model="question" @on-blur="checkQuestion" @on-focus="questionInput"></Input>
+                          <i-label v-if="questionIsNull">
+                            <p class='waring'>问题不能为空</p>
+                          </i-label>
+                        </Form-item>
+                        <Form-item label="回答">
+                          <Input type="text" placeholder="请输入回答" v-model="reply" @on-blur="checkReply" @on-focus="replyInput"></Input>
+                          <i-label v-if="replyIsNull">
+                            <p class='waring'>回答不能为空</p>
+                          </i-label>
+                        </Form-item>
+                        <Form-item label="关键词">
+                          <Input type="text" placeholder="请输入关键词" v-model="keyword" @on-blur="checkKeyword" @on-focus="keyWordInput"></Input>
+                          <p>关键词最好为问题中的重点词汇</p>
+                          <i-label v-if="keywordIsNotStandard">
+                            <p class='waring'>关键词不合法</p>
+                          </i-label>
+                          <Button icon="ios-plus-empty" type="dashed" size="small" @click="handleAdd">添加关键词</Button>
+                          <Tag v-for="item in robotKeyWord" :name="item" closable @on-close="handleClose">{{ item }}</Tag>
+                        </Form-item>
+                        <Form-item label="权重">
+                          <Select v-model="modelSelect" style="width:200px">
+                            <Option v-for="item in robotWeight" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                          </Select>
+                        </Form-item>
+                      </Form>
                     </Modal>
                   </Dropdown-item>
                   <Dropdown-item>
                     <Button @click="modifySentence=true">编辑语料</Button>
-                    <Modal v-model="modifySentence" title="编辑语料" @on-ok="ok" @on-cancel="cancel" z-index=40>
+                    <Modal v-model="modifySentence" title="编辑语料" z-index=40>
                       <robot-setting ref="robotSetting"></robot-setting>
+                      <div slot="footer"></div>
                     </Modal>
                   </Dropdown-item>
                 </Dropdown-menu>
@@ -93,7 +114,10 @@
             <div class="massage-main" :class="{ self: item.self }">
               <img class="massage-avatar" width="30" height="30" :src="item.image" />
               <div class="massage-text">
-                <li>{{ item.text }}</li>
+                <li>
+                  <p v-if="item.isText">{{ item.text }}</p>
+                  <img :src='item.img' v-else @click='showBigImg(item.bigImg)'>
+                </li>
               </div>
             </div>
           </li>
@@ -104,12 +128,24 @@
             <div class="massage-main" :class="{ self: item.self }">
               <img class="massage-avatar" width="30" height="30" :src="item.image" />
               <div class="massage-text">
-                <li>{{ item.text }}</li>
+                <li>
+                  <p v-if="item.isText">{{ item.text }}</p>
+                  <img :src='item.img' v-else @click='showBigImg(item.bigImg)'>
+                </li>
               </div>
             </div>
           </li>
         </ul>
       </div>
+      <Modal v-model="modal2" width='auto'>
+        <p slot="header">
+        </p>
+        <div style="text-align:center">
+            <img :src="bigImgBase64">
+        </div>
+        <div slot="footer">
+        </div>
+      </Modal>
       <div class="main-text">
         <Button @click="showHistory">历史消息</Button>
         <Button @click="switchServer">转接</Button>
@@ -117,6 +153,10 @@
           <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttoninputing">发送</Button>
+        <div class="functions">
+          <div @click="imgupload">发送图片</div>
+        </div>
+        <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
       </div>
     </div>
   </div>
@@ -126,6 +166,7 @@
 import * as io from 'socket.io-client'
 import Vue from 'vue'
 import robotSetting from '../../components/robot_setting'
+import lrz from '../../../node_modules/lrz/dist/lrz.bundle.js'
 import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
 // 通过id找聊天记录的索引
@@ -147,9 +188,12 @@ function findUserIndexById (users, id) {
   return -1
 }
 // 接受消息放进消息列表
-function pushMessages (sessionList, index, msg) {
+function pushMessages (sessionList, index, msg, isText, img, bigImg) {
   sessionList[index].messages.push({
     text: msg,
+    img: img,
+    bigImg: bigImg,
+    isText: isText,
     date: new Date(),
     image: '../../../static/3.jpg'
   })
@@ -206,7 +250,7 @@ function customerHangoff (userList, hangoffUserList,
   let sessionIndex = findSessionIndexById(sessionList, id)
   let customer = userList[userIndex]
   let session = sessionList[sessionIndex]
-  pushMessages(sessionList, sessionIndex, '用户' + id + '已挂断')
+  pushMessages(sessionList, sessionIndex, '用户' + id + '已挂断', true, '', '')
   hangoffUserList.splice(0, 0, customer)
   hangoffSessionList.splice(0, 0, session)
 }
@@ -267,8 +311,6 @@ export default {
       // 选中的会话Index
       sessionIndex: dataserver.sessionIndex,
       hangoffSessionIndex: dataserver.hangoffSessionIndex,
-      // 文本框中输入的内容
-      text: '',
       // 显示活跃消息
       hangon: dataserver.hangon,
       // 增添语料对话框
@@ -294,8 +336,52 @@ export default {
       apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
       apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
+      apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
+      apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
+      apiBigimagelogShowSingleHistory: '../api/bigimagelog_show_single_history/',
+      apiLogShowHistory: '../api/log_show_history/',
       history: false,
-      turnId: ''
+      turnId: '',
+      // 聊天数据
+      text: '',
+      isText: true,
+      img: '',
+      bigImg: '',
+      bigImgBase64: '',
+      // 机器人
+      apiCustomerserviceSetrobotinfoCreate: '../api/customerservice_setrobotinfo_create/',
+      modal2: false,
+      modelSelect: 2,
+      robotWeight: [
+        {
+          value: 3,
+          label: '高'
+        },
+        {
+          value: 2,
+          label: '中'
+        },
+        {
+          value: 1,
+          label: '低'
+        }
+      ],
+      robotKeyWord: [],
+      keyword: '',
+      question: '',
+      reply: '',
+      replyIsNull: false,
+      questionIsNull: false,
+      keywordIsNotStandard: false,
+      robot_question_add: {},
+      keywordIsExist: false,
+      keyword_add: '',
+      // api参数
+      save_text_item: {},
+      cs_email_item: {},
+      save_img_item: {},
+      save_bigImg_item: {},
+      show_history_item: {}
     }
   },
   computed: {
@@ -335,22 +421,20 @@ export default {
     const that = this
     this.socket = io('http://localhost:3000')
     // 接收消息
-    this.socket.on('customer message', function (msg, fromId, toId) {
+    this.socket.on('customer message', function (msg, isText, img, bigImg, fromId, toId) {
       let index = findSessionIndexById(that.sessionList, fromId)
-      pushMessages(that.sessionList, index, msg)
-
-      // 存入数据库
-      let vm = that
-      that.item = { 'email': toId }
-      vm.$http.post(vm.apiChattinglogGetCsId, that.item)
-        .then((response) => {
-          vm.$set(that, 'turnId', response.data)
-          vm.$set(that, 'item', { 'client_id': fromId, 'service_id': that.turnId, 'content': msg, 'is_client': 1 })
-          that.savedata(that.item)
-        }, (response) => {
-          window.location.href = '../se_login'
-        })
-
+      pushMessages(that.sessionList, index, msg, isText, img, bigImg)
+      // // 存入数据库
+      // let vm = that
+      // that.item = { 'email': toId }
+      // vm.$http.post(vm.apiChattinglogGetCsId, that.item)
+      //   .then((response) => {
+      //     vm.$set(that, 'turnId', response.data)
+      //     vm.$set(that, 'item', { 'client_id': fromId, 'service_id': that.turnId, 'content': msg, 'is_client': 1 })
+      //     that.savedata(that.item)
+      //   }, (response) => {
+      //     window.location.href = '../se_login'
+      //   })
       if (index !== that.sessionIndex) {
         popUp(that.userList, index)
         popUp(that.sessionList, index)
@@ -369,7 +453,7 @@ export default {
         }
         that.userList[0].uncheck++
       } else {
-        clearTimeout(this.timers[that.sessionIndex])
+        clearTimeout(that.timers[that.sessionIndex])
         let customerId = that.userList[that.sessionIndex].id
         let serverSocket = that.socket
         that.timers[0] = setTimeout(
@@ -389,7 +473,7 @@ export default {
       if (that.hangon && that.userList.length !== 1) {
         that.sessionIndex++
       }
-      pushMessages(that.sessionList, 0, '用户' + fromId + '已上线')
+      pushMessages(that.sessionList, 0, '用户' + fromId + '已上线', true, '', '')
     })
     // 客户挂断
     this.socket.on('customer hang off', function (customerId) {
@@ -460,37 +544,6 @@ export default {
     }
   },
   methods: {
-    savedata (obj) {
-      let vm = this
-      vm.$http.post(vm.apiChattinglogSendMessage, obj)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-    getdata (obj) {
-      let vm = this
-      vm.$http.post(vm.apiChattinglogShowHistory, obj)
-        .then((response) => {
-          for (var p in response.data) {
-            if (response.data[p].is_client === false) {
-              console.log('cs：' + response.data[p].content)
-              this.hsession.messages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                self: true,
-                image: this.user.image
-              })
-            } else {
-              console.log('客户：' + response.data[p].content)
-              this.hsession.messages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                image: '../../../static/3.jpg'
-              })
-            }
-          }
-        })
-    },
     select (value) {
       if (this.hangon) {
         this.sessionIndex = this.userList.indexOf(value)
@@ -506,25 +559,19 @@ export default {
           this.text = ''
           return
         }
-
-        // 存入数据库，下标考虑
-        let index = this.session.messages.length
-        let vm = this
-        this.item = { 'email': this.user.id }
-        vm.$http.post(vm.apiChattinglogGetCsId, this.item)
-          .then((response) => {
-            vm.$set(this, 'turnId', response.data)
-            vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
-            this.savedata(this.item)
-          })
-
         this.session.messages.push({
           text: this.text,
+          img: '',
+          bigImg: '',
+          isText: true,
           date: new Date(),
           self: true,
           image: '../../../static/1.jpg'
         })
-        this.socket.emit('server message', this.text, this.user.id, this.session.userId)
+        // 存入数据库
+        let index = this.session.messages.length
+        this.save_text(index - 1)
+        this.socket.emit('server message', this.text, true, '', '', this.user.id, this.session.userId)
         clearTimeout(this.timers[this.sessionIndex])
         let customerId = this.userList[this.sessionIndex].id
         let serverSocket = this.socket
@@ -541,26 +588,24 @@ export default {
         this.text = ''
         return
       }
-
-      // 存入数据库，下标考虑
-      let index = this.session.messages.length
-      let vm = this
-      this.item = { 'email': this.user.id }
-      vm.$http.post(vm.apiChattinglogGetCsId, this.item)
-        .then((response) => {
-          vm.$set(this, 'turnId', response.data)
-          vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId, 'content': this.session.messages[index].text, 'is_client': 0 })
-          this.savedata(this.item)
-        })
-
-      if (this.text.length !== 0) {
+      if (this.text.length !== 0 || this.img.length !== 0) {
         this.session.messages.push({
           text: this.text,
+          img: this.img,
+          bigImg: this.bigImg,
+          isText: this.isText,
           date: new Date(),
           self: true,
           image: this.user.image
         })
-        this.socket.emit('server message', this.text, this.user.id, this.session.userId)
+        // 存入数据库
+        let index = this.session.messages.length
+        if (this.isText === true) {
+          this.save_text(index - 1)
+        } else {
+          this.save_img(index - 1)
+        }
+        this.socket.emit('server message', this.text, this.isText, this.img, this.bigImg, this.user.id, this.session.userId)
         clearTimeout(this.timers[this.sessionIndex])
         let customerId = this.userList[this.sessionIndex].id
         let serverSocket = this.socket
@@ -569,8 +614,10 @@ export default {
             customerOutMessage(serverSocket, customerId)
           }, 100000000)
         this.text = ''
+        this.img = ''
+        this.bigImg = ''
+        this.isText = true
       }
-
     },
     switchoff () {
       this.hangon = !this.hangon
@@ -583,14 +630,11 @@ export default {
         return
       }
       this.history = !this.history
-      var vm = this
-      this.item = { 'email': this.user.id }
-      vm.$http.post(vm.apiChattinglogGetCsId, this.item)
-        .then((response) => {
-          vm.$set(this, 'turnId', response.data)
-          vm.$set(this, 'item', { 'client_id': this.session.userId, 'service_id': this.turnId })
-          this.getdata(this.item)
-        })
+      this.show_history_item = {
+        'client_id': this.session.userId,
+        'service_id': this.turnId
+      }
+      this.show_history_api()
     },
     getCsInfomation () {
       this.$http.post(this.apiCustomerserviceShowUserStatus)
@@ -602,6 +646,9 @@ export default {
           } else {
             this.user.id = response.data.email
             this.user.name = response.data.nickname
+            this.cs_email_item = { 'email': this.user.id }
+            console.log(this.user.id)
+            this.get_cs_id_api()
           }
         }, (response) => {
           window.location.href = '../se_login'
@@ -631,12 +678,273 @@ export default {
         that.transferable = true
       }, 1000)
     },
-    logout (e) {
-      this.socket.emit('log out')
-      for (let i = 0; i < this.timers.length; i++) {
-        clearTimeout(this.timers[i])
+    // logout (e) {
+    //   this.socket.emit('log out')
+    //   for (let i = 0; i < this.timers.length; i++) {
+    //     clearTimeout(this.timers[i])
+    //   }
+    //   this.isLogon = false
+    // },
+    fileup () {
+      let self = this
+      let obj = document.getElementById('inputFile')
+      let file = obj.files[0]
+      lrz(file, {width: 1920, height: 1920, quality: 1})
+        .then(function (rst) {
+          self.bigImg = rst.base64
+          self.isText = false
+          lrz(rst.origin, {width: 500, quality: 0.7})
+            .then(function (rst) {
+              self.img = rst.base64
+              self.buttoninputing()
+              return rst
+            })
+          return rst
+        })
+      obj.value = ''
+    },
+    imgupload () {
+      var file = document.getElementById('inputFile')
+      file.click()
+    },
+    showBigImg (bigImg) {
+      this.bigImgBase64 = bigImg
+      this.modal2 = true
+    },
+    // 机器人
+    checkReply () {
+      if (this.reply === '') {
+        this.replyIsNull = true
       }
-      this.isLogon = false
+    },
+    checkQuestion () {
+      if (this.question === '') {
+        this.questionIsNull = true
+      }
+    },
+    checkKeyword () {
+      let reg = /^[\u4E00-\u9FA5]+$/
+      let standardContent = reg.test(this.keyword)
+      if (this.keyword === '' || standardContent === false) {
+        this.keywordIsNotStandard = true
+      }
+    },
+    replyInput () {
+      this.replyIsNull = false
+    },
+    questionInput () {
+      this.questionIsNull = false
+    },
+    keyWordInput () {
+      this.keywordIsNotStandard = false
+    },
+    handleAdd () {
+      this.checkKeyword()
+      for (let i = 0; i < this.robotKeyWord.length; i++) {
+        if (this.keyword === this.robotKeyWord[i]) {
+          this.keywordIsExist = true
+        }
+      }
+      if (this.keyword === '' || this.keywordIsNotStandard === true) {
+        this.$Message.info('关键词格式不正确')
+      } else if (this.keywordIsExist === true) {
+        this.$Message.info('该关键词已添加')
+        this.keywordIsExist = false
+      } else {
+        this.robotKeyWord.push(this.keyword)
+        this.keyword = ''
+      }
+    },
+    handleClose (event, name) {
+      const index = this.robotKeyWord.indexOf(name)
+      this.robotKeyWord.splice(index, 1)
+    },
+    ok_add () {
+      if (this.question === '' || this.reply === '') {
+        this.$Message.info('您所填的信息不能为空')
+      } else {
+        if (this.robotKeyWord.length !== 0) {
+          this.keyword_add = this.robotKeyWord.join(' ')
+        } else {
+          this.keyword_add = ''
+        }
+        this.robot_question_add = {
+          'question': this.question,
+          'answer': this.reply,
+          'keyword': this.keyword_add,
+          'weight': this.modelSelect
+        }
+        this.set_robot_api()
+      }
+      this.cancel_add()
+    },
+    cancel_add () {
+      this.question = ''
+      this.reply = ''
+      this.keyword = ''
+      this.modelSelect = 1
+      this.replyIsNull = false
+      this.questionIsNull = false
+      this.keywordIsNotStandard = false
+      this.robotKeyWord = []
+    },
+    set_robot_api () {
+      this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robot_question_add)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api1')
+          } else if (response.data === 'ERROR, incomplete information.') {
+            this.$Message.info('您所填的信息不完整')
+          } else if (response.data === 'ERROR, wrong information.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api2')
+          } else if (response.data === 'ERROR, session is broken.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api3')
+          } else if (response.data === 'ERROR, wrong email.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api4')
+          } else if (response.data === 'ERROR, info is exist.') {
+            this.$Message.info('该问题已存在')
+          } else {
+            this.$Message.info('添加成功')
+            this.$refs.robotSetting.show_robot_question_api()
+          }
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('set_robot_api5')
+        })
+    },
+    save_text_api () {
+      this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
+        .then((response) => {
+          this.save_text_item = {}
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('save_text_api')
+        })
+    },
+    get_cs_id_api () {
+      this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
+        .then((response) => {
+          this.turnId = response.data
+          console.log(this.turnId)
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('get_cs_id_api')
+        })
+    },
+    save_text (index) {
+      this.save_text_item = {
+        'client_id': this.session.userId,
+        'service_id': this.turnId,
+        'content': this.session.messages[index].text,
+        'is_client': 0
+      }
+      console.log(this.save_text_item)
+      this.save_text_api()
+    },
+    save_img_api () {
+      this.$http.post(this.apiSmallimagelogSendImage, this.save_img_item)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('save_img_api1')
+          } else {
+            this.save_img_item = {}
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('save_img_api2')
+        })
+    },
+    save_bigImg_api () {
+      this.$http.post(this.apiBigimagelogSendImage, this.save_bigImg_item)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('save_bigImg_api1')
+          } else {
+            this.save_bigImg_item = {}
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('save_bigImg_api2')
+        })
+    },
+    save_img (index) {
+      let timestamp = new Date().getTime()
+      let label = timestamp + this.session.userId
+      this.save_img_item = {
+        'client_id': this.session.userId,
+        'service_id': this.turnId,
+        'content': this.session.messages[index].img,
+        'is_client': false
+        // 'label': label
+      }
+      this.save_bigImg_item = {
+        'client_id': this.session.userId,
+        'service_id': this.turnId,
+        'content': this.session.messages[index].bigImg,
+        'is_client': false
+        // 'label': label
+      }
+      console.log(this.save_img_item)
+      console.log(this.save_bigImg_item)
+      this.save_img_api()
+      this.save_bigImg_api()
+    },
+    show_history_api () {
+      this.$http.post(this.apiLogShowHistory, this.show_history_item)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('show_history_api1')
+          } else {
+            console.log(response.data)
+            for (var p = 0; p < response.data.length; p++) {
+              if ('content' in response.data[p]) {
+                if (response.data[p].is_client === false) {
+                  this.hsession.messages.push({
+                    text: response.data[p].content,
+                    isText: true,
+                    date: response.data[p].time,
+                    self: true,
+                    image: this.user.image
+                  })
+                } else {
+                  this.hsession.messages.push({
+                    text: response.data[p].content,
+                    isText: true,
+                    date: response.data[p].time,
+                    image: '../../../static/3.jpg'
+                  })
+                }
+              } else {
+                if (response.data[p].is_client === false) {
+                  this.hsession.messages.push({
+                    img: response.data[p].img,
+                    isText: false,
+                    date: response.data[p].time,
+                    self: true,
+                    image: this.user.image
+                  })
+                } else {
+                  this.hsession.messages.push({
+                    img: response.data[p].img,
+                    isText: false,
+                    date: response.data[p].time,
+                    image: '../../../static/3.jpg'
+                  })
+                }
+              }
+            }
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('show_history_api2')
+        })
     }
   },
   filters: {
@@ -1031,5 +1339,9 @@ ul {
   height: 600px;
   overflow: hidden;
   border-radius: 3px;
+}
+
+.waring {
+  color: red;
 }
 </style>
