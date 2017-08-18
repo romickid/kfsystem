@@ -411,12 +411,12 @@ export default {
           console.log('get_cs_id_api')
         })
     },
-    save_text (is_client, index) {
+    save_text (isClient, index) {
       this.save_text_item = {
         'client_id': this.user.id,
         'service_id': this.turnId,
         'content': this.session.messages[index].text,
-        'is_client': is_client
+        'isClient': isClient
       }
       console.log(this.save_text_item)
       this.save_text_api()
@@ -449,21 +449,21 @@ export default {
           console.log('save_bigImg_api2')
         })
     },
-    save_img (is_client, index) {
+    save_img (isClient, index) {
       let timestamp = new Date().getTime()
       let label = timestamp + this.user.id
       this.save_img_item = {
         'client_id': this.user.id,
         'service_id': this.turnId,
         'content': this.session.messages[index].img,
-        'is_client': is_client,
+        'isClient': isClient
         // 'label': label
       }
       this.save_bigImg_item = {
         'client_id': this.user.id,
         'service_id': this.turnId,
         'content': this.session.messages[index].bigImg,
-        'is_client': is_client,
+        'isClient': isClient
         // 'label': label
       }
       this.save_img_api()

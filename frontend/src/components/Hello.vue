@@ -35,27 +35,12 @@
         <a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a>
       </li>
     </ul>
-
-    <div>
-      <div>hello</div>
-      <div>{{ gridData }}</div>
-      <button @click="test1()">Test1</button>
-      <button @click="test2()">Test2</button>
-      <button @click="test3()">Test3</button>
-      <button @click="test4()">Test4</button>
-      <button @click="test5()">Test5</button>
-      <button @click="test6()">Test6</button>
-      <button @click="test7()">Test7</button>
-      <button @click="test8()">History</button>
-    </div>
-
     <div>
       <div class="functions">
-          <div @click="imgupload">发送图片</div>
-        </div>
-        <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
+        <div @click="imgupload">发送图片</div>
+      </div>
+      <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
     </div>
-
   </div>
 </template>
 
@@ -90,7 +75,6 @@ export default {
       api_smallimagelog_send_image: './api/smallimagelog_send_image/',
       api_smallimagelog_show_history: './api/smallimagelog_show_history/',
 
-
       api_log_show_history: './api/log_show_history/',
 
       api_test_file: './api/test_file/',
@@ -99,64 +83,12 @@ export default {
       gridData: '',
       test: {},
       text: '',
-      isText: false,
+      isText: false
     }
   },
 
   // FOR TEST, DO NOT DELETE IT!
   methods: {
-    test1: function () {
-      var vm = this
-      this.item = { 'client_id': '1', 'service_id': '1', 'image': this.text, 'is_client': false }
-      vm.$http.post(vm.api_smallimagelog_send_image, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-    test2: function () {
-      var vm = this
-      this.item = { 'client_id': '1', 'service_id': '1' }
-        vm.$http.post(vm.api_log_show_history, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-    test3: function () {
-      var vm = this
-      this.item = {'email': 'cs1@test.com'}
-        vm.$http.post(vm.api_admin_delete_cs, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-    test4: function () {
-      var vm = this
-      this.item = { 'email': 'cs1@a.com', 'password': 'pass1', 'nickname': 'nickname1' }
-      vm.$http.post(vm.api_test_file, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-    test5: function () {
-      var vm = this
-      this.item = { 'email': 'cs1@a.com', 'password': 'pass1' }
-      vm.$http.post(vm.api_customerservice_login, this.item)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        })
-    },
-    test8: function () {
-      var vm = this
-      this.item = { 'client_id': '1', 'service_id': '1' }
-      vm.$http.post(vm.api_chattinglog_show_history, this.item)
-        .then((response) => {
-          vm.$set(this, 'gridData', response.data)
-          for (var p in response.data) {
-            alert(response.data[p].time + '' + response.data[p].content)
-          }
-        })
-    },
-
     fileup () {
       var that = this
       var file = document.getElementById('inputFile').files[0]
@@ -171,14 +103,14 @@ export default {
           reader.readAsDataURL(file)
           // 读取成功后的回调
           reader.onloadend = function () {
-              self.text = this.result
-              self.isText = false
-              console.log(self.text)
+            self.text = this.result
+            self.isText = false
+            console.log(self.text)
           }
           console.log(self.text)
         }
       } else {
-          this.$Message.info('必须有文件')
+        this.$Message.info('必须有文件')
       }
     },
     imgupload () {
@@ -186,8 +118,7 @@ export default {
       console.log('点击发送')
       file.click()
       this.fileup()
-    },
-
+    }
   }
 }
 </script>
