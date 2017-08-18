@@ -40,7 +40,7 @@
             <td>{{ kf.is_online ? '在线' : '离线'}}</td>
             <th>{{ kf.connection_num }}</th>
             <th>
-              <i-button type='text' @click='deleteKf(id)'>删除</i-button>
+              <i-button type='text' @click='delete_cs(id)'>删除</i-button>
             </th>
           </tr>
         </table>
@@ -62,7 +62,9 @@ export default {
       emailIsNull: false,
       apiCustomerserviceCreate: '../api/customerservice_create/',
       apiAdminShowCsStatus: '../api/admin_show_cs_status/',
-      customerService: {}
+      apiAdminDeleteCs: '../api/admin_delete_cs/',
+      customerService: {},
+      deleteCSItem: {}
     }
   },
   methods: {
@@ -121,8 +123,34 @@ export default {
       this.emailIsNull = false
       this.emailIsNotStandard = false
     },
-    deleteKf (index) {
-      this.kfstaff.splice(index, 1)
+    delete_cs_api () {
+      this.$http.post(this.apiAdminDeleteCs, this.deleteCSItem)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong information.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, session is broken.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong admin email.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, wrong customerservice email.') {
+            window.location.href = '../en_login'
+          } else if (response.data === 'ERROR, customerservice is not belong to admin.') {
+            window.location.href = '../en_login'
+          } else {
+            this.$Message.info('删除成功')
+            this.refresh()
+          }
+        }, (response) => {
+          window.location.href = '../en_login'
+        })
+    }
+    delete_cs (index) {
+      this.deleteCSItem = {
+        'email': this.kfstaff[index].email
+      }
+      this.delete_cs_api()
     },
     refresh () {
       this.$http.post(this.apiAdminShowCsStatus)

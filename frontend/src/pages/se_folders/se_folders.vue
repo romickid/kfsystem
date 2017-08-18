@@ -71,7 +71,7 @@ export default {
       this.passwordInConsistent = false
       this.passwordNonStandard = false
     },
-    communicate () {
+    register () {
       this.$http.post(this.api_set_profile, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -106,7 +106,7 @@ export default {
           'nickname': this.nickname,
           'vid': this.newVid
         }
-        this.communicate()
+        this.register()
       }
     },
     verify () {
