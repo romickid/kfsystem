@@ -1,5 +1,20 @@
 <template>
   <div>
+    <div class="header">
+      <div class="ceiling">
+        <a href='../main'>
+          <img src="../../../static/logo5.png" alt="" style="height:40px;width:40px">
+          <img src="../../../static/name.png" alt="" style="height:40px">
+        </a>
+        <div class="ceiling-main">
+          <a href='../main' class='ceiling-item'>首页</a> |
+          <a href="../main/#jump" class='ceiling-item'> 产品介绍</a> |
+          <a href="../documentation" class='ceiling-item'> 帮助中心</a> |
+          <a href="../en_folders" class='ceiling-item'> 注册</a> |
+          <a href="../se_login" class='ceiling-item'> 客服入口</a>
+        </div>
+      </div>
+    </div>
     <form>
       <div class="all">
         <div class="container">
@@ -36,7 +51,7 @@ export default {
   components: {
     enForgetPassword
   },
-  data () {
+  data() {
     return {
       email: '',
       password: '',
@@ -46,7 +61,7 @@ export default {
     }
   },
   methods: {
-    checkEmail () {
+    checkEmail() {
       let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.email)
       if (legal === false && this.email !== '') {
@@ -55,10 +70,10 @@ export default {
         this.emailIllegal = false
       }
     },
-    emailInput () {
+    emailInput() {
       this.emailIllegal = false
     },
-    communicate () {
+    communicate() {
       this.$http.post(this.api_login, this.item)
         .then((response) => {
           if (response.data === 'ERROR, wrong email or password.') {
@@ -74,7 +89,7 @@ export default {
           window.location.href = '../notfound'
         })
     },
-    login () {
+    login() {
       if (this.email === '' || this.password === '') {
         this.$Message.info('您的信息不完善！')
       } else if (this.emailIllegal === true) {
@@ -88,7 +103,7 @@ export default {
         this.communicate()
       }
     },
-    hashPassword () {
+    hashPassword() {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
       hash.update(this.password)
@@ -99,10 +114,49 @@ export default {
 </script>
 
 <style>
+.header {
+  width: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.ceiling {
+  background-color: #1c1d26;
+  padding: 1em 0 0;
+  overflow: hidden;
+}
+
+.ceiling a {
+  margin-left: 1em;
+}
+
+.ceiling-main {
+  float: right;
+  margin-right: 5em;
+  padding-top: 1em;
+}
+
+.ceiling-main a {
+  color: #9ba7b5;
+  padding-left: 1em;
+  padding-right: 1em;
+
+}
+
+.ceiling-main .mainpage {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
+}
+
+.ceiling-item:hover {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
+}
+
 body {
   background: url(../../../static/back.jpg) no-repeat;
-  height: 100%;
-  width: 100%;
+  /* height: 100%;
+  width: 100%; */
   overflow: hidden;
   background-size: cover;
 }
@@ -110,8 +164,8 @@ body {
 .all {
   width: 40%;
   height: 350px;
-  margin: 40px 250px 0 58.4%;
-  border-radius: 10px;
+  margin: 40px 0 0 5%;
+  border-radius: 20px;
   background: rgba(230, 230, 250, 0.5);
 }
 
@@ -161,6 +215,7 @@ body {
 
 #login {
   width: 100%;
+  margin-top: 10px;
   margin-bottom: 10px;
   flex: 1 1 100%;
 }
