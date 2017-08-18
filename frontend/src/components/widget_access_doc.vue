@@ -86,7 +86,6 @@ p {
 }
 
 .main-content-body ul {
-  list-style-type: disc;
   padding: 0.7em 1.3em;
 }
 
