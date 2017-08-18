@@ -51,7 +51,7 @@ export default {
   components: {
     enForgetPassword
   },
-  data() {
+  data () {
     return {
       email: '',
       password: '',
@@ -61,7 +61,7 @@ export default {
     }
   },
   methods: {
-    checkEmail() {
+    checkEmail () {
       let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.email)
       if (legal === false && this.email !== '') {
@@ -70,10 +70,10 @@ export default {
         this.emailIllegal = false
       }
     },
-    emailInput() {
+    emailInput () {
       this.emailIllegal = false
     },
-    communicate() {
+    communicate () {
       this.$http.post(this.api_login, this.item)
         .then((response) => {
           if (response.data === 'ERROR, wrong email or password.') {
@@ -89,7 +89,7 @@ export default {
           window.location.href = '../notfound'
         })
     },
-    login() {
+    login () {
       if (this.email === '' || this.password === '') {
         this.$Message.info('您的信息不完善！')
       } else if (this.emailIllegal === true) {
@@ -103,7 +103,7 @@ export default {
         this.communicate()
       }
     },
-    hashPassword() {
+    hashPassword () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
       hash.update(this.password)
