@@ -1,5 +1,19 @@
 <template>
   <div>
+    <div class="header">
+      <div class="ceiling">
+        <a href='../main'>
+          <img src="../../../static/logo5.png" alt="" style="height:40px;width:40px">
+          <img src="../../../static/name.png" alt="" style="height:40px">
+        </a>
+        <div class="ceiling-main">
+          <a href='../main' class='ceiling-item'>首页</a> |
+          <a href="../main/#jump" class='ceiling-item'> 产品介绍</a> |
+          <a href="../documentation" class='ceiling-item'> 帮助中心</a> |
+          <a href="../se_login" class='ceiling-item'> 客服入口</a>
+        </div>
+      </div>
+    </div>    
     <form>
       <div class="all">
         <div class="container">
@@ -143,6 +157,46 @@ export default {
 </script>
 
 <style>
+.header {
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.ceiling {
+  background-color: #1c1d26;
+  padding: 1em 0 0;
+  overflow: hidden;
+}
+
+.ceiling a {
+  margin-left: 1em;
+}
+
+.ceiling-main {
+  float: right;
+  margin-right: 5em;
+  padding-top: 1em;
+}
+
+.ceiling-main a {
+  color: #9ba7b5;
+  padding-left: 1em;
+  padding-right: 1em;
+
+}
+
+.ceiling-main .mainpage {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
+}
+
+.ceiling-item:hover {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
+}
+
 body {
   background: url(../../../static/password.jpg) no-repeat;
   height: 100%;
@@ -152,11 +206,11 @@ body {
 }
 
 .all {
-  width: 32%;
+  width: 40%;
   height: 350px;
-  margin: 170px 0 0 55%;
-  border-radius: 10px;
-  background: rgba(127, 255, 170, 0.3);
+  margin: 40px 0 0 5%;
+  border-radius: 20px;
+  background: rgba(230, 230, 250, 0.5);
 }
 
 .container {
@@ -205,7 +259,7 @@ body {
 
 #finish {
   width: 100%;
-  margin-bottom: 10px;
+  margin-top: 10px;
   flex: 1 1 100%;
 }
 
