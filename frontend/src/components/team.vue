@@ -145,7 +145,7 @@ export default {
         }, (response) => {
           window.location.href = '../en_login'
         })
-    }
+    },
     delete_cs (index) {
       this.deleteCSItem = {
         'email': this.kfstaff[index].email
