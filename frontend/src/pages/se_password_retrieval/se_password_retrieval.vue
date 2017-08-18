@@ -85,7 +85,7 @@ export default {
           this.customerserviceResetPassword = {
             'email': this.customerserviceFindPassword.email,
             'newpassword': this.hashPassword(),
-            'vid': this.hashNewVid()
+            'vid': this.newVid
           }
           this.resetPassword()
         } else {
@@ -102,6 +102,8 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, vid is expired.') {
+            window.location.href = '../timeout'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
           } else {
@@ -120,6 +122,8 @@ export default {
             window.location.href = '../notfound'
           } else if (response.data === 'ERROR, wrong email or vid.') {
             window.location.href = '../notfound'
+          } else if (response.data === 'ERROR, vid is expired.') {
+            window.location.href = '../timeout'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
             window.location.href = '../notfound'
           } else {
