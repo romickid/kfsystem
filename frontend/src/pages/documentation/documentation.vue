@@ -6,7 +6,7 @@
       <a href='../main'><img src="./assets/logo.png" alt=""></a>
       <div class="ceiling-main">
         <a href="../main" class='ceiling-item'>首页</a> |
-        <a class='ceiling-item document'>帮助中心</a> |
+        <a href="../documentation" class='ceiling-item document'>帮助中心</a> |
         <a href="../en_login" class='ceiling-item'>登录</a> |
         <a href="../en_folders" class='ceiling-item'>注册</a> |
         <a href="../se_folders" class='ceiling-item'>客服入口</a>
@@ -17,51 +17,7 @@
   <section class='main'>
     <Row type='flex'>
       <i-col span='16' class='main-content'>
-        <div class='main-content-head'>
-          <h1>Django documentation</h1>
-          <p>Everything you need to know about Django.</p>
-        </div>
-        <div class='main-content-body'>
-          <div class='guide'>
-            <h2>How the documentation is organized</h2>
-            <p>Django has a lot of documentation. A high-level overview of how it’s organized will help you know where to look for certain things:</p>
-            <ul>
-              <li>
-                Tutorials take you by the hand through a series of steps to create a Web application. Start here if you’re new to Django or Web application development. Also look at the “First steps” below.
-              </li>
-              <li>
-                Topic guides discuss key topics and concepts at a fairly high level and provide useful background information and explanation.
-              </li>
-              <li>
-                Reference guides contain technical reference for APIs and other aspects of Django’s machinery. They describe how it works and how to use it but assume that you have a basic understanding of key concepts.
-              </li>
-              <li>
-                How-to guides are recipes. They guide you through the steps involved in addressing key problems and use-cases. They are more advanced than tutorials and assume some knowledge of how Django works.
-              </li>
-            </ul>
-          </div>
-          <div class='line'></div>
-          <div class='guide'>
-            <h2>First steps</h2>
-            <p>Are you new to Django or to programming? This is the place to start!</p>
-            <ul>
-              <li>From scratch: <a>Overview</a> | <a>Installation</a></li>
-              <li>Tutorial: <a>Part 1: Requests and responses</a> | <a>Part 2: Models and the admin site</a> | <a>Part 3: Views and templates</a> | <a>Part 7: Customizing the admin site</a> | <a>Part 4: Forms and generic views</a> | <a>Part 5: Testing</a> | <a>Part 6: Static files</a></li>
-              <li>Advanced Tutorials: <a>How to write reusable apps</a> | <a>Writing your first patch for Django</a></li>
-            </ul>
-          </div>
-          <div class='line'></div>
-          <div class='guide'>
-            <h2>First steps</h2>
-            <p>Are you new to Django or to programming? This is the place to start!</p>
-            <ul>
-              <li>From scratch: <a>Overview</a> | <a>Installation</a></li>
-              <li>Tutorial: <a>Part 1: Requests and responses</a> | <a>Part 2: Models and the admin site</a> | <a>Part 3: Views and templates</a> | <a>Part 7: Customizing the admin site</a> | <a>Part 4: Forms and generic views</a> | <a>Part 5: Testing</a> | <a>Part 6: Static files</a></li>
-              <li>Advanced Tutorials: <a>How to write reusable apps</a> | <a>Writing your first patch for Django</a></li>
-            </ul>
-          </div>
-          <div class='line'></div>
-        </div>
+        <router-view></router-view>
       </i-col>
       <i-col span='8' class='complementary'>
         <div class='complementary-box'>
