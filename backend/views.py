@@ -535,17 +535,16 @@ def customerservice_setrobotinfo_show(request):
 @csrf_exempt
 def customerservice_displayrobotreply_show(request):
     if request.method == 'POST':
-        # customer_input
+        # Admin:nickname, customer_input
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive, request)
+        is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
-        data_email = request.session['c_email']
-        instance_customerservice = CustomerService.objects.get(email=data_email)
-        data_enterprise = instance_customerservice.enterprise
-        answer_list = robot_return_answer(data_enterprise.id, json_receive['customer_input'])
-        return JsonResponse(answer_list, safe=False, status=200)
+        instance_admin = Admin.objects.get(nickname=json_receive['nickname'])
+        admin_id  = instance_admin.id
+        answer = robot_return_answer(admin_id, json_receive['customer_input'])
+        return HttpResponse(answer, status=200)
 
 
 @csrf_exempt
