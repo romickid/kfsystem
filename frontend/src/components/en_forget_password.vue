@@ -1,7 +1,7 @@
 <template>
   <div>
     <Button type="text" @click="find = true">忘记密码</Button>
-    <Modal v-model="find" title="找回密码页" @on-ok="ok" @on-cancel="cancel">
+    <Modal v-model="find" title="找回密码" @on-ok="ok" @on-cancel="cancel">
       <p>登录邮箱：</p>
       <br>
       <i-input v-model="email" id="input" @on-blur="checkEmail" @on-focus="emailInput"></i-input>

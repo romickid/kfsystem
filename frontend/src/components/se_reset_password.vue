@@ -1,7 +1,7 @@
 <template>
   <div>
     <Button type="text" @click="find = true">修改密码</Button>
-    <Modal v-model="find" title="修改密码页" @on-ok="ok" @on-cancel="cancel">
+    <Modal v-model="find" title="修改密码" @on-ok="ok" @on-cancel="cancel">
       <div class="div">
         <p>旧密码：</p>
         <i-input type="password" class="input" v-model="oldPassword"></i-input>
