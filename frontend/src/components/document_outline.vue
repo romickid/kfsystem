@@ -10,70 +10,55 @@
         <p></p>
         <ul>
           <li>
-            接入指南
+            接入指南：面向企业管理员，解答接入BIG5在线客服系统的诸多问题
           </li>
           <li>
-            用户手册
+            用户手册：面向企业客服，解答客服使用系统中遇到的问题
           </li>
           <li>
-            智能机器人
+            智能机器人：介绍机器人知识库的构建标准
           </li>
           <li>
-            其它
+            其它：系统的部分功能介绍
           </li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>接入指南</h2>
-        <p>Are you new to Django or to programming? This is the place to start!</p>
+        <p>Are you new to BIG5? This is the place to start!</p>
         <ul>
-          <li>BIG5客服系统接入步骤一览: <a>Overview</a></li>
-          <li>桌面网站web接入: <a>Part 1: Requests and responses</a></li>
-          <li>桌面网站widget接入: <a>How to write reusable apps</a></li>
-          <li>移动网站mobile接入: <a>How to write reusable apps</a></li>
-          <li>机器人API调用流程: <a>How to write reusable apps</a></li>
+          <li><router-link to='/access_guide'>BIG5客服系统接入步骤一览</router-link></li>
+          <li><router-link to='/web'>桌面网站web接入</router-link></li>
+          <li><router-link to='/widget'>桌面网站widget接入</router-link></li>
+          <li><router-link to='/mobile'>移动网站mobile接入</router-link></li>
+          <li><router-link to='/user_info'>客户账户体系对接流程</router-link></li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>用户手册</h2>
-        <p>Are you new to Django or to programming? This is the place to start!</p>
+        <p>供给客服人员的专业指南</p>
         <ul>
-          <li>人员角色及对应权限: <a>Overview</a> | <a>Installation</a></li>
-          <li>在线人工: <a>Part 1: Requests and responses</a></li>
-          <li>Advanced Tutorials: <a>How to write reusable apps</a> | <a>Writing your first patch for Django</a></li>
-        </ul>
-      </div>
-      <div class='line'></div>
-      <div class='guide'>
-        <h2>用户手册</h2>
-        <p>Are you new to Django or to programming? This is the place to start!</p>
-        <ul>
-          <li>人员角色及对应权限: <a>Overview</a> | <a>Installation</a></li>
-          <li>在线人工: <a>Part 1: Requests and responses</a></li>
-          <li>Advanced Tutorials: <a>How to write reusable apps</a> | <a>Writing your first patch for Django</a></li>
+          <li><router-link to='/cs_working'>客服工作指南</router-link></li>
+          <li><router-link to='/cs_set_profile'>客服人员接入</router-link></li>
+          <li><router-link to='/cs_set_robot'>设置机器人</router-link></li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>智能机器人</h2>
-        <p>Are you new to Django or to programming? This is the place to start!</p>
+        <p>智能机器人，解放80%的人力资源</p>
         <ul>
-          <li>知识库语料标准: <a>Overview</a> | <a>Installation</a></li>
-          <li>知识库管理: <a>Part 1: Requests and responses</a></li>
-          <li>智能学习: <a>How to write reusable apps</a></li>
-          <li>夜莺机器人API: <a>How to write reusable apps</a></li>
+          <li><router-link to='/robot_knowledegebase'>知识库语料标准</router-link></li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>其它</h2>
-        <p>Are you new to Django or to programming? This is the place to start!</p>
+        <p>人性化客服系统，提高客服效率</p>
         <ul>
-          <li>客户账户体系对接流程: <a>Overview</a> | <a>Installation</a></li>
-          <li>BIG5新建系统API文档: <a>Part 1: Requests and responses</a></li>
-          <li>关闭会话数据推送API接口文档: <a>How to write reusable apps</a></li>
+          <li><router-link to='/addition_function'>部分功能介绍</router-link></li>
         </ul>
       </div>
       <div class='line'></div>
@@ -140,7 +125,6 @@ p {
 }
 
 .main-content-body ul {
-  list-style-type: disc;
   padding: 0.7em 1.3em;
 }
 
