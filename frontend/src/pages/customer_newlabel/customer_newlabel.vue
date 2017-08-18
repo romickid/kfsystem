@@ -159,6 +159,7 @@ export default {
       sessionIndex: dataserver.sessionIndex,
       // 用户简介
       information: '',
+      enterprise: '',
       socket: '',
       // 计时器
       timer: dataserver.timer,
@@ -190,12 +191,17 @@ export default {
   },
   created () {
     this.user.id = this.$utils.getUrlKey('email')
-    this.user.name = this.$utils.getUrlKey('nickname')
-    this.information = this.$utils.getUrlKey('information')
     // 如果初次登录， 初始化
-    if (this.user.id === -1) {
+    if (this.user.id === '-1') {
       this.user.id = (Math.random() * 1000).toString()
-      this.user.name = this.user.id
+      this.user.name = 'visitor'
+      this.information = 'No informations',
+      this.enterprise = this.$utils.getUrlKey('enterprise')
+    }
+    else{
+      this.user.name = this.$utils.getUrlKey('nickname')
+      this.information = this.$utils.getUrlKey('information')
+      this.enterprise = this.$utils.getUrlKey('enterprise')
     }
     // 如果刷新之前已转接为人工客服，自动连接服务器
     if (this.userList[0].id !== -1) {
