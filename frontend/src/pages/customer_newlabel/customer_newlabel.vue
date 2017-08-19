@@ -8,7 +8,7 @@
               <span class="time-span">{{ item.date | time }}</span>
             </p>
             <div class="massage-main" :class="{ self: item.self }">
-              <img class="massage-avatar" width="30" height="30" :src="item.image" />
+              <img class="massage-avatar" wIDth="30" height="30" :src="item.image" />
               <div class="massage-text">
                 <li>{{ item.text }}</li>
               </div>
@@ -17,11 +17,11 @@
         </ul>
       </div>
       <div class="main-text">
-        <Button @click="switchServer">转接人工客服</Button>
+        <Button @click="switchToCs">转接人工客服</Button>
         <p class="lead emoji-picker-container">
-          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
+          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="keyboardInputing" data-emojiable="true"></textarea>
         </p>
-        <Button class="submit-button" @click="buttoninputing">发送</Button>
+        <Button class="submit-button" @click="buttonInputing">发送</Button>
       </div>
     </div>
   </div>
@@ -32,72 +32,90 @@ import * as io from 'socket.io-client'
 import Vue from 'vue'
 import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-Customer1'
-function serverMessage (sessionList, msg, fromId, toId) {
+
+// 接收文字消息放进sessionList
+function pushTestToSessionList (sessionList, msg) {
   sessionList[0].messages.push({
     text: msg,
     date: new Date(),
     image: '../../../static/2.png'
   })
 }
-function connectToServer (userList, sessionList, toId) {
-  userList[0].id = toId
+
+function connectToCs (csList, sessionList, csID) {
+  csList[0].csID = csID
   sessionList[0].messages.push({
-    text: '已成功为您转接客服' + toId,
+    text: '已成功为您转接客服' + csID,
     date: new Date(),
     image: '../../../static/2.png'
   })
 }
-function noServerAvailable (userList, sessionList) {
+
+function noServerAvailable (csList, sessionList) {
   sessionList[0].messages.push({
     text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
     date: new Date(),
     image: '../../../static/2.png'
   })
-  userList[0].id = -1
+  csList[0].customerID = -1
 }
+
 // 初始化Socket
-function initSocket (userList, sessionList, socket, user) {
-  socket.on('server message', function (msg, fromId, toId) {
-    serverMessage(sessionList, msg, fromId, toId)
-  })
-  socket.on('connect to server', function (toId) {
-    connectToServer(userList, sessionList, toId)
-  })
-  socket.on('no server available', function () {
-    noServerAvailable(userList, sessionList)
-  })
-  socket.on('switch server', function (formerId) {
-    socket.emit('switch server', formerId)
+function initSocket (csList, sessionList, socket, customer) {
+  console.log("initSocket")
+  let that = this
+  // console.log(that.socket)
+  // console.log(this.socket)
+
+  socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
+    pushTestToSessionList(sessionList, msg, csID, customerID)
   })
 
-  // user.id = socket.id
-  // user.name = socket.id
-  socket.emit('assigned to server', user.id)
+  socket.on('connect to cs', function (csID) {
+    connectToCs(csList, sessionList, csID)
+  })
+
+  socket.on('no server available', function () {
+    noServerAvailable(csList, sessionList)
+  })
+
+  socket.on('switch cs', function (enterpriseID, formerCsID) {
+    this.socket.emit('switch cs', enterpriseID, formerCsID)
+  })
+
+  socket.emit('assigned to cs', customer.enterpriseID, customer.customerID)
+  console.log("Assign to cs")
 }
+
 // 数据初始化
 function initData (key) {
   // 虚拟数据
   if (!sessionStorage.getItem(key)) {
     let now = new Date()
     let userData = {
-      // 登录用户
-      user: {
-        id: -1,
-        name: 'coffce',
+      // 登录客户
+      customer: {
+        customerID: -1,
+        customerName: 'coffce',
+        enterpriseID: 'nick2',
         image: '../../../static/1.jpg'
       },
-      // 用户列表
-      userList: [
+
+      // 客服列表
+      csList: [
         {
-          id: -1,
-          name: 'MonsterSXF',
+          csID: -1,
+          csName: 'MonsterSXF',
+          enterpriseID: 'nick2',
           image: '../../../static/2.png'
         }
       ],
+
       // 会话列表
       sessionList: [
         {
-          userId: 2,
+          customerID: 2,
+          enterpriseID: 'nick2',
           messages: [
             {
               text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
@@ -116,14 +134,15 @@ function initData (key) {
 
 export default {
   el: '#chat',
+
   data () {
     initData(key)
     let dataserver = JSON.parse(sessionStorage.getItem(key))
     return {
       // 登录用户
-      user: dataserver.user,
+      customer: dataserver.customer,
       // 用户列表
-      userList: dataserver.userList,
+      csList: dataserver.csList,
       // 会话列表
       sessionList: dataserver.sessionList,
       // 选中的会话Index
@@ -135,64 +154,68 @@ export default {
       timer: dataserver.timer
     }
   },
+
   computed: {
     session () {
       return this.sessionList[this.sessionIndex]
     }
   },
+
   created () {
-    // this.user.id = this.$utils.getUrlKey('email')
-    // this.user.name = this.$utils.getUrlKey('nickname')
     // 如果初次登录， 初始化
-    if (this.user.id === -1) {
-      this.user.id = (Math.random() * 1000).toString()
-      this.user.name = this.user.id
+    if (this.customer.customerID === -1) {
+      this.customer.customerID = (Math.random() * 1000).toString()
+      this.customer.customerName = this.customer.customerID
     }
+
+    console.log(this.customer.customerID)
+    console.log(this.customer.customerName)
+
     // 如果刷新之前已转接为人工客服，自动连接服务器
-    if (this.userList[0].id !== -1) {
+    if (this.csList[0].csID !== -1) {
+      console.log("In point1")
+      console.log(this.csList[0].customerID)
       let that = this
       this.socket = io('http://localhost:3000')
-      this.socket.on('server message', function (msg, fromId, toId) {
-        serverMessage(that.sessionList, msg, fromId, toId)
+
+      this.socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
+        pushTestToSessionList(that.sessionList, msg, csID, customerID)
       })
-      this.socket.on('connect to server', function (toId) {
-        connectToServer(that.userList, that.sessionList, toId)
+
+      this.socket.on('connect to cs', function (csID) {
+        connectToCs(that.csList, that.sessionList, csID)
       })
+
       this.socket.on('no server available', function () {
-        noServerAvailable(that.userList, that.sessionList)
+        noServerAvailable(that.csList, that.sessionList)
       })
-      this.socket.on('switch server', function (formerId) {
-        that.socket.emit('switch server', formerId)
+
+      this.socket.on('switch cs', function (enterpriseID, formerCsID) {
+        that.socket.emit('switch cs', enterpriseID, formerCsID)
       })
-      this.socket.emit('customer come back', that.user.id, that.userList[0].id)
+
+      this.socket.emit('cs come back', that.customer.enterpriseID, that.csList[0].csID)
     }
   },
+
   watch: {
     // 每当sessionList改变时，保存到localStorage中
     sessionList: {
       deep: true,
       handler () {
         sessionStorage.setItem(key, JSON.stringify({
-          user: this.user,
-          userList: this.userList,
+          customer: this.customer,
+          csList: this.csList,
           sessionList: this.sessionList,
           sessionIndex: this.sessionIndex,
           timer: this.timer
         }))
-        // 重新开始计时
-        // if (this.userList[0].id !== -1) {
-        //   clearTimeout(this.timer)
-        //   let that = this
-        //   this.timer = setTimeout(function () {
-        //     that.socket.close()
-        //     noServerAvailable(that.userList, that.sessionList)
-        //   }, 4000)
-        // }
       }
     }
   },
+
   methods: {
-    inputing (e) {
+    keyboardInputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
         this.session.messages.push({
           text: this.text,
@@ -200,11 +223,13 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        this.socket.emit('customer message', this.text, this.user.id, this.userList[0].id)
+        console.log("in keyboardInputing")
+        this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.csList[0].csID, this.customer.customerID)
         this.text = ''
       }
     },
-    buttoninputing (e) {
+
+    buttonInputing (e) {
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -212,25 +237,27 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        this.socket.emit('customer message', this.text, this.user.id, this.userList[0].id)
+        console.log("in buttonInputing")
+        this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.csList[0].csID, this.customer.customerID)
         this.text = ''
       }
     },
-    switchServer (e) {
-      if (this.userList[0].id !== -1) {
+
+    switchToCs (e) {
+      console.log('switchToCs')
+      console.log(this.csList[0].csID)
+      if (this.csList[0].csID !== -1) {
         alert('当前已为人工客服！')
         return
       }
       let that = this
-      this.socket = io('http://localhost:3000')
-      initSocket(that.userList, that.sessionList, this.socket, that.user)
-      // this.isRobot = false
-      // this.timer = setTimeout(function () {
-      //   that.socket.close()
-      //   noServerAvailable(this.userList, this.sessionList)
-      // }, 4000)
+      that.socket = io('http://localhost:3000')
+      console.log(that.socket)
+      console.log(that.customer)
+      initSocket(that.csList, that.sessionList, that.socket, that.customer)
     }
   },
+
   filters: {
     time (date) {
       if (typeof date === 'string') {
@@ -239,7 +266,9 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
+
   components: {},
+
   directives: {
     // 发送消息后滚动到底部
     'scroll-bottom' () {
@@ -263,7 +292,7 @@ export default {
 body,
 html {
   height: 100%;
-  overflow: hidden;
+  overflow: hIDden;
 }
 
 body,
@@ -285,7 +314,7 @@ ul {
 /*主要界面*/
 .container {
   height: 70%;
-  width: 80%;
+  wIDth: 80%;
   margin: 10% auto 10%;
   vertical-align: center;
   border-radius: 4px;
@@ -294,13 +323,13 @@ ul {
 .main {
   height: 100%;
   position: relative;
-  overflow: hidden;
+  overflow: hIDden;
   background-color: #eee;
 }
 
 .main-text {
   position: absolute;
-  width: 100%;
+  wIDth: 100%;
   bottom: 0;
   left: 0;
   height: 160px;
@@ -345,7 +374,7 @@ ul {
   display: inline-block;
   position: relative;
   padding: 0 10px;
-  max-width: calc(80% - 40px);
+  max-wIDth: calc(80% - 40px);
   min-height: 30px;
   line-height: 2.5;
   font-size: 12px;
@@ -360,7 +389,7 @@ ul {
   position: absolute;
   top: 9px;
   right: 100%;
-  border: 6px solid transparent;
+  border: 6px solID transparent;
   border-right-color: #fafafa;
 }
 
@@ -377,7 +406,7 @@ ul {
   display: inline-block;
   position: relative;
   padding: 0 10px;
-  max-width: calc(80% + 10px);
+  max-wIDth: calc(80% + 10px);
   min-height: 30px;
   line-height: 2.5;
   font-size: 12px;
@@ -392,21 +421,21 @@ ul {
   right: inherit;
   top: 9px;
   left: 100%;
-  border: 6px solid transparent;
+  border: 6px solID transparent;
   border-right-color: transparent;
   border-left-color: #b2e281;
 }
 
 .main-text {
   height: 160px;
-  border-top: solid 1px #ddd;
+  border-top: solID 1px #ddd;
   background: white;
 }
 
 .textarea {
   padding: 10px;
   height: 100%;
-  width: 86%;
+  wIDth: 86%;
   border: none;
   outline: none;
   font-family: "Micrsofot Yahei";
@@ -414,7 +443,7 @@ ul {
 }
 
 .submit-button {
-  width: 10%;
+  wIDth: 10%;
   position: absolute;
   right: 2px;
   bottom: 2px;
@@ -422,9 +451,9 @@ ul {
 
 #chat {
   margin: 20px auto;
-  width: 800px;
+  wIDth: 800px;
   height: 600px;
-  overflow: hidden;
+  overflow: hIDden;
   border-radius: 3px;
 }
 </style>
