@@ -35,6 +35,7 @@ const key = 'VUE-Customer1'
 
 // 接收文字消息放进sessionList
 function pushTestToSessionList (sessionList, msg) {
+  console.log("function: pushTestToSessionList")
   sessionList[0].messages.push({
     text: msg,
     date: new Date(),
@@ -43,6 +44,7 @@ function pushTestToSessionList (sessionList, msg) {
 }
 
 function connectToCs (csList, sessionList, csID) {
+  console.log("function: connectToCs")
   csList[0].csID = csID
   sessionList[0].messages.push({
     text: '已成功为您转接客服' + csID,
@@ -52,6 +54,7 @@ function connectToCs (csList, sessionList, csID) {
 }
 
 function noServerAvailable (csList, sessionList) {
+  console.log("function: noServerAvailable")
   sessionList[0].messages.push({
     text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
     date: new Date(),
@@ -62,29 +65,31 @@ function noServerAvailable (csList, sessionList) {
 
 // 初始化Socket
 function initSocket (csList, sessionList, socket, customer) {
-  console.log("initSocket")
+  console.log("function: initSocket")
   let that = this
-  // console.log(that.socket)
-  // console.log(this.socket)
 
   socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
+    console.log("socket: cs send message")
     pushTestToSessionList(sessionList, msg, csID, customerID)
   })
 
   socket.on('connect to cs', function (csID) {
+    console.log("socket: connect to cs")
     connectToCs(csList, sessionList, csID)
   })
 
   socket.on('no server available', function () {
+    console.log("socket: no server available")
     noServerAvailable(csList, sessionList)
   })
 
   socket.on('switch cs', function (enterpriseID, formerCsID) {
+    console.log("socket: switch cs")
     this.socket.emit('switch cs', enterpriseID, formerCsID)
   })
 
   socket.emit('assigned to cs', customer.enterpriseID, customer.customerID)
-  console.log("Assign to cs")
+  console.log("socket emit: assigned to cs")
 }
 
 // 数据初始化
@@ -168,13 +173,8 @@ export default {
       this.customer.customerName = this.customer.customerID
     }
 
-    console.log(this.customer.customerID)
-    console.log(this.customer.customerName)
-
     // 如果刷新之前已转接为人工客服，自动连接服务器
     if (this.csList[0].csID !== -1) {
-      console.log("In point1")
-      console.log(this.csList[0].customerID)
       let that = this
       this.socket = io('http://localhost:3000')
 
@@ -216,6 +216,7 @@ export default {
 
   methods: {
     keyboardInputing (e) {
+      console.log("method: keyboardInputing")
       if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
         this.session.messages.push({
           text: this.text,
@@ -223,13 +224,13 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        console.log("in keyboardInputing")
         this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.csList[0].csID, this.customer.customerID)
         this.text = ''
       }
     },
 
     buttonInputing (e) {
+      console.log("method: buttonInputing")
       if (this.text.length !== 0) {
         this.session.messages.push({
           text: this.text,
@@ -237,23 +238,19 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        console.log("in buttonInputing")
         this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.csList[0].csID, this.customer.customerID)
         this.text = ''
       }
     },
 
     switchToCs (e) {
-      console.log('switchToCs')
-      console.log(this.csList[0].csID)
+      console.log("method: switchToCs")
       if (this.csList[0].csID !== -1) {
         alert('当前已为人工客服！')
         return
       }
       let that = this
       that.socket = io('http://localhost:3000')
-      console.log(that.socket)
-      console.log(that.customer)
       initSocket(that.csList, that.sessionList, that.socket, that.customer)
     }
   },
