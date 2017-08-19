@@ -3,10 +3,10 @@
   <!-- Header -->
   <div class="header">
     <div class="ceiling">
-      <a href='../main'><img src="./assets/logo.png" alt=""></a>
+      <img src="./assets/logo.png" alt="" style="height:40px;width:40px">
+      <img src="./assets/name.png" alt="" style="height:40px">
       <div class="ceiling-main">
         <a href="../main" class='ceiling-item'>首页</a> |
-        <a href="../documentation" class='ceiling-item document'>帮助中心</a> |
         <a href="../en_login" class='ceiling-item'>登录</a> |
         <a href="../en_folders" class='ceiling-item'>注册</a> |
         <a href="../se_folders" class='ceiling-item'>客服入口</a>
@@ -181,7 +181,7 @@ p {
 
 .ceiling {
   background-color: #1c1d26;
-  padding: 1em 0;
+  padding: 1em 0 0;
   overflow: hidden;
 }
 
@@ -192,7 +192,7 @@ p {
 .ceiling-main {
   float: right;
   margin-right: 5em;
-  padding-top: 0.5em;
+  padding-top: 1em;
 }
 
 .ceiling-main a {
