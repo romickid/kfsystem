@@ -3,9 +3,9 @@
   <!-- Header -->
   <div class="header">
     <div class="ceiling">
-      <a href='./'><img src="./assets/logo.png" alt=""></a>
+      <a href='./'><img src="./assets/name.png" alt="" style="height:40px"></a>
       <div class="ceiling-main">
-        <a class='ceiling-item mainpage'>首页</a> |
+        <a href='./' class='ceiling-item mainpage'>首页</a> |
         <a href="#jump" class='ceiling-item'>产品介绍</a> |
         <a href="../documentation" class='ceiling-item'>帮助中心</a> |
         <a href="../en_login" class='ceiling-item'>登录</a> |
@@ -272,7 +272,7 @@ p {
 
 .ceiling {
   background-color: #1c1d26;
-  padding: 1em 0;
+  padding: 1em 0 0;
   overflow: hidden;
 }
 
@@ -282,8 +282,8 @@ p {
 
 .ceiling-main {
   float: right;
-  margin-right: 5em;
-  padding-top: 0.5em;
+  margin-right: 3em;
+  padding-top: 1em;
 }
 
 .ceiling-main a {
