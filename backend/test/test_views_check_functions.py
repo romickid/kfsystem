@@ -1071,11 +1071,6 @@ class TestCsDisplayrobotreplyShowCheck(TestCase):
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, wrong information.')
 
-        json4 = {'nickname': 'a_nick2', 'customer_input': 'nihao'}
-        errorcode4, errormessage4 = customerservice_displayrobotreply_show_check(json4)
-        self.assertEqual(errorcode4, 0)
-        self.assertEqual(errormessage4, 'ERROR, info is not exist.')
-
 
 class TestCsLogoutCheck(TestCase):
     def setUp(self):
