@@ -202,7 +202,7 @@ export default {
       //api接口
       apiCustomerserviceDisplayrobotreplyShow: '../api/customerservice_displayrobotreply_show/',
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
-      apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
+      apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
       apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
       apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
       robotReplyItem: {},
@@ -337,7 +337,7 @@ export default {
           image: '../../../static/1.jpg'
         })
         let index = this.currentOnlineObject.messages.length
-        this.saveImg(index - 1)
+        this.saveImg(1, index - 1)
         this.socket.emit('customer send message', this.chatlogData.bpic, this.chatlogData.spic, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         this.chatlogData.img = ''
         this.chatlogData.bigImg = ''
