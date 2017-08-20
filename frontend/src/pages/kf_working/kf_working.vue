@@ -27,21 +27,42 @@
                 <Dropdown-menu slot="list">
                   <Dropdown-item>
                     <Button @click="addSentence=true">增添语料</Button>
-                    <Modal v-model="addSentence" title="增添语料" @on-ok="ok" @on-cancel="cancel">
-                      <p>增添语料</p>
-                      <div>
-                        <Input type="text" placeholder="请输入问题">
-                      </div>
-                      <div>
-                        <Input type="text" placeholder="请输入回答">
-                      </div>
-                      <Button>确认增添</Button>
+                    <Modal v-model="addSentence" title="增添语料" @on-ok="robotSentenceAddOk" @on-cancel="robotSentenceAddCancel">
+                      <Form :label-width="80">
+                        <Form-item label="问题">
+                          <Input type="text" placeholder="请输入问题" v-model="robotSentence.question" @on-blur="checkQuestion" @on-focus="questionInput"></Input>
+                          <i-label v-if="robotSentence.questionIsNull">
+                            <p class='waring'>问题不能为空</p>
+                          </i-label>
+                        </Form-item>
+                        <Form-item label="回答">
+                          <Input type="text" placeholder="请输入回答" v-model="robotSentence.reply" @on-blur="checkReply" @on-focus="replyInput"></Input>
+                          <i-label v-if="robotSentence.replyIsNull">
+                            <p class='waring'>回答不能为空</p>
+                          </i-label>
+                        </Form-item>
+                        <Form-item label="关键词">
+                          <Input type="text" placeholder="请输入关键词" v-model="robotSentence.keyword" @on-blur="checkKeyword" @on-focus="keywordInput"></Input>
+                          <p>关键词最好为问题中的重点词汇</p>
+                          <i-label v-if="robotSentence.keywordIsNotStandard">
+                            <p class='waring'>关键词不合法</p>
+                          </i-label>
+                          <Button icon="ios-plus-empty" type="dashed" size="small" @click="robotKeywordAdd">添加关键词</Button>
+                          <Tag v-for="item in robotSentence.keywordArray" :name="item" closable @on-close="robotKeywordClose">{{ item }}</Tag>
+                        </Form-item>
+                        <Form-item label="权重">
+                          <Select v-model="robotSentence.weight" style="width:200px">
+                            <Option v-for="item in robotSentence.weightArray" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                          </Select>
+                        </Form-item>
+                      </Form>
                     </Modal>
                   </Dropdown-item>
                   <Dropdown-item>
                     <Button @click="modifySentence=true">编辑语料</Button>
-                    <Modal v-model="modifySentence" title="编辑语料" @on-ok="ok" @on-cancel="cancel" z-index=40>
+                    <Modal v-model="modifySentence" title="编辑语料" z-index=40>
                       <robot-setting ref="robotSetting"></robot-setting>
+                      <div slot="footer"></div>
                     </Modal>
                   </Dropdown-item>
                 </Dropdown-menu>
@@ -91,7 +112,10 @@
             <div class="massage-main" :class="{ self: item.self }">
               <img class="massage-avatar" wIDth="30" height="30" :src="item.image" />
               <div class="massage-text">
-                <li>{{ item.text }}</li>
+                <li>
+                  <p v-if="item.isText">{{ item.text }}</p>
+                  <img :src='item.img' v-else @click='showHistoryBigImg(item.label)'>
+                </li>
               </div>
             </div>
           </li>
@@ -102,19 +126,33 @@
             <div class="massage-main" :class="{ self: item.self }">
               <img class="massage-avatar" wIDth="30" height="30" :src="item.image" />
               <div class="massage-text">
-                <li>{{ item.text }}</li>
+                <li>
+                  <p v-if="item.isText">{{ item.text }}</p>
+                  <img :src='item.img' v-else @click='showBigImg(item.bigImg)'>
+                </li>
               </div>
             </div>
           </li>
         </ul>
       </div>
-      <div class="main-text">
+      <Modal v-model="modalShowBigImg" width='auto'>
+        <p slot="header">
+        </p>
+        <div style="text-align:center">
+            <img :src="bigImgSrc">
+        </div>
+        <div slot="footer">
+        </div>
+      </Modal>
+      <div class="main-text" @keydown="keyboardInputing">
         <Button @click="showHistory">历史消息</Button>
         <Button @click="switchAnotherCs">转接</Button>
+        <img @click="imageUpload" src="./assets/pic.png" style="height:20px;width:20px" class='send-pic'></img>
         <p class="lead emoji-picker-container">
-          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="keyboardInputing" data-emojiable="true"></textarea>
+          <textarea class="textarea" placeholder="按 Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttonInputing">发送</Button>
+        <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
       </div>
     </div>
   </div>
@@ -124,6 +162,7 @@
 import * as io from 'socket.io-client'
 import Vue from 'vue'
 import robotSetting from '../../components/robot_setting'
+import lrz from '../../../node_modules/lrz/dist/lrz.bundle.js'
 import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
 
@@ -150,6 +189,7 @@ function pushTextToOnlineList (onlineList, index, msg) {
   console.log('[function: pushTextToOnlineList]')
   onlineList[index].messages.push({
     text: msg,
+    isText: true,
     date: new Date(),
     image: '../../../static/3.jpg'
   })
@@ -158,6 +198,18 @@ function pushTextToOnlineList (onlineList, index, msg) {
 // 接收文字消息放进offlinelist
 function pushTextToOfflineList (offlineList, index, msg) {
   return pushTextToOnlineList (offlineList, index, msg)
+}
+
+// 接收图片消息放进onlinelist
+function pushImgToOnlineList (onlineList, index, bpic, spic) {
+  console.log('[function: pushTextToOnlineList]')
+  onlineList[index].messages.push({
+    img: spic,
+    bigImg: bpic,
+    isText: false,
+    date: new Date(),
+    image: '../../../static/3.jpg'
+  })
 }
 
 // 根据已有信息创建一个客户, 返回一个客户对象
@@ -186,7 +238,7 @@ function addCustomer (cs_socket, onlineList, customer) {
     customerOutMessage(cs_socket, customer.customerID)
   }, 1000000)
 
-  onlineList.splice(0, 0, 
+  onlineList.splice(0, 0,
     {
       enterpriseID: customer.enterpriseID,
       customerID: customer.customerID,
@@ -225,7 +277,7 @@ function customerHangoff (onlineList, offlineList, customerID) {
 // 删除客户
 function customerDelete (onlineList, offlineList, customerID) {
   console.log('[function: customerDelete]')
-  
+
   let onlineIndex = findOnlineListByCustomerID(onlineList, customerID)
   let timer = onlineList[onlineIndex].timer
   clearTimeout(timer)
@@ -283,27 +335,74 @@ export default {
       customerNumber: dataserver.customerNumber,
       hangoffCustomerNumber: dataserver.hangoffCustomerNumber,
 
-      // 文本框中输入的内容
-      text: '',
+      // 修改语料对话框
+      modifySentence: false,
 
       // 增添语料对话框
       addSentence: false,
 
-      // 修改语料对话框
-      modifySentence: false,
-
       // 设置机器人
-      modal1: false,
+      robotSentence: {
+        question: '',
+        keyword: '',
+        keywordArray: [],
+        reply: '',
+        weight: 2,
+        weightArray: [
+          {
+            value: 3,
+            label: '高'
+          },
+          {
+            value: 2,
+            label: '中'
+          },
+          {
+            value: 1,
+            label: '低'
+          }
+        ],
+        questionIsNull: false,
+        replyIsNull: false,
+        keywordIsNotStandard: false
+      }
+
+      // 聊天数据
+      // 文本框中输入的内容
+      chatlogData : {
+        text: '',
+        img: '',
+        bigImg: '',
+      }
+
+      // 显示大图片
+      bigImgSrc: '',
+      modalShowBigImg: false,
+
+      // api参数
+      saveTextItem: {},
+      csEmailItem: {},
+      saveImgItem: {},
+      saveBigImgItem: {},
+      showHistoryItem: {},
+      showHistoryBigImgItem: {},
+      robotSentenceAddItem: {},
 
       // 客服对应的socket
       socket: '',
 
-      // test
+      // api
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
       apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
-      apiChattinglogGetCsID: '../api/chattinglog_get_cs_ID/',
-      item: {},
+      apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
+      apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
+      apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
+      apiBigimagelogShowSingleHistory: '../api/bigimagelog_show_single_history/',
+      apiLogShowHistory: '../api/log_show_history/',
+      apiCustomerserviceSetrobotinfoCreate: '../api/customerservice_setrobotinfo_create/',
+      apiCustomerserviceLogout: '../api/customerservice_logout/'
+
       databaseCsID: '',
       tempCustomerID: ''
     }
@@ -342,17 +441,6 @@ export default {
       let vm = that
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
       pushTextToOnlineList(that.onlineList, onlineIndex, msg)
-      // 将信息存入数据库
-      that.item = {'email': csID }
-      vm.$http.post(vm.apiChattinglogGetCsID, that.item)
-        .then((response) => {
-          vm.$set(that, 'databaseCsID', response.data)
-          vm.$set(that, 'item', {'client_id': customerID, 'service_id': that.databaseCsID, 'content': msg, 'is_client': 1 })
-          that.saveChattingLog(that.item)
-        }, (response) => {
-          alert('customer send message error!')
-          window.location.href = '../se_login'
-        })
 
       that.tempCustomerID = customerID
       // 将信息展示至界面
@@ -368,7 +456,7 @@ export default {
           function () {
             customerOutMessage(csSocket, customerID)
           }, 1000000)
-        
+
         // 当前显示的是应该变成列表第2位，因此要++
         if (that.onlineIndex < onlineIndex) {
           that.onlineIndex++
@@ -387,6 +475,43 @@ export default {
     })
 
     // 接受图片信息
+    this.socket.on('customer send picture', function (bpic, spic, enterprise_id, cs_id, customer_id) {
+      console.log('socket: customer send picture')
+      let vm = that
+      let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
+      pushImgToOnlineList(that.onlineList, onlineIndex, bpic, spic)
+
+      that.tempCustomerID = customerID
+      // 将信息展示至界面
+      // 如果收到消息的session 与 当前显示的session不同
+      if (onlineIndex !== that.onlineIndex) {
+        var customerID = that.tempCustomerID
+        popUp(that.onlineList, onlineIndex)
+
+        clearTimeout(that.onlineList[0].timer)
+        let customerID = that.onlineList[0].customerID
+        let csSocket = that.socket
+        that.onlineList[0].timer = setTimeout(
+          function () {
+            customerOutMessage(csSocket, customerID)
+          }, 1000000)
+
+        // 当前显示的是应该变成列表第2位，因此要++
+        if (that.onlineIndex < onlineIndex) {
+          that.onlineIndex++
+        }
+        that.customerList[0].uncheck++ // 因此uncheck也要++
+      } else {
+        var customerID = that.tempCustomerID
+        clearTimeout(that.onlineList[onlineIndex].timer)
+        let customerID = that.onlineList[onlineIndex].customerID
+        let csSocket = that.socket
+        that.onlineList[0].timer = setTimeout(
+          function () {
+            customerOutMessage(csSocket, customerID)
+          }, 1000000)
+      }
+    })
 
     // socket响应 增加客服
     this.socket.on('add customer', function (enterpriseID, customerID) {
@@ -464,7 +589,7 @@ export default {
 
   watch: {
     // 每当sessionList改变时，保存到localStorage中
-    sessionList: {
+    onlineList: {
       deep: true,
       handler() {
         sessionStorage.setItem(key, JSON.stringify({
@@ -485,44 +610,44 @@ export default {
   },
 
   methods: {
-    // 保存文字信息
-    saveChattingLog (obj) {
-      console.log('[method: saveChattingLog]')
-      let vm = this
-      vm.$http.post(vm.apiChattinglogSendMessage, obj)
-        .then((response) => {
-          vm.$set(this, 'item', {})
-        }, (response) => {
-          alert('save chatting log error!')
-          alert(obj)
-          window.location.href = '../se_login'
-        })
-    },
+    // // 保存文字信息
+    // saveChattingLog (obj) {
+    //   console.log('[method: saveChattingLog]')
+    //   let vm = this
+    //   vm.$http.post(vm.apiChattinglogSendMessage, obj)
+    //     .then((response) => {
+    //       vm.$set(this, 'item', {})
+    //     }, (response) => {
+    //       alert('save chatting log error!')
+    //       alert(obj)
+    //       window.location.href = '../se_login'
+    //     })
+    // },
 
-    // 获取历史信息
-    getHistoryLog (obj) {
-      console.log('[method: getHistoryLog]')
-      let vm = this
-      vm.$http.post(vm.apiChattinglogShowHistory, obj)
-        .then((response) => {
-          for (var p in response.data) {
-            if (response.data[p].is_client === false) {
-              this.currentOnlineObject.historyMessages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                self: true,
-                image: this.cs.image
-              })
-            } else {
-              this.currentOnlineObject.historyMessages.push({
-                text: response.data[p].content,
-                date: response.data[p].time,
-                image: '../../../static/3.jpg'
-              })
-            }
-          }
-        })
-    },
+    // // 获取历史信息
+    // getHistoryLog (obj) {
+    //   console.log('[method: getHistoryLog]')
+    //   let vm = this
+    //   vm.$http.post(vm.apiChattinglogShowHistory, obj)
+    //     .then((response) => {
+    //       for (var p in response.data) {
+    //         if (response.data[p].is_client === false) {
+    //           this.currentOnlineObject.historyMessages.push({
+    //             text: response.data[p].content,
+    //             date: response.data[p].time,
+    //             self: true,
+    //             image: this.cs.image
+    //           })
+    //         } else {
+    //           this.currentOnlineObject.historyMessages.push({
+    //             text: response.data[p].content,
+    //             date: response.data[p].time,
+    //             image: '../../../static/3.jpg'
+    //           })
+    //         }
+    //       }
+    //     })
+    // },
 
     //  显示用户列表
     displayCustomerList (value) {
@@ -536,44 +661,28 @@ export default {
       }
     },
 
-    // ctrl+enter操作
+    // enter操作
     keyboardInputing (e) {
       console.log('[method: keyboardInputing]')
-      if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
+      if (e.keyCode === 13 && this.chatlogData.text.length && this.currentOnlineObject.customerID !== -1) {
         if (!this.hangon) {
           alert('该用户已挂断！')
-          this.text = ''
+          this.chatlogData.text = ''
           return
         }
-
-        // 存入数据库，下标考虑
-        let index = this.currentOnlineObject.messages.length
-        let vm = this
-        let that = this
-        // 输入为空直接退出
-        if (that.text.length === 0) {
-          return
-        }
-
-        that.item = { 'email': this.cs.csID }
-        vm.$http.post(vm.apiChattinglogGetCsID, that.item)
-          .then((response) => {
-            vm.$set(that, 'databaseCsID', response.data)
-            vm.$set(that, 'item', {'client_id': that.currentOnlineObject.customerID, 'service_id': that.databaseCsID, 'content': that.currentOnlineObject.messages[index].text, 'is_client': 0 })
-            this.saveChattingLog(that.item)
-          }, (response) => {
-          alert('cs keyboard inputing error!')
-          window.location.href = '../se_login'
-        })
 
         this.currentOnlineObject.messages.push({
-          text: this.text,
+          text: this.chatlogData.text,
+          isText: true,
           date: new Date(),
           self: true,
           image: this.cs.image
         })
+        // 存入数据库
+        let index = this.currentOnlineObject.messages.length
+        this.saveText(index - 1)
 
-        this.socket.emit('cs send message', this.text, this.currentOnlineObject.enterpriseID, this.cs.csID, this.currentOnlineObject.customerID)
+        this.socket.emit('cs send message', this.chatlogData.text, this.currentOnlineObject.enterpriseID, this.cs.csID, this.currentOnlineObject.customerID)
         clearTimeout(this.onlineList[this.onlineIndex].timer)
         let customerID = this.onlineList[this.onlineIndex].customerID
         let csSocket = this.socket
@@ -581,7 +690,7 @@ export default {
           function () {
             customerOutMessage(csSocket, customerID)
           }, 1000000)
-        this.text = ''
+        this.chatlogData.text = ''
       }
     },
 
@@ -590,37 +699,23 @@ export default {
       console.log('[method: buttonInputing]')
       if (!this.hangon) {
         alert('该用户已挂断！')
-        this.text = ''
+        this.chatlogData.text = ''
         return
       }
 
-      // 将输入的信息存入数据库，下标考虑
-      let index = this.currentOnlineObject.messages.length
-      let vm = this
-      // 输入为空直接退出
-      if (this.text.length === 0) {
-        return
-      }
-
-      this.item = { 'email': this.cs.csID }
-      vm.$http.post(vm.apiChattinglogGetCsID, this.item)
-        .then((response) => {
-          vm.$set(this, 'databaseCsID', response.data)
-          vm.$set(this, 'item', { 'client_id': this.currentOnlineObject.customerID, 'service_id': this.databaseCsID, 'content': this.currentOnlineObject.messages[index].text, 'is_client': 0 })
-          this.saveChattingLog(this.item)
-        }, (response) => {
-          alert('cs button inputing error!')
-          window.location.href = '../se_login'
-        })
-
-      if (this.text.length !== 0) {
+      if (this.chatlogData.text.length !== 0) {
         this.currentOnlineObject.messages.push({
-          text: this.text,
+          text: this.chatlogData.text,
           date: new Date(),
+          isText: true,
           self: true,
           image: this.cs.image
         })
-        this.socket.emit('cs send message', this.text, this.currentOnlineObject.enterpriseID, this.cs.csID , this.currentOnlineObject.customerID)
+        // 存入数据库
+        let index = this.currentOnlineObject.messages.length
+        this.saveText(index - 1)
+
+        this.socket.emit('cs send message', this.chatlogData.text, this.currentOnlineObject.enterpriseID, this.cs.csID , this.currentOnlineObject.customerID)
         clearTimeout(this.onlineList[this.onlineIndex].timer)
         let customerID = this.onlineList[this.onlineIndex].customerID
         let csSocket = this.socket
@@ -628,9 +723,39 @@ export default {
           function () {
             customerOutMessage(csSocket, customerID)
           }, 1000000)
-        this.text = ''
+        this.chatlogData.text = ''
       }
     },
+
+    imgInputing () {
+      if (!this.hangon) {
+        alert('该用户已挂断！')
+        this.chatlogData.img = ''
+        return
+      }
+      if (this.chatlogData.img !== 0) {
+        this.currentOnlineObject.messages.push({
+          img: this.chatlogData.img,
+          bigImg: this.chatlogData.bigImg,
+          isText: false,
+          date: new Date(),
+          self: true,
+          image: this.cs.image
+        })
+        let index = this.currentOnlineObject.messages.length
+        this.saveText(index - 1)
+        this.socket.emit('cs send picture', this.chatlogData.img, this.chatlogData.bigImg, this.currentOnlineObject.enterpriseID, this.cs.csID , this.currentOnlineObject.customerID)
+        clearTimeout(this.onlineList[this.onlineIndex].timer)
+        let customerID = this.onlineList[this.onlineIndex].customerID
+        let csSocket = this.socket
+        this.onlineList[this.onlineIndex].timer = setTimeout(
+          function () {
+            customerOutMessage(csSocket, customerID)
+          }, 1000000)
+        this.chatlogData.img = ''
+        this.chatlogData.bigImg = ''
+      }
+    }
 
     // 点击切换查看历史记录信息或当前记录信息
     switchoff () {
@@ -640,31 +765,13 @@ export default {
       this.offlineIndex = 0
     },
 
-    // 显示历史记录按钮
-    showHistory (e) {
-      console.log('[method: showHistory]')
-      if (!this.hangon) {
-        alert('无法获取历史消息！')
-        return
-      }
-
-      var vm = this
-      this.item = { 'email': this.cs.csID }
-      vm.$http.post(vm.apiChattinglogGetCsID, this.item)
-        .then((response) => {
-          vm.$set(this, 'databaseCsID', response.data)
-          vm.$set(this, 'item', {'client_id': this.currentOnlineObject.customerID, 'service_id': this.databaseCsID })
-          this.getHistoryLog(this.item)
-        })
-    },
-
     // 获取客服信息
     getCsInfomation () {
       console.log('[method: getCsInfomation]')
       var that = this
       that.$http.post(that.apiCustomerserviceShowUserStatus)
         .then((response) => {
-          if (response.data === 'ERROR, currentOnlineObject is broken.') {
+          if (response.data === 'ERROR, session is broken.') {
             window.location.href = '../se_login'
           } else if (response.data === 'ERROR, wrong email.') {
             window.location.href = '../se_login'
@@ -672,6 +779,9 @@ export default {
             that.cs.csID = response.data.email
             that.cs.csName = response.data.nickname
             that.cs.enterpriseID = response.data.admin_nickname
+            that.csEmailItem = { 'email': that.cs.csID }
+            console.log(that.cs.csID)
+            that.getCsIdApi()
           }
         }, (response) => {
           window.location.href = '../se_login'
@@ -700,6 +810,384 @@ export default {
         clearTimeout(this.onlineList[i].timer)
       }
       this.isLogon = false
+      this.csLogoutApi()
+    },
+
+    csLogoutApi () {
+      this.$http.post(this.apiCustomerserviceLogout)
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            // window.location.href = '../se_login'
+            console.log('csLogoutApi1')
+          } else if (response.data === 'ERROR, wrong email.') {
+            // window.location.href = '../se_login'
+            console.log('csLogoutApi2')
+          } else {
+            window.location.href = '../se_login'
+          }
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('csLogoutApi3')
+        })
+    }
+
+    // 机器人语料检查问题输入
+    checkQuestion () {
+      if (this.robotSentence.question === '') {
+        this.robotSentence.questionIsNull = true
+      }
+    },
+
+    // 机器人语料检查回答输入
+    checkReply () {
+      if (this.robotSentence.reply === '') {
+        this.robotSentence.replyIsNull = true
+      }
+    },
+
+    // 机器人语料检查关键词输入
+    checkKeyword () {
+      let reg = /^[\u4E00-\u9FA5]+$/
+      let standardContent = reg.test(this.robotSentence.keyword)
+      if (this.robotSentence.keyword === '' || standardContent === false) {
+        this.robotSentence.keywordIsNotStandard = true
+      }
+    },
+
+    // 正在输入回答
+    replyInput () {
+      this.robotSentence.replyIsNull = false
+    },
+
+    // 正在输入问题
+    questionInput () {
+      this.robotSentence.questionIsNull = false
+    },
+
+    // 正在输入关键词
+    keywordInput () {
+      this.robotSentence.keywordIsNotStandard = false
+    },
+
+    // 添加关键词按钮
+    robotKeywordAdd () {
+      this.checkKeyword()
+      let keywordIsExist = false
+      for (let i = 0; i < this.robotSentence.keywordArray.length; i++) {
+        if (this.robotSentence.keyword === this.robotSentence.keywordArray[i]) {
+          keywordIsExist = true
+        }
+      }
+      if (this.robotSentence.keyword === '' || this.robotSentence.keywordIsNotStandard === true) {
+        this.$Message.info('关键词格式不正确')
+      } else if (keywordIsExist === true) {
+        this.$Message.info('该关键词已添加')
+      } else {
+        this.robotSentence.keywordArray.push(this.robotSentence.keyword)
+        this.robotSentence.keyword = ''
+      }
+    },
+
+    // 删除关键词
+    robotKeywordClose (event, name) {
+      const index = this.robotSentence.keywordArray.indexOf(name)
+      this.robotSentence.keywordArray.splice(index, 1)
+    },
+
+    // 确认添加机器人语料
+    robotSentenceAddOk () {
+      let keywordString = ''
+      if (this.robotSentence.question === '' || this.robotSentence.reply === '') {
+        this.$Message.info('您所填的信息不能为空')
+      } else {
+        if (this.robotSentence.keywordArray.length !== 0) {
+          keywordString = this.robotKeyWord.join(' ')
+        } else {
+          keywordString = ''
+        }
+        this.robot_question_add = {
+          'question': this.question,
+          'answer': this.reply,
+          'keyword': keywordString,
+          'weight': this.modelSelect
+        }
+        this.set_robot_api()
+      }
+      this.robotSentenceAddCancel()
+    },
+
+    // 取消添加机器人语料
+    robotSentenceAddCancel () {
+      this.robotSentence.question = ''
+      this.robotSentence.reply = ''
+      this.robotSentence.keyword = ''
+      this.robotSentence.weight = 2
+      this.robotSentence.replyIsNull = false
+      this.robotSentence.questionIsNull = false
+      this.robotSentence.keywordIsNotStandard = false
+      this.robotSentence.keywordArray = []
+    },
+
+    // 设置机器人语料访问后端接口
+    setRobotApi () {
+      this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robotSentenceAddItem)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api1')
+          } else if (response.data === 'ERROR, incomplete information.') {
+            this.$Message.info('您所填的信息不完整')
+          } else if (response.data === 'ERROR, wrong information.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api2')
+          } else if (response.data === 'ERROR, session is broken.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api3')
+          } else if (response.data === 'ERROR, wrong email.') {
+            // window.location.href = '../se_login'
+            console.log('set_robot_api4')
+          } else if (response.data === 'ERROR, info is exist.') {
+            this.$Message.info('该问题已存在')
+          } else {
+            this.$Message.info('添加成功')
+            this.$refs.robotSetting.show_robot_question_api()
+          }
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('set_robot_api5')
+        })
+    },
+
+    // 文件压缩
+    imageCompress () {
+      let self = this
+      let obj = document.getElementById('inputFile')
+      let file = obj.files[0]
+      lrz(file, {width: 1920, height: 1920, quality: 1})
+        .then(function (rst) {
+          self.chatlogData.bigImg = rst.base64
+          self.chatlogData.isText = false
+          lrz(rst.origin, {width: 500, quality: 0.7})
+            .then(function (rst) {
+              self.chatlogData.img = rst.base64
+              self.imgInputing()
+              return rst
+            })
+          return rst
+        })
+      obj.value = ''
+    },
+
+    // 上传图片
+    imageUpload () {
+      var file = document.getElementById('inputFile')
+      file.click()
+    },
+
+    // 显示大图片
+    showBigImg (bigImg) {
+      this.bigImgSrc = bigImg
+      this.modalShowBigImg = true
+    },
+
+    // 保存文字
+    saveText (index) {
+      this.saveTextItem = {
+        'client_id': this.currentOnlineObject.customerID,
+        'service_id': this.databaseCsID,
+        'content': this.currentOnlineObject.messages[index].text,
+        'is_client': 0
+      }
+      console.log(this.saveTextItem)
+      this.saveTextApi()
+    },
+
+    // 保存文字调用后端api
+    saveTextApi () {
+      this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
+        .then((response) => {
+          this.saveTextItem = {}
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('save_text_api')
+        })
+    },
+
+    // 获取databaseCsID
+    getCsIdApi () {
+      this.$http.post(this.apiChattinglogGetCsId, this.csEmailItem)
+        .then((response) => {
+          this.databaseCsID = response.data
+          console.log(this.databaseCsID)
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('get_cs_id_api')
+        })
+    },
+
+    // 存小图片调用后端api
+    saveImgApi () {
+      this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('save_img_api1')
+          } else {
+            this.saveImgItem = {}
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('save_img_api2')
+        })
+    },
+
+    // 存大图片调用后端api
+    saveBigImgApi () {
+      this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('save_bigImg_api1')
+          } else {
+            this.saveBigImgItem = {}
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('save_bigImg_api2')
+        })
+    },
+
+    // 存图片的函数
+    saveImg (index) {
+      let timestamp = new Date().getTime()
+      let label = timestamp + this.databaseCsID
+      this.savImgItem = {
+        'client_id': this.currentOnlineObject.customerID,
+        'service_id': this.databaseCsID,
+        'image': this.currentOnlineObject.messages[index].img,
+        'is_client': false,
+        'label': label
+      }
+      this.saveBigImgItem = {
+        'client_id': this.currentOnlineObject.customerID,
+        'service_id': this.databaseCsID,
+        'image': this.currentOnlineObject.messages[index].bigImg,
+        'is_client': false,
+        'label': label
+      }
+      console.log(this.saveImgItem)
+      console.log(this.saveBigImgItem)
+      this.saveImgApi()
+      this.saveBigImgApi()
+    },
+
+    // 显示历史记录按钮的响应函数
+    showHistory (e) {
+      console.log('[method: showHistory]')
+      if (!this.hangon) {
+        alert('无法获取历史消息！')
+        return
+      }
+      this.show_history_item = {
+        'client_id': this.currentOnlineObject.customerID,
+        'service_id': this.databaseCsID
+      }
+      this.showHistoryApi()
+    },
+
+    // 显示历史记录调用后端api
+    showHistoryApi () {
+      this.$http.post(this.apiLogShowHistory, this.showHistoryItem)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('show_history_api1')
+          } else {
+            console.log(response.data)
+            let historyArray = response.data
+            this.printHistoryMessages(historyArray)
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('show_history_api2')
+        })
+    },
+
+    // 打印历史消息函数
+    printHistoryMessages (historyArray) {
+      for (var p = 0; p < historyArray.length; p++) {
+        console.log(historyArray[p].hasOwnProperty("content"))
+        if (historyArray[p].hasOwnProperty("content")) {
+          if (historyArray[p].is_client === false) {
+            this.currentOnlineObject.historyMessages.push({
+              text: historyArray[p].content,
+              isText: true,
+              date: historyArray[p].time,
+              self: true,
+              image: this.cs.image
+            })
+          } else {
+            this.currentOnlineObject.historyMessages.push({
+              text: historyArray[p].content,
+              isText: true,
+              date: historyArray[p].time,
+              image: '../../../static/3.jpg'
+            })
+          }
+        } else {
+          if (response.data[p].is_client === false) {
+            this.currentOnlineObject.historyMessages.push({
+              img: historyArray[p].image,
+              isText: false,
+              label: historyArray[p].label,
+              date: historyArray[p].time,
+              self: true,
+              image: this.cs.image
+            })
+            let index = this.currentOnlineObject.historyMessages.length
+            console.log('this.hsession.messages1')
+            console.log(this.currentOnlineObject.historyMessages[index - 1])
+          } else {
+            this.currentOnlineObject.historyMessages.push({
+              img: historyArray[p].image,
+              isText: false,
+              label: historyArray[p].label,
+              date: historyArray[p].time,
+              image: '../../../static/3.jpg'
+            })
+            let index = this.currentOnlineObject.historyMessages.length
+            console.log('this.hsession.messages2')
+            console.log(this.currentOnlineObject.historyMessages[index - 1])
+          }
+        }
+      }
+    }
+
+    // 历史记录显示大图片
+    showHistoryBigImg (label) {
+      this.showHistoryBigImgItem = {
+        'client_id': this.session.userId,
+        'service_id': this.turnId,
+        'label': label
+      }
+      this.showHistoryBigImgApi()
+    },
+
+    // 历史记录显示大图片调用后端api
+    showHistoryBigImgApi () {
+      this.$http.post(this.apiBigimagelogShowSingleHistory, this.showHistoryBigImgItem)
+        .then((response) => {
+          if (response.data === 'ERROR, no history.') {
+            // window.location.href = '../notfound'
+            console.log('show_history_big_img_api1')
+          } else {
+            this.showHistoryBigImgApi = {}
+            this.showBigImg(response.data)
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('show_history_big_img_api2')
+        })
     }
   },
 
