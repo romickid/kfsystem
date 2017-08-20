@@ -1,7 +1,7 @@
 <template>
   <div class="outline">
-    <p></p>
-    <Row>
+    <p class='outline-content'>连接你的用户 高效你的客服</p>
+    <Row class='outline-content'>
       <Col span="11">
         <Card>
           <p slot="title">在线客服数</p>
@@ -58,5 +58,15 @@ export default {
 <style scoped>
 .outline {
   padding: 0em 3em;
+  text-align: center;
+}
+
+.outline-content {
+  margin: 4em 0em;
+}
+
+.outline>p {
+  color: #2c3e50;
+  font-size: 1.5em;
 }
 </style>
