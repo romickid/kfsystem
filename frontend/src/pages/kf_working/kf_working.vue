@@ -728,6 +728,7 @@ export default {
     },
 
     imgInputing () {
+      console.log('[method: imgInputing]')
       if (!this.hangon) {
         alert('该用户已挂断！')
         this.chatlogData.img = ''
@@ -814,6 +815,7 @@ export default {
     },
 
     csLogoutApi () {
+      console.log('[method: csLogoutApi]')
       this.$http.post(this.apiCustomerserviceLogout)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
@@ -833,6 +835,7 @@ export default {
 
     // 机器人语料检查问题输入
     checkQuestion () {
+      console.log('[method: checkQuestion]')
       if (this.robotSentence.question === '') {
         this.robotSentence.questionIsNull = true
       }
@@ -840,6 +843,7 @@ export default {
 
     // 机器人语料检查回答输入
     checkReply () {
+      console.log('[method: checkReply]')
       if (this.robotSentence.reply === '') {
         this.robotSentence.replyIsNull = true
       }
@@ -847,6 +851,7 @@ export default {
 
     // 机器人语料检查关键词输入
     checkKeyword () {
+      console.log('[method: checkKeyword]')
       let reg = /^[\u4E00-\u9FA5]+$/
       let standardContent = reg.test(this.robotSentence.keyword)
       if (this.robotSentence.keyword === '' || standardContent === false) {
@@ -856,21 +861,25 @@ export default {
 
     // 正在输入回答
     replyInput () {
+      console.log('[method: replyInput]')
       this.robotSentence.replyIsNull = false
     },
 
     // 正在输入问题
     questionInput () {
+      console.log('[method: questionInput]')
       this.robotSentence.questionIsNull = false
     },
 
     // 正在输入关键词
     keywordInput () {
+      console.log('[method: keywordInput]')
       this.robotSentence.keywordIsNotStandard = false
     },
 
     // 添加关键词按钮
     robotKeywordAdd () {
+      console.log('[method: robotKeywordAdd]')
       this.checkKeyword()
       let keywordIsExist = false
       for (let i = 0; i < this.robotSentence.keywordArray.length; i++) {
@@ -890,12 +899,14 @@ export default {
 
     // 删除关键词
     robotKeywordClose (event, name) {
+      console.log('[method: robotKeywordClose]')
       const index = this.robotSentence.keywordArray.indexOf(name)
       this.robotSentence.keywordArray.splice(index, 1)
     },
 
     // 确认添加机器人语料
     robotSentenceAddOk () {
+      console.log('[method: robotSentenceAddOk]')
       let keywordString = ''
       if (this.robotSentence.question === '' || this.robotSentence.reply === '') {
         this.$Message.info('您所填的信息不能为空')
@@ -918,6 +929,7 @@ export default {
 
     // 取消添加机器人语料
     robotSentenceAddCancel () {
+      console.log('[method: robotSentenceAddCancel]')
       this.robotSentence.question = ''
       this.robotSentence.reply = ''
       this.robotSentence.keyword = ''
@@ -930,6 +942,7 @@ export default {
 
     // 设置机器人语料访问后端接口
     setRobotApi () {
+      console.log('[method: setRobotApi]')
       this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robotSentenceAddItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -960,6 +973,7 @@ export default {
 
     // 文件压缩
     imageCompress () {
+      console.log('[method: imageCompress]')
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
@@ -980,18 +994,21 @@ export default {
 
     // 上传图片
     imageUpload () {
+      console.log('[method: imageUpload]')
       var file = document.getElementById('inputFile')
       file.click()
     },
 
     // 显示大图片
     showBigImg (bigImg) {
+      console.log('[method: showBigImg]')
       this.bigImgSrc = bigImg
       this.modalShowBigImg = true
     },
 
     // 保存文字
     saveText (index) {
+      console.log('[method: saveText]')
       this.saveTextItem = {
         'client_id': this.currentOnlineObject.customerID,
         'service_id': this.databaseCsID,
@@ -1004,6 +1021,7 @@ export default {
 
     // 保存文字调用后端api
     saveTextApi () {
+      console.log('[method: saveTextApi]')
       this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
         .then((response) => {
           this.saveTextItem = {}
@@ -1015,6 +1033,7 @@ export default {
 
     // 获取databaseCsID
     getCsIdApi () {
+      console.log('[method: getCsIdApi]')
       this.$http.post(this.apiChattinglogGetCsId, this.csEmailItem)
         .then((response) => {
           this.databaseCsID = response.data
@@ -1027,6 +1046,7 @@ export default {
 
     // 存小图片调用后端api
     saveImgApi () {
+      console.log('[method: saveImgApi]')
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -1100,6 +1120,7 @@ export default {
 
     // 显示历史记录调用后端api
     showHistoryApi () {
+      console.log('[method: showHistoryApi]')
       this.$http.post(this.apiLogShowHistory, this.showHistoryItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -1118,6 +1139,7 @@ export default {
 
     // 打印历史消息函数
     printHistoryMessages (historyArray) {
+      console.log('[method: printHistoryMessages]')
       for (var p = 0; p < historyArray.length; p++) {
         console.log(historyArray[p].hasOwnProperty("content"))
         if (historyArray[p].hasOwnProperty("content")) {
@@ -1168,6 +1190,7 @@ export default {
 
     // 历史记录显示大图片
     showHistoryBigImg (label) {
+      console.log('[method: showHistoryBigImg]')
       this.showHistoryBigImgItem = {
         'client_id': this.session.userId,
         'service_id': this.turnId,
@@ -1178,6 +1201,7 @@ export default {
 
     // 历史记录显示大图片调用后端api
     showHistoryBigImgApi () {
+      console.log('[method: showHistoryBigImgApi]')
       this.$http.post(this.apiBigimagelogShowSingleHistory, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
