@@ -1,0 +1,709 @@
+<template>
+  <div class="container">
+    <div class="main">
+      <div class="main-message" v-scroll-bottom="session.messages">
+        <ul>
+          <li class="message-list" v-for="item in session.messages">
+            <p class="message-time">
+              <span class="time-span">{{ item.date | time }}</span>
+            </p>
+            <div class="massage-main" :class="{ self: item.self }">
+              <img class="massage-avatar" width="30" height="30" :src="item.image" />
+              <div class="massage-text">
+                <li>
+                  <p v-if="item.isText">{{ item.text }}</p>
+                  <img :src='item.img' v-else @click='showBigImg(item.bigImg)'>
+                </li>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <Modal v-model="modal2" width='auto'>
+        <p slot="header">
+        </p>
+        <div style="text-align:center">
+            <img :src="bigImgBase64">
+        </div>
+        <div slot="footer">
+        </div>
+      </Modal>
+      <div class="main-text" @keydown="inputing">
+        <Button @click="switchServer">转接人工客服</Button>
+        <p class="lead emoji-picker-container">
+          <textarea class="textarea" placeholder="按 Enter 发送" v-model="text" rows="5" data-emojiable="true"></textarea>
+        </p>
+        <Button class="submit-button" @click="buttoninputing">发送</Button>
+        <div class="functions">
+          <div @click="imgupload">发送图片</div>
+        </div>
+        <input id="inputFile" name='inputFile' type='file' multiple='mutiple' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import * as io from 'socket.io-client'
+import Vue from 'vue'
+import { formatDate } from '../../../static/js/date.js'
+import lrz from '../../../node_modules/lrz/dist/lrz.bundle.js'
+const key = 'VUE-Customer1'
+function serverMessage (sessionList, msg, isText, img, bigImg, fromId, toId) {
+  sessionList[0].messages.push({
+    text: msg,
+    img: img,
+    bigImg: bigImg,
+    isText: isText,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+}
+function connectToServer (userList, sessionList, toId) {
+  userList[0].id = toId
+  sessionList[0].messages.push({
+    text: '已成功为您转接客服' + toId,
+    img: '',
+    bigImg: '',
+    isText: true,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+}
+function noServerAvailable (userList, sessionList) {
+  sessionList[0].messages.push({
+    text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
+    img: '',
+    bigImg: '',
+    isText: true,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+  userList[0].id = -1
+}
+// 初始化Socket
+function initSocket (userList, sessionList, socket, user, information) {
+  return new Promise (function (resolve) {
+    socket.on('server message', function (msg, isText, img, bigImg, fromId, toId) {
+      serverMessage(sessionList, msg, isText, img, bigImg, fromId, toId)
+    })
+    socket.on('connect to server', function (toId) {
+      connectToServer(userList, sessionList, toId)
+      resolve()
+    })
+    socket.on('no server available', function () {
+      noServerAvailable(userList, sessionList)
+    })
+    socket.on('switch server', function (formerId) {
+      socket.emit('switch server', formerId, information)
+    })
+
+    // user.id = socket.id
+    // user.name = socket.id
+    socket.emit('assigned to server', user.id, information)
+  })
+}
+// 数据初始化
+function initData (key) {
+  // 虚拟数据
+  if (!sessionStorage.getItem(key)) {
+    let now = new Date()
+    let userData = {
+      // 登录用户
+      user: {
+        id: -1,
+        name: 'coffce',
+        image: '../../../static/1.jpg'
+      },
+      // 用户列表
+      userList: [
+        {
+          id: -1,
+          name: 'MonsterSXF',
+          image: '../../../static/2.png'
+        }
+      ],
+      // 会话列表
+      sessionList: [
+        {
+          userId: 2,
+          messages: [
+            {
+              text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
+              img: '',
+              bigImg: '',
+              isText: true,
+              date: now,
+              image: '../../../static/2.png'
+            }
+          ]
+        }
+      ],
+      sessionIndex: 0,
+      timer: ''
+    }
+    sessionStorage.setItem(key, JSON.stringify(userData))
+  }
+}
+
+export default {
+  el: '#chat',
+  data () {
+    initData(key)
+    let dataserver = JSON.parse(sessionStorage.getItem(key))
+    return {
+      // 登录用户
+      user: dataserver.user,
+      // 用户列表
+      userList: dataserver.userList,
+      // 会话列表
+      sessionList: dataserver.sessionList,
+      // 选中的会话Index
+      sessionIndex: dataserver.sessionIndex,
+      // 用户简介
+      information: '',
+      enterprise: '',
+      socket: '',
+      // 计时器
+      timer: dataserver.timer,
+      // 聊天数据
+      text: '',
+      isText: true,
+      img: '',
+      bigImg: '',
+      bigImgBase64: '',
+      modal2: false,
+      //
+      apiCustomerserviceDisplayrobotreplyShow: '../api/customerservice_displayrobotreply_show/',
+      apiChattinglogSendMessage: '../api/chattinglog_send_message/',
+      apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
+      apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
+      apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
+      robot_reply_item: {},
+      turnId: '',
+      save_text_item: {},
+      cs_email_item: {},
+      save_img_item: {},
+      save_bigImg_item: {},
+      admin_nickname: 'hahaha'
+    }
+  },
+  computed: {
+    session () {
+      return this.sessionList[this.sessionIndex]
+    }
+  },
+  created () {
+    this.user.id = (Math.random() * 1000).toString()
+    this.user.name = 'visitor'
+    this.information = 'No informations'
+    this.enterprise = this.$utils.getUrlKey('enterprise')
+    // this.user.id = this.$utils.getUrlKey('email')
+    // this.user.name = this.$utils.getUrlKey('nickname')
+    // this.information = this.$utils.getUrlKey('information')
+    // this.enterprise = this.$utils.getUrlKey('enterprise')
+    // 如果初次登录， 初始化
+    // if (this.user.id === '-1') {
+    //   this.user.id = (Math.random() * 1000).toString()
+    //   this.user.name = 'visitor'
+    //   this.information = 'No informations'
+    //   this.enterprise = this.$utils.getUrlKey('enterprise')
+    // } else {
+    //   this.user.name = this.$utils.getUrlKey('nickname')
+    //   this.information = this.$utils.getUrlKey('information')
+    //   this.enterprise = this.$utils.getUrlKey('enterprise')
+    // }
+    // 如果刷新之前已转接为人工客服，自动连接服务器
+    if (this.userList[0].id !== -1) {
+      let that = this
+      this.socket = io('http://localhost:3000')
+      this.socket.on('server message', function (msg, isText, img, bigImg, fromId, toId) {
+        serverMessage(that.sessionList, msg, isText, img, bigImg, fromId, toId)
+      })
+      this.socket.on('connect to server', function (toId) {
+        connectToServer(that.userList, that.sessionList, toId)
+        this.cs_email_item = {
+          'email': this.userList[0].id
+        }
+        this.get_cs_id_api()
+      })
+      this.socket.on('no server available', function () {
+        noServerAvailable(that.userList, that.sessionList)
+      })
+      this.socket.on('switch server', function (formerId) {
+        that.socket.emit('switch server', formerId)
+      })
+      this.socket.emit('customer come back', that.user.id, that.userList[0].id)
+    }
+  },
+  watch: {
+    // 每当sessionList改变时，保存到localStorage中
+    sessionList: {
+      deep: true,
+      handler () {
+        sessionStorage.setItem(key, JSON.stringify({
+          user: this.user,
+          userList: this.userList,
+          sessionList: this.sessionList,
+          sessionIndex: this.sessionIndex,
+          timer: this.timer
+        }))
+        // 重新开始计时
+        // if (this.userList[0].id !== -1) {
+        //   clearTimeout(this.timer)
+        //   let that = this
+        //   this.timer = setTimeout(function () {
+        //     that.socket.close()
+        //     noServerAvailable(that.userList, that.sessionList)
+        //   }, 4000)
+        // }
+      }
+    }
+  },
+  methods: {
+    inputing (e) {
+      if (e.keyCode === 13 && this.text.length) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML=''
+        this.session.messages.push({
+          text: this.text,
+          img: '',
+          bigImg: '',
+          isText: true,
+          date: new Date(),
+          self: true,
+          image: '../../../static/1.jpg'
+        })
+        console.log('inputing1')
+        // 存入数据库
+        let index = this.session.messages.length
+        this.save_text(1, index - 1)
+        console.log('inputing2')
+        if (this.userList[0].id !== -1) {
+          this.socket.emit('customer message', this.text, true, this.img, this.bigImg, this.user.id, this.userList[0].id)
+        } else {
+          this.robot_reply_item = {
+            'nickname': this.admin_nickname,
+            'customer_input': this.text
+          }
+          console.log(this.robot_reply_item)
+          this.show_robot_reply_api()
+        }
+        this.text = ''
+      }
+    },
+    buttoninputing (e) {
+      if (this.text.length !== 0 || this.img.length !== 0) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML=''
+        this.session.messages.push({
+          text: this.text,
+          img: this.img,
+          bigImg: this.bigImg,
+          isText: this.isText,
+          date: new Date(),
+          self: true,
+          image: '../../../static/1.jpg'
+        })
+        console.log('buttoninputing1')
+        // 存入数据库
+        let index = this.session.messages.length
+        if (this.isText === true) {
+          this.save_text(1, index - 1)
+        } else {
+          this.save_img(1, index - 1)
+        }
+        console.log('buttoninputing2')
+        if (this.userList[0].id !== -1) {
+          this.socket.emit('customer message', this.text, this.isText, this.img, this.bigImg, this.user.id, this.userList[0].id)
+        } else {
+          if (this.isText === true) {
+            this.robot_reply_item = {
+              'nickname': this.admin_nickname,
+              'customer_input': this.text
+            }
+            console.log(this.robot_reply_item)
+            this.show_robot_reply_api()
+          }
+        }
+        this.text = ''
+        this.img = ''
+        this.bigImg = ''
+        this.isText = true
+      }
+    },
+    switchServer (e) {
+      if (this.userList[0].id !== -1) {
+        alert('当前已为人工客服！')
+        return
+      }
+      let that = this
+      this.socket = io('http://localhost:3000')
+      let information = JSON.stringify({
+        userId: this.user.id,
+        userName: this.user.name,
+        information: this.information
+      })
+      initSocket(that.userList, that.sessionList, this.socket, that.user, information).then(function () {
+          that.cs_email_item = {
+          'email': that.userList[0].id
+        }
+        console.log(that.cs_email_item)
+        that.get_cs_id_api()
+      })
+      // this.isRobot = false
+      // this.timer = setTimeout(function () {
+      //   that.socket.close()
+      //   noServerAvailable(this.userList, this.sessionList)
+      // }, 4000)
+    },
+    fileup () {
+      let self = this
+      let obj = document.getElementById('inputFile')
+      let file = obj.files[0]
+      lrz(file, {width: 1920, height: 1920, quality: 1})
+        .then(function (rst) {
+          self.bigImg = rst.base64
+          self.isText = false
+          lrz(rst.origin, {width: 500, quality: 0.7})
+            .then(function (rst) {
+              self.img = rst.base64
+              self.buttoninputing()
+              return rst
+            })
+          return rst
+        })
+      obj.value = ''
+    },
+    imgupload () {
+      var file = document.getElementById('inputFile')
+      file.click()
+    },
+    showBigImg (bigImg) {
+      this.bigImgBase64 = bigImg
+      this.modal2 = true
+    },
+    show_robot_reply_api () {
+      this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robot_reply_item)
+        .then((response) => {
+          if (response.data === 'ERROR, wrong information.') {
+            // window.location.href = '../se_login'
+            console.log('show_robot_reply_api1')
+          } else if (response.data === 'ERROR, incomplete information.') {
+            // this.$Message.info('您所填的信息不完整')
+            console.log('show_robot_reply_api2')
+          } else if (response.data === 'ERROR, info is not exist.') {
+            // this.$Message.info('问题没得到解决？请转接人工客服')
+            console.log('show_robot_reply_api3')
+          } else {
+            let msg = response.data
+            this.show_robot_reply(msg)
+          }
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('show_robot_reply_api4')
+        })
+    },
+    show_robot_reply (msg) {
+      this.session.messages.push({
+        text: msg,
+        img: '',
+        bigImg: '',
+        isText: true,
+        date: new Date(),
+        image: '../../../static/2.png'
+      })
+      // 存入数据库
+      let index = this.session.messages.length
+      this.save_text(0, index - 1)
+    },
+    save_text_api () {
+      this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
+        .then((response) => {
+          console.log('save_text_api1')
+          this.save_text_item = {}
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('save_text_api2')
+        })
+    },
+    get_cs_id_api () {
+      this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
+        .then((response) => {
+          this.turnId = response.data
+          console.log('get_cs_id_api1')
+          console.log(response.data)
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('get_cs_id_api2')
+        })
+    },
+    save_text (isClient, index) {
+      this.save_text_item = {
+        'client_id': this.user.id,
+        'service_id': this.turnId,
+        'content': this.session.messages[index].text,
+        'is_client': isClient
+      }
+      console.log(this.save_text_item)
+      this.save_text_api()
+    },
+    save_img_api () {
+      this.$http.post(this.apiSmallimagelogSendImage, this.save_img_item)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('save_img_api1')
+          } else {
+            this.save_img_item = {}
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('save_img_api2')
+        })
+    },
+    save_bigImg_api () {
+      this.$http.post(this.apiBigimagelogSendImage, this.save_bigImg_item)
+        .then((response) => {
+          if (response.data === 'ERROR, invalid data in serializer.') {
+            // window.location.href = '../notfound'
+            console.log('save_bigImg_api1')
+          } else {
+            this.save_bigImg_item = {}
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('save_bigImg_api2')
+        })
+    },
+    save_img (isClient, index) {
+      let timestamp = new Date().getTime()
+      let label = timestamp + this.user.id
+      this.save_img_item = {
+        'client_id': this.user.id,
+        'service_id': this.turnId,
+        'image': this.session.messages[index].img,
+        'is_client': isClient,
+        'label': label
+      }
+      this.save_bigImg_item = {
+        'client_id': this.user.id,
+        'service_id': this.turnId,
+        'image': this.session.messages[index].bigImg,
+        'is_client': isClient,
+        'label': label
+      }
+      this.save_img_api()
+      this.save_bigImg_api()
+    }
+  },
+  filters: {
+    time (date) {
+      if (typeof date === 'string') {
+        date = new Date(date)
+      }
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
+    }
+  },
+  components: {},
+  directives: {
+    // 发送消息后滚动到底部
+    'scroll-bottom' () {
+      Vue.nextTick(() => {
+        let message = document.getElementsByClassName('main-message')
+        message[0].scrollTop = message[0].scrollHeight
+      })
+    }
+  }
+}
+</script>
+<style>
+/*开头*/
+
+ *,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
+  background: #176994 url(../index/assets/newbg.jpg);
+  background-size: cover;
+} 
+
+ul {
+  list-style: none;
+}
+
+.emoji-wysiwyg-editor {
+  line-height: 8px;
+  padding: 5px;
+}
+
+.lead {
+  font-size: 8px;
+}
+
+.ivu-btn {
+  font-size: 8px;
+}
+
+/*主要界面*/
+.container {
+  height: 100%;
+  width: 100%;
+  vertical-align: center;
+  border-radius: 4px;
+}
+
+.main {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: #eee;
+}
+
+.main-text {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  height: 160px;
+}
+
+/*似乎没有用到？*/
+.main-message {
+  height: calc(100% - 120px);
+}
+
+.main-message {
+  padding: 10px 15px;
+  overflow-y: scroll;
+  line-height: 1.25;
+}
+
+.message-list {
+  margin-bottom: 15px;
+}
+
+.message-time {
+  margin: 7px 0;
+  text-align: center;
+}
+
+.time-span {
+  display: inline-block;
+  padding: 0 18px;
+  font-size: 8px;
+  color: #fff;
+  border-radius: 2px;
+  background-color: #dcdcdc;
+}
+
+.main .message-avatar {
+  float: left;
+  margin: 0 10px 0 0;
+  border-radius: 3px;
+}
+
+.main .massage-text {
+  left: 5px;
+  display: inline-block;
+  position: relative;
+  padding: 0 5px;
+  max-width: calc(80% - 40px);
+  min-height: 30px;
+  line-height: 1.5;
+  font-size: 8px;
+  text-align: left;
+  word-break: break-all;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+.main .massage-text:before {
+  content: " ";
+  position: absolute;
+  top: 9px;
+  right: 100%;
+  border: 6px solid transparent;
+  border-right-color: #fafafa;
+}
+
+.self {
+  text-align: right;
+}
+
+.self>img {
+  float: right;
+  margin: 0 0 0 10px;
+}
+
+.self>.massage-text {
+  display: inline-block;
+  position: relative;
+  padding: 0 10px;
+  max-width: calc(80% + 10px);
+  min-height: 25px;
+  line-height: 1.5;
+  font-size: 8px;
+  background-color: #b2e281;
+  word-break: break-all;
+  border-radius: 4px;
+}
+
+.self>.massage-text:before {
+  content: " ";
+  position: absolute;
+  right: inherit;
+  top: 9px;
+  left: 100%;
+  border: 6px solid transparent;
+  border-right-color: transparent;
+  border-left-color: #b2e281;
+}
+
+.main-text {
+  height: 100px;
+  border-top: solid 1px #ddd;
+  background: white;
+}
+
+.textarea {
+  padding: 10px;
+  height: 100%;
+  width: 86%;
+  border: none;
+  outline: none;
+  font-family: "Micrsofot Yahei";
+  resize: none;
+}
+
+.submit-button {
+  /* width: 10%; */
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+}
+
+#chat {
+  margin: 20px auto;
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  border-radius: 3px;
+}
+</style>
