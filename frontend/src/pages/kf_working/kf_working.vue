@@ -181,7 +181,7 @@ function findOnlineListByCustomerID (onlineList, customerID) {
 
 // 通过customerID找l离线组的索引
 function findOfflineListByCustomerID (offlineList, customerID) {
-  return findOnlineListByCustomerID (onlineList, customerID)
+  return findOnlineListByCustomerID(offlineList, customerID)
 }
 
 // 接收文字消息放进onlinelist
@@ -197,7 +197,7 @@ function pushTextToOnlineList (onlineList, index, msg) {
 
 // 接收文字消息放进offlinelist
 function pushTextToOfflineList (offlineList, index, msg) {
-  return pushTextToOnlineList (offlineList, index, msg)
+  return pushTextToOnlineList(offlineList, index, msg)
 }
 
 // 接收图片消息放进onlinelist
@@ -246,7 +246,7 @@ function addCustomer (cs_socket, onlineList, customer) {
       messages: [],
       historyMessages: [],
       timer: timer,
-      uncheck: 0,
+      uncheck: 0
     }
   )
 }
@@ -369,10 +369,10 @@ export default {
 
       // 聊天数据
       // 文本框中输入的内容
-      chatlogData : {
+      chatlogData: {
         text: '',
         img: '',
-        bigImg: '',
+        bigImg: ''
       },
 
       // 显示大图片
@@ -420,7 +420,7 @@ export default {
           enterpriseID: -1,
           customerID: -1,
           messages: [],
-          historyMessages: [],
+          historyMessages: []
         }
       }
     },
@@ -438,7 +438,6 @@ export default {
     // socket响应 接收用户发送的文字信息
     this.socket.on('customer send message', function (msg, enterpriseID, csID, customerID) {
       console.log('socket: customer send message')
-      let vm = that
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
       pushTextToOnlineList(that.onlineList, onlineIndex, msg)
 
@@ -463,7 +462,7 @@ export default {
         }
         that.customerList[0].uncheck++ // 因此uncheck也要++
       } else {
-        var customerID = that.tempCustomerID
+        let customerID = that.tempCustomerID
         clearTimeout(that.onlineList[onlineIndex].timer)
         let customerID = that.onlineList[onlineIndex].customerID
         let csSocket = that.socket
@@ -477,7 +476,6 @@ export default {
     // 接受图片信息
     this.socket.on('customer send picture', function (bpic, spic, enterprise_id, cs_id, customer_id) {
       console.log('socket: customer send picture')
-      let vm = that
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
       pushImgToOnlineList(that.onlineList, onlineIndex, bpic, spic)
 
@@ -502,7 +500,7 @@ export default {
         }
         that.customerList[0].uncheck++ // 因此uncheck也要++
       } else {
-        var customerID = that.tempCustomerID
+        let customerID = that.tempCustomerID
         clearTimeout(that.onlineList[onlineIndex].timer)
         let customerID = that.onlineList[onlineIndex].customerID
         let csSocket = that.socket
@@ -591,7 +589,7 @@ export default {
     // 每当sessionList改变时，保存到localStorage中
     onlineList: {
       deep: true,
-      handler() {
+      handler () {
         sessionStorage.setItem(key, JSON.stringify({
           cs: this.cs,
 
@@ -745,7 +743,7 @@ export default {
         })
         let index = this.currentOnlineObject.messages.length
         this.saveImg(index - 1)
-        this.socket.emit('cs send picture', this.chatlogData.img, this.chatlogData.bigImg, this.currentOnlineObject.enterpriseID, this.cs.csID , this.currentOnlineObject.customerID)
+        this.socket.emit('cs send picture', this.chatlogData.img, this.chatlogData.bigImg, this.currentOnlineObject.enterpriseID, this.cs.csID, this.currentOnlineObject.customerID)
         clearTimeout(this.onlineList[this.onlineIndex].timer)
         let customerID = this.onlineList[this.onlineIndex].customerID
         let csSocket = this.socket
@@ -912,7 +910,7 @@ export default {
         this.$Message.info('您所填的信息不能为空')
       } else {
         if (this.robotSentence.keywordArray.length !== 0) {
-          keywordString = this.robotKeyWord.join(' ')
+          keywordString = this.robotSentence.keywordArray.join(' ')
         } else {
           keywordString = ''
         }
@@ -1141,8 +1139,8 @@ export default {
     printHistoryMessages (historyArray) {
       console.log('[method: printHistoryMessages]')
       for (var p = 0; p < historyArray.length; p++) {
-        console.log(historyArray[p].hasOwnProperty("content"))
-        if (historyArray[p].hasOwnProperty("content")) {
+        console.log(historyArray[p].hasOwnProperty('content'))
+        if (historyArray[p].hasOwnProperty('content')) {
           if (historyArray[p].is_client === false) {
             this.currentOnlineObject.historyMessages.push({
               text: historyArray[p].content,
@@ -1160,7 +1158,7 @@ export default {
             })
           }
         } else {
-          if (response.data[p].is_client === false) {
+          if (historyArray[p].is_client === false) {
             this.currentOnlineObject.historyMessages.push({
               img: historyArray[p].image,
               isText: false,
