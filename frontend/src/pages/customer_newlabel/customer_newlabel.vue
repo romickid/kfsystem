@@ -34,53 +34,53 @@ import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-Customer1'
 
 // 接收文字消息放进sessionList
-function pushTestToSessionList (sessionList, msg) {
+function pushTestToSessionList (session, msg) {
   console.log("function: pushTestToSessionList")
-  sessionList[0].messages.push({
+  session.messages.push({
     text: msg,
     date: new Date(),
     image: '../../../static/2.png'
   })
 }
 
-function connectToCs (csList, sessionList, csID) {
+function connectToCs (cs, session, csID) {
   console.log("function: connectToCs")
-  csList[0].csID = csID
-  sessionList[0].messages.push({
+  cs.csID = csID
+  session.messages.push({
     text: '已成功为您转接客服' + csID,
     date: new Date(),
     image: '../../../static/2.png'
   })
 }
 
-function noServerAvailable (csList, sessionList) {
+function noServerAvailable (cs, session) {
   console.log("function: noServerAvailable")
-  sessionList[0].messages.push({
+  session.messages.push({
     text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
     date: new Date(),
     image: '../../../static/2.png'
   })
-  csList[0].customerID = -1
+  cs.customerID = -1
 }
 
 // 初始化Socket
-function initSocket (csList, sessionList, socket, customer) {
+function initSocket (cs, session, socket, customer) {
   console.log("function: initSocket")
   let that = this
 
   socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
     console.log("socket: cs send message")
-    pushTestToSessionList(sessionList, msg, csID, customerID)
+    pushTestToSessionList(session, msg, csID, customerID)
   })
 
   socket.on('connect to cs', function (csID) {
     console.log("socket: connect to cs")
-    connectToCs(csList, sessionList, csID)
+    connectToCs(cs, session, csID)
   })
 
   socket.on('no server available', function () {
     console.log("socket: no server available")
-    noServerAvailable(csList, sessionList)
+    noServerAvailable(cs, session)
   })
 
   socket.on('switch cs', function (enterpriseID, formerCsID) {
@@ -107,19 +107,18 @@ function initData (key) {
       },
 
       // 客服列表
-      csList: [
-        {
+      cs: {
           csID: -1,
           csName: 'MonsterSXF',
           enterpriseID: 'nick2',
           image: '../../../static/2.png'
-        }
-      ],
+        },
+      
 
       // 会话列表
-      sessionList: [
+      session: 
         {
-          customerID: 2,
+          customerID: -1,
           enterpriseID: 'nick2',
           messages: [
             {
@@ -128,9 +127,7 @@ function initData (key) {
               image: '../../../static/2.png'
             }
           ]
-        }
-      ],
-      sessionIndex: 0,
+        },
       timer: ''
     }
     sessionStorage.setItem(key, JSON.stringify(userData))
@@ -147,22 +144,14 @@ export default {
       // 登录用户
       customer: dataserver.customer,
       // 用户列表
-      csList: dataserver.csList,
+      cs: dataserver.cs,
       // 会话列表
-      sessionList: dataserver.sessionList,
-      // 选中的会话Index
-      sessionIndex: dataserver.sessionIndex,
+      session: dataserver.session,
+      // 计时器
+      timer: dataserver.timer,
       // 文本框中输入的内容
       text: '',
-      socket: '',
-      // 计时器
-      timer: dataserver.timer
-    }
-  },
-
-  computed: {
-    session () {
-      return this.sessionList[this.sessionIndex]
+      socket: ''
     }
   },
 
@@ -174,40 +163,39 @@ export default {
     }
 
     // 如果刷新之前已转接为人工客服，自动连接服务器
-    if (this.csList[0].csID !== -1) {
+    if (this.cs.csID !== -1) {
       let that = this
       this.socket = io('http://localhost:3000')
 
       this.socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
-        pushTestToSessionList(that.sessionList, msg, csID, customerID)
+        pushTestToSessionList(that.session, msg, csID, customerID)
       })
 
       this.socket.on('connect to cs', function (csID) {
-        connectToCs(that.csList, that.sessionList, csID)
+        connectToCs(that.cs, that.session, csID)
       })
 
       this.socket.on('no server available', function () {
-        noServerAvailable(that.csList, that.sessionList)
+        noServerAvailable(that.cs, that.session)
       })
 
       this.socket.on('switch cs', function (enterpriseID, formerCsID) {
         that.socket.emit('switch cs', enterpriseID, formerCsID)
       })
 
-      this.socket.emit('cs come back', that.customer.enterpriseID, that.csList[0].csID)
+      this.socket.emit('cs come back', that.customer.enterpriseID, that.cs.csID)
     }
   },
 
   watch: {
-    // 每当sessionList改变时，保存到localStorage中
-    sessionList: {
+    // 每当session改变时，保存到localStorage中
+    session: {
       deep: true,
       handler () {
         sessionStorage.setItem(key, JSON.stringify({
           customer: this.customer,
-          csList: this.csList,
-          sessionList: this.sessionList,
-          sessionIndex: this.sessionIndex,
+          cs: this.cs,
+          session: this.session,
           timer: this.timer
         }))
       }
@@ -224,7 +212,7 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.csList[0].csID, this.customer.customerID)
+        this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         this.text = ''
       }
     },
@@ -238,20 +226,20 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.csList[0].csID, this.customer.customerID)
+        this.socket.emit('customer send message', this.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         this.text = ''
       }
     },
 
     switchToCs (e) {
       console.log("method: switchToCs")
-      if (this.csList[0].csID !== -1) {
+      if (this.cs.csID !== -1) {
         alert('当前已为人工客服！')
         return
       }
       let that = this
       that.socket = io('http://localhost:3000')
-      initSocket(that.csList, that.sessionList, that.socket, that.customer)
+      initSocket(that.cs, that.session, that.socket, that.customer)
     }
   },
 
