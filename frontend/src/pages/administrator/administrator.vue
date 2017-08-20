@@ -3,7 +3,9 @@
     <!-- Header -->
     <div class='layout'>
       <div class='layout-ceiling'>
-        <div class='layout-logo'>logo</div>
+        <div class='layout-logo'>
+          <img src='./assets/name.png' style="height:40px">
+        </div>
         <div class='layout-ceiling-main'>
           <a href='../main'>首页</a> |
           <a href='../documentation'>帮助中心</a>
@@ -16,7 +18,7 @@
         <i-col :span="spanLeft" class='main-menu-left'>
           <Menu active-name='1' theme='dark' width='auto' @on-select='select'>
             <div class='main-logo-left'>
-              <span>logo</span>
+              <img src='./assets/logo5.png' style="height:30px;width:30px">
               <p class='main-text'>{{ adminName }}</p>
             </div>
             <Menu-item name=''>
@@ -149,11 +151,9 @@ export default {
 
  <style scoped>
 .layout {
-  border: 1px solid #d7dde4;
   border-bottom: 0;
   background: #f5f7f9;
   position: relative;
-  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -222,12 +222,18 @@ export default {
   background: #5b6270;
   border-radius: 3px;
   margin: 15px auto;
-  text-align: center;
+  margin-left: 1em;
+  display: inline-flex;
+}
+
+.main-logo-left img {
+  margin-left: 3em;
 }
 
 .main-logo-left p {
   padding-left: 1em;
-  display: inline;
+  font-size: 1.5em;
+  color: white;
 }
 
 .main-hide-text .main-text {
