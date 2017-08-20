@@ -31,7 +31,7 @@
       <div class="main-text">
         <Button @click="switchServer">转接人工客服</Button>
         <p class="lead emoji-picker-container">
-          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
+          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keydown="inputing" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttoninputing">发送</Button>
         <div class="functions">
@@ -83,22 +83,25 @@ function noServerAvailable (userList, sessionList) {
 }
 // 初始化Socket
 function initSocket (userList, sessionList, socket, user, information) {
-  socket.on('server message', function (msg, isText, img, bigImg, fromId, toId) {
-    serverMessage(sessionList, msg, isText, img, bigImg, fromId, toId)
-  })
-  socket.on('connect to server', function (toId) {
-    connectToServer(userList, sessionList, toId)
-  })
-  socket.on('no server available', function () {
-    noServerAvailable(userList, sessionList)
-  })
-  socket.on('switch server', function (formerId) {
-    socket.emit('switch server', formerId, information)
-  })
+  return new Promise (function (resolve) {
+    socket.on('server message', function (msg, isText, img, bigImg, fromId, toId) {
+      serverMessage(sessionList, msg, isText, img, bigImg, fromId, toId)
+    })
+    socket.on('connect to server', function (toId) {
+      connectToServer(userList, sessionList, toId)
+      resolve()
+    })
+    socket.on('no server available', function () {
+      noServerAvailable(userList, sessionList)
+    })
+    socket.on('switch server', function (formerId) {
+      socket.emit('switch server', formerId, information)
+    })
 
-  // user.id = socket.id
-  // user.name = socket.id
-  socket.emit('assigned to server', user.id, information)
+    // user.id = socket.id
+    // user.name = socket.id
+    socket.emit('assigned to server', user.id, information)
+  })
 }
 // 数据初始化
 function initData (key) {
@@ -181,7 +184,8 @@ export default {
       save_text_item: {},
       cs_email_item: {},
       save_img_item: {},
-      save_bigImg_item: {}
+      save_bigImg_item: {},
+      admin_nickname: 'hahaha'
     }
   },
   computed: {
@@ -195,10 +199,9 @@ export default {
     if (this.user.id === '-1') {
       this.user.id = (Math.random() * 1000).toString()
       this.user.name = 'visitor'
-      this.information = 'No informations',
+      this.information = 'No informations'
       this.enterprise = this.$utils.getUrlKey('enterprise')
-    }
-    else{
+    } else {
       this.user.name = this.$utils.getUrlKey('nickname')
       this.information = this.$utils.getUrlKey('information')
       this.enterprise = this.$utils.getUrlKey('enterprise')
@@ -252,11 +255,12 @@ export default {
   },
   methods: {
     inputing (e) {
-      if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
+      if (e.keyCode === 13 && this.text.length) {
         this.session.messages.push({
           text: this.text,
           img: '',
           bigImg: '',
+          isText: true,
           date: new Date(),
           self: true,
           image: '../../../static/1.jpg'
@@ -267,9 +271,10 @@ export default {
         this.save_text(1, index - 1)
         console.log('inputing2')
         if (this.userList[0].id !== -1) {
-          this.socket.emit('customer message', this.text, this.isText, this.img, this.bigImg, this.user.id, this.userList[0].id)
+          this.socket.emit('customer message', this.text, true, this.img, this.bigImg, this.user.id, this.userList[0].id)
         } else {
           this.robot_reply_item = {
+            'nickname': this.admin_nickname,
             'customer_input': this.text
           }
           console.log(this.robot_reply_item)
@@ -303,6 +308,7 @@ export default {
         } else {
           if (this.isText === true) {
             this.robot_reply_item = {
+              'nickname': this.admin_nickname,
               'customer_input': this.text
             }
             console.log(this.robot_reply_item)
@@ -327,12 +333,13 @@ export default {
         userName: this.user.name,
         information: this.information
       })
-      initSocket(that.userList, that.sessionList, this.socket, that.user, information)
-      this.cs_email_item = {
-        'email': this.userList[0].id
-      }
-      console.log(this.cs_email_item)
-      this.get_cs_id_api()
+      initSocket(that.userList, that.sessionList, this.socket, that.user, information).then(function () {
+          that.cs_email_item = {
+          'email': that.userList[0].id
+        }
+        console.log(that.cs_email_item)
+        that.get_cs_id_api()
+      })
       // this.isRobot = false
       // this.timer = setTimeout(function () {
       //   that.socket.close()
@@ -370,20 +377,20 @@ export default {
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
             // window.location.href = '../se_login'
+            console.log('show_robot_reply_api1')
           } else if (response.data === 'ERROR, incomplete information.') {
             // this.$Message.info('您所填的信息不完整')
-          } else if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login'
-          } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login'
+            console.log('show_robot_reply_api2')
           } else if (response.data === 'ERROR, info is not exist.') {
             // this.$Message.info('问题没得到解决？请转接人工客服')
+            console.log('show_robot_reply_api3')
           } else {
             let msg = response.data
             this.show_robot_reply(msg)
           }
         }, (response) => {
-          window.location.href = '../se_login'
+          // window.location.href = '../se_login'
+          console.log('show_robot_reply_api4')
         })
     },
     show_robot_reply (msg) {
@@ -402,19 +409,22 @@ export default {
     save_text_api () {
       this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
         .then((response) => {
+          console.log('save_text_api1')
           this.save_text_item = {}
         }, (response) => {
           // window.location.href = '../se_login'
-          console.log('save_text_api')
+          console.log('save_text_api2')
         })
     },
     get_cs_id_api () {
       this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
         .then((response) => {
           this.turnId = response.data
+          console.log('get_cs_id_api1')
+          console.log(response.data)
         }, (response) => {
           // window.location.href = '../se_login'
-          console.log('get_cs_id_api')
+          console.log('get_cs_id_api2')
         })
     },
     save_text (isClient, index) {
@@ -422,7 +432,7 @@ export default {
         'client_id': this.user.id,
         'service_id': this.turnId,
         'content': this.session.messages[index].text,
-        'isClient': isClient
+        'is_client': isClient
       }
       console.log(this.save_text_item)
       this.save_text_api()
@@ -461,16 +471,16 @@ export default {
       this.save_img_item = {
         'client_id': this.user.id,
         'service_id': this.turnId,
-        'content': this.session.messages[index].img,
-        'isClient': isClient
-        // 'label': label
+        'image': this.session.messages[index].img,
+        'is_client': isClient,
+        'label': label
       }
       this.save_bigImg_item = {
         'client_id': this.user.id,
         'service_id': this.turnId,
-        'content': this.session.messages[index].bigImg,
-        'isClient': isClient
-        // 'label': label
+        'image': this.session.messages[index].bigImg,
+        'is_client': isClient,
+        'label': label
       }
       this.save_img_api()
       this.save_bigImg_api()

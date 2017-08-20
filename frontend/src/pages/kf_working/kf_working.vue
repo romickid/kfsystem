@@ -116,7 +116,7 @@
               <div class="massage-text">
                 <li>
                   <p v-if="item.isText">{{ item.text }}</p>
-                  <img :src='item.img' v-else @click='showBigImg(item.bigImg)'>
+                  <img :src='item.img' v-else @click='showHistoryBigImg(item.label)'>
                 </li>
               </div>
             </div>
@@ -381,7 +381,8 @@ export default {
       cs_email_item: {},
       save_img_item: {},
       save_bigImg_item: {},
-      show_history_item: {}
+      show_history_item: {},
+      show_history_big_img_item: {}
     }
   },
   computed: {
@@ -553,7 +554,7 @@ export default {
       }
     },
     inputing (e) {
-      if (e.ctrlKey && e.keyCode === 13 && this.text.length) {
+      if (e.ctrlKey && e.keyCode === 13 && this.text.length && this.session.userId !== -1) {
         if (!this.hangon) {
           alert('该用户已挂断！')
           this.text = ''
@@ -588,7 +589,7 @@ export default {
         this.text = ''
         return
       }
-      if (this.text.length !== 0 || this.img.length !== 0) {
+      if ((this.text.length !== 0 || this.img.length !== 0) && this.session.userId !== -1) {
         this.session.messages.push({
           text: this.text,
           img: this.img,
@@ -879,16 +880,16 @@ export default {
       this.save_img_item = {
         'client_id': this.session.userId,
         'service_id': this.turnId,
-        'content': this.session.messages[index].img,
-        'is_client': false
-        // 'label': label
+        'image': this.session.messages[index].img,
+        'is_client': false,
+        'label': label
       }
       this.save_bigImg_item = {
         'client_id': this.session.userId,
         'service_id': this.turnId,
-        'content': this.session.messages[index].bigImg,
-        'is_client': false
-        // 'label': label
+        'image': this.session.messages[index].bigImg,
+        'is_client': false,
+        'label': label
       }
       console.log(this.save_img_item)
       console.log(this.save_bigImg_item)
@@ -904,7 +905,8 @@ export default {
           } else {
             console.log(response.data)
             for (var p = 0; p < response.data.length; p++) {
-              if ('content' in response.data[p]) {
+              console.log(response.data[p].hasOwnProperty("content"))
+              if (response.data[p].hasOwnProperty("content")) {
                 if (response.data[p].is_client === false) {
                   this.hsession.messages.push({
                     text: response.data[p].content,
@@ -924,19 +926,27 @@ export default {
               } else {
                 if (response.data[p].is_client === false) {
                   this.hsession.messages.push({
-                    img: response.data[p].img,
+                    img: response.data[p].image,
                     isText: false,
+                    label: response.data[p].label,
                     date: response.data[p].time,
                     self: true,
                     image: this.user.image
                   })
+                  let index = this.hsession.messages.length
+                  console.log('this.hsession.messages1')
+                  console.log(this.hsession.messages[index - 1])
                 } else {
                   this.hsession.messages.push({
-                    img: response.data[p].img,
+                    img: response.data[p].image,
                     isText: false,
+                    label: response.data[p].label,
                     date: response.data[p].time,
                     image: '../../../static/3.jpg'
                   })
+                  let index = this.hsession.messages.length
+                  console.log('this.hsession.messages2')
+                  console.log(this.hsession.messages[index - 1])
                 }
               }
             }
@@ -944,6 +954,29 @@ export default {
         }, (response) => {
           // window.location.href = '../notfound'
           console.log('show_history_api2')
+        })
+    },
+    showHistoryBigImg (label) {
+      this.show_history_big_img_item = {
+        'client_id': this.session.userId,
+        'service_id': this.turnId,
+        'label': label
+      }
+      this.show_history_big_img_api()
+    },
+    show_history_big_img_api () {
+      this.$http.post(this.apiBigimagelogShowSingleHistory, this.show_history_big_img_item)
+        .then((response) => {
+          if (response.data === 'ERROR, no history.') {
+            // window.location.href = '../notfound'
+            console.log('show_history_big_img_api1')
+          } else {
+            this.show_history_big_img_api = {}
+            this.showBigImg(response.data)
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('show_history_big_img_api2')
         })
     }
   },
