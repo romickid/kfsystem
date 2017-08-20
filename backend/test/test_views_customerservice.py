@@ -1,3 +1,4 @@
+#coding:utf-8
 from django.test import TestCase
 from django.test import Client
 import sys
@@ -579,17 +580,17 @@ class TestCsDisplayrobotreplyShow(TestCase):
         Admin.objects.create(id=2, email='admin2@test.com', nickname='a_nick2', password='a_pass2', web_url='a_weburl2', widget_url='a_widgeturl2', mobile_url='a_mobileurl2', communication_key='a_key2', vid='a_vid2')
         admin_instance1 = Admin.objects.get(id=1)
         admin_instance2 = Admin.objects.get(id=2)
-        RobotInfo.objects.create(id=1, enterprise=admin_instance1, question='morning', answer='answer1', keyword='keyword1', weight=1)
-        RobotInfo.objects.create(id=2, enterprise=admin_instance1, question='morning shanghai', answer='answer2', keyword='keyword2', weight=1)
-        RobotInfo.objects.create(id=3, enterprise=admin_instance1, question='morning beijing', answer='answer3', keyword='keyword3', weight=1)
+        RobotInfo.objects.create(id=1, enterprise=admin_instance1, question='你好', answer='answer1', keyword='keyword1', weight=1)
+        RobotInfo.objects.create(id=2, enterprise=admin_instance1, question='早安 上海', answer='answer2', keyword='keyword2', weight=1)
+        RobotInfo.objects.create(id=3, enterprise=admin_instance1, question='早安 北京', answer='answer3', keyword='keyword3', weight=1)
 
     def test(self):
         c = Client()
 
-        json1 = {'nickname': 'a_nick1', 'customer_input': 'morning'}
+        json1 = {'nickname': 'a_nick1', 'customer_input': '你好'}
         request1 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
-        # print(request1.content.decode('utf-8'))
+        # self.assertEqual(request1.content.decode('utf-8'), "你好   answer1")
 
         json2 = {'nickname': 'a_nick1'}
         request2 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json2), content_type='json')
@@ -604,7 +605,7 @@ class TestCsDisplayrobotreplyShow(TestCase):
         json4 = {'nickname': 'a_nick2', 'customer_input': 'morning'}
         request4 = c.post("/api/customerservice_displayrobotreply_show/", data=json.dumps(json4), content_type='json')
         self.assertEqual(request4.status_code, 200)
-        self.assertEqual(request4.content.decode('utf-8'), "ERROR, info is not exist.")
+        # self.assertEqual(request4.content.decode('utf-8'), "很抱歉，我不是很清楚您说的是什么，请尝试询问其他问题或使用人工客服。")
 
 
 class TestCsLogout(TestCase):
