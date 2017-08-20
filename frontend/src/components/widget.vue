@@ -35,15 +35,18 @@ export default {
 
 .method-title {
   padding: 0.5em 2em;
+  border-bottom: 1px solid #d7dde4;
 }
 
 .method-content {
   margin: 0.5em 2em;
+  margin-top: 1em;
   padding: 1em 1em;
   background-color: #f5f7f9;
 }
 
 .method-foot {
   padding: 0.5em 2em;
+  padding-bottom: 1em;
 }
 </style>
