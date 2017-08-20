@@ -30,6 +30,7 @@ export default {
 
 .method {
   margin: 4em 0em;
+  border: 1px solid #d7dde4;
 }
 
 .method-title {
