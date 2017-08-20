@@ -146,27 +146,25 @@ function initData (key) {
 
       // 客服列表
       cs: {
-          csID: -1,
-          csName: 'MonsterSXF',
-          enterpriseID: 'nick2',
-          image: '../../../static/2.png'
-        },
-
+        csID: -1,
+        csName: 'MonsterSXF',
+        enterpriseID: 'nick2',
+        image: '../../../static/2.png'
+      },
 
       // 会话列表
-      session:
-        {
-          customerID: -1,
-          enterpriseID: 'nick2',
-          messages: [
-            {
-              text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
-              isText: true,
-              date: now,
-              image: '../../../static/2.png'
-            }
-          ]
-        },
+      session: {
+        customerID: -1,
+        enterpriseID: 'nick2',
+        messages: [
+          {
+            text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
+            isText: true,
+            date: now,
+            image: '../../../static/2.png'
+          }
+        ]
+      },
       timer: ''
     }
     sessionStorage.setItem(key, JSON.stringify(userData))
@@ -194,12 +192,12 @@ export default {
       chatlogData: {
         text: '',
         img: '',
-        bigImg: '',
+        bigImg: ''
       },
       bigImgSrc: '',
       modalShowBigImg: false,
 
-      //api接口
+      // api接口
       apiCustomerserviceDisplayrobotreplyShow: '../api/customerservice_displayrobotreply_show/',
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
       apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
@@ -232,8 +230,8 @@ export default {
         pushTextToSessionList(that.session, msg)
       })
 
-      socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-        pushImgToSessionList(session, bpic, spic)
+      this.socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
+        pushImgToSessionList(that.session, bpic, spic)
       })
 
       this.socket.on('connect to cs', function (csID) {
