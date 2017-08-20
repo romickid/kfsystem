@@ -1587,4 +1587,9 @@ ul {
   overflow: hIDden;
   border-radius: 3px;
 }
+
+.send-pic {
+  float: right;
+  margin-right: 0.6em;
+}
 </style>
