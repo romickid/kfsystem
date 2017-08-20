@@ -368,9 +368,6 @@ def customerservice_displayrobotreply_show_check(json_receive):
         return 0, 'ERROR, incomplete information.'
     if test_json == 2:
         return 0, 'ERROR, wrong information.'
-    instance_admin = Admin.objects.get(nickname=json_receive['nickname'])
-    if robotinfo_is_existent_by_enterprise(instance_admin.id) == False:
-        return 0, 'ERROR, info is not exist.'
     return 1, 'No ERROR.'
 
 

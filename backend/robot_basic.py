@@ -49,6 +49,8 @@ def robot_basic_similarity(array_input, dict_questions):
 
 def robot_basic_weight_list(customer_input):
     instance_robotinfo = RobotGossipInfo.objects.all()
+    if instance_robotinfo.exists() == False:
+        return 0
     array_input_tags = robot_basic_create_tags(customer_input)
     weight_list = list()
     for i in instance_robotinfo:
