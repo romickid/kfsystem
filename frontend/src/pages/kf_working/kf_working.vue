@@ -146,11 +146,11 @@
         <div slot="footer">
         </div>
       </Modal>
-      <div class="main-text">
+      <div class="main-text" @keydown="inputing">
         <Button @click="showHistory">历史消息</Button>
         <Button @click="switchServer">转接</Button>
         <p class="lead emoji-picker-container">
-          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keyup="inputing" data-emojiable="true"></textarea>
+          <textarea class="textarea" placeholder="按 Enter 发送" v-model="text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttoninputing">发送</Button>
         <div class="functions">
@@ -554,7 +554,9 @@ export default {
       }
     },
     inputing (e) {
-      if (e.ctrlKey && e.keyCode === 13 && this.text.length && this.session.userId !== -1) {
+      if (e.keyCode === 13 && this.text.length && this.session.userId !== -1) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML=''
         if (!this.hangon) {
           alert('该用户已挂断！')
           this.text = ''
@@ -590,6 +592,8 @@ export default {
         return
       }
       if ((this.text.length !== 0 || this.img.length !== 0) && this.session.userId !== -1) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML=''
         this.session.messages.push({
           text: this.text,
           img: this.img,

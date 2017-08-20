@@ -28,10 +28,10 @@
         <div slot="footer">
         </div>
       </Modal>
-      <div class="main-text">
+      <div class="main-text" @keydown="inputing">
         <Button @click="switchServer">转接人工客服</Button>
         <p class="lead emoji-picker-container">
-          <textarea class="textarea" placeholder="按 Ctrl + Enter 发送" v-model="text" @keydown="inputing" data-emojiable="true"></textarea>
+          <textarea class="textarea" placeholder="按 Enter 发送" v-model="text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttoninputing">发送</Button>
         <div class="functions">
@@ -256,6 +256,8 @@ export default {
   methods: {
     inputing (e) {
       if (e.keyCode === 13 && this.text.length) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML=''
         this.session.messages.push({
           text: this.text,
           img: '',
@@ -285,6 +287,8 @@ export default {
     },
     buttoninputing (e) {
       if (this.text.length !== 0 || this.img.length !== 0) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML=''
         this.session.messages.push({
           text: this.text,
           img: this.img,
