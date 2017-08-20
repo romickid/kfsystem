@@ -457,7 +457,8 @@ def customerservice_show_user_status(request):
 
         data_email = request.session['c_email']
         instance = CustomerService.objects.get(email=data_email)
-        json_send = {'email': instance.email, 'nickname': instance.nickname}
+        instance_admin = instance.enterprise
+        json_send = {'email': instance.email, 'nickname': instance.nickname, 'admin_nickname': instance_admin.nickname}
         return JsonResponse(json_send, status=200)
 
 
