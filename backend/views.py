@@ -636,6 +636,7 @@ def chattinglog_show_history(request):
 @csrf_exempt
 def chattinglog_get_cs_id(request):
     if request.method == 'POST':
+        # CustomerService: email
         json_receive = JSONParser().parse(request)
         customerservices = CustomerService.objects.get(email=json_receive['email'])
         return HttpResponse(customerservices.id,status=200)
@@ -697,7 +698,7 @@ def log_show_history(request):
         json_send = list()
         pointer_image, pointer_chat = log_show_history_while_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat)
         log_show_history_if_snippet(json_send, instance_image, instance_chat, len_image, len_chat, pointer_image, pointer_chat)
-        return JsonResponse(json_send, safe=False, status=400)
+        return JsonResponse(json_send, safe=False, status=200)
 
 
 @csrf_exempt

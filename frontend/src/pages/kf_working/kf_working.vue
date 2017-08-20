@@ -365,7 +365,7 @@ export default {
         questionIsNull: false,
         replyIsNull: false,
         keywordIsNotStandard: false
-      }
+      },
 
       // 聊天数据
       // 文本框中输入的内容
@@ -373,7 +373,7 @@ export default {
         text: '',
         img: '',
         bigImg: '',
-      }
+      },
 
       // 显示大图片
       bigImgSrc: '',
@@ -395,13 +395,13 @@ export default {
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
       apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
-      apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
+      apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
       apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
       apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
       apiBigimagelogShowSingleHistory: '../api/bigimagelog_show_single_history/',
       apiLogShowHistory: '../api/log_show_history/',
       apiCustomerserviceSetrobotinfoCreate: '../api/customerservice_setrobotinfo_create/',
-      apiCustomerserviceLogout: '../api/customerservice_logout/'
+      apiCustomerserviceLogout: '../api/customerservice_logout/',
 
       databaseCsID: '',
       tempCustomerID: ''
@@ -755,7 +755,7 @@ export default {
         this.chatlogData.img = ''
         this.chatlogData.bigImg = ''
       }
-    }
+    },
 
     // 点击切换查看历史记录信息或当前记录信息
     switchoff () {
@@ -829,7 +829,7 @@ export default {
           // window.location.href = '../se_login'
           console.log('csLogoutApi3')
         })
-    }
+    },
 
     // 机器人语料检查问题输入
     checkQuestion () {
@@ -1043,6 +1043,7 @@ export default {
 
     // 存大图片调用后端api
     saveBigImgApi () {
+      console.log('[method: saveBigImgApi]')
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -1059,6 +1060,7 @@ export default {
 
     // 存图片的函数
     saveImg (index) {
+      console.log('[method: saveImg]')
       let timestamp = new Date().getTime()
       let label = timestamp + this.databaseCsID
       this.savImgItem = {
@@ -1088,10 +1090,11 @@ export default {
         alert('无法获取历史消息！')
         return
       }
-      this.show_history_item = {
+      this.showHistoryItem = {
         'client_id': this.currentOnlineObject.customerID,
         'service_id': this.databaseCsID
       }
+      console.log(this.showHistoryItem)
       this.showHistoryApi()
     },
 
@@ -1161,7 +1164,7 @@ export default {
           }
         }
       }
-    }
+    },
 
     // 历史记录显示大图片
     showHistoryBigImg (label) {
