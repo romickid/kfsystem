@@ -178,6 +178,7 @@ export default {
 .team-content {
   border: 1px solid #d7dde4;
   border-bottom: 1px solid #d7dde4;
+  margin: 4em 3em;
 }
 
 .title {
