@@ -744,7 +744,7 @@ export default {
           image: this.cs.image
         })
         let index = this.currentOnlineObject.messages.length
-        this.saveText(index - 1)
+        this.saveImg(index - 1)
         this.socket.emit('cs send picture', this.chatlogData.img, this.chatlogData.bigImg, this.currentOnlineObject.enterpriseID, this.cs.csID , this.currentOnlineObject.customerID)
         clearTimeout(this.onlineList[this.onlineIndex].timer)
         let customerID = this.onlineList[this.onlineIndex].customerID
@@ -916,13 +916,13 @@ export default {
         } else {
           keywordString = ''
         }
-        this.robot_question_add = {
+        this.robotQuestionAdd = {
           'question': this.question,
           'answer': this.reply,
           'keyword': keywordString,
           'weight': this.modelSelect
         }
-        this.set_robot_api()
+        this.setRobotApi()
       }
       this.robotSentenceAddCancel()
     },
