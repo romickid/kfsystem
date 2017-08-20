@@ -31,6 +31,8 @@ def admin_create(request):
         serializer = AdminSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
+            instance = Admin.objects.get(email=json_receive['email'])
+            CustomerService.objects.create(email=json_receive['nickname']+'@robot.com', enterprise=instance, nickname=json_receive['nickname']+'&Robot', password='robot_password', is_register=True, is_online=True, connection_num=0, vid='robot_vid')
             sn_mark_used(json_receive['serials'])
             return HttpResponse('OK', status=200)
         return HttpResponse('ERROR, invalid data in serializer.', status=200)
