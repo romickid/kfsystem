@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^kf_working/', TemplateView.as_view(template_name="kf_working.html")),
     url(r'^customer_newlabel/', TemplateView.as_view(template_name="customer_newlabel.html")),
+    url(r'^customer_iframe/', TemplateView.as_view(template_name="customer_iframe.html")),
     url(r'^en_login/', TemplateView.as_view(template_name="en_login.html")),
     url(r'^se_login/', TemplateView.as_view(template_name="se_login.html")),
     url(r'^en_folders/', TemplateView.as_view(template_name="en_folders.html")),
