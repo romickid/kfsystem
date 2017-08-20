@@ -642,9 +642,12 @@ def chattinglog_get_cs_id(request):
 @csrf_exempt
 def bigimagelog_send_image(request):
     if request.method == 'POST':
-        # imagelog: client_id service_id image is_client
+        # bigimagelog: client_id service_id image is_client label
         json_receive = JSONParser().parse(request)
         json_receive['time'] = timezone.now()
+        ext_position1 = json_receive.index('data:image/')
+        ext_position2 = json_receive.index(';base64,')
+        json_receive['extention'] = image[ext_position1+11:ext_position2]
         serializer = BigImageLogSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -655,13 +658,13 @@ def bigimagelog_send_image(request):
 @csrf_exempt
 def bigimagelog_show_single_history(request):
     if request.method == 'POST':
-        # imagelog: client_id service_id label
+        # bigimagelog: client_id service_id label
         json_receive = JSONParser().parse(request)
         instances = BigImageLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id'], label=json_receive['label'])
         if instances.exists():
             serializer = BigImageLogSerializer(instances)
             f = open('./media/user_image/Big/'+serializer.data[0]['image'],'rb')
-            ls_f = base64.b64encode(f.read())
+            ls_f = 'data:image/' + instances[0].extention + ';base64,' + base64.b64encode(f.read())
             f.close()
             return HttpResponse(ls_f, status=200)
         return HttpResponse('ERROR, no history.', status=200)
@@ -670,9 +673,12 @@ def bigimagelog_show_single_history(request):
 @csrf_exempt
 def smallimagelog_send_image(request):
     if request.method == 'POST':
-        # imagelog: client_id service_id image is_client
+        # smallimagelog: client_id service_id image is_client label
         json_receive = JSONParser().parse(request)
         json_receive['time'] = timezone.now()
+        ext_position1 = json_receive.index('data:image/')
+        ext_position2 = json_receive.index(';base64,')
+        json_receive['extention'] = image[ext_position1+11:ext_position2]
         serializer = SmallImageLogSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
