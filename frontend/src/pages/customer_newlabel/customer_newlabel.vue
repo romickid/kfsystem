@@ -140,7 +140,7 @@ function initData (key) {
       customer: {
         customerID: -1,
         customerName: 'coffce',
-        enterpriseID: 'nick2',
+        enterpriseID: 'hahaha',
         image: '../../../static/1.jpg'
       },
 
@@ -148,14 +148,14 @@ function initData (key) {
       cs: {
         csID: -1,
         csName: 'MonsterSXF',
-        enterpriseID: 'nick2',
+        enterpriseID: 'hahaha',
         image: '../../../static/2.png'
       },
 
       // 会话列表
       session: {
         customerID: -1,
-        enterpriseID: 'nick2',
+        enterpriseID: 'hahaha',
         messages: [
           {
             text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
@@ -226,27 +226,43 @@ export default {
       let that = this
       this.socket = io('http://localhost:3000')
 
-      this.socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
-        pushTextToSessionList(that.session, msg)
-      })
+      new Promise(function (resolve) {
+        this.socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
+          pushTextToSessionList(that.session, msg)
+        })
 
-      this.socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-        pushImgToSessionList(that.session, bpic, spic)
-      })
+        this.socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
+          pushImgToSessionList(that.session, bpic, spic)
+        })
 
-      this.socket.on('connect to cs', function (csID) {
-        connectToCs(that.cs, that.session, csID)
-      })
+        this.socket.on('connect to cs', function (csID) {
+          connectToCs(that.cs, that.session, csID)
+          resolve()
+        })
 
-      this.socket.on('no server available', function () {
-        noServerAvailable(that.cs, that.session)
-      })
+        this.socket.on('no server available', function () {
+          noServerAvailable(that.cs, that.session)
+        })
 
-      this.socket.on('switch cs', function (enterpriseID, formerCsID) {
-        that.socket.emit('switch cs', enterpriseID, formerCsID)
-      })
+        this.socket.on('switch cs', function (enterpriseID, formerCsID) {
+          that.socket.emit('switch cs', enterpriseID, formerCsID)
+          resolve()
+        })
 
-      this.socket.emit('cs come back', that.customer.enterpriseID, that.cs.csID)
+        this.socket.emit('cs come back', that.customer.enterpriseID, that.cs.csID)
+      }).then(function () {
+        that.csEmailItem = {
+          'email': that.cs.csID
+        }
+        console.log(that.csEmailItem)
+        that.getCsIdApi()
+      })
+    } else {
+      this.csEmailItem = {
+        'email': this.cs.csID
+      }
+      console.log(this.csEmailItem)
+      this.getCsIdApi()
     }
   },
 
