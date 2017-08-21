@@ -85,6 +85,9 @@ export default {
         content: `问题：${this.data[index].question}<br>回答：${this.data[index].answer}<br>关键词：${this.data[index].keyword}<br>权重：${this.data[index].weight}`
       })
     },
+    /**
+      * @description 删除智能机器人语料库语料调用后端接口
+      */
     delete_robot_api () {
       this.$http.post(this.apiCustomerserviceSetrobotinfoDelete, this.robot_question_delete)
         .then((response) => {
@@ -106,6 +109,9 @@ export default {
           window.location.href = '../se_login'
         })
     },
+    /**
+      * @description 显示机器人语料库调用后端接口
+      */
     show_robot_question_api () {
       this.$http.post(this.apiCustomerserviceSetrobotinfoShow, this.robot_question)
         .then((response) => {
@@ -129,6 +135,9 @@ export default {
           window.location.href = '../se_login'
         })
     },
+    /**
+      * @description 删除智能机器人语料库中语料
+      */
     delete_robot (index) {
       this.robot_question_delete = {
         'question': this.data[index].question
