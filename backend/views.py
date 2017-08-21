@@ -648,9 +648,9 @@ def bigimagelog_send_image(request):
         # bigimagelog: client_id service_id image is_client label
         json_receive = JSONParser().parse(request)
         json_receive['time'] = timezone.now()
-        ext_position1 = json_receive.index('data:image/')
-        ext_position2 = json_receive.index(';base64,')
-        json_receive['extention'] = image[ext_position1+11:ext_position2]
+        ext_position1 = json_receive['image'].index('data:image/')
+        ext_position2 = json_receive['image'].index(';base64,')
+        json_receive['extention'] = json_receive['image'][ext_position1+11:ext_position2]
         serializer = BigImageLogSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -679,9 +679,9 @@ def smallimagelog_send_image(request):
         # smallimagelog: client_id service_id image is_client label
         json_receive = JSONParser().parse(request)
         json_receive['time'] = timezone.now()
-        ext_position1 = json_receive.index('data:image/')
-        ext_position2 = json_receive.index(';base64,')
-        json_receive['extention'] = image[ext_position1+11:ext_position2]
+        ext_position1 = json_receive['image'].index('data:image/')
+        ext_position2 = json_receive['image'].index(';base64,')
+        json_receive['extention'] = json_receive['image'][ext_position1+11:ext_position2]
         serializer = SmallImageLogSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
