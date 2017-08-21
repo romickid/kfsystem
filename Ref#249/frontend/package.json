@@ -24,7 +24,8 @@
     "mimic-fn": "^1.1.0",
     "vue": "^2.3.3",
     "vue-resource": "^1.3.4",
-    "vue-router": "^2.6.0"
+    "vue-router": "^2.6.0",
+    "lrz": "^4.9.40"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -80,7 +81,6 @@
     "karma-spec-reporter": "0.0.31",
     "karma-webpack": "^2.0.4",
     "lolex": "^1.5.2",
-    "lrz": "^4.9.40",
     "mocha": "^3.5.0",
     "nightwatch": "^0.9.12",
     "opn": "^5.1.0",

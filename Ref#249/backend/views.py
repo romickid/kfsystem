@@ -459,7 +459,8 @@ def customerservice_show_user_status(request):
 
         data_email = request.session['c_email']
         instance = CustomerService.objects.get(email=data_email)
-        json_send = {'email': instance.email, 'nickname': instance.nickname}
+        instance_admin = instance.enterprise
+        json_send = {'email': instance.email, 'nickname': instance.nickname, 'admin_nickname': instance_admin.nickname}
         return JsonResponse(json_send, status=200)
 
 
@@ -537,7 +538,7 @@ def customerservice_setrobotinfo_show(request):
 @csrf_exempt
 def customerservice_displayrobotreply_show(request):
     if request.method == 'POST':
-        # Admin:nickname, customer_input
+        # CustomerService: nickname, customer_input
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive)
         if is_correct == 0:
@@ -647,9 +648,9 @@ def bigimagelog_send_image(request):
         # bigimagelog: client_id service_id image is_client label
         json_receive = JSONParser().parse(request)
         json_receive['time'] = timezone.now()
-        ext_position1 = json_receive.index('data:image/')
-        ext_position2 = json_receive.index(';base64,')
-        json_receive['extention'] = image[ext_position1+11:ext_position2]
+        ext_position1 = json_receive['image'].index('data:image/')
+        ext_position2 = json_receive['image'].index(';base64,')
+        json_receive['extention'] = json_receive['image'][ext_position1+11:ext_position2]
         serializer = BigImageLogSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
@@ -664,9 +665,8 @@ def bigimagelog_show_single_history(request):
         json_receive = JSONParser().parse(request)
         instances = BigImageLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id'], label=json_receive['label'])
         if instances.exists():
-            serializer = BigImageLogSerializer(instances)
-            f = open('./media/user_image/Big/'+serializer.data[0]['image'],'rb')
-            ls_f = 'data:image/' + instances[0].extention + ';base64,' + base64.b64encode(f.read())
+            f = open('./media/'+instances[0].image.url,'rb')
+            ls_f = 'data:image/' + instances[0].extention + ';base64,' + base64.b64encode(f.read()).decode('utf-8')
             f.close()
             return HttpResponse(ls_f, status=200)
         return HttpResponse('ERROR, no history.', status=200)
@@ -678,9 +678,9 @@ def smallimagelog_send_image(request):
         # smallimagelog: client_id service_id image is_client label
         json_receive = JSONParser().parse(request)
         json_receive['time'] = timezone.now()
-        ext_position1 = json_receive.index('data:image/')
-        ext_position2 = json_receive.index(';base64,')
-        json_receive['extention'] = image[ext_position1+11:ext_position2]
+        ext_position1 = json_receive['image'].index('data:image/')
+        ext_position2 = json_receive['image'].index(';base64,')
+        json_receive['extention'] = json_receive['image'][ext_position1+11:ext_position2]
         serializer = SmallImageLogSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()

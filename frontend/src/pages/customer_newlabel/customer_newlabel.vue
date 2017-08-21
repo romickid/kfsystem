@@ -8,7 +8,7 @@
               <span class="time-span">{{ item.date | time }}</span>
             </p>
             <div class="massage-main" :class="{ self: item.self }">
-              <img class="massage-avatar" wIDth="30" height="30" :src="item.image" />
+              <img class="massage-avatar" width="30" height="30" :src="item.image" />
               <div class="massage-text">
                 <li>
                   <p v-if="item.isText">{{ item.text }}</p>
@@ -19,23 +19,23 @@
           </li>
         </ul>
       </div>
-      <Modal v-model="modalShowBigImg" width='auto'>
+      <Modal v-model="modal2" width='auto'>
         <p slot="header">
         </p>
         <div style="text-align:center">
-            <img :src="bigImgSrc">
+            <img :src="bigImgBase64">
         </div>
         <div slot="footer">
         </div>
       </Modal>
-      <div class="main-text">
-        <Button @click="switchToCs">转接人工客服</Button>
-        <img @click="imageUpload" src="./assets/pic.png" style="height:20px;width:20px" class='send-pic'></img>
+      <div class="main-text" @keydown="inputing">
+        <Button @click="switchServer">转接人工客服</Button>
+        <img @click="imgupload" src="./assets/pic.png" style="height:20px;width:20px" class="send-pic"></img>
         <p class="lead emoji-picker-container">
-          <textarea class="textarea" placeholder="按Enter 发送" v-model="chatlogData.text" @keyup="keyboardInputing" data-emojiable="true"></textarea>
+          <textarea class="textarea" placeholder="按 Enter 发送" v-model="text" rows="5" data-emojiable="true"></textarea>
         </p>
-        <Button class="submit-button" @click="buttonInputing">发送</Button>
-        <input id="inputFile" name='inputFile' type='file' multiple='mutiple' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
+        <Button class="submit-button" @click="buttoninputing">发送</Button>
+        <input id="inputFile" name='inputFile' type='file' multiple='mutiple' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
       </div>
     </div>
   </div>
@@ -47,128 +47,110 @@ import Vue from 'vue'
 import { formatDate } from '../../../static/js/date.js'
 import lrz from '../../../node_modules/lrz/dist/lrz.bundle.js'
 const key = 'VUE-Customer1'
-
-// 接收文字消息放进sessionList
-function pushTextToSessionList (session, msg) {
-  console.log("function: pushTextToSessionList")
-  session.messages.push({
+/**
+  * @description 接受客服消息
+  */
+function serverMessage (sessionList, msg, isText, img, bigImg, fromId, toId) {
+  sessionList[0].messages.push({
     text: msg,
+    img: img,
+    bigImg: bigImg,
+    isText: isText,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+}
+/**
+  * @description 成功连接客服，用于客服初始化
+  */
+function connectToServer (userList, sessionList, toId) {
+  userList[0].id = toId
+  sessionList[0].messages.push({
+    text: '已成功为您转接客服' + toId,
+    img: '',
+    bigImg: '',
     isText: true,
     date: new Date(),
     image: '../../../static/2.png'
   })
 }
-
-// 接收图片消息放进sessionList
-function pushImgToSessionList (session, bpic, spic) {
-  console.log("function: pushTextToSessionList")
-  session.messages.push({
-    bigImg: bpic,
-    img: spic,
-    isText: false,
-    date: new Date(),
-    image: '../../../static/2.png'
-  })
-}
-
-function connectToCs (cs, session, csID) {
-  console.log("function: connectToCs")
-  cs.csID = csID
-  session.messages.push({
-    text: '已成功为您转接客服' + csID,
+/**
+  * @description 没有可连接客服
+  */
+function noServerAvailable (userList, sessionList) {
+  sessionList[0].messages.push({
+    text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
+    img: '',
+    bigImg: '',
     isText: true,
     date: new Date(),
     image: '../../../static/2.png'
   })
+  userList[0].id = -1
 }
-
-function noServerAvailable (cs, session) {
-  console.log("function: noServerAvailable")
-  session.messages.push({
-    text: '您好，现在没有客服在线哦，请您稍后重新连接',
-    isText: true,
-    date: new Date(),
-    image: '../../../static/2.png'
-  })
-  cs.customerID = -1
-}
-
-// 初始化Socket
-function initSocket (cs, session, socket, customer) {
-  return new Promise (function (resolve) {
-    console.log("function: initSocket")
-
-    socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
-      console.log("socket: cs send message")
-      pushTextToSessionList(session, msg)
+/**
+  * @description 初始化Socket
+  */
+function initSocket (userList, sessionList, socket, user, information) {
+  return new Promise(function (resolve) {
+    socket.on('server message', function (msg, isText, img, bigImg, fromId, toId) {
+      serverMessage(sessionList, msg, isText, img, bigImg, fromId, toId)
     })
-
-    socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-      console.log("socket: cs send picture")
-      pushImgToSessionList(session, bpic, spic)
-    })
-
-    socket.on('connect to cs', function (csID) {
-      console.log("socket: connect to cs")
-      connectToCs(cs, session, csID)
+    socket.on('connect to server', function (toId) {
+      connectToServer(userList, sessionList, toId)
       resolve()
     })
-
     socket.on('no server available', function () {
-      console.log("socket: no server available")
-      noServerAvailable(cs, session)
+      noServerAvailable(userList, sessionList)
+    })
+    socket.on('switch server', function (formerId) {
+      socket.emit('switch server', formerId, information)
     })
 
-    socket.on('switch cs', function (enterpriseID, formerCsID) {
-      console.log("socket: switch cs")
-      socket.emit('switch cs', enterpriseID, formerCsID)
-      resolve()
-    })
-
-    socket.on('no cs available', function () {
-      alert('当前无在线客服！')
-    })
-
-    socket.emit('assigned to cs', customer.enterpriseID, customer.customerID)
-    console.log("socket emit: assigned to cs")
+    // user.id = socket.id
+    // user.name = socket.id
+    socket.emit('assigned to server', user.id, information)
   })
 }
-
-// 数据初始化
+/**
+  * @description 初始化数据
+  */
 function initData (key) {
   // 虚拟数据
   if (!sessionStorage.getItem(key)) {
     let now = new Date()
     let userData = {
-      // 登录客户
-      customer: {
-        customerID: -1,
-        customerName: 'coffce',
-        enterpriseID: 'nick2',
+      // 登录用户
+      user: {
+        id: -1,
+        name: 'coffce',
         image: '../../../static/1.jpg'
       },
-
-      // 客服列表
-      cs: {
-        csID: 'nick2@robot.com',
-        csName: 'MonsterSXF',
-        enterpriseID: 'nick2',
-        image: '../../../static/2.png'
-      },
-
+      // 用户列表
+      userList: [
+        {
+          id: -1,
+          name: 'MonsterSXF',
+          image: '../../../static/2.png'
+        }
+      ],
       // 会话列表
-      session: {
-        customerID: -1,
-        enterpriseID: 'nick2',
-        messages: [
-          {
-            text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
-            isText: true,
-            date: now,
-            image: '../../../static/2.png'
-          }
-        ]
-      },
+      sessionList: [
+        {
+          userId: 2,
+          messages: [
+            {
+              text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
+              img: '',
+              bigImg: '',
+              isText: true,
+              date: now,
+              image: '../../../static/2.png'
+            }
+          ]
+        }
+      ],
+      sessionIndex: 0,
       timer: ''
     }
     sessionStorage.setItem(key, JSON.stringify(userData))
@@ -177,252 +159,258 @@ function initData (key) {
 
 export default {
   el: '#chat',
-
   data () {
     initData(key)
     let dataserver = JSON.parse(sessionStorage.getItem(key))
     return {
       // 登录用户
-      customer: dataserver.customer,
+      user: dataserver.user,
       // 用户列表
-      cs: dataserver.cs,
+      userList: dataserver.userList,
       // 会话列表
-      session: dataserver.session,
+      sessionList: dataserver.sessionList,
+      // 选中的会话Index
+      sessionIndex: dataserver.sessionIndex,
+      // 用户简介
+      information: '',
+      enterprise: '',
+      socket: '',
       // 计时器
       timer: dataserver.timer,
-
-      socket: '',
       // 聊天数据
-      chatlogData: {
-        text: '',
-        img: '',
-        bigImg: ''
-      },
-      bigImgSrc: '',
-      modalShowBigImg: false,
-
-      // api接口
+      text: '',
+      isText: true,
+      img: '',
+      bigImg: '',
+      bigImgBase64: '',
+      modal2: false,
+      //
       apiCustomerserviceDisplayrobotreplyShow: '../api/customerservice_displayrobotreply_show/',
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
-      apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
+      apiChattinglogGetCsId: '../api/chattinglog_get_cs_id/',
       apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
       apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
-      robotReplyItem: {},
-      saveTextItem: {},
-      csEmailItem: {},
-      saveImgItem: {},
-      saveBigImgItem: {},
-
-      databaseCsID: '',
-      adminNickname: 'nick2'
+      robot_reply_item: {},
+      turnId: '',
+      save_text_item: {},
+      cs_email_item: {},
+      save_img_item: {},
+      save_bigImg_item: {},
+      admin_nickname: 'hahaha'
     }
   },
-
+  computed: {
+    /**
+      * @description 返回会话消息
+      */
+    session () {
+      return this.sessionList[this.sessionIndex]
+    }
+  },
   created () {
     // 如果初次登录， 初始化
-    if (this.customer.customerID === -1) {
-      this.customer.customerID = (Math.random() * 1000).toString()
-      this.customer.customerName = this.customer.customerID
-    }
+    // this.user.id = (Math.random() * 1000).toString()
+    // this.user.name = 'visitor'
+    // this.information = 'No informations'
+    // this.enterprise = this.$utils.getUrlKey('enterprise')
+    this.user.id = this.$utils.getUrlKey('email')
+    this.user.name = this.$utils.getUrlKey('nickname')
+    this.information = this.$utils.getUrlKey('information')
+    // this.enterprise = this.$utils.getUrlKey('enterprise')
 
     // 如果刷新之前已转接为人工客服，自动连接服务器
-    if (this.cs.csID.indexOf("robot.com") === -1) {
+    if (this.userList[0].id !== -1) {
       let that = this
       this.socket = io('http://localhost:3000')
-
-      new Promise(function (resolve) {
-        this.socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
-          pushTextToSessionList(that.session, msg)
-        })
-
-        this.socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-          pushImgToSessionList(that.session, bpic, spic)
-        })
-
-        this.socket.on('connect to cs', function (csID) {
-          connectToCs(that.cs, that.session, csID)
-          resolve()
-        })
-
-        this.socket.on('no server available', function () {
-          noServerAvailable(that.cs, that.session)
-        })
-
-        this.socket.on('switch cs', function (enterpriseID, formerCsID) {
-          that.socket.emit('switch cs', enterpriseID, formerCsID)
-          resolve()
-        })
-
-        this.socket.emit('cs come back', that.customer.enterpriseID, that.cs.csID)
-      }).then(function () {
-        that.csEmailItem = {
-          'email': that.cs.csID
-        }
-        console.log(that.csEmailItem)
-        that.getCsIdApi()
+      this.socket.on('server message', function (msg, isText, img, bigImg, fromId, toId) {
+        serverMessage(that.sessionList, msg, isText, img, bigImg, fromId, toId)
       })
-    } else {
-      this.csEmailItem = {
-        'email': this.cs.csID
-      }
-      console.log(this.csEmailItem)
-      this.getCsIdApi()
+      this.socket.on('connect to server', function (toId) {
+        connectToServer(that.userList, that.sessionList, toId)
+        this.cs_email_item = {
+          'email': this.userList[0].id
+        }
+        this.get_cs_id_api()
+      })
+      this.socket.on('no server available', function () {
+        noServerAvailable(that.userList, that.sessionList)
+      })
+      this.socket.on('switch server', function (formerId) {
+        that.socket.emit('switch server', formerId)
+      })
+      this.socket.emit('customer come back', that.user.id, that.userList[0].id)
     }
   },
-
   watch: {
-    // 每当session改变时，保存到localStorage中
-    session: {
+    // 每当sessionList改变时，保存到localStorage中
+    sessionList: {
       deep: true,
       handler () {
         sessionStorage.setItem(key, JSON.stringify({
-          customer: this.customer,
-          cs: this.cs,
-          session: this.session,
+          user: this.user,
+          userList: this.userList,
+          sessionList: this.sessionList,
+          sessionIndex: this.sessionIndex,
           timer: this.timer
         }))
+        // 重新开始计时
+        // if (this.userList[0].id !== -1) {
+        //   clearTimeout(this.timer)
+        //   let that = this
+        //   this.timer = setTimeout(function () {
+        //     that.socket.close()
+        //     noServerAvailable(that.userList, that.sessionList)
+        //   }, 4000)
+        // }
       }
     }
   },
-
   methods: {
-    keyboardInputing (e) {
-      console.log("method: keyboardInputing")
-      if (e.keyCode === 13 && this.chatlogData.text.length) {
+    /**
+      * @description 键盘输入信息
+      */
+    inputing (e) {
+      if (e.keyCode === 13 && this.text.length) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML = ''
         this.session.messages.push({
-          text: this.chatlogData.text,
-          date: new Date(),
+          text: this.text,
+          img: '',
+          bigImg: '',
           isText: true,
+          date: new Date(),
           self: true,
           image: '../../../static/1.jpg'
         })
-        console.log('keyboardInputing1')
+        console.log('inputing1')
         // 存入数据库
         let index = this.session.messages.length
-        this.saveText(1, index - 1)
-        console.log('keyboardInputing2')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
-          this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
+        this.save_text(1, index - 1)
+        console.log('inputing2')
+        if (this.userList[0].id !== -1) {
+          this.socket.emit('customer message', this.text, true, this.img, this.bigImg, this.user.id, this.userList[0].id)
         } else {
-          this.robotReplyItem = {
-            'nickname': this.customer.enterpriseID,
-            'customer_input': this.chatlogData.text
+          this.robot_reply_item = {
+            'nickname': this.admin_nickname,
+            'customer_input': this.text
           }
-          console.log(this.robotReplyItem)
-          this.showRobotReplyApi()
+          console.log(this.robot_reply_item)
+          this.show_robot_reply_api()
         }
-        this.chatlogData.text = ''
+        this.text = ''
       }
     },
-
-    buttonInputing (e) {
-      console.log("method: buttonInputing")
-      let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
-      residual.innerHTML = ''
-
-      if (this.chatlogData.text.length !== 0) {
+    /**
+      * @description 按钮输入信息
+      */
+    buttoninputing (e) {
+      if (this.text.length !== 0 || this.img.length !== 0) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML = ''
         this.session.messages.push({
-          text: this.chatlogData.text,
+          text: this.text,
+          img: this.img,
+          bigImg: this.bigImg,
+          isText: this.isText,
           date: new Date(),
-          isText: true,
           self: true,
           image: '../../../static/1.jpg'
         })
-        console.log('buttonInputing1')
+        console.log('buttoninputing1')
         // 存入数据库
         let index = this.session.messages.length
-        this.saveText(1, index - 1)
-        console.log('buttonInputing2')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
-          this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
+        if (this.isText === true) {
+          this.save_text(1, index - 1)
         } else {
-          this.robotReplyItem = {
-            'nickname': this.customer.enterpriseID,
-            'customer_input': this.chatlogData.text
+          this.save_img(1, index - 1)
+        }
+        console.log('buttoninputing2')
+        if (this.userList[0].id !== -1) {
+          this.socket.emit('customer message', this.text, this.isText, this.img, this.bigImg, this.user.id, this.userList[0].id)
+        } else {
+          if (this.isText === true) {
+            this.robot_reply_item = {
+              'nickname': this.admin_nickname,
+              'customer_input': this.text
+            }
+            console.log(this.robot_reply_item)
+            this.show_robot_reply_api()
           }
-          console.log(this.robotReplyItem)
-          this.showRobotReplyApi()
         }
-        this.chatlogData.text = ''
+        this.text = ''
+        this.img = ''
+        this.bigImg = ''
+        this.isText = true
       }
     },
-
-    imgInputing () {
-      if (this.chatlogData.img !== '') {
-        this.session.messages.push({
-          img: this.chatlogData.img,
-          bigImg: this.chatlogData.bigImg,
-          isText: false,
-          date: new Date(),
-          self: true,
-          image: '../../../static/1.jpg'
-        })
-        console.log('imgInputing1')
-        let index = this.session.messages.length
-        this.saveImg(1, index - 1)
-        console.log('this.saveImg(1, index - 1)')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
-          this.socket.emit('customer send picture', this.chatlogData.bigImg, this.chatlogData.img, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
-          console.log('socket')
-        }
-        console.log('imgInputing2')
-        this.chatlogData.img = ''
-        this.chatlogData.bigImg = ''
-      }
-    },
-
-    switchToCs (e) {
-      console.log("method: switchToCs")
-      // console.log(this.cs.csID.indexOf("robot.com"))
-      if (this.cs.csID.indexOf("robot.com") === -1) {
+    /**
+      * @description 点击按钮转接客服
+      */
+    switchServer (e) {
+      if (this.userList[0].id !== -1) {
         alert('当前已为人工客服！')
         return
       }
       let that = this
-      that.socket = io('http://localhost:3000')
-      initSocket(that.cs, that.session, that.socket, that.customer).then(function () {
-        that.csEmailItem = {
-          'email': that.cs.csID
-        }
-        console.log(that.csEmailItem)
-        that.getCsIdApi()
+      this.socket = io('http://localhost:3000')
+      let information = JSON.stringify({
+        userId: this.user.id,
+        userName: this.user.name,
+        information: this.information
       })
+      initSocket(that.userList, that.sessionList, this.socket, that.user, information).then(function () {
+        that.cs_email_item = {
+          'email': that.userList[0].id
+        }
+        console.log(that.cs_email_item)
+        that.get_cs_id_api()
+      })
+      // this.isRobot = false
+      // this.timer = setTimeout(function () {
+      //   that.socket.close()
+      //   noServerAvailable(this.userList, this.sessionList)
+      // }, 4000)
     },
-
-    // 图片压缩
-    imageCompress () {
+    /**
+      * @description 显示图片
+      */
+    fileup () {
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
-      lrz(file, {width: 1280, height: 1280, quality: 1})
+      lrz(file, {width: 960, height: 960, quality: 1})
         .then(function (rst) {
-          self.chatlogData.bigImg = rst.base64
+          self.bigImg = rst.base64
+          self.isText = false
           lrz(rst.origin, {width: 300, height: 300, quality: 0.7})
             .then(function (rst) {
-              self.chatlogData.img = rst.base64
-              self.imgInputing()
+              self.img = rst.base64
+              self.buttoninputing()
               return rst
             })
           return rst
         })
       obj.value = ''
     },
-
-    // 上传图片
-    imageUpload () {
+    /**
+      * @description 加载图片
+      */
+    imgupload () {
       var file = document.getElementById('inputFile')
       file.click()
     },
-
-    // 显示大图片
+    /**
+      * @description 显示大图
+      */
     showBigImg (bigImg) {
-      this.bigImgSrc = bigImg
-      this.modalShowBigImg = true
+      this.bigImgBase64 = bigImg
+      this.modal2 = true
     },
-
-    // 智能机器人回复调用后端接口
-    showRobotReplyApi () {
-      this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robotReplyItem)
+    /**
+      * @description 获取机器人回复
+      */
+    show_robot_reply_api () {
+      this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robot_reply_item)
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
             // window.location.href = '../se_login'
@@ -435,32 +423,49 @@ export default {
             console.log('show_robot_reply_api3')
           } else {
             let msg = response.data
-            this.showRobotReply(msg)
+            this.show_robot_reply(msg)
           }
         }, (response) => {
           // window.location.href = '../se_login'
           console.log('show_robot_reply_api4')
         })
     },
-
-    // 机器人回复打印并存入数据库
-    showRobotReply (msg) {
+    /**
+      * @description 显示机器人回复
+      */
+    show_robot_reply (msg) {
       this.session.messages.push({
         text: msg,
+        img: '',
+        bigImg: '',
         isText: true,
         date: new Date(),
         image: '../../../static/2.png'
       })
       // 存入数据库
       let index = this.session.messages.length
-      this.saveText(0, index - 1)
+      this.save_text(0, index - 1)
     },
-
-    // 获取CSID
-    getCsIdApi () {
-      this.$http.post(this.apiChattinglogGetCsId, this.csEmailItem)
+    /**
+      * @description 保存文本接口
+      */
+    save_text_api () {
+      this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
         .then((response) => {
-          this.databaseCsID = response.data
+          console.log('save_text_api1')
+          this.save_text_item = {}
+        }, (response) => {
+          // window.location.href = '../se_login'
+          console.log('save_text_api2')
+        })
+    },
+    /**
+      * @description 通过email设置用户ID
+      */
+    get_cs_id_api () {
+      this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
+        .then((response) => {
+          this.turnId = response.data
           console.log('get_cs_id_api1')
           console.log(response.data)
         }, (response) => {
@@ -468,94 +473,81 @@ export default {
           console.log('get_cs_id_api2')
         })
     },
-
-    // 存文字调用后端接口
-    saveTextApi () {
-      this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
-        .then((response) => {
-          console.log('save_text_api1')
-          this.saveTextItem = {}
-        }, (response) => {
-          // window.location.href = '../se_login'
-          console.log('save_text_api2')
-        })
-    },
-
-    // 存文字的函数
-    saveText (isClient, index) {
-      this.saveTextItem = {
-        'client_id': this.customer.customerID,
-        'service_id': this.databaseCsID,
+    /**
+      * @description 保存文本
+      */
+    save_text (isClient, index) {
+      this.save_text_item = {
+        'client_id': this.user.id,
+        'service_id': this.turnId,
         'content': this.session.messages[index].text,
         'is_client': isClient
       }
-      console.log(this.saveTextItem)
-      this.saveTextApi()
+      console.log(this.save_text_item)
+      this.save_text_api()
     },
-
-    // 存图片调用后端api
-    saveImgApi () {
-      this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
+    /**
+      * @description 保存图片接口
+      */
+    save_img_api () {
+      this.$http.post(this.apiSmallimagelogSendImage, this.save_img_item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
             // window.location.href = '../notfound'
             console.log('save_img_api1')
           } else {
-            this.saveImgItem = {}
-            console.log('saveImgApi')
+            this.save_img_item = {}
           }
         }, (response) => {
           // window.location.href = '../notfound'
           console.log('save_img_api2')
         })
     },
-
-    // 存大图片调用后端api
-    saveBigImgApi () {
-      this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
+    /**
+      * @description 保存大图接口
+      */
+    save_bigImg_api () {
+      this.$http.post(this.apiBigimagelogSendImage, this.save_bigImg_item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
             // window.location.href = '../notfound'
             console.log('save_bigImg_api1')
           } else {
-            this.saveBigImgItem = {}
-            console.log('saveBigImgApi')
+            this.save_bigImg_item = {}
           }
         }, (response) => {
           // window.location.href = '../notfound'
           console.log('save_bigImg_api2')
         })
     },
-
-    // 存图片的函数
-    saveImg (isClient, index) {
-      console.log('saveImg')
+    /**
+      * @description 保存图片
+      */
+    save_img (isClient, index) {
       let timestamp = new Date().getTime()
-      console.log(timestamp)
-      let label = timestamp + this.customer.customerID
-      console.log('timestamp')
-      this.saveImgItem = {
-        'client_id': this.customer.customerID,
-        'service_id': this.databaseCsID,
+      let label = timestamp + this.user.id
+      this.save_img_item = {
+        'client_id': this.user.id,
+        'service_id': this.turnId,
         'image': this.session.messages[index].img,
         'is_client': isClient,
         'label': label
       }
-      this.saveBigImgItem = {
-        'client_id': this.customer.customerID,
-        'service_id': this.databaseCsID,
+      this.save_bigImg_item = {
+        'client_id': this.user.id,
+        'service_id': this.turnId,
         'image': this.session.messages[index].bigImg,
         'is_client': isClient,
         'label': label
       }
-      console.log(this.saveImgItem)
-      console.log(this.saveBigImgItem)
-      this.saveImgApi()
-      this.saveBigImgApi()
+      this.save_img_api()
+      this.save_bigImg_api()
     }
   },
-
   filters: {
+    /**
+      * @description 格式化日期
+      */
     time (date) {
       if (typeof date === 'string') {
         date = new Date(date)
@@ -563,11 +555,11 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
-
   components: {},
-
   directives: {
-    // 发送消息后滚动到底部
+    /**
+      * @description 发送消息后滚动到底部
+      */
     'scroll-bottom' () {
       Vue.nextTick(() => {
         let message = document.getElementsByClassName('main-message')
@@ -589,7 +581,7 @@ export default {
 body,
 html {
   height: 100%;
-  overflow: hIDden;
+  overflow: hidden;
 }
 
 body,
@@ -611,7 +603,7 @@ ul {
 /*主要界面*/
 .container {
   height: 70%;
-  wIDth: 80%;
+  width: 80%;
   margin: 10% auto 10%;
   vertical-align: center;
   border-radius: 4px;
@@ -620,13 +612,13 @@ ul {
 .main {
   height: 100%;
   position: relative;
-  overflow: hIDden;
+  overflow: hidden;
   background-color: #eee;
 }
 
 .main-text {
   position: absolute;
-  wIDth: 100%;
+  width: 100%;
   bottom: 0;
   left: 0;
   height: 160px;
@@ -671,7 +663,7 @@ ul {
   display: inline-block;
   position: relative;
   padding: 0 10px;
-  max-wIDth: calc(80% - 40px);
+  max-width: calc(80% - 40px);
   min-height: 30px;
   line-height: 2.5;
   font-size: 12px;
@@ -686,7 +678,7 @@ ul {
   position: absolute;
   top: 9px;
   right: 100%;
-  border: 6px solID transparent;
+  border: 6px solid transparent;
   border-right-color: #fafafa;
 }
 
@@ -703,7 +695,7 @@ ul {
   display: inline-block;
   position: relative;
   padding: 0 10px;
-  max-wIDth: calc(80% + 10px);
+  max-width: calc(80% + 10px);
   min-height: 30px;
   line-height: 2.5;
   font-size: 12px;
@@ -718,21 +710,21 @@ ul {
   right: inherit;
   top: 9px;
   left: 100%;
-  border: 6px solID transparent;
+  border: 6px solid transparent;
   border-right-color: transparent;
   border-left-color: #b2e281;
 }
 
 .main-text {
   height: 160px;
-  border-top: solID 1px #ddd;
+  border-top: solid 1px #ddd;
   background: white;
 }
 
 .textarea {
   padding: 10px;
   height: 100%;
-  wIDth: 86%;
+  width: 86%;
   border: none;
   outline: none;
   font-family: "Micrsofot Yahei";
@@ -740,7 +732,7 @@ ul {
 }
 
 .submit-button {
-  wIDth: 10%;
+  width: 10%;
   position: absolute;
   right: 2px;
   bottom: 2px;
@@ -748,9 +740,9 @@ ul {
 
 #chat {
   margin: 20px auto;
-  wIDth: 800px;
+  width: 800px;
   height: 600px;
-  overflow: hIDden;
+  overflow: hidden;
   border-radius: 3px;
 }
 

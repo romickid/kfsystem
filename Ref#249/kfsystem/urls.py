@@ -33,7 +33,6 @@ urlpatterns = [
     url(r'^documentation/', TemplateView.as_view(template_name="documentation.html")),
     url(r'^administrator/', TemplateView.as_view(template_name="administrator.html")),
     url(r'^notfound/', TemplateView.as_view(template_name="not_found.html")),
-    url(r'^timeout/', TemplateView.as_view(template_name="timeout.html")),
     url(r'^api/', include('backend.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('backend.urls')),
