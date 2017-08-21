@@ -627,45 +627,6 @@ export default {
   },
 
   methods: {
-    // // 保存文字信息
-    // saveChattingLog (obj) {
-    //   console.log('[method: saveChattingLog]')
-    //   let vm = this
-    //   vm.$http.post(vm.apiChattinglogSendMessage, obj)
-    //     .then((response) => {
-    //       vm.$set(this, 'item', {})
-    //     }, (response) => {
-    //       alert('save chatting log error!')
-    //       alert(obj)
-    //       window.location.href = '../se_login'
-    //     })
-    // },
-
-    // // 获取历史信息
-    // getHistoryLog (obj) {
-    //   console.log('[method: getHistoryLog]')
-    //   let vm = this
-    //   vm.$http.post(vm.apiChattinglogShowHistory, obj)
-    //     .then((response) => {
-    //       for (var p in response.data) {
-    //         if (response.data[p].is_client === false) {
-    //           this.currentOnlineObject.historyMessages.push({
-    //             text: response.data[p].content,
-    //             date: response.data[p].time,
-    //             self: true,
-    //             image: this.cs.image
-    //           })
-    //         } else {
-    //           this.currentOnlineObject.historyMessages.push({
-    //             text: response.data[p].content,
-    //             date: response.data[p].time,
-    //             image: '../../../static/3.jpg'
-    //           })
-    //         }
-    //       }
-    //     })
-    // },
-
     //  显示用户列表
     displayCustomerList (value) {
       console.log('[method: displayCustomerList]')
@@ -708,12 +669,16 @@ export default {
             customerOutMessage(csSocket, customerID)
           }, 1000000)
         this.chatlogData.text = ''
+        console.log(this.chatlogData.text)
       }
     },
 
     // 发送按钮
     buttonInputing (e) {
       console.log('[method: buttonInputing]')
+      let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+      residual.innerHTML = ''
+
       if (!this.hangon) {
         alert('该用户已挂断！')
         this.chatlogData.text = ''

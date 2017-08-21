@@ -317,6 +317,9 @@ export default {
 
     buttonInputing (e) {
       console.log("method: buttonInputing")
+      let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+      residual.innerHTML = ''
+
       if (this.chatlogData.text.length !== 0) {
         this.session.messages.push({
           text: this.chatlogData.text,

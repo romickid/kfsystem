@@ -27,6 +27,9 @@ function sortByCustomerNumberInCs (arr) {
 
 function findByCsId (arr, cs_id) {
   console.log('[function: findByCsId]')
+  if (Array.isArray(arr) === false) {
+    return -1
+  }
   for (let i = 0; i < arr.length; i++) {
     console.log(arr[i].cs_id)
     console.log(cs_id)
@@ -40,6 +43,9 @@ function findByCsId (arr, cs_id) {
 
 function findByCustomerId (arr, customer_id) {
   console.log('[function: findByCustomerId]')
+  if (Array.isArray(arr) === false) {
+    return -1
+  }
   for (let i = 0; i < arr.length; i++) {
     console.log(arr[i].customer_id)
     console.log(customer_id)
@@ -187,6 +193,9 @@ socketIO.on('connection', function (socket) {
     console.log("[customer send message]")
     let customer_socket = socket
     let cs_socket = findByCsId(cs_socket_list[enterprise_id], cs_id)
+    if (cs_socket === -1) {
+      return
+    }
     cs_socket.emit('customer send message', msg, enterprise_id, cs_id, customer_id)
     console.log('customer ' + customer_id + ' send message to server ' + cs_id)
   })
@@ -197,6 +206,9 @@ socketIO.on('connection', function (socket) {
     console.log("[customer send picture]")
     let customer_socket = socket
     let cs_socket = findByCsId(cs_socket_list[enterprise_id], cs_id)
+    if (cs_socket === -1) {
+      return
+    }
     cs_socket.emit('customer send picture', bpic, spic, enterprise_id, cs_id, customer_id)
     console.log('customer ' +  customer_id + ' send picture to server ' + cs_id)  
   })
@@ -208,7 +220,7 @@ socketIO.on('connection', function (socket) {
     let customer_socket = socket
 
     if (cs_socket_list[enterprise_id].length === 0 || cs_socket_list[enterprise_id].length === 1) {
-      cs_socket.emit('no server available') // 无法转接
+      customer_socket.emit('no server available') // 无法转接
     } else {
       sortByCustomerNumberInCs(cs_socket_list[enterprise_id])
       let former_count = 0
