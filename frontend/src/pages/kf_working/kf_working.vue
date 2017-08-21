@@ -149,13 +149,11 @@
       <div class="main-text" @keydown="inputing">
         <Button @click="showHistory">历史消息</Button>
         <Button @click="switchServer">转接</Button>
+        <img @click="imgupload" src="./assets/pic.png" style="height:20px;width:20px" class="send-pic"></img>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Enter 发送" v-model="text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttoninputing">发送</Button>
-        <div class="functions">
-          <div @click="imgupload">发送图片</div>
-        </div>
         <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
       </div>
     </div>
@@ -762,11 +760,11 @@ export default {
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
-      lrz(file, {width: 1920, height: 1920, quality: 1})
+      lrz(file, {width: 960, height: 960, quality: 1})
         .then(function (rst) {
           self.bigImg = rst.base64
           self.isText = false
-          lrz(rst.origin, {width: 500, quality: 0.7})
+          lrz(rst.origin, {width: 300, height: 300, quality: 0.7})
             .then(function (rst) {
               self.img = rst.base64
               self.buttoninputing()
@@ -1524,5 +1522,10 @@ ul {
 
 .waring {
   color: red;
+}
+
+.send-pic {
+  float: right;
+  margin-right: 0.6em;
 }
 </style>
