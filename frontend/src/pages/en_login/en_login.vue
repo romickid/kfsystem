@@ -61,6 +61,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 用来判断登陆时邮箱的格式
+      */
     checkEmail () {
       let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.email)
@@ -70,9 +73,15 @@ export default {
         this.emailIllegal = false
       }
     },
+    /**
+      * @description 当邮箱输入框聚焦的时候，取消对邮箱不合法的提示，用户体验更友好
+      */
     emailInput () {
       this.emailIllegal = false
     },
+    /**
+      * @description 向后端传输没有格式问题的登陆信息，取回验证结果并给出反馈
+      */
     communicate () {
       this.$http.post(this.api_login, this.item)
         .then((response) => {
@@ -89,6 +98,9 @@ export default {
           window.location.href = '../notfound'
         })
     },
+    /**
+      * @description 点击登陆按钮时的监听，首先对格式进行验证，没有格式问题后调用communicate函数与后端联系
+      */
     login () {
       if (this.email === '' || this.password === '') {
         this.$Message.info('您的信息不完善！')
@@ -103,6 +115,9 @@ export default {
         this.communicate()
       }
     },
+    /**
+      * @description 对密码进行hash操作，提高传输的安全性
+      */
     hashPassword () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
