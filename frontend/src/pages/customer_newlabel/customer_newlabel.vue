@@ -125,6 +125,10 @@ function initSocket (cs, session, socket, customer) {
       resolve()
     })
 
+    socket.on('no cs available', function () {
+      alert('当前无在线客服！')
+    })
+
     socket.emit('assigned to cs', customer.enterpriseID, customer.customerID)
     console.log("socket emit: assigned to cs")
   })
@@ -140,22 +144,22 @@ function initData (key) {
       customer: {
         customerID: -1,
         customerName: 'coffce',
-        enterpriseID: 'hahaha',
+        enterpriseID: 'nick2',
         image: '../../../static/1.jpg'
       },
 
       // 客服列表
       cs: {
-        csID: -1,
+        csID: 'nick2@robot.com',
         csName: 'MonsterSXF',
-        enterpriseID: 'hahaha',
+        enterpriseID: 'nick2',
         image: '../../../static/2.png'
       },
 
       // 会话列表
       session: {
         customerID: -1,
-        enterpriseID: 'hahaha',
+        enterpriseID: 'nick2',
         messages: [
           {
             text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
@@ -210,7 +214,7 @@ export default {
       saveBigImgItem: {},
 
       databaseCsID: '',
-      adminNickname: 'hahaha'
+      adminNickname: 'nick2'
     }
   },
 
@@ -222,7 +226,7 @@ export default {
     }
 
     // 如果刷新之前已转接为人工客服，自动连接服务器
-    if (this.cs.csID !== -1) {
+    if (this.cs.csID.indexOf("robot.com") === -1) {
       let that = this
       this.socket = io('http://localhost:3000')
 
@@ -297,7 +301,7 @@ export default {
         let index = this.session.messages.length
         this.saveText(1, index - 1)
         console.log('keyboardInputing2')
-        if (this.cs.csID !== -1) {
+        if (this.cs.csID.indexOf("robot.com") === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -326,7 +330,7 @@ export default {
         let index = this.session.messages.length
         this.saveText(1, index - 1)
         console.log('buttonInputing2')
-        if (this.cs.csID !== -1) {
+        if (this.cs.csID.indexOf("robot.com") === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -354,7 +358,7 @@ export default {
         let index = this.session.messages.length
         this.saveImg(1, index - 1)
         console.log('this.saveImg(1, index - 1)')
-        if (this.cs.csID !== -1) {
+        if (this.cs.csID.indexOf("robot.com") === -1) {
           this.socket.emit('customer send picture', this.chatlogData.bigImg, this.chatlogData.img, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
           console.log('socket')
         }
@@ -366,7 +370,8 @@ export default {
 
     switchToCs (e) {
       console.log("method: switchToCs")
-      if (this.cs.csID !== -1) {
+      // console.log(this.cs.csID.indexOf("robot.com"))
+      if (this.cs.csID.indexOf("robot.com") === -1) {
         alert('当前已为人工客服！')
         return
       }
