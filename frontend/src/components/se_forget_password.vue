@@ -24,6 +24,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 用来判断找回密码邮箱的格式
+      */
     checkEmail () {
       let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.email)
@@ -33,9 +36,15 @@ export default {
         this.emailIllegal = false
       }
     },
+    /**
+      * @description 当邮箱输入框聚焦的时候，取消对邮箱不合法的提示，用户体验更友好
+      */
     emailInput () {
       this.emailIllegal = false
     },
+    /**
+      * @description 在邮箱格式正确的前提下，调用communicate函数与后端进行交互
+      */
     ok () {
       if (this.email === '' || this.emailIllegal === true) {
         this.$Message.info('您的邮箱不正确！')
@@ -48,6 +57,9 @@ export default {
       }
       this.cancel()
     },
+    /**
+      * @description 向后端传输没有格式问题的邮箱，取回验证结果并给出反馈
+      */
     communicate () {
       this.$http.post(this.api_forget_password_email_request, this.item)
         .then((response) => {
@@ -66,6 +78,9 @@ export default {
           window.location.href = '../notfound'
         })
     },
+    /**
+      * @description 关闭对话框时清除所有信息
+      */
     cancel () {
       this.email = ''
       this.emailIllegal = false

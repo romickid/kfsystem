@@ -30,6 +30,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 用来判断新密码的安全性，格式需要符合：长度在6-20位且必须包含大写字母、小写字母和数字
+      */
     checkNewPassword () {
       let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
       let standardContent = reg.test(this.newPassword)
@@ -39,6 +42,9 @@ export default {
         this.passwordNonstandard = false
       }
     },
+    /**
+      * @description 在新密码格式正确的前提下，调用communicate函数与后端进行交互
+      */
     ok () {
       if (this.oldPassword === '' || this.newPassword === '') {
         this.$Message.info('您的信息不完善！')
@@ -54,6 +60,9 @@ export default {
       }
       this.cancel()
     },
+    /**
+      * @description 向后端传输没有格式问题的新密码和需要修改的旧密码，取回验证结果并给出反馈
+      */
     communicate () {
       this.$http.post(this.api_reset_password, this.item)
         .then((response) => {
@@ -76,11 +85,18 @@ export default {
           window.location.href = '../se_login'
         })
     },
+    /**
+      * @description 关闭对话框时清除所有信息
+      */
     cancel () {
       this.oldPassword = ''
       this.newPassword = ''
       this.passwordNonstandard = false
     },
+    /**
+      * @description 对密码进行hash操作，提高传输的安全性
+      * @param {String} str 为传输的密码
+      */
     hashPassword (str) {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
