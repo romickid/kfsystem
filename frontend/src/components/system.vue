@@ -98,22 +98,37 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 检查用户信息种类名称输入
+      */
     check_name () {
       if (this.formItem.name === '') {
         this.nameIsNull = true
       }
     },
+    /**
+      * @description 正在输入用户信息种类名称时取消名称检查标记
+      */
     name_inputing () {
       this.nameIsNull = false
     },
+    /**
+      * @description 检查输入的自定义说明
+      */
     check_comment () {
       if (this.formItem.comment === '') {
         this.commentIsNull = true
       }
     },
+    /**
+      * @description 正在输入自定义说明时取消自定义说明检查标记
+      */
     comment_inputing () {
       this.commentIsNull = false
     },
+    /**
+      * @description 输入信息后点击确定
+      */
     ok () {
       if (this.formItem.name === '' || this.formItem.comment === '') {
         this.$Message.info('您的信息不完善')
@@ -126,6 +141,9 @@ export default {
       }
       this.cancel()
     },
+    /**
+      * @description 点击确定后调用后端接口将企业自定义用户信息种类写入数据库
+      */
     add_api () {
       this.$http.post(this.apiAdminDisplayInfoCreate, this.infomationItem)
         .then((response) => {
@@ -145,18 +163,27 @@ export default {
           window.location.href = '../en_login'
         })
     },
+    /**
+      * @description 点击取消后清除输入变量
+      */
     cancel () {
       this.formItem.name = ''
       this.formItem.comment = ''
       this.nameIsNull = false
       this.commentIsNull = false
     },
+    /**
+      * @description 删除企业自定义用户信息种类
+      */
     delete_info (index) {
       this.deleteName = {
         'name': this.infomations[index].name
       }
       this.delete_api()
     },
+    /**
+      * @description 删除企业自定义用户信息种类调用后端api
+      */
     delete_api () {
       this.$http.post(this.apiAdminDisplayInfoDelete, this.deleteName)
         .then((response) => {
@@ -174,6 +201,9 @@ export default {
           window.location.href = '../en_login'
         })
     },
+    /**
+      * @description 重新生成通讯秘钥调用后端接口
+      */
     reset_key () {
       this.$http.post(this.apiResetCommunicationKey)
         .then((response) => {
@@ -190,6 +220,9 @@ export default {
           window.location.href = '../en_login'
         })
     },
+    /**
+      * @description 显示企业自定义的用户信息种类调用后端接口
+      */
     show_info () {
       this.$http.post(this.apiAdminDisplayInfoShow)
         .then((response) => {
@@ -206,6 +239,9 @@ export default {
           window.location.href = '../en_login'
         })
     },
+    /**
+      * @description 显示通讯秘钥调用后端接口
+      */
     show_key () {
       this.$http.post(this.apiShowCommunicationKey)
         .then((response) => {
