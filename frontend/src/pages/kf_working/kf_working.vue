@@ -167,7 +167,9 @@ import robotSetting from '../../components/robot_setting'
 import lrz from '../../../node_modules/lrz/dist/lrz.bundle.js'
 import { formatDate } from '../../../static/js/date.js'
 const key = 'VUE-CHAT-v6'
-// 通过id找聊天记录的索引
+/**
+  * @description 通过id找聊天记录的索引
+  */
 function findSessionIndexById (session, id) {
   for (let i = 0; i < session.length; i++) {
     if (session[i].userId === id) {
@@ -176,7 +178,9 @@ function findSessionIndexById (session, id) {
   }
   return -1
 }
-// 通过id找客户的索引
+/**
+  * @description 通过id找客户的索引
+  */
 function findUserIndexById (users, id) {
   for (let i = 0; i < users.length; i++) {
     if (users[i].id === id) {
@@ -185,7 +189,9 @@ function findUserIndexById (users, id) {
   }
   return -1
 }
-// 接受消息放进消息列表
+/**
+  * @description 接收消息放进消息列表
+  */
 function pushMessages (sessionList, index, msg, isText, img, bigImg) {
   sessionList[index].messages.push({
     text: msg,
@@ -196,7 +202,9 @@ function pushMessages (sessionList, index, msg, isText, img, bigImg) {
     image: '../../../static/3.jpg'
   })
 }
-// 创建用户
+/**
+  * @description 创建用户
+  */
 function createUser (userId, name, informationString) {
   let informationList = JSON.parse(informationString)
   return {
@@ -207,11 +215,15 @@ function createUser (userId, name, informationString) {
     information: informationList
   }
 }
-// 发送消息说用户已挂断
+/**
+  * @description 向服务器发送消息说用户已挂断
+  */
 function customerOutMessage (socket, customerId) {
   socket.emit('customer out', customerId)
 }
-// 在列表中添加用户
+/**
+  * @description 在列表中添加用户
+  */
 function addCustomer (socket, userList, sessionList,
    historySessionList, timers, informationList, customer) {
   userList.splice(0, 0, customer)
@@ -234,13 +246,17 @@ function addCustomer (socket, userList, sessionList,
     '详细信息： ' + customer.information.information
   ])
 }
-// 消息和用户的上浮
+/**
+  * @description 接受新消息时对应消息和用户的上浮
+  */
 function popUp (list, index) {
   let item = list[index]
   list.splice(index, 1)
   list.splice(0, 0, item)
 }
-// 用户挂断
+/**
+  * @description 用户挂断时将其添加到以挂断列表
+  */
 function customerHangoff (userList, hangoffUserList,
   sessionList, hangoffSessionList,
   historySessionList, id) {
@@ -252,6 +268,9 @@ function customerHangoff (userList, hangoffUserList,
   hangoffUserList.splice(0, 0, customer)
   hangoffSessionList.splice(0, 0, session)
 }
+/**
+  * @description 用户挂断时将其从活跃列表中删除
+  */
 function deleteCustomer (userList, sessionList, historySessionList, timers, informationList, id) {
   let userIndex = findUserIndexById(userList, id)
   let sessionIndex = findSessionIndexById(sessionList, id)
@@ -384,6 +403,9 @@ export default {
     }
   },
   computed: {
+    /**
+      * @description 返回当前选中的活跃消息，用于在聊天对话框中显示
+      */
     session () {
       if (this.hangon && this.userList.length) {
         return this.sessionList[this.sessionIndex]
@@ -396,6 +418,9 @@ export default {
         }
       }
     },
+    /**
+      * @description 返回当前选中用户的历史消息，用于在聊天对话框顶部显示历史消息
+      */
     hsession () {
       if (!this.userList.length) {
         return {
@@ -405,12 +430,18 @@ export default {
       }
       return this.historySessionList[this.sessionIndex]
     },
+    /**
+      * @description 返回当前选中用户的相关信息，用于在界面右侧显示用户信息
+      */
     userInformation () {
       if (!this.userList.length) {
         return []
       }
       return this.informationList[this.sessionIndex]
     },
+    /**
+      * @description 用于判断当前左侧用户列表用户数是否为零
+      */
     currentNumber () {
       return (this.hangon && this.userList.length) || (!this.hangon && this.hangoffUserList.length)
     }
@@ -419,7 +450,9 @@ export default {
     this.getCsInfomation()
     const that = this
     this.socket = io('http://localhost:3000')
-    // 接收消息
+    /**
+      * @description 当接收到用户发来的信息时，将信息存到对应用户的消息数组中，并将对应数据上浮
+      */
     this.socket.on('customer message', function (msg, isText, img, bigImg, fromId, toId) {
       let index = findSessionIndexById(that.sessionList, fromId)
       pushMessages(that.sessionList, index, msg, isText, img, bigImg)
@@ -461,7 +494,9 @@ export default {
           }, 100000000)
       }
     })
-    // 添加用户
+    /**
+      * @description 用户第一次登陆时，用于用户相关数据的初始化
+      */
     this.socket.on('add client', function (fromId, information) {
       let customer = createUser(fromId, fromId, information)
       addCustomer(that.socket, that.userList, that.sessionList,
@@ -474,7 +509,9 @@ export default {
       }
       pushMessages(that.sessionList, 0, '用户' + fromId + '已上线', true, '', '')
     })
-    // 客户挂断
+    /**
+      * @description 当用户挂断时，将其从活跃列表中删除，添加到已挂断列表
+      */
     this.socket.on('customer hang off', function (customerId) {
       customerHangoff(that.userList, that.hangoffUserList,
         that.sessionList, that.hangoffSessionList,
@@ -484,7 +521,9 @@ export default {
       }
       deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, that.informationList, customerId)
     })
-    // 无法转接
+    /**
+      * @description 对当前用户转接失败，设置提示
+      */
     this.socket.on('switch failed', function () {
       alert('当前无可转接客服！')
       that.transferable = false
@@ -543,6 +582,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 设置当前选中的用户索引
+      */
     select (value) {
       if (this.hangon) {
         this.sessionIndex = this.userList.indexOf(value)
@@ -551,6 +593,9 @@ export default {
         this.hangoffSessionIndex = this.hangoffUserList.indexOf(value)
       }
     },
+    /**
+      * @description 键盘发送消息
+      */
     inputing (e) {
       if (e.keyCode === 13 && this.text.length && this.session.userId !== -1) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
@@ -583,6 +628,9 @@ export default {
         this.text = ''
       }
     },
+    /**
+      * @description 按钮发送消息
+      */
     buttoninputing (e) {
       if (!this.hangon) {
         alert('该用户已挂断！')
@@ -622,11 +670,17 @@ export default {
         this.isText = true
       }
     },
+    /**
+      * @description 切换左侧列表状态
+      */
     switchoff () {
       this.hangon = !this.hangon
       this.sessionIndex = 0
       this.hangoffSessionIndex = 0
     },
+    /**
+      * @description 点击按钮查看历史消息
+      */
     showHistory (e) {
       if (!this.hangon) {
         alert('无法获取历史消息！')
@@ -639,6 +693,9 @@ export default {
       }
       this.show_history_api()
     },
+    /**
+      * @description 获取客服信息，用于第一次登陆的初始化
+      */
     getCsInfomation () {
       this.$http.post(this.apiCustomerserviceShowUserStatus)
         .then((response) => {
@@ -657,6 +714,9 @@ export default {
           window.location.href = '../se_login'
         })
     },
+    /**
+      * @description 点击按钮对当前用户进行转接，如果转接成功，将其转移到已挂断消息列表，不成功则给出提示
+      */
     switchServer (e) {
       if (!this.hangon) {
         alert('无法为已挂断的用户进行转接！')
@@ -681,6 +741,9 @@ export default {
         that.transferable = true
       }, 1000)
     },
+    /**
+      * @description 客服点击按钮登出账号
+      */
     // logout (e) {
     //   this.socket.emit('log out')
     //   for (let i = 0; i < this.timers.length; i++) {
@@ -688,6 +751,9 @@ export default {
     //   }
     //   this.isLogon = false
     // },
+    /**
+      * @description 输出图片
+      */
     fileup () {
       let self = this
       let obj = document.getElementById('inputFile')
@@ -706,25 +772,39 @@ export default {
         })
       obj.value = ''
     },
+    /**
+      * @description 加载图片
+      */
     imgupload () {
       var file = document.getElementById('inputFile')
       file.click()
     },
+    /**
+      * @description 显示大图
+      */
     showBigImg (bigImg) {
       this.bigImgBase64 = bigImg
       this.modal2 = true
     },
-    // 机器人
+    /**
+      * @description 检查机器人回复
+      */
     checkReply () {
       if (this.reply === '') {
         this.replyIsNull = true
       }
     },
+    /**
+      * @description 检查向机器人提出的问题
+      */
     checkQuestion () {
       if (this.question === '') {
         this.questionIsNull = true
       }
     },
+    /**
+      * @description 检查添加的关键词格式（只能是英文）
+      */
     checkKeyword () {
       let reg = /^[\u4E00-\u9FA5]+$/
       let standardContent = reg.test(this.keyword)
@@ -732,15 +812,27 @@ export default {
         this.keywordIsNotStandard = true
       }
     },
+    /**
+      * @description 回复输入
+      */
     replyInput () {
       this.replyIsNull = false
     },
+    /**
+      * @description 问题输入
+      */
     questionInput () {
       this.questionIsNull = false
     },
+    /**
+      * @description 关键词输出
+      */
     keyWordInput () {
       this.keywordIsNotStandard = false
     },
+    /**
+      * @description 添加关键词
+      */
     handleAdd () {
       this.checkKeyword()
       for (let i = 0; i < this.robotKeyWord.length; i++) {
@@ -758,10 +850,16 @@ export default {
         this.keyword = ''
       }
     },
+    /**
+      * @description 删除关键词
+      */
     handleClose (event, name) {
       const index = this.robotKeyWord.indexOf(name)
       this.robotKeyWord.splice(index, 1)
     },
+    /**
+      * @description 添加语料
+      */
     ok_add () {
       if (this.question === '' || this.reply === '') {
         this.$Message.info('您所填的信息不能为空')
@@ -781,6 +879,9 @@ export default {
       }
       this.cancel_add()
     },
+    /**
+      * @description 取消添加语料
+      */
     cancel_add () {
       this.question = ''
       this.reply = ''
@@ -791,6 +892,9 @@ export default {
       this.keywordIsNotStandard = false
       this.robotKeyWord = []
     },
+    /**
+      * @description 设置机器人借口
+      */
     set_robot_api () {
       this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robot_question_add)
         .then((response) => {
@@ -819,6 +923,9 @@ export default {
           console.log('set_robot_api5')
         })
     },
+    /**
+      * @description 保存文本接口
+      */
     save_text_api () {
       this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
         .then((response) => {
@@ -828,6 +935,9 @@ export default {
           console.log('save_text_api')
         })
     },
+    /**
+      * @description 通过Email找客服Id
+      */
     get_cs_id_api () {
       this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
         .then((response) => {
@@ -838,6 +948,9 @@ export default {
           console.log('get_cs_id_api')
         })
     },
+    /**
+      * @description 保存聊天文字
+      */
     save_text (index) {
       this.save_text_item = {
         'client_id': this.session.userId,
@@ -848,6 +961,9 @@ export default {
       console.log(this.save_text_item)
       this.save_text_api()
     },
+    /**
+      * @description 保存图片接口
+      */
     save_img_api () {
       this.$http.post(this.apiSmallimagelogSendImage, this.save_img_item)
         .then((response) => {
@@ -862,6 +978,9 @@ export default {
           console.log('save_img_api2')
         })
     },
+    /**
+      * @description 保存大图片
+      */
     save_bigImg_api () {
       this.$http.post(this.apiBigimagelogSendImage, this.save_bigImg_item)
         .then((response) => {
@@ -876,6 +995,9 @@ export default {
           console.log('save_bigImg_api2')
         })
     },
+    /**
+      * @description 保存图片
+      */
     save_img (index) {
       let timestamp = new Date().getTime()
       let label = timestamp + this.session.userId
@@ -898,6 +1020,9 @@ export default {
       this.save_img_api()
       this.save_bigImg_api()
     },
+    /**
+      * @description 获取历史消息
+      */
     show_history_api () {
       this.$http.post(this.apiLogShowHistory, this.show_history_item)
         .then((response) => {
@@ -958,6 +1083,9 @@ export default {
           console.log('show_history_api2')
         })
     },
+    /**
+      * @description 显示历史消息中的大图
+      */
     showHistoryBigImg (label) {
       this.show_history_big_img_item = {
         'client_id': this.session.userId,
@@ -966,6 +1094,9 @@ export default {
       }
       this.show_history_big_img_api()
     },
+    /**
+      * @description 获取历史消息中的大图
+      */
     show_history_big_img_api () {
       this.$http.post(this.apiBigimagelogShowSingleHistory, this.show_history_big_img_item)
         .then((response) => {
@@ -983,7 +1114,9 @@ export default {
     }
   },
   filters: {
-    // 将日期过滤为 hour:minutes
+    /**
+      * @description 格式化日期
+      */
     time (date) {
       if (typeof date === 'string') {
         date = new Date(date)
@@ -995,7 +1128,9 @@ export default {
     robotSetting
   },
   directives: {
-    // 发送消息后滚动到底部
+    /**
+      * @description 发送消息后滚动到底部
+      */
     'scroll-bottom' () {
       Vue.nextTick(() => {
         let message = document.getElementsByClassName('main-message')
