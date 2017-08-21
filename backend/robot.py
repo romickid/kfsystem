@@ -1,3 +1,4 @@
+#coding:utf-8
 import jieba.analyse
 from .models import Admin, RobotInfo
 from .serializers import AdminSerializer, RobotInfoSerializer
@@ -31,6 +32,8 @@ def robot_add_keyword(str_keyword):
 
 def robot_weight_list(admin_id, customer_input):
     instance_robotinfo = RobotInfo.objects.filter(enterprise=admin_id)
+    if instance_robotinfo.exists() == False:
+        return 0
     array_input_tags = robot_create_tags(customer_input)
     weight_list = list()
     for i in instance_robotinfo:
@@ -42,12 +45,14 @@ def robot_weight_list(admin_id, customer_input):
 
 def robot_return_answer(admin_id, customer_input):
     weight_robot = robot_weight_list(admin_id, customer_input)
-    weight_robot.sort(reverse=True)
+    if weight_robot != 0:
+        weight_robot.sort(reverse=True)
     weight_basic = robot_basic_weight_list(customer_input)
-    weight_basic.sort(reverse=True)
-    if weight_robot[0][0] > 5:
-        return weight_robot[0]
-    elif weight_basic[0][0] > 3:
-        return weight_basic[0]
+    if weight_basic != 0:
+        weight_basic.sort(reverse=True)
+    if weight_robot != 0 and weight_robot[0][0] > 3:
+        return weight_robot[0][1] + '   ' + weight_robot[0][2]
+    elif weight_basic != 0 and weight_basic[0][0] > 2:
+        return weight_basic[0][1]
     else:
-        return ['NO Reply.']
+        return ['很抱歉，我不是很清楚您说的是什么，请尝试询问其他问题或使用人工客服。']

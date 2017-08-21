@@ -538,9 +538,9 @@ def customerservice_setrobotinfo_show(request):
 @csrf_exempt
 def customerservice_displayrobotreply_show(request):
     if request.method == 'POST':
-        # Admin:nickname, customer_input
+        # CustomerService: nickname, customer_input
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive, request)
+        is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
