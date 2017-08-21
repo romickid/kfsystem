@@ -1211,8 +1211,8 @@ export default {
     showHistoryBigImg (label) {
       console.log('[method: showHistoryBigImg]')
       this.showHistoryBigImgItem = {
-        'client_id': this.session.userId,
-        'service_id': this.turnId,
+        'client_id': this.currentOnlineObject.customerID,
+        'service_id': this.databaseCsID,
         'label': label
       }
       this.showHistoryBigImgApi()
@@ -1227,7 +1227,7 @@ export default {
             // window.location.href = '../notfound'
             console.log('show_history_big_img_api1')
           } else {
-            this.showHistoryBigImgApi = {}
+            this.showHistoryBigImgItem = {}
             this.showBigImg(response.data)
           }
         }, (response) => {

@@ -665,9 +665,8 @@ def bigimagelog_show_single_history(request):
         json_receive = JSONParser().parse(request)
         instances = BigImageLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id'], label=json_receive['label'])
         if instances.exists():
-            serializer = BigImageLogSerializer(instances)
-            f = open('./media/user_image/Big/'+serializer.data[0]['image'],'rb')
-            ls_f = 'data:image/' + instances[0].extention + ';base64,' + base64.b64encode(f.read())
+            f = open('./media/'+instances[0].image.url,'rb')
+            ls_f = 'data:image/' + instances[0].extention + ';base64,' + base64.b64encode(f.read()).decode('utf-8')
             f.close()
             return HttpResponse(ls_f, status=200)
         return HttpResponse('ERROR, no history.', status=200)
