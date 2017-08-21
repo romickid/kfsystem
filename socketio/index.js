@@ -117,9 +117,24 @@ socketIO.on('connection', function (socket) {
     if (!cs_socket_list[enterprise_id]) {
       cs_socket_list[enterprise_id] = [];
     }
+    if (findByCsId(cs_socket_list[enterprise_id], cs_id) !== -1) {
+      console.log('处理重复客服的问题')
+      former_cs_socket = findByCsId(cs_socket_list[enterprise_id], cs_id)
+      let former_customerinfo = []
+      for( let i=0; i<former_cs_socket.list_customer_socket.length; i++) {
+        csaddCustomerSocket(cs_socket, former_cs_socket.list_customer_socket[i])
+        former_customerinfo.push({
+          enterprise_id: enterprise_id,
+          customer_id: former_cs_socket.list_customer_socket[i].customer_id
+        })
+      }
+      cs_socket.emit('cs reload old socket', former_customerinfo)
+      removeByCsId(cs_socket_list[enterprise_id], cs_id)
+    }
     cs_socket_list[enterprise_id].push(cs_socket);
 
     console.log('企业 ' +  cs_socket.enterprise_id + ' 的客服 ' + cs_socket.cs_id + '成功登录')
+    console.log('当前企业的socket个数: ' + cs_socket_list[enterprise_id].length)
   })
 
   // 为用户分配客服 customer_socket

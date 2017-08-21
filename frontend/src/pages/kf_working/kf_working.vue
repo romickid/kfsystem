@@ -460,7 +460,7 @@ export default {
         if (that.onlineIndex < onlineIndex) {
           that.onlineIndex++
         }
-        that.customerList[0].uncheck++ // 因此uncheck也要++
+        that.onlineList[0].uncheck++ // 因此uncheck也要++
       } else {
         var customerID = that.tempCustomerID
         clearTimeout(that.onlineList[onlineIndex].timer)
@@ -551,6 +551,22 @@ export default {
         that.onlineIndex--
       }
       customerDelete(that.onlineIndex, that.offlineList, customerID)
+    })
+
+    this.socket.on('cs reload old socket', function (former_customerinfo) {
+      console.log('socket: cs reload old socket')
+      console.log(former_customerinfo)
+      for (let i=0; i<former_customerinfo.length; i++) {
+        let customer = createCustomer(former_customerinfo[i].customer_id, former_customerinfo[i].customer_id, former_customerinfo[i].enterprise_id)
+        addCustomer(that.socket, that.onlineList, customer)
+        console.log(that.onlineList)
+        if (that.onlineList.length !== 1) { // 新增客服显示未读消息
+          customer.uncheck++
+        }
+        if (that.hangon && that.onlineList.length !== 1) { // 如果是处于Hangon, 当前显示的要位于列表第二位
+          that.onlineIndex++
+        }
+      }
     })
 
     // 客服登录
