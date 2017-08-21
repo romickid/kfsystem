@@ -743,7 +743,7 @@ export default {
         })
         let index = this.currentOnlineObject.messages.length
         this.saveImg(index - 1)
-        this.socket.emit('cs send picture', this.chatlogData.img, this.chatlogData.bigImg, this.currentOnlineObject.enterpriseID, this.cs.csID, this.currentOnlineObject.customerID)
+        this.socket.emit('cs send picture', this.chatlogData.bigImg, this.chatlogData.img, this.currentOnlineObject.enterpriseID, this.cs.csID, this.currentOnlineObject.customerID)
         clearTimeout(this.onlineList[this.onlineIndex].timer)
         let customerID = this.onlineList[this.onlineIndex].customerID
         let csSocket = this.socket
@@ -978,11 +978,10 @@ export default {
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
-      lrz(file, {width: 1920, height: 1920, quality: 1})
+      lrz(file, {width: 1280, height: 1280, quality: 1})
         .then(function (rst) {
           self.chatlogData.bigImg = rst.base64
-          self.chatlogData.isText = false
-          lrz(rst.origin, {width: 500, quality: 0.7})
+          lrz(rst.origin, {width: 300, height: 300, quality: 0.7})
             .then(function (rst) {
               self.chatlogData.img = rst.base64
               self.imgInputing()

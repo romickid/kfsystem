@@ -350,9 +350,15 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        let index = this.currentOnlineObject.messages.length
+        console.log('imgInputing1')
+        let index = this.session.messages.length
         this.saveImg(1, index - 1)
-        this.socket.emit('customer send message', this.chatlogData.bpic, this.chatlogData.spic, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
+        console.log('this.saveImg(1, index - 1)')
+        if (this.cs.csID !== -1) {
+          this.socket.emit('customer send picture', this.chatlogData.bigImg, this.chatlogData.img, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
+          console.log('socket')
+        }
+        console.log('imgInputing2')
         this.chatlogData.img = ''
         this.chatlogData.bigImg = ''
       }
@@ -380,13 +386,12 @@ export default {
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
-      lrz(file, {width: 1920, height: 1920, quality: 1})
+      lrz(file, {width: 1280, height: 1280, quality: 1})
         .then(function (rst) {
-          self.bigImg = rst.base64
-          self.isText = false
-          lrz(rst.origin, {width: 500, quality: 0.7})
+          self.chatlogData.bigImg = rst.base64
+          lrz(rst.origin, {width: 300, height: 300, quality: 0.7})
             .then(function (rst) {
-              self.img = rst.base64
+              self.chatlogData.img = rst.base64
               self.imgInputing()
               return rst
             })
@@ -489,6 +494,7 @@ export default {
             console.log('save_img_api1')
           } else {
             this.saveImgItem = {}
+            console.log('saveImgApi')
           }
         }, (response) => {
           // window.location.href = '../notfound'
@@ -505,6 +511,7 @@ export default {
             console.log('save_bigImg_api1')
           } else {
             this.saveBigImgItem = {}
+            console.log('saveBigImgApi')
           }
         }, (response) => {
           // window.location.href = '../notfound'
@@ -514,8 +521,11 @@ export default {
 
     // 存图片的函数
     saveImg (isClient, index) {
+      console.log('saveImg')
       let timestamp = new Date().getTime()
-      let label = timestamp + this.user.id
+      console.log(timestamp)
+      let label = timestamp + this.customer.customerID
+      console.log('timestamp')
       this.saveImgItem = {
         'client_id': this.customer.customerID,
         'service_id': this.databaseCsID,
@@ -530,6 +540,8 @@ export default {
         'is_client': isClient,
         'label': label
       }
+      console.log(this.saveImgItem)
+      console.log(this.saveBigImgItem)
       this.saveImgApi()
       this.saveBigImgApi()
     }
