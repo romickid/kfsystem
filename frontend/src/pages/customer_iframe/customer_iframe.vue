@@ -48,7 +48,7 @@ import * as io from 'socket.io-client'
 import Vue from 'vue'
 import { formatDate } from '../../../static/js/date.js'
 import lrz from '../../../node_modules/lrz/dist/lrz.bundle.js'
-const key = 'VUE-Customer1'
+const key = 'VUE-Customer-iframe'
 function serverMessage (sessionList, msg, isText, img, bigImg, fromId, toId) {
   sessionList[0].messages.push({
     text: msg,
@@ -83,7 +83,7 @@ function noServerAvailable (userList, sessionList) {
 }
 // 初始化Socket
 function initSocket (userList, sessionList, socket, user, information) {
-  return new Promise (function (resolve) {
+  return new Promise(function (resolve) {
     socket.on('server message', function (msg, isText, img, bigImg, fromId, toId) {
       serverMessage(sessionList, msg, isText, img, bigImg, fromId, toId)
     })
@@ -194,25 +194,16 @@ export default {
     }
   },
   created () {
-    this.user.id = (Math.random() * 1000).toString()
-    this.user.name = 'visitor'
-    this.information = 'No informations'
-    this.enterprise = this.$utils.getUrlKey('enterprise')
-    // this.user.id = this.$utils.getUrlKey('email')
-    // this.user.name = this.$utils.getUrlKey('nickname')
-    // this.information = this.$utils.getUrlKey('information')
-    // this.enterprise = this.$utils.getUrlKey('enterprise')
     // 如果初次登录， 初始化
-    // if (this.user.id === '-1') {
-    //   this.user.id = (Math.random() * 1000).toString()
-    //   this.user.name = 'visitor'
-    //   this.information = 'No informations'
-    //   this.enterprise = this.$utils.getUrlKey('enterprise')
-    // } else {
-    //   this.user.name = this.$utils.getUrlKey('nickname')
-    //   this.information = this.$utils.getUrlKey('information')
-    //   this.enterprise = this.$utils.getUrlKey('enterprise')
-    // }
+    // this.user.id = (Math.random() * 1000).toString()
+    // this.user.name = 'visitor'
+    // this.information = 'No informations'
+    // this.enterprise = this.$utils.getUrlKey('enterprise')
+    this.user.id = this.$utils.getUrlKey('email')
+    this.user.name = this.$utils.getUrlKey('nickname')
+    this.information = this.$utils.getUrlKey('information')
+    // this.enterprise = this.$utils.getUrlKey('enterprise')
+
     // 如果刷新之前已转接为人工客服，自动连接服务器
     if (this.userList[0].id !== -1) {
       let that = this
@@ -264,7 +255,7 @@ export default {
     inputing (e) {
       if (e.keyCode === 13 && this.text.length) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
-        residual.innerHTML=''
+        residual.innerHTML = ''
         this.session.messages.push({
           text: this.text,
           img: '',
@@ -295,7 +286,7 @@ export default {
     buttoninputing (e) {
       if (this.text.length !== 0 || this.img.length !== 0) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
-        residual.innerHTML=''
+        residual.innerHTML = ''
         this.session.messages.push({
           text: this.text,
           img: this.img,
@@ -345,7 +336,7 @@ export default {
         information: this.information
       })
       initSocket(that.userList, that.sessionList, this.socket, that.user, information).then(function () {
-          that.cs_email_item = {
+        that.cs_email_item = {
           'email': that.userList[0].id
         }
         console.log(that.cs_email_item)
