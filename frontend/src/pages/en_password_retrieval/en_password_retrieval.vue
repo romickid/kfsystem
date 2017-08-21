@@ -60,6 +60,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 用来判断新密码的安全性，格式需要符合：长度在6-20位且必须包含大写字母、小写字母和数字
+      */
     checkNewPassword () {
       if (this.newPassword !== this.newPasswordConfirm && this.newPassword !== '' && this.newPasswordConfirm !== '') {
         this.passwordInConsistent = true
@@ -72,10 +75,16 @@ export default {
         this.passwordNonStandard = false
       }
     },
+    /**
+      * @description 当新密码输入框聚焦的时候，取消对新密码格式不合法的提示，用户体验更友好
+      */
     newPasswordInput () {
       this.passwordInConsistent = false
       this.passwordNonStandard = false
     },
+    /**
+      * @description 对完成按钮进行监听，在信息无格式错误且完整的前提下调用resetPassword函数与后端进行交互
+      */
     finish () {
       if (this.newPassword === '' || this.newPasswordConfirm === '') {
         this.$Message.info('您的信息不完善！')
@@ -93,6 +102,9 @@ export default {
         }
       }
     },
+    /**
+      * @description 检查进入网页的链接是否合法（真的还是伪造的），若不合法则跳转到404页
+      */
     verify () {
       this.$http.post(this.apiAdminFindPasswordCheckVid, this.adminFindPassword)
         .then((response) => {
@@ -113,6 +125,9 @@ export default {
           window.location.href = '../notfound'
         })
     },
+    /**
+      * @description 把用户设置的新密码传输到后端进行交互，并得到反馈
+      */
     resetPassword () {
       this.$http.post(this.apiAdminForgetPasswordSaveData, this.adminResetPassword)
         .then((response) => {
@@ -133,12 +148,18 @@ export default {
           window.location.href = '../notfound'
         })
     },
+    /**
+      * @description 对密码进行hash操作，提高传输的安全性
+      */
     hashPassword () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
       hash.update(this.newPassword)
       return hash.hex()
     },
+    /**
+      * @description 传输时保证vid的安全性
+      */
     hashNewVid () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
@@ -146,6 +167,9 @@ export default {
       return hash.hex()
     }
   },
+  /**
+    * @description 利用钩子函数，在打印页面前验证链接的真实性
+    */
   created () {
     this.adminFindPassword = {
       'email': this.$utils.getUrlKey('email'),

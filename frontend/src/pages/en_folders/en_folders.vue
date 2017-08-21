@@ -81,6 +81,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 用来判断注册时邮箱的格式
+      */
     checkEmail () {
       let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2,3})?$/i
       let legal = reg.test(this.email)
@@ -90,9 +93,15 @@ export default {
         this.emailIllegal = false
       }
     },
+    /**
+      * @description 当邮箱输入框聚焦的时候，取消对邮箱不合法的提示，用户体验更友好
+      */
     emailInput () {
       this.emailIllegal = false
     },
+    /**
+      * @description 对用户输入的注册密码安全性和两次输入的一致性进行验证，格式需要符合：长度在6-20位且必须包含大写字母、小写字母和数字
+      */
     checkPassword () {
       if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
         this.passwordInConsistent = true
@@ -105,10 +114,16 @@ export default {
         this.passwordNonStandard = false
       }
     },
+    /**
+      * @description 当密码输入框聚焦的时候，取消对密码格式不合法的提示，用户体验更友好
+      */
     passwordInput () {
       this.passwordInConsistent = false
       this.passwordNonStandard = false
     },
+    /**
+      * @description 在信息无格式错误且完整的前提下与后端进行交互，并给出反馈
+      */
     communicate () {
       this.$http.post(this.apiCreate, this.item)
         .then((response) => {
@@ -129,6 +144,9 @@ export default {
           window.location.href = '../notfound'
         })
     },
+    /**
+      * @description 对注册完成按钮进行监听，在信息无格式错误且完整的前提下调用communicate函数与后端进行交互
+      */
     register () {
       if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '' || this.serialNumber === '') {
         this.$Message.info('您的信息不完善！')
@@ -149,6 +167,9 @@ export default {
         this.communicate()
       }
     },
+    /**
+      * @description 对密码进行hash操作，提高传输的安全性
+      */
     hashPassword () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
