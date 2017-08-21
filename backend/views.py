@@ -540,7 +540,7 @@ def customerservice_displayrobotreply_show(request):
     if request.method == 'POST':
         # Admin:nickname, customer_input
         json_receive = JSONParser().parse(request)
-        is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive)
+        is_correct, error_message = customerservice_displayrobotreply_show_check(json_receive, request)
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
 
