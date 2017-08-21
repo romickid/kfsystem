@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: doc.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: doc.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @description 键盘输入信息
+ */
+function inputing(e) {
+  if (e.keyCode === 13 &amp;&amp; this.text.length) {
+    let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+    residual.innerHTML = ''
+    this.session.messages.push({
+      text: this.text,
+      img: '',
+      bigImg: '',
+      isText: true,
+      date: new Date(),
+      self: true,
+      image: '../../../static/1.jpg'
+    })
+    console.log('inputing1')
+    // 存入数据库
+    let index = this.session.messages.length
+    this.save_text(1, index - 1)
+    console.log('inputing2')
+    if (this.userList[0].id !== -1) {
+      this.socket.emit('customer message', this.text, true, this.img, this.bigImg, this.user.id, this.userList[0].id)
+    } else {
+      this.robot_reply_item = {
+        'nickname': this.admin_nickname,
+        'customer_input': this.text
+      }
+      console.log(this.robot_reply_item)
+      this.show_robot_reply_api()
+    }
+    this.text = ''
+  }
+}
+/**
+ * @description 按钮输入信息
+ */
+function buttoninputing(e) {
+  if (this.text.length !== 0 || this.img.length !== 0) {
+    let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+    residual.innerHTML = ''
+    this.session.messages.push({
+      text: this.text,
+      img: this.img,
+      bigImg: this.bigImg,
+      isText: this.isText,
+      date: new Date(),
+      self: true,
+      image: '../../../static/1.jpg'
+    })
+    console.log('buttoninputing1')
+    // 存入数据库
+    let index = this.session.messages.length
+    if (this.isText === true) {
+      this.save_text(1, index - 1)
+    } else {
+      this.save_img(1, index - 1)
+    }
+    console.log('buttoninputing2')
+    if (this.userList[0].id !== -1) {
+      this.socket.emit('customer message', this.text, this.isText, this.img, this.bigImg, this.user.id, this.userList[0].id)
+    } else {
+      if (this.isText === true) {
+        this.robot_reply_item = {
+          'nickname': this.admin_nickname,
+          'customer_input': this.text
+        }
+        console.log(this.robot_reply_item)
+        this.show_robot_reply_api()
+      }
+    }
+    this.text = ''
+    this.img = ''
+    this.bigImg = ''
+    this.isText = true
+  }
+}
+/**
+ * @description 点击按钮转接客服
+ */
+function switchServer(e) {
+  if (this.userList[0].id !== -1) {
+    alert('当前已为人工客服！')
+    return
+  }
+  let that = this
+  this.socket = io('http://localhost:3000')
+  let information = JSON.stringify({
+    userId: this.user.id,
+    userName: this.user.name,
+    information: this.information
+  })
+  initSocket(that.userList, that.sessionList, this.socket, that.user, information).then(function () {
+    that.cs_email_item = {
+      'email': that.userList[0].id
+    }
+    console.log(that.cs_email_item)
+    that.get_cs_id_api()
+  })
+  // this.isRobot = false
+  // this.timer = setTimeout(function () {
+  //   that.socket.close()
+  //   noServerAvailable(this.userList, this.sessionList)
+  // }, 4000)
+}
+/**
+ * @description 显示图片
+ */
+function fileup() {
+  let self = this
+  let obj = document.getElementById('inputFile')
+  let file = obj.files[0]
+  lrz(file, {
+      width: 960,
+      height: 960,
+      quality: 1
+    })
+    .then(function (rst) {
+      self.bigImg = rst.base64
+      self.isText = false
+      lrz(rst.origin, {
+          width: 300,
+          height: 300,
+          quality: 0.7
+        })
+        .then(function (rst) {
+          self.img = rst.base64
+          self.buttoninputing()
+          return rst
+        })
+      return rst
+    })
+  obj.value = ''
+}
+/**
+ * @description 加载图片
+ */
+function imgupload() {
+  var file = document.getElementById('inputFile')
+  file.click()
+}
+/**
+ * @description 显示大图
+ */
+function showBigImg(bigImg) {
+  this.bigImgBase64 = bigImg
+  this.modal2 = true
+}
+function screenShot() {
+  window.parent.postMessage('Screen shot', '*')
+}
+/**
+ * @description 获取机器人回复
+ */
+function show_robot_reply_api() {
+  this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robot_reply_item)
+    .then((response) => {
+      if (response.data === 'ERROR, wrong information.') {
+        // window.location.href = '../se_login'
+        console.log('show_robot_reply_api1')
+      } else if (response.data === 'ERROR, incomplete information.') {
+        // this.$Message.info('您所填的信息不完整')
+        console.log('show_robot_reply_api2')
+      } else if (response.data === 'ERROR, info is not exist.') {
+        // this.$Message.info('问题没得到解决？请转接人工客服')
+        console.log('show_robot_reply_api3')
+      } else {
+        let msg = response.data
+        this.show_robot_reply(msg)
+      }
+    }, (response) => {
+      // window.location.href = '../se_login'
+      console.log('show_robot_reply_api4')
+    })
+}
+/**
+ * @description 显示机器人回复
+ */
+function show_robot_reply(msg) {
+  this.session.messages.push({
+    text: msg,
+    img: '',
+    bigImg: '',
+    isText: true,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+  // 存入数据库
+  let index = this.session.messages.length
+  this.save_text(0, index - 1)
+}
+/**
+ * @description 保存文本接口
+ */
+function save_text_api() {
+  this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
+    .then((response) => {
+      console.log('save_text_api1')
+      this.save_text_item = {}
+    }, (response) => {
+      // window.location.href = '../se_login'
+      console.log('save_text_api2')
+    })
+}
+/**
+ * @description 通过email设置用户ID
+ */
+function get_cs_id_api() {
+  this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
+    .then((response) => {
+      this.turnId = response.data
+      console.log('get_cs_id_api1')
+      console.log(response.data)
+    }, (response) => {
+      // window.location.href = '../se_login'
+      console.log('get_cs_id_api2')
+    })
+}
+/**
+ * @description 保存文本
+ */
+function save_text(isClient, index) {
+  this.save_text_item = {
+    'client_id': this.user.id,
+    'service_id': this.turnId,
+    'content': this.session.messages[index].text,
+    'is_client': isClient
+  }
+  console.log(this.save_text_item)
+  this.save_text_api()
+}
+/**
+ * @description 保存图片接口
+ */
+function save_img_api() {
+  this.$http.post(this.apiSmallimagelogSendImage, this.save_img_item)
+    .then((response) => {
+      if (response.data === 'ERROR, invalid data in serializer.') {
+        // window.location.href = '../notfound'
+        console.log('save_img_api1')
+      } else {
+        this.save_img_item = {}
+      }
+    }, (response) => {
+      // window.location.href = '../notfound'
+      console.log('save_img_api2')
+    })
+}
+/**
+ * @description 保存大图接口
+ */
+function save_bigImg_api() {
+  this.$http.post(this.apiBigimagelogSendImage, this.save_bigImg_item)
+    .then((response) => {
+      if (response.data === 'ERROR, invalid data in serializer.') {
+        // window.location.href = '../notfound'
+        console.log('save_bigImg_api1')
+      } else {
+        this.save_bigImg_item = {}
+      }
+    }, (response) => {
+      // window.location.href = '../notfound'
+      console.log('save_bigImg_api2')
+    })
+}
+/**
+ * @description 保存图片
+ */
+function save_img(isClient, index) {
+  let timestamp = new Date().getTime()
+  let label = timestamp + this.user.id
+  this.save_img_item = {
+    'client_id': this.user.id,
+    'service_id': this.turnId,
+    'image': this.session.messages[index].img,
+    'is_client': isClient,
+    'label': label
+  }
+  this.save_bigImg_item = {
+    'client_id': this.user.id,
+    'service_id': this.turnId,
+    'image': this.session.messages[index].bigImg,
+    'is_client': isClient,
+    'label': label
+  }
+  this.save_img_api()
+  this.save_bigImg_api()
+}
+function endSession() {
+  window.parent.postMessage('End session', '*')
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#buttoninputing">buttoninputing</a></li><li><a href="global.html#fileup">fileup</a></li><li><a href="global.html#get_cs_id_api">get_cs_id_api</a></li><li><a href="global.html#imgupload">imgupload</a></li><li><a href="global.html#inputing">inputing</a></li><li><a href="global.html#save_bigImg_api">save_bigImg_api</a></li><li><a href="global.html#save_img">save_img</a></li><li><a href="global.html#save_img_api">save_img_api</a></li><li><a href="global.html#save_text">save_text</a></li><li><a href="global.html#save_text_api">save_text_api</a></li><li><a href="global.html#show_robot_reply">show_robot_reply</a></li><li><a href="global.html#show_robot_reply_api">show_robot_reply_api</a></li><li><a href="global.html#showBigImg">showBigImg</a></li><li><a href="global.html#switchServer">switchServer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Mon Aug 21 2017 17:00:10 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

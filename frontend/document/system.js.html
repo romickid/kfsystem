@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: doc.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: doc.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @description 检查用户信息种类名称输入
+ */
+function check_name() {
+  if (this.formItem.name === '') {
+    this.nameIsNull = true
+  }
+}
+/**
+ * @description 正在输入用户信息种类名称时取消名称检查标记
+ */
+function name_inputing() {
+  this.nameIsNull = false
+}
+/**
+ * @description 检查输入的自定义说明
+ */
+function check_comment() {
+  if (this.formItem.comment === '') {
+    this.commentIsNull = true
+  }
+}
+/**
+ * @description 正在输入自定义说明时取消自定义说明检查标记
+ */
+function comment_inputing() {
+  this.commentIsNull = false
+}
+/**
+ * @description 输入信息后点击确定
+ */
+function ok() {
+  if (this.formItem.name === '' || this.formItem.comment === '') {
+    this.$Message.info('您的信息不完善')
+  } else {
+    this.infomationItem = {
+      'name': this.formItem.name,
+      'comment': this.formItem.comment
+    }
+    this.add_api()
+  }
+  this.cancel()
+}
+/**
+ * @description 点击确定后调用后端接口将企业自定义用户信息种类写入数据库
+ */
+function add_api() {
+  this.$http.post(this.apiAdminDisplayInfoCreate, this.infomationItem)
+    .then((response) => {
+      if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong email.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, attribute name has been used.') {
+        this.$Message.info('该名称已存在')
+      } else if (response.data === 'ERROR, invalid data in serializer.') {
+        window.location.href = '../en_login'
+      } else {
+        this.$Message.info('添加成功')
+        this.show_info()
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+/**
+ * @description 点击取消后清除输入变量
+ */
+function cancel() {
+  this.formItem.name = ''
+  this.formItem.comment = ''
+  this.nameIsNull = false
+  this.commentIsNull = false
+}
+/**
+ * @description 删除企业自定义用户信息种类
+ */
+function delete_info(index) {
+  this.deleteName = {
+    'name': this.infomations[index].name
+  }
+  this.delete_api()
+}
+/**
+ * @description 删除企业自定义用户信息种类调用后端api
+ */
+function delete_api() {
+  this.$http.post(this.apiAdminDisplayInfoDelete, this.deleteName)
+    .then((response) => {
+      if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong email.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, attribute is not existent.') {
+        this.$Message.info('该名称不存在')
+      } else {
+        this.$Message.info('删除成功')
+        this.show_info()
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+/**
+ * @description 重新生成通讯秘钥调用后端接口
+ */
+function reset_key() {
+  this.$http.post(this.apiResetCommunicationKey)
+    .then((response) => {
+      if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong email.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, invalid data in serializer.') {
+        window.location.href = '../en_login'
+      } else {
+        this.show_key()
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+/**
+ * @description 显示企业自定义的用户信息种类调用后端接口
+ */
+function show_info() {
+  this.$http.post(this.apiAdminDisplayInfoShow)
+    .then((response) => {
+      if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong email.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, display info is empty.') {
+        this.infomations = []
+      } else {
+        this.infomations = response.data
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+/**
+ * @description 显示通讯秘钥调用后端接口
+ */
+function show_key() {
+  this.$http.post(this.apiShowCommunicationKey)
+    .then((response) => {
+      if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong email.') {
+        window.location.href = '../en_login'
+      } else {
+        this.communicationKey = response.data.communication_key
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#add_api">add_api</a></li><li><a href="global.html#cancel">cancel</a></li><li><a href="global.html#check_comment">check_comment</a></li><li><a href="global.html#check_name">check_name</a></li><li><a href="global.html#comment_inputing">comment_inputing</a></li><li><a href="global.html#delete_api">delete_api</a></li><li><a href="global.html#delete_info">delete_info</a></li><li><a href="global.html#name_inputing">name_inputing</a></li><li><a href="global.html#ok">ok</a></li><li><a href="global.html#reset_key">reset_key</a></li><li><a href="global.html#show_info">show_info</a></li><li><a href="global.html#show_key">show_key</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Mon Aug 21 2017 17:54:39 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
