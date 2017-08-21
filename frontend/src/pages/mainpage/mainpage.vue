@@ -217,6 +217,9 @@
 export default {
   name: 'app',
   methods: {
+    /**
+      * @description 前往登录页面
+      */
     gotoregister () {
       window.location.href = './en_folders'
     }
