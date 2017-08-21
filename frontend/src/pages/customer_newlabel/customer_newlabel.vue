@@ -85,7 +85,7 @@ function connectToCs (cs, session, csID) {
 function noServerAvailable (cs, session) {
   console.log("function: noServerAvailable")
   session.messages.push({
-    text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
+    text: '您好，现在没有客服在线哦，请您稍后重新连接',
     isText: true,
     date: new Date(),
     image: '../../../static/2.png'
@@ -317,6 +317,9 @@ export default {
 
     buttonInputing (e) {
       console.log("method: buttonInputing")
+      let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+      residual.innerHTML = ''
+
       if (this.chatlogData.text.length !== 0) {
         this.session.messages.push({
           text: this.chatlogData.text,
