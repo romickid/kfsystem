@@ -10,27 +10,22 @@ export default {
         {
           title: '问题',
           key: 'question',
-          ellipsis: 'true',
-          render: (h, params) => {
-            return h('div', [
-              h('strong', params.row.question)
-            ])
-          }
+          ellipsis: true
         },
         {
           title: '回答',
           key: 'answer',
-          ellipsis: 'true'
+          ellipsis: true
         },
         {
           title: '关键词',
           key: 'keyword',
-          ellipsis: 'true'
+          ellipsis: true
         },
         {
           title: '权重',
           key: 'weight',
-          ellipsis: 'true'
+          ellipsis: true
         },
         {
           title: '操作',
