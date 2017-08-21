@@ -1084,7 +1084,7 @@ export default {
       console.log('[method: saveImg]')
       let timestamp = new Date().getTime()
       let label = timestamp + this.databaseCsID
-      this.savImgItem = {
+      this.saveImgItem = {
         'client_id': this.currentOnlineObject.customerID,
         'service_id': this.databaseCsID,
         'image': this.currentOnlineObject.messages[index].img,
