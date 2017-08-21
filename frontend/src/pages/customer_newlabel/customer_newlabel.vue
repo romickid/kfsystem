@@ -288,7 +288,7 @@ export default {
   methods: {
     keyboardInputing (e) {
       console.log("method: keyboardInputing")
-      if (e.keyCode === 13 && this.text.length) {
+      if (e.keyCode === 13 && this.chatlogData.text.length) {
         this.session.messages.push({
           text: this.chatlogData.text,
           date: new Date(),
