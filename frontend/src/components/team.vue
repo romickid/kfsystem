@@ -68,6 +68,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 添加客服时点击确定
+      */
     ok () {
       if (this.kf === '') {
         this.$Message.info('邮箱不能为空')
@@ -81,6 +84,9 @@ export default {
       }
       this.cancel()
     },
+    /**
+      * @description 检查邮箱输入格式
+      */
     check_email () {
       let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.kf)
@@ -90,10 +96,16 @@ export default {
         this.emailIsNotStandard = true
       }
     },
+    /**
+      * @description 正在输入邮箱时取消邮箱格式检查标记
+      */
     email_inputing () {
       this.emailIsNull = false
       this.emailIsNotStandard = false
     },
+    /**
+      * @description 添加客服调用后端接口
+      */
     add_cs_api () {
       this.$http.post(this.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
@@ -118,11 +130,17 @@ export default {
           window.location.href = '../en_login'
         })
     },
+    /**
+      * @description 添加客服时点击取消，清空变量
+      */
     cancel () {
       this.kf = ''
       this.emailIsNull = false
       this.emailIsNotStandard = false
     },
+    /**
+      * @description 删除客服调用后端接口
+      */
     delete_cs_api () {
       this.$http.post(this.apiAdminDeleteCs, this.deleteCSItem)
         .then((response) => {
@@ -146,12 +164,18 @@ export default {
           window.location.href = '../en_login'
         })
     },
+    /**
+      * @description 删除客服
+      */
     delete_cs (index) {
       this.deleteCSItem = {
         'email': this.kfstaff[index].email
       }
       this.delete_cs_api()
     },
+    /**
+      * @description 刷新客服详细信息
+      */
     refresh () {
       this.$http.post(this.apiAdminShowCsStatus)
         .then((response) => {

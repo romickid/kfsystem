@@ -96,11 +96,17 @@ export default {
     }
   },
   computed: {
+    /**
+      * @description 图标大小，有大图标与小图标两种显示
+      */
     iconSize () {
       return this.spanLeft === 5 ? 14 : 24
     }
   },
   methods: {
+    /**
+      * @description 点击图标切换大小图标并能显示或隐藏标题
+      */
     toggleClick () {
       if (this.spanLeft === 5) {
         this.spanLeft = 2
@@ -110,9 +116,15 @@ export default {
         this.spanRight = 19
       }
     },
+    /**
+      * @description 选择路由，渲染不同组件
+      */
     select (name) {
       this.$router.push('/' + name)
     },
+    /**
+      * @description 获取管理员邮箱与用户名
+      */
     getAdminInfomation () {
       this.$http.post(this.apiAdminShowUserStatus)
         .then((response) => {
@@ -128,6 +140,9 @@ export default {
           window.location.href = '../en_login'
         })
     },
+    /**
+      * @description 登出账号调用后端接口
+      */
     logout () {
       this.$http.post(this.apiAdminLogout)
         .then((response) => {
