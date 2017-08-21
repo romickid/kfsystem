@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: doc.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: doc.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @description 设置当前选中的用户索引
+ */
+function select(value) {
+  if (this.hangon) {
+    this.sessionIndex = this.userList.indexOf(value)
+    this.userList[this.sessionIndex].uncheck = 0
+  } else {
+    this.hangoffSessionIndex = this.hangoffUserList.indexOf(value)
+  }
+}
+/**
+ * @description 键盘发送消息
+ */
+function inputing(e) {
+  if (e.keyCode === 13 &amp;&amp; this.text.length &amp;&amp; this.session.userId !== -1) {
+    let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+    residual.innerHTML = ''
+    if (!this.hangon) {
+      alert('该用户已挂断！')
+      this.text = ''
+      return
+    }
+    this.session.messages.push({
+      text: this.text,
+      img: '',
+      bigImg: '',
+      isText: true,
+      date: new Date(),
+      self: true,
+      image: '../../../static/1.jpg'
+    })
+    // 存入数据库
+    let index = this.session.messages.length
+    this.save_text(index - 1)
+    this.socket.emit('server message', this.text, true, '', '', this.user.id, this.session.userId)
+    clearTimeout(this.timers[this.sessionIndex])
+    let customerId = this.userList[this.sessionIndex].id
+    let serverSocket = this.socket
+    this.timers[this.sessionIndex] = setTimeout(
+      function () {
+        customerOutMessage(serverSocket, customerId)
+      }, 100000000)
+    this.text = ''
+  }
+}
+/**
+ * @description 按钮发送消息
+ */
+function buttoninputing(e) {
+  if (!this.hangon) {
+    alert('该用户已挂断！')
+    this.text = ''
+    return
+  }
+  if ((this.text.length !== 0 || this.img.length !== 0) &amp;&amp; this.session.userId !== -1) {
+    let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+    residual.innerHTML = ''
+    this.session.messages.push({
+      text: this.text,
+      img: this.img,
+      bigImg: this.bigImg,
+      isText: this.isText,
+      date: new Date(),
+      self: true,
+      image: this.user.image
+    })
+    // 存入数据库
+    let index = this.session.messages.length
+    if (this.isText === true) {
+      this.save_text(index - 1)
+    } else {
+      this.save_img(index - 1)
+    }
+    this.socket.emit('server message', this.text, this.isText, this.img, this.bigImg, this.user.id, this.session.userId)
+    clearTimeout(this.timers[this.sessionIndex])
+    let customerId = this.userList[this.sessionIndex].id
+    let serverSocket = this.socket
+    this.timers[this.sessionIndex] = setTimeout(
+      function () {
+        customerOutMessage(serverSocket, customerId)
+      }, 100000000)
+    this.text = ''
+    this.img = ''
+    this.bigImg = ''
+    this.isText = true
+  }
+}
+/**
+ * @description 切换左侧列表状态
+ */
+function switchoff() {
+  this.hangon = !this.hangon
+  this.sessionIndex = 0
+  this.hangoffSessionIndex = 0
+}
+/**
+ * @description 点击按钮查看历史消息
+ */
+function showHistory(e) {
+  if (!this.hangon) {
+    alert('无法获取历史消息！')
+    return
+  }
+  this.history = !this.history
+  this.show_history_item = {
+    'client_id': this.session.userId,
+    'service_id': this.turnId
+  }
+  this.show_history_api()
+}
+/**
+ * @description 获取客服信息，用于第一次登陆的初始化
+ */
+function getCsInfomation() {
+  this.$http.post(this.apiCustomerserviceShowUserStatus)
+    .then((response) => {
+      if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../se_login'
+      } else if (response.data === 'ERROR, wrong email.') {
+        window.location.href = '../se_login'
+      } else {
+        this.user.id = response.data.email
+        this.user.name = response.data.nickname
+        this.cs_email_item = {
+          'email': this.user.id
+        }
+        console.log(this.user.id)
+        this.get_cs_id_api()
+      }
+    }, (response) => {
+      window.location.href = '../se_login'
+    })
+}
+/**
+ * @description 点击按钮对当前用户进行转接，如果转接成功，将其转移到已挂断消息列表，不成功则给出提示
+ */
+function switchServer(e) {
+  if (!this.hangon) {
+    alert('无法为已挂断的用户进行转接！')
+    return
+  }
+  let that = this
+  let id = that.userList[that.sessionIndex].id
+  this.socket.emit('switch server from server', that.userList[that.sessionIndex].id)
+  setTimeout(function () {
+    if (!that.transferable) {
+      that.transferable = true
+      return
+    }
+    pushMessages(that.sessionList, that.sessionIndex, '已成功为用户转接！')
+    customerHangoff(that.userList, that.hangoffUserList,
+      that.sessionList, that.hangoffSessionList,
+      that.historySessionList, that.session.userId)
+    if (that.sessionIndex !== 0) {
+      that.sessionIndex--
+    }
+    deleteCustomer(that.userList, that.sessionList, that.historySessionList, that.timers, that.informationList, id)
+    that.transferable = true
+  }, 1000)
+}
+/**
+ * @description 客服点击按钮登出账号
+ */
+// logout (e) {
+//   this.socket.emit('log out')
+//   for (let i = 0; i &lt; this.timers.length; i++) {
+//     clearTimeout(this.timers[i])
+//   }
+//   this.isLogon = false
+// },
+/**
+ * @description 输出图片
+ */
+function fileup() {
+  let self = this
+  let obj = document.getElementById('inputFile')
+  let file = obj.files[0]
+  lrz(file, {
+      width: 960,
+      height: 960,
+      quality: 1
+    })
+    .then(function (rst) {
+      self.bigImg = rst.base64
+      self.isText = false
+      lrz(rst.origin, {
+          width: 300,
+          height: 300,
+          quality: 0.7
+        })
+        .then(function (rst) {
+          self.img = rst.base64
+          self.buttoninputing()
+          return rst
+        })
+      return rst
+    })
+  obj.value = ''
+}
+/**
+ * @description 加载图片
+ */
+function imgupload() {
+  var file = document.getElementById('inputFile')
+  file.click()
+}
+/**
+ * @description 显示大图
+ */
+function showBigImg(bigImg) {
+  this.bigImgBase64 = bigImg
+  this.modal2 = true
+}
+/**
+ * @description 检查机器人回复
+ */
+function checkReply() {
+  if (this.reply === '') {
+    this.replyIsNull = true
+  }
+}
+/**
+ * @description 检查向机器人提出的问题
+ */
+function checkQuestion() {
+  if (this.question === '') {
+    this.questionIsNull = true
+  }
+}
+/**
+ * @description 检查添加的关键词格式（只能是英文）
+ */
+function checkKeyword() {
+  let reg = /^[\u4E00-\u9FA5]+$/
+  let standardContent = reg.test(this.keyword)
+  if (this.keyword === '' || standardContent === false) {
+    this.keywordIsNotStandard = true
+  }
+}
+/**
+ * @description 回复输入
+ */
+function replyInput() {
+  this.replyIsNull = false
+}
+/**
+ * @description 问题输入
+ */
+function questionInput() {
+  this.questionIsNull = false
+}
+/**
+ * @description 关键词输出
+ */
+function keyWordInput() {
+  this.keywordIsNotStandard = false
+}
+/**
+ * @description 添加关键词
+ */
+function handleAdd() {
+  this.checkKeyword()
+  for (let i = 0; i &lt; this.robotKeyWord.length; i++) {
+    if (this.keyword === this.robotKeyWord[i]) {
+      this.keywordIsExist = true
+    }
+  }
+  if (this.keyword === '' || this.keywordIsNotStandard === true) {
+    this.$Message.info('关键词格式不正确')
+  } else if (this.keywordIsExist === true) {
+    this.$Message.info('该关键词已添加')
+    this.keywordIsExist = false
+  } else {
+    this.robotKeyWord.push(this.keyword)
+    this.keyword = ''
+  }
+}
+/**
+ * @description 删除关键词
+ */
+function handleClose(event, name) {
+  const index = this.robotKeyWord.indexOf(name)
+  this.robotKeyWord.splice(index, 1)
+}
+/**
+ * @description 添加语料
+ */
+function ok_add() {
+  if (this.question === '' || this.reply === '') {
+    this.$Message.info('您所填的信息不能为空')
+  } else {
+    if (this.robotKeyWord.length !== 0) {
+      this.keyword_add = this.robotKeyWord.join(' ')
+    } else {
+      this.keyword_add = ''
+    }
+    this.robot_question_add = {
+      'question': this.question,
+      'answer': this.reply,
+      'keyword': this.keyword_add,
+      'weight': this.modelSelect
+    }
+    this.set_robot_api()
+  }
+  this.cancel_add()
+}
+/**
+ * @description 取消添加语料
+ */
+function cancel_add() {
+  this.question = ''
+  this.reply = ''
+  this.keyword = ''
+  this.modelSelect = 1
+  this.replyIsNull = false
+  this.questionIsNull = false
+  this.keywordIsNotStandard = false
+  this.robotKeyWord = []
+}
+/**
+ * @description 设置机器人借口
+ */
+function set_robot_api() {
+  this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robot_question_add)
+    .then((response) => {
+      if (response.data === 'ERROR, invalid data in serializer.') {
+        // window.location.href = '../se_login'
+        console.log('set_robot_api1')
+      } else if (response.data === 'ERROR, incomplete information.') {
+        this.$Message.info('您所填的信息不完整')
+      } else if (response.data === 'ERROR, wrong information.') {
+        // window.location.href = '../se_login'
+        console.log('set_robot_api2')
+      } else if (response.data === 'ERROR, session is broken.') {
+        // window.location.href = '../se_login'
+        console.log('set_robot_api3')
+      } else if (response.data === 'ERROR, wrong email.') {
+        // window.location.href = '../se_login'
+        console.log('set_robot_api4')
+      } else if (response.data === 'ERROR, info is exist.') {
+        this.$Message.info('该问题已存在')
+      } else {
+        this.$Message.info('添加成功')
+        this.$refs.robotSetting.show_robot_question_api()
+      }
+    }, (response) => {
+      // window.location.href = '../se_login'
+      console.log('set_robot_api5')
+    })
+}
+/**
+ * @description 保存文本接口
+ */
+function save_text_api() {
+  this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
+    .then((response) => {
+      this.save_text_item = {}
+    }, (response) => {
+      // window.location.href = '../se_login'
+      console.log('save_text_api')
+    })
+}
+/**
+ * @description 通过Email找客服Id
+ */
+function get_cs_id_api() {
+  this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
+    .then((response) => {
+      this.turnId = response.data
+      console.log(this.turnId)
+    }, (response) => {
+      // window.location.href = '../se_login'
+      console.log('get_cs_id_api')
+    })
+}
+/**
+ * @description 保存聊天文字
+ */
+function save_text(index) {
+  this.save_text_item = {
+    'client_id': this.session.userId,
+    'service_id': this.turnId,
+    'content': this.session.messages[index].text,
+    'is_client': 0
+  }
+  console.log(this.save_text_item)
+  this.save_text_api()
+}
+/**
+ * @description 保存图片接口
+ */
+function save_img_api() {
+  this.$http.post(this.apiSmallimagelogSendImage, this.save_img_item)
+    .then((response) => {
+      if (response.data === 'ERROR, invalid data in serializer.') {
+        // window.location.href = '../notfound'
+        console.log('save_img_api1')
+      } else {
+        this.save_img_item = {}
+      }
+    }, (response) => {
+      // window.location.href = '../notfound'
+      console.log('save_img_api2')
+    })
+}
+/**
+ * @description 保存大图片
+ */
+function save_bigImg_api() {
+  this.$http.post(this.apiBigimagelogSendImage, this.save_bigImg_item)
+    .then((response) => {
+      if (response.data === 'ERROR, invalid data in serializer.') {
+        // window.location.href = '../notfound'
+        console.log('save_bigImg_api1')
+      } else {
+        this.save_bigImg_item = {}
+      }
+    }, (response) => {
+      // window.location.href = '../notfound'
+      console.log('save_bigImg_api2')
+    })
+}
+/**
+ * @description 保存图片
+ */
+function save_img(index) {
+  let timestamp = new Date().getTime()
+  let label = timestamp + this.session.userId
+  this.save_img_item = {
+    'client_id': this.session.userId,
+    'service_id': this.turnId,
+    'image': this.session.messages[index].img,
+    'is_client': false,
+    'label': label
+  }
+  this.save_bigImg_item = {
+    'client_id': this.session.userId,
+    'service_id': this.turnId,
+    'image': this.session.messages[index].bigImg,
+    'is_client': false,
+    'label': label
+  }
+  console.log(this.save_img_item)
+  console.log(this.save_bigImg_item)
+  this.save_img_api()
+  this.save_bigImg_api()
+}
+/**
+ * @description 获取历史消息
+ */
+function show_history_api() {
+  this.$http.post(this.apiLogShowHistory, this.show_history_item)
+    .then((response) => {
+      if (response.data === 'ERROR, invalid data in serializer.') {
+        // window.location.href = '../notfound'
+        console.log('show_history_api1')
+      } else {
+        console.log(response.data)
+        for (var p = 0; p &lt; response.data.length; p++) {
+          console.log(response.data[p].hasOwnProperty('content'))
+          if (response.data[p].hasOwnProperty('content')) {
+            if (response.data[p].is_client === false) {
+              this.hsession.messages.push({
+                text: response.data[p].content,
+                isText: true,
+                date: response.data[p].time,
+                self: true,
+                image: this.user.image
+              })
+            } else {
+              this.hsession.messages.push({
+                text: response.data[p].content,
+                isText: true,
+                date: response.data[p].time,
+                image: '../../../static/3.jpg'
+              })
+            }
+          } else {
+            if (response.data[p].is_client === false) {
+              this.hsession.messages.push({
+                img: response.data[p].image,
+                isText: false,
+                label: response.data[p].label,
+                date: response.data[p].time,
+                self: true,
+                image: this.user.image
+              })
+              let index = this.hsession.messages.length
+              console.log('this.hsession.messages1')
+              console.log(this.hsession.messages[index - 1])
+            } else {
+              this.hsession.messages.push({
+                img: response.data[p].image,
+                isText: false,
+                label: response.data[p].label,
+                date: response.data[p].time,
+                image: '../../../static/3.jpg'
+              })
+              let index = this.hsession.messages.length
+              console.log('this.hsession.messages2')
+              console.log(this.hsession.messages[index - 1])
+            }
+          }
+        }
+      }
+    }, (response) => {
+      // window.location.href = '../notfound'
+      console.log('show_history_api2')
+    })
+}
+/**
+ * @description 显示历史消息中的大图
+ */
+function showHistoryBigImg(label) {
+  this.show_history_big_img_item = {
+    'client_id': this.session.userId,
+    'service_id': this.turnId,
+    'label': label
+  }
+  this.show_history_big_img_api()
+}
+/**
+ * @description 获取历史消息中的大图
+ */
+function show_history_big_img_api() {
+  this.$http.post(this.apiBigimagelogShowSingleHistory, this.show_history_big_img_item)
+    .then((response) => {
+      if (response.data === 'ERROR, no history.') {
+        // window.location.href = '../notfound'
+        console.log('show_history_big_img_api1')
+      } else {
+        this.show_history_big_img_api = {}
+        this.showBigImg(response.data)
+      }
+    }, (response) => {
+      // window.location.href = '../notfound'
+      console.log('show_history_big_img_api2')
+    })
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#buttoninputing">buttoninputing</a></li><li><a href="global.html#cancel_add">cancel_add</a></li><li><a href="global.html#checkKeyword">checkKeyword</a></li><li><a href="global.html#checkQuestion">checkQuestion</a></li><li><a href="global.html#checkReply">checkReply</a></li><li><a href="global.html#fileup">fileup</a></li><li><a href="global.html#get_cs_id_api">get_cs_id_api</a></li><li><a href="global.html#getCsInfomation">getCsInfomation</a></li><li><a href="global.html#handleAdd">handleAdd</a></li><li><a href="global.html#handleClose">handleClose</a></li><li><a href="global.html#imgupload">imgupload</a></li><li><a href="global.html#inputing">inputing</a></li><li><a href="global.html#keyWordInput">keyWordInput</a></li><li><a href="global.html#ok_add">ok_add</a></li><li><a href="global.html#questionInput">questionInput</a></li><li><a href="global.html#replyInput">replyInput</a></li><li><a href="global.html#save_bigImg_api">save_bigImg_api</a></li><li><a href="global.html#save_img">save_img</a></li><li><a href="global.html#save_img_api">save_img_api</a></li><li><a href="global.html#save_text">save_text</a></li><li><a href="global.html#save_text_api">save_text_api</a></li><li><a href="global.html#select">select</a></li><li><a href="global.html#set_robot_api">set_robot_api</a></li><li><a href="global.html#show_history_api">show_history_api</a></li><li><a href="global.html#show_history_big_img_api">show_history_big_img_api</a></li><li><a href="global.html#showBigImg">showBigImg</a></li><li><a href="global.html#showHistory">showHistory</a></li><li><a href="global.html#showHistoryBigImg">showHistoryBigImg</a></li><li><a href="global.html#switchoff">switchoff</a></li><li><a href="global.html#switchServer">switchServer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Mon Aug 21 2017 17:14:03 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
