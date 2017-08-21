@@ -30,6 +30,8 @@
       </Modal>
       <div class="main-text">
         <Button @click="switchToCs">转接人工客服</Button>
+        <Button @click="screenShot">截屏</Button>
+        <Button @click="endSession">结束会话</Button>
         <img @click="imageUpload" src="./assets/pic.png" style="height:20px;width:20px" class='send-pic'></img>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按Enter 发送" v-model="chatlogData.text" @keyup="keyboardInputing" data-emojiable="true"></textarea>
@@ -267,7 +269,36 @@ export default {
       }
       console.log(this.csEmailItem)
       this.getCsIdApi()
-    }
+    };
+
+        /**
+      * @description 对全局进行监听，接收到图片的base64编码后进行转码，实现截图的输出
+      */
+    let self = this
+    window.addEventListener('message', function (e) {
+      console.log('addEventListener')
+      let canvasData = e.data
+      let img = new Image()
+      img.src = canvasData
+      lrz(img.src, { width: 960, height: 960, quality: 1 })
+        .then(function (rst) {
+          self.chatlogData.bigImg = rst.base64
+          lrz(rst.origin, { width: 300, height: 300, quality: 0.7 })
+            .then(function (rst) {
+              self.chatlogData.img = rst.base64
+              self.imgInputing()
+              return rst
+            })
+          return rst
+        })
+    }, false)
+
+
+
+  },
+
+  computed: {
+
   },
 
   watch: {
@@ -288,7 +319,7 @@ export default {
   methods: {
     keyboardInputing (e) {
       console.log("method: keyboardInputing")
-      if (e.keyCode === 13 && this.text.length) {
+      if (e.keyCode === 13 && this.chatlogData.text.length) {
         this.session.messages.push({
           text: this.chatlogData.text,
           date: new Date(),
@@ -348,6 +379,7 @@ export default {
     },
 
     imgInputing () {
+      console.log("method: imgInputing")
       if (this.chatlogData.img !== '') {
         this.session.messages.push({
           img: this.chatlogData.img,
@@ -422,6 +454,12 @@ export default {
       this.bigImgSrc = bigImg
       this.modalShowBigImg = true
     },
+
+    screenShot () {
+      console.log("method: screenShot")
+      window.parent.postMessage('Screen shot', '*')
+    },
+
 
     // 智能机器人回复调用后端接口
     showRobotReplyApi () {
@@ -563,7 +601,13 @@ export default {
       console.log(this.saveBigImgItem)
       this.saveImgApi()
       this.saveBigImgApi()
+    },
+
+    endSession () {
+      console.log("method: endSession")
+      window.parent.postMessage('End session', '*')
     }
+
   },
 
   filters: {
