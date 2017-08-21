@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: doc.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: doc.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @description 添加客服时点击确定
+ */
+function ok() {
+  if (this.kf === '') {
+    this.$Message.info('邮箱不能为空')
+  } else if (this.emailIsNotStandard === true) {
+    this.$Message.info('您输入的邮箱格式不正确')
+  } else {
+    this.customerService = {
+      'email': this.kf
+    }
+    this.add_cs_api()
+  }
+  this.cancel()
+}
+/**
+ * @description 检查邮箱输入格式
+ */
+function check_email() {
+  let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
+  let legal = reg.test(this.kf)
+  if (this.kf === '') {
+    this.emailIsNull = true
+  } else if (legal === false) {
+    this.emailIsNotStandard = true
+  }
+}
+/**
+ * @description 正在输入邮箱时取消邮箱格式检查标记
+ */
+function email_inputing() {
+  this.emailIsNull = false
+  this.emailIsNotStandard = false
+}
+/**
+ * @description 添加客服调用后端接口
+ */
+function add_cs_api() {
+  this.$http.post(this.apiCustomerserviceCreate, this.customerService)
+    .then((response) => {
+      if (response.data === 'ERROR, incomplete information.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong information.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, admin_email is wrong.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, email has been registered.') {
+        this.$Message.info('该客服邮箱已被注册')
+        this.kf = ''
+      } else if (response.data === 'ERROR, invalid data in serializer.') {
+        window.location.href = '../en_login'
+      } else {
+        this.$Message.info('添加成功')
+        this.refresh()
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+/**
+ * @description 添加客服时点击取消，清空变量
+ */
+function cancel() {
+  this.kf = ''
+  this.emailIsNull = false
+  this.emailIsNotStandard = false
+}
+/**
+ * @description 删除客服调用后端接口
+ */
+function delete_cs_api() {
+  this.$http.post(this.apiAdminDeleteCs, this.deleteCSItem)
+    .then((response) => {
+      if (response.data === 'ERROR, incomplete information.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong information.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong admin email.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong customerservice email.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, customerservice is not belong to admin.') {
+        window.location.href = '../en_login'
+      } else {
+        this.$Message.info('删除成功')
+        this.refresh()
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+/**
+ * @description 删除客服
+ */
+function delete_cs(index) {
+  this.deleteCSItem = {
+    'email': this.kfstaff[index].email
+  }
+  this.delete_cs_api()
+}
+/**
+ * @description 刷新客服详细信息
+ */
+function refresh() {
+  this.$http.post(this.apiAdminShowCsStatus)
+    .then((response) => {
+      if (response.data === 'ERROR, session is broken.') {
+        window.location.href = '../en_login'
+      } else if (response.data === 'ERROR, wrong email.') {
+        window.location.href = '../en_login'
+      } else {
+        this.kfstaff = response.data
+      }
+    }, (response) => {
+      window.location.href = '../en_login'
+    })
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#add_cs_api">add_cs_api</a></li><li><a href="global.html#cancel">cancel</a></li><li><a href="global.html#check_email">check_email</a></li><li><a href="global.html#delete_cs">delete_cs</a></li><li><a href="global.html#delete_cs_api">delete_cs_api</a></li><li><a href="global.html#email_inputing">email_inputing</a></li><li><a href="global.html#ok">ok</a></li><li><a href="global.html#refresh">refresh</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Mon Aug 21 2017 17:56:13 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
