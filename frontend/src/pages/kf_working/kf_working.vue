@@ -933,11 +933,11 @@ export default {
         } else {
           keywordString = ''
         }
-        this.robotQuestionAdd = {
-          'question': this.question,
-          'answer': this.reply,
+        this.robotSentenceAddItem = {
+          'question': this.robotSentence.question,
+          'answer': this.robotSentence.reply,
           'keyword': keywordString,
-          'weight': this.modelSelect
+          'weight': this.robotSentence.weight
         }
         this.setRobotApi()
       }
@@ -960,6 +960,7 @@ export default {
     // 设置机器人语料访问后端接口
     setRobotApi () {
       console.log('[method: setRobotApi]')
+      console.log(this.robotSentenceAddItem)
       this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robotSentenceAddItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -1156,6 +1157,8 @@ export default {
     // 打印历史消息函数
     printHistoryMessages (historyArray) {
       console.log('[method: printHistoryMessages]')
+      this.currentOnlineObject.historyMessages = []
+      this.currentOnlineObject.messages = []
       for (var p = 0; p < historyArray.length; p++) {
         console.log(historyArray[p].hasOwnProperty('content'))
         if (historyArray[p].hasOwnProperty('content')) {
