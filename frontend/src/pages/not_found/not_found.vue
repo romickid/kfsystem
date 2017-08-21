@@ -23,6 +23,9 @@
 export default {
   name: 'app',
   methods: {
+    /**
+      * @description 返回主页
+      */
     home () {
       window.location.href = '../main'
     }

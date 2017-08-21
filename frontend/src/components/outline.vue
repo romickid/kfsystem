@@ -29,6 +29,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 管理员获取客服当前服务信息
+      */
     get_information_api () {
       this.$http.post(this.apiAdminShowCsStatus)
         .then((response) => {
