@@ -462,7 +462,7 @@ export default {
         }
         that.customerList[0].uncheck++ // 因此uncheck也要++
       } else {
-        let customerID = that.tempCustomerID
+        var customerID = that.tempCustomerID
         clearTimeout(that.onlineList[onlineIndex].timer)
         let customerID = that.onlineList[onlineIndex].customerID
         let csSocket = that.socket
@@ -474,7 +474,7 @@ export default {
     })
 
     // 接受图片信息
-    this.socket.on('customer send picture', function (bpic, spic, enterprise_id, cs_id, customer_id) {
+    this.socket.on('customer send picture', function (bpic, spic, enterpriseID, csID, customerID) {
       console.log('socket: customer send picture')
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
       pushImgToOnlineList(that.onlineList, onlineIndex, bpic, spic)
@@ -500,7 +500,7 @@ export default {
         }
         that.customerList[0].uncheck++ // 因此uncheck也要++
       } else {
-        let customerID = that.tempCustomerID
+        var customerID = that.tempCustomerID
         clearTimeout(that.onlineList[onlineIndex].timer)
         let customerID = that.onlineList[onlineIndex].customerID
         let csSocket = that.socket
@@ -701,7 +701,7 @@ export default {
         return
       }
 
-      if (this.chatlogData.text.length !== 0) {
+      if (this.chatlogData.text.length !== 0 && this.currentOnlineObject.customerID !== -1) {
         this.currentOnlineObject.messages.push({
           text: this.chatlogData.text,
           date: new Date(),
@@ -713,7 +713,7 @@ export default {
         let index = this.currentOnlineObject.messages.length
         this.saveText(index - 1)
 
-        this.socket.emit('cs send message', this.chatlogData.text, this.currentOnlineObject.enterpriseID, this.cs.csID , this.currentOnlineObject.customerID)
+        this.socket.emit('cs send message', this.chatlogData.text, this.currentOnlineObject.enterpriseID, this.cs.csID, this.currentOnlineObject.customerID)
         clearTimeout(this.onlineList[this.onlineIndex].timer)
         let customerID = this.onlineList[this.onlineIndex].customerID
         let csSocket = this.socket
@@ -732,7 +732,7 @@ export default {
         this.chatlogData.img = ''
         return
       }
-      if (this.chatlogData.img !== 0) {
+      if (this.chatlogData.img !== 0 && this.currentOnlineObject.customerID !== -1) {
         this.currentOnlineObject.messages.push({
           img: this.chatlogData.img,
           bigImg: this.chatlogData.bigImg,
@@ -771,9 +771,11 @@ export default {
       that.$http.post(that.apiCustomerserviceShowUserStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login'
+            // window.location.href = '../se_login'
+            console.log('getCsInfomation1')
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login'
+            // window.location.href = '../se_login'
+            console.log('getCsInfomation2')
           } else {
             that.cs.csID = response.data.email
             that.cs.csName = response.data.nickname
@@ -783,7 +785,8 @@ export default {
             that.getCsIdApi()
           }
         }, (response) => {
-          window.location.href = '../se_login'
+          // window.location.href = '../se_login'
+          console.log('getCsInfomation3')
         })
     },
 
