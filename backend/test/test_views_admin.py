@@ -28,6 +28,9 @@ class TestAdminCreate(TestCase):
         request1 = c.post("/api/admin_create/", data=json.dumps(json1), content_type='json')
         self.assertEqual(request1.status_code, 200)
         self.assertEqual(request1.content.decode('utf-8'), "OK")
+        instance_admin = Admin.objects.get(email='test1@a.com')
+        instance_robot = CustomerService.objects.get(email=instance_admin.nickname+'@robot.com')
+        self.assertEqual(instance_admin.nickname+'&Robot', instance_robot.nickname)
 
         json2 = {'email': 'test2@a.com', 'nickname': 'nick2', 'password': 'pass2'}
         request2 = c.post("/api/admin_create/", data=json.dumps(json2), content_type='json')
