@@ -68,6 +68,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 对用户输入的注册密码安全性和两次输入的一致性进行验证，格式需要符合：长度在6-20位且必须包含大写字母、小写字母和数字
+      */
     checkPassword () {
       if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
         this.passwordInConsistent = true
@@ -80,10 +83,16 @@ export default {
         this.passwordNonStandard = false
       }
     },
+    /**
+      * @description 当密码输入框聚焦的时候，取消对密码格式不合法的提示，用户体验更友好
+      */
     passwordInput () {
       this.passwordInConsistent = false
       this.passwordNonStandard = false
     },
+    /**
+      * @description 在信息无格式错误且完整的前提下与后端进行交互，并给出反馈
+      */
     register () {
       this.$http.post(this.api_set_profile, this.item)
         .then((response) => {
@@ -104,6 +113,9 @@ export default {
           window.location.href = '../notfound'
         })
     },
+    /**
+      * @description 对注册完成按钮进行监听，在信息无格式错误且完整的前提下调用register函数与后端进行交互
+      */
     finish () {
       if (this.password === '' || this.passwordConfirm === '' || this.nickname === '') {
         this.$Message.info('您的信息不完善！')
@@ -122,6 +134,9 @@ export default {
         this.register()
       }
     },
+    /**
+      * @description 检查进入网页的链接是否合法（真的还是伪造的），若不合法则跳转到404页
+      */
     verify () {
       this.$http.post(this.api_customerservice_set_profile_check_vid, this.customerserviceVerify)
         .then((response) => {
@@ -142,12 +157,18 @@ export default {
           window.location.href = '../notfound'
         })
     },
+    /**
+      * @description 对密码进行hash操作，提高传输的安全性
+      */
     hashPassword () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
       hash.update(this.password)
       return hash.hex()
     },
+    /**
+      * @description 传输时保证vid的安全性
+      */
     hashNewVid () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
@@ -155,6 +176,9 @@ export default {
       return hash.hex()
     }
   },
+  /**
+    * @description 利用钩子函数，在打印页面前验证链接的真实性
+    */
   created () {
     this.customerserviceVerify = {
       'email': this.$utils.getUrlKey('email'),
