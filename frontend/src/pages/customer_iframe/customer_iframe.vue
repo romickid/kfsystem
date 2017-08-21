@@ -23,13 +23,15 @@
         <p slot="header">
         </p>
         <div style="text-align:center">
-            <img :src="bigImgBase64">
+          <img :src="bigImgBase64">
         </div>
         <div slot="footer">
         </div>
       </Modal>
       <div class="main-text" @keydown="inputing">
         <Button @click="switchServer">转接人工客服</Button>
+        <Button @click="screenShot">截屏</Button>
+        <Button @click="endSession">结束会话</Button>
         <img @click="imgupload" src="./assets/pic.png" style="height:20px;width:20px" class="send-pic"></img>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Enter 发送" v-model="text" rows="5" data-emojiable="true"></textarea>
@@ -187,6 +189,9 @@ export default {
     }
   },
   computed: {
+    /**
+      * @description 返回会话消息
+      */
     session () {
       return this.sessionList[this.sessionIndex]
     }
@@ -223,7 +228,28 @@ export default {
         that.socket.emit('switch server', formerId)
       })
       this.socket.emit('customer come back', that.user.id, that.userList[0].id)
-    }
+    };
+    /**
+      * @description 对全局进行监听，接收到图片的base64编码后进行转码，实现截图的输出
+      */
+    let self = this
+    window.addEventListener('message', function (e) {
+      let canvasData = e.data
+      let img = new Image()
+      img.src = canvasData
+      lrz(img.src, { width: 960, height: 960, quality: 1 })
+        .then(function (rst) {
+          self.bigImg = rst.base64
+          self.isText = false
+          lrz(rst.origin, { width: 300, height: 300, quality: 0.7 })
+            .then(function (rst) {
+              self.img = rst.base64
+              self.buttoninputing()
+              return rst
+            })
+          return rst
+        })
+    }, false)
   },
   watch: {
     // 每当sessionList改变时，保存到localStorage中
@@ -250,6 +276,9 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 键盘输入信息
+      */
     inputing (e) {
       if (e.keyCode === 13 && this.text.length) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
@@ -281,6 +310,9 @@ export default {
         this.text = ''
       }
     },
+    /**
+      * @description 按钮输入信息
+      */
     buttoninputing (e) {
       if (this.text.length !== 0 || this.img.length !== 0) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
@@ -321,6 +353,9 @@ export default {
         this.isText = true
       }
     },
+    /**
+      * @description 点击按钮转接客服
+      */
     switchServer (e) {
       if (this.userList[0].id !== -1) {
         alert('当前已为人工客服！')
@@ -346,15 +381,18 @@ export default {
       //   noServerAvailable(this.userList, this.sessionList)
       // }, 4000)
     },
+    /**
+      * @description 显示图片
+      */
     fileup () {
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
-      lrz(file, {width: 960, height: 960, quality: 1})
+      lrz(file, { width: 960, height: 960, quality: 1 })
         .then(function (rst) {
           self.bigImg = rst.base64
           self.isText = false
-          lrz(rst.origin, {width: 300, height: 300, quality: 0.7})
+          lrz(rst.origin, { width: 300, height: 300, quality: 0.7 })
             .then(function (rst) {
               self.img = rst.base64
               self.buttoninputing()
@@ -364,14 +402,26 @@ export default {
         })
       obj.value = ''
     },
+    /**
+      * @description 加载图片
+      */
     imgupload () {
       var file = document.getElementById('inputFile')
       file.click()
     },
+    /**
+      * @description 显示大图
+      */
     showBigImg (bigImg) {
       this.bigImgBase64 = bigImg
       this.modal2 = true
     },
+    screenShot () {
+      window.parent.postMessage('Screen shot', '*')
+    },
+    /**
+      * @description 获取机器人回复
+      */
     show_robot_reply_api () {
       this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robot_reply_item)
         .then((response) => {
@@ -393,6 +443,9 @@ export default {
           console.log('show_robot_reply_api4')
         })
     },
+    /**
+      * @description 显示机器人回复
+      */
     show_robot_reply (msg) {
       this.session.messages.push({
         text: msg,
@@ -406,6 +459,9 @@ export default {
       let index = this.session.messages.length
       this.save_text(0, index - 1)
     },
+    /**
+      * @description 保存文本接口
+      */
     save_text_api () {
       this.$http.post(this.apiChattinglogSendMessage, this.save_text_item)
         .then((response) => {
@@ -416,6 +472,9 @@ export default {
           console.log('save_text_api2')
         })
     },
+    /**
+      * @description 通过email设置用户ID
+      */
     get_cs_id_api () {
       this.$http.post(this.apiChattinglogGetCsId, this.cs_email_item)
         .then((response) => {
@@ -427,6 +486,9 @@ export default {
           console.log('get_cs_id_api2')
         })
     },
+    /**
+      * @description 保存文本
+      */
     save_text (isClient, index) {
       this.save_text_item = {
         'client_id': this.user.id,
@@ -437,6 +499,9 @@ export default {
       console.log(this.save_text_item)
       this.save_text_api()
     },
+    /**
+      * @description 保存图片接口
+      */
     save_img_api () {
       this.$http.post(this.apiSmallimagelogSendImage, this.save_img_item)
         .then((response) => {
@@ -451,6 +516,9 @@ export default {
           console.log('save_img_api2')
         })
     },
+    /**
+      * @description 保存大图接口
+      */
     save_bigImg_api () {
       this.$http.post(this.apiBigimagelogSendImage, this.save_bigImg_item)
         .then((response) => {
@@ -465,6 +533,9 @@ export default {
           console.log('save_bigImg_api2')
         })
     },
+    /**
+      * @description 保存图片
+      */
     save_img (isClient, index) {
       let timestamp = new Date().getTime()
       let label = timestamp + this.user.id
@@ -484,9 +555,15 @@ export default {
       }
       this.save_img_api()
       this.save_bigImg_api()
+    },
+    endSession () {
+      window.parent.postMessage('End session', '*')
     }
   },
   filters: {
+    /**
+      * @description 格式化日期
+      */
     time (date) {
       if (typeof date === 'string') {
         date = new Date(date)
@@ -496,7 +573,9 @@ export default {
   },
   components: {},
   directives: {
-    // 发送消息后滚动到底部
+    /**
+      * @description 发送消息后滚动到底部
+      */
     'scroll-bottom' () {
       Vue.nextTick(() => {
         let message = document.getElementsByClassName('main-message')
@@ -509,7 +588,7 @@ export default {
 <style>
 /*开头*/
 
- *,
+*,
 *:before,
 *:after {
   box-sizing: border-box;
@@ -531,7 +610,7 @@ body {
   font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
   background: #176994 url(../index/assets/newbg.jpg);
   background-size: cover;
-} 
+}
 
 ul {
   list-style: none;
@@ -550,7 +629,10 @@ ul {
   font-size: 8px;
 }
 
+
+
 /*主要界面*/
+
 .container {
   height: 100%;
   width: 100%;
@@ -573,7 +655,10 @@ ul {
   height: 160px;
 }
 
+
+
 /*似乎没有用到？*/
+
 .main-message {
   height: calc(100% - 120px);
 }
