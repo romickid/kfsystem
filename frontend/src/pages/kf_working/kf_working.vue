@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="information">
-      <ul v-if="hangon">
+      <ul v-if="hangon" class="userinfo">
         <li v-for="item in userInformation">{{ item }}</li>
       </ul>
     </div>
@@ -149,11 +149,13 @@
       <div class="main-text" @keydown="inputing">
         <Button @click="showHistory">历史消息</Button>
         <Button @click="switchServer">转接</Button>
-        <img @click="imgupload" src="./assets/pic.png" style="height:20px;width:20px" class='send-pic'></img>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Enter 发送" v-model="text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttoninputing">发送</Button>
+        <div class="functions">
+          <div @click="imgupload">发送图片</div>
+        </div>
         <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
       </div>
     </div>
@@ -440,14 +442,16 @@ export default {
         popUp(that.historySessionList, index)
         popUp(that.timers, index)
         popUp(that.informationList, index)
-        clearTimeout(this.timers[0])
+        // clearTimeout(this.timers[0])
         let customerId = that.userList[0].id
         let serverSocket = that.socket
         that.timers[0] = setTimeout(
           function () {
             customerOutMessage(serverSocket, customerId)
           }, 100000000)
+        console.log('that.sessionIndex: ' + that.sessionIndex)
         if (that.sessionIndex < index) {
+          console.log('++')
           that.sessionIndex++
         }
         that.userList[0].uncheck++
@@ -554,7 +558,7 @@ export default {
     inputing (e) {
       if (e.keyCode === 13 && this.text.length && this.session.userId !== -1) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
-        residual.innerHTML=''
+        residual.innerHTML = ''
         if (!this.hangon) {
           alert('该用户已挂断！')
           this.text = ''
@@ -591,7 +595,7 @@ export default {
       }
       if ((this.text.length !== 0 || this.img.length !== 0) && this.session.userId !== -1) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
-        residual.innerHTML=''
+        residual.innerHTML = ''
         this.session.messages.push({
           text: this.text,
           img: this.img,
@@ -907,8 +911,8 @@ export default {
           } else {
             console.log(response.data)
             for (var p = 0; p < response.data.length; p++) {
-              console.log(response.data[p].hasOwnProperty("content"))
-              if (response.data[p].hasOwnProperty("content")) {
+              console.log(response.data[p].hasOwnProperty('content'))
+              if (response.data[p].hasOwnProperty('content')) {
                 if (response.data[p].is_client === false) {
                   this.hsession.messages.push({
                     text: response.data[p].content,
@@ -1069,6 +1073,13 @@ ul {
 .main,
 .information {
   height: 100%;
+}
+
+.userinfo {
+  margin-top: 20%;
+  margin-left: 5%;
+  margin-right: 5%;
+  line-height: 30px;
 }
 
 .sidebar {
@@ -1378,10 +1389,5 @@ ul {
 
 .waring {
   color: red;
-}
-
-.send-pic {
-  float: right;
-  margin-right: 0.6em;
 }
 </style>
