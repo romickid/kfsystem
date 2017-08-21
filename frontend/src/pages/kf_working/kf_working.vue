@@ -1,7 +1,10 @@
 <template>
   <div class="container">
     <div class="information">
-      Place Customer Information Here...
+      <ul v-if="hangon" class="customerinfo">
+        <span>用户信息:</span>
+        <li v-for="item in currentOnlineObject.messages">{{ item }}</li>
+      </ul>
     </div>
     <div class="sIDebar">
       <div class="main-card">
@@ -1343,6 +1346,13 @@ ul {
   overflow: hIDden;
   background-color: #eee;
   wIDth: 60%;
+}
+
+.customerinfo {
+  margin-top: 20%;
+  margin-left: 5%;
+  margin-right: 5%;
+  line-height: 30px;
 }
 
 .information {
