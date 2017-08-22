@@ -9,7 +9,7 @@
         <a href="../main" class='ceiling-item'>首页</a> |
         <a href="../en_login" class='ceiling-item'>登录</a> |
         <a href="../en_folders" class='ceiling-item'>注册</a> |
-        <a href="../se_folders" class='ceiling-item'>客服入口</a>
+        <a href="../se_login" class='ceiling-item'>客服入口</a>
       </div>
     </div>
   </div>
@@ -21,11 +21,18 @@
       </i-col>
       <i-col span='8' class='complementary'>
         <div class='complementary-box'>
-          <h2>Support Django!</h2>
+          <h2>Support BIG5 !</h2>
           <div class='line'></div>
           <div class='support-us'>
-            <img src='./assets/support.png' alt=''>
-            <p>Henrik Ossipoff Hansen donated to the Django Software Foundation to support Django development. Donate today!
+            <img src='./assets/support.png' alt='点此支持' @click='supportModal=true' style='width: 60px; height: 60px;'>
+            <p>
+              BIG5在线客服系统<br>由南开大学软件学院2015级BIG5小组完成<br>如果您觉得这个项目有价值，请支持我们吧！！！<br>
+              <Button type='text' @click='supportModal=true' style='padding-left: 0;'>点此支持</Button>
+              <Modal v-model='supportModal' style='text-align: center;'>
+                <p slot='header'></p>
+                <img src='../../../static/support.jpeg' style='width: 300px;'>
+                <div slot='footer'></div>
+              </Modal>
             </p>
           </div>
         </div>
@@ -33,42 +40,21 @@
           <h2>Browse</h2>
           <div class='line'></div>
           <ul>
-            <li class='browse'>Prev: <a>Django documentation contents</a></li>
-            <li class='browse'>Next: <a>Getting started</a></li>
-            <li class='browse'><a>Table of contents</a></li>
-            <li class='browse'><a>General Index</a></li>
-            <li class='browse'><a>Python Module Index</a></li>
+            <li class='browse'>Prev: <router-link :to='prevPage.router'>{{ prevPage.string }}</router-link></li>
+            <li class='browse'>Next: <router-link :to='nextPage.router'>{{ nextPage.string }}</router-link></li>
           </ul>
         </div>
         <div class='complementary-box'>
           <h2>You are here:</h2>
           <div class='line'></div>
           <ul>
-            <li class='you-are-here'>Django documentation contents</li>
-          </ul>
-        </div>
-        <div class='complementary-box'>
-          <h2>Getting help</h2>
-          <div class='line'></div>
-          <ul>
-            <li class='getting-help'>
-              <h3>FAQ</h3>
-              <p>Try the FAQ — it's got answers to many common questions.</p>
-            </li>
-            <li class='getting-help'>
-              <h3>FAQ</h3>
-              <p>Try the FAQ — it's got answers to many common questions.</p>
-            </li>
-            <li class='getting-help'>
-              <h3>FAQ</h3>
-              <p>Try the FAQ — it's got answers to many common questions.</p>
-            </li>
+            <li class='you-are-here'>{{ youAreHere }}</li>
           </ul>
         </div>
         <div class='complementary-box'>
           <h2>Download:</h2>
           <div class='line'></div>
-          <p class='download'>Offline (Django 1.11): <a>HTML</a> | <a>PDF</a><br>Provided by Read the Docs.</p>
+          <p class='download'><a href='https://se.jisuanke.com/custom-service/Group3' alt='BIG5 Customer Service System'>点此下载项目</a><br>Provided by jisuanke.</p>
         </div>
       </i-col>
     </Row>
@@ -77,35 +63,34 @@
   <section class='subfooter'>
     <Row class='subfooter-container'>
       <i-col span='7' class='subfooter-container-box'>
-        <h3>Learn More</h3>
+        <h3>我们的特色</h3>
         <ul>
-          <li>About Django</li>
-          <li>Getting Started with Django</li>
-          <li>Team Organization</li>
-          <li>Django Software Foundation</li>
-          <li>Code of Conduct</li>
-          <li>Diversity Statement</li>
+          <li>智能机器人 24小时回复</li>
+          <li>查看用户信息 让您更了解您的客户</li>
+          <li>多渠道汇聚 全方面完善用户体验</li>
+          <li>实时查看 资源有效分配</li>
+          <li>一键接入 无需繁琐操作</li>
         </ul>
       </i-col>
       <i-col span='7' class='subfooter-container-box'>
-        <h3>Get Involved</h3>
+        <h3>关于我们</h3>
         <ul>
-          <li>Join a Group</li>
-          <li>Contribute to Django</li>
-          <li>Submit a Bug</li>
-          <li>Report a Security Issue</li>
+          <li>组长：魏久骐</li>
+          <li>组员：吴文竹</li>
+          <li>组员：孙晓菲</li>
+          <li>组员：黄侣淳</li>
+          <li>组员：高小宸</li>
         </ul>
       </i-col>
       <i-col span='7' class='subfooter-container-box'>
-        <h3>Follow Us</h3>
+        <h3>前端技术支持</h3>
         <ul>
-          <li>GitHub</li>
-          <li>Twitter</li>
-          <li>News RSS</li>
-          <li>Django Users Mailing List</li>
+          <li><a href='https://www.djangoproject.com/'>Django</a></li>
+          <li><a href='https://cn.vuejs.org/'>Vue</a></li>
+          <li><a href='https://www.iviewui.com/'>iview</a></li>
+          <li><a href='https://github.com/think2011/localResizeIMG'>lrz</a></li>
         </ul>
       </i-col>
-      <i-col span='3'>&nbsp</i-col>
     </Row>
   </section>
   <Back-top></Back-top>
@@ -113,7 +98,7 @@
   <footer class="footer">
     <div class="footer-container">
       <div>
-        &copy; Big5 - Customer Service System &nbsp2017 - 8&nbsp All rights reserved. &nbsp&nbspDesign: Xiaochen Gao<a></a>
+        &copy; Big5 - Customer Service System &nbsp2017 - 8&nbsp All rights reserved.<a></a>
       </div>
     </div>
   </footer>
@@ -122,7 +107,100 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      supportModal: false,
+      routerName: [
+        {
+          name: 'outline',
+          router: '/',
+          string: 'BIG5 在线客服系统 帮助文档大纲'
+        },
+        {
+          name: 'access_guide',
+          router: '/access_guide',
+          string: 'BIG5客服系统接入步骤一览'
+        },
+        {
+          name: 'web',
+          router: '/web',
+          string: '桌面网站web接入'
+        },
+        {
+          name: 'widget',
+          router: '/widget',
+          string: '桌面网站widget接入'
+        },
+        {
+          name: 'mobile',
+          router: '/mobile',
+          string: '移动网站web接入'
+        },
+        {
+          name: 'user_info',
+          router: '/user_info',
+          string: '客户账户体系对接流程'
+        },
+        {
+          name: 'robot_knowledegebase',
+          router: '/robot_knowledegebase',
+          string: '知识库语料标准'
+        },
+        {
+          name: 'cs_set_robot',
+          router: '/cs_set_robot',
+          string: '设置机器人'
+        },
+        {
+          name: 'cs_working',
+          router: '/cs_working',
+          string: '客服工作指南'
+        },
+        {
+          name: 'cs_set_profile',
+          router: '/cs_set_profile',
+          string: '客服接入'
+        },
+        {
+          name: 'addition_function',
+          router: '/addition_function',
+          string: '额外功能'
+        }
+      ],
+      prevPage: {
+        router: '',
+        string: ''
+      },
+      nextPage: {
+        router: '',
+        string: ''
+      }
+    }
+  },
+  computed: {
+    youAreHere () {
+      for (let i = 0; i < this.routerName.length; i++) {
+        if (this.$route.name === this.routerName[i].name) {
+          if (i === 0) {
+            this.prevPage.string = '无'
+            this.nextPage.string = this.routerName[i + 1].string
+            this.nextPage.router = this.routerName[i + 1].router
+          } else if (i === this.routerName.length - 1) {
+            this.prevPage.string = this.routerName[i - 1].string
+            this.nextPage.string = '无'
+            this.prevPage.router = this.routerName[i - 1].router
+          } else {
+            this.prevPage.string = this.routerName[i - 1].string
+            this.prevPage.router = this.routerName[i - 1].router
+            this.nextPage.string = this.routerName[i + 1].string
+            this.nextPage.router = this.routerName[i + 1].router
+          }
+          return this.routerName[i].string
+        }
+      }
+    }
+  }
 }
 </script>
 
@@ -146,7 +224,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.8em;
+  font-size: 1.5em;
   font-weight: normal;
 }
 
@@ -185,10 +263,6 @@ p {
   overflow: hidden;
 }
 
-.ceiling a {
-  margin-left: 1em;
-}
-
 .ceiling-main {
   float: right;
   margin-right: 5em;
@@ -197,8 +271,8 @@ p {
 
 .ceiling-main a {
   color: #9ba7b5;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
 
 }
 
@@ -209,6 +283,7 @@ p {
 
 .ceiling-item:hover {
   color: #9d2933;
+  padding-bottom: 1em;
   border-bottom: 1px solid #9d2933;
 }
 
@@ -247,7 +322,8 @@ p {
 
 .complementary {
   background-color: #f8f8f9;
-  padding: 6em 2em;
+  padding: 3em 2em;
+  padding-top: 0em;
 }
 
 .complementary-box {
@@ -260,10 +336,6 @@ p {
 
 .complementary h3 {
   font-weight: lighter;
-}
-
-.getting-help {
-  padding: 1em;
 }
 
 .browse {
@@ -302,7 +374,7 @@ p {
 
 .subfooter-container-box ul {
   padding-top: 1em;
-  font-size: 1.2em;
+  font-size: 1em;
 }
 
 /*= footer
