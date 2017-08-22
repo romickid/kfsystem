@@ -9,7 +9,7 @@
         <div class="ceiling-main">
           <a href='../main' class='ceiling-item'>首页</a> |
           <a href="../main/#jump" class='ceiling-item'> 产品介绍</a> |
-          <a href="../documentation" class='ceiling-item'> 帮助中心</a> 
+          <a href="../documentation" class='ceiling-item'> 帮助中心</a>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
               <p id="p">请输入正确的邮箱！</p>
             </i-label>
           </div>
-          <div class="div">
+          <div class="div" @keydown="loginEnter">
             <label class="label">登录密码：</label>
             <input type="password" v-model="password" name="password" class="text" id="password">
           </div>
@@ -114,6 +114,25 @@ export default {
       }
     },
     /**
+      * @description 按下Enter键时的监听，首先对格式进行验证，没有格式问题后调用communicate函数与后端联系
+      */
+    loginEnter (e) {
+      if (e.keyCode === 13) {
+        if (this.email === '' || this.password === '') {
+          this.$Message.info('您的信息不完善！')
+        } else if (this.emailIllegal === true) {
+          this.$Message.info('您的输入的邮箱格式不正确！')
+        } else {
+          // 与后端链接进行信息传输和验证
+          this.item = {
+            'email': this.email,
+            'password': this.hashPassword()
+          }
+          this.communicate()
+        }
+      }
+    },
+    /**
       * @description 对密码进行hash操作，提高传输的安全性
       */
     hashPassword () {
@@ -153,7 +172,6 @@ export default {
   color: #9ba7b5;
   padding-left: 1em;
   padding-right: 1em;
-
 }
 
 .ceiling-main .mainpage {

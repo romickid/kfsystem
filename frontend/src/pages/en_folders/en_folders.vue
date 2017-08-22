@@ -46,7 +46,7 @@
             <label class="label">使用昵称：</label>
             <input type="text" v-model="nickname" name="nickname" class="text">
           </div>
-          <div class="div">
+          <div class="div" @keydown="registerEnter">
             <label class="label">产品序列号：</label>
             <input type="text" v-model="serialNumber" name="serialNumber" class="text">
           </div>
@@ -168,6 +168,31 @@ export default {
       }
     },
     /**
+      * @description 对注册使用Enter键进行监听，在信息无格式错误且完整的前提下调用communicate函数与后端进行交互
+      */
+    registerEnter (e) {
+      if (e.keyCode === 13) {
+        if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '' || this.serialNumber === '') {
+          this.$Message.info('您的信息不完善！')
+        } else if (this.emailIllegal === true) {
+          this.$Message.info('您的输入的邮箱格式不正确！')
+        } else if (this.passwordNonStandard === true) {
+          this.$Message.info('您的输入的密码格式不正确！')
+        } else if (this.passwordInConsistent === true) {
+          this.$Message.info('您两次输入的密码不一致！')
+        } else {
+          // 与后端链接进行信息传输和验证
+          this.item = {
+            'email': this.email,
+            'nickname': this.nickname,
+            'password': this.hashPassword(),
+            'serials': this.serialNumber
+          }
+          this.communicate()
+        }
+      }
+    },
+    /**
       * @description 对密码进行hash操作，提高传输的安全性
       */
     hashPassword () {
@@ -208,7 +233,6 @@ export default {
   color: #9ba7b5;
   padding-left: 1em;
   padding-right: 1em;
-
 }
 
 .ceiling-main .mainpage {
