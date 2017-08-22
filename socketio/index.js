@@ -220,7 +220,7 @@ socketIO.on('connection', function (socket) {
     let customer_socket = socket
 
     if (cs_socket_list[enterprise_id].length === 0 || cs_socket_list[enterprise_id].length === 1) {
-      customer_socket.emit('no server available') // 无法转接
+      customer_socket.emit('no cs available') // 无法转接
     } else {
       sortByCustomerNumberInCs(cs_socket_list[enterprise_id])
       let former_count = 0
@@ -322,9 +322,9 @@ socketIO.on('connection', function (socket) {
   socket.on('customer out', function (customer_id) {
     let cs_socket = socket
     console.log('[customer out]')
-    console.log('Customer out: ' + customer_id)
+    console.log('    Customer out: ' + customer_id)
     let customer_socket = findByCustomerId(cs_socket.list_customer_socket, customer_id)
-    customer_socket.emit('no server available')
+    customer_socket.emit('customer expire')
     removeByCustomerId(cs_socket.list_customer_socket, customer_id)
     cs_socket.customer_num--
     cs_socket.emit('customer hang off', cs_socket.enterprise_id, customer_id)
