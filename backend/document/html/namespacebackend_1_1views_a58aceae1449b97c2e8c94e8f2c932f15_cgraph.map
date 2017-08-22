@@ -1,0 +1,12 @@
+<map id="backend.views.admin_create" name="backend.views.admin_create">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a152955c275ed32c1fd01aa42851947cf" title="backend.views_check\l_functions.admin_create_check" alt="" coords="199,160,404,201"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1views__helper__functions.html#a573508adb4a48d39465a8ee100d72168" title="backend.views_helper\l_functions.admin_generate\l_password" alt="" coords="213,229,390,285"/>
+<area shape="rect" id="node9" href="$namespacebackend_1_1views__helper__functions.html#aac661a138401e0cf317a2636332b3662" title="backend.views_helper\l_functions.admin_generate\l_communication_key" alt="" coords="460,398,637,454"/>
+<area shape="rect" id="node10" href="$namespacebackend_1_1views__helper__functions.html#a88689b51df542b78ed0f5408f4987911" title="backend.views_helper\l_functions.admin_generate_vid" alt="" coords="202,427,401,468"/>
+<area shape="rect" id="node11" href="$namespacebackend_1_1views__helper__functions.html#a3603fc80fc63d8b92bfec0f07d165ee3" title="backend.views_helper\l_functions.sn_mark_used" alt="" coords="216,309,387,351"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="471,5,626,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a90a64a471333b392ed7cb1f6006fe3ec" title="backend.views_helper\l_functions.sn_is_serials_valid" alt="" coords="452,312,645,353"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="453,71,644,127"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="464,151,633,207"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views__helper__functions.html#a47ef09b5836047c40116abf7e1bea927" title="backend.views_helper\l_functions.admin_is_existent\l_by_nickname" alt="" coords="453,231,644,287"/>
+</map>

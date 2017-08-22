@@ -1,0 +1,7 @@
+<map id="backend.views.admin_display_info_delete" name="backend.views.admin_display_info_delete">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a22b129d77cd49753cd6bc64217e09628" title="backend.views_check\l_functions.admin_display\l_info_delete_check" alt="" coords="199,101,367,157"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a98696c3147a6f6d80ed9942ea9c2bb4e" title="backend.views_helper\l_functions.admin_sessions_check" alt="" coords="415,5,636,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="448,71,603,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="430,137,621,193"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a0971e7039f8f76aa4ef3ba4f97bc1350" title="backend.views_helper\l_functions.displayinfo\l_is_existent_by_name" alt="" coords="449,217,601,273"/>
+</map>

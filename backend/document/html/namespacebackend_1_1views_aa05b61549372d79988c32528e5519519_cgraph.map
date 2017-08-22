@@ -1,0 +1,11 @@
+<map id="backend.views.customerservice_create" name="backend.views.customerservice_create">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a06d2f1c79e87da8944339b25fc798563" title="backend.views_check\l_functions.customerservice\l_create_check" alt="" coords="257,137,436,193"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views__helper__functions.html#a1f176c78f15fd3c69f03bbc26797a183" title="backend.views_helper\l_functions.cs_reset_create" alt="" coords="257,228,436,269"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1views__helper__functions.html#add75d5cbd127f61ffe1568f3e2f191c7" title="backend.views_helper\l_functions.cs_generate_vid" alt="" coords="257,293,436,335"/>
+<area shape="rect" id="node10" href="$namespacebackend_1_1views__helper__functions.html#afa482f9a47e2dc9c1a9308b8837741d8" title="backend.views_helper\l_functions.cs_send_email\l_create_account" alt="" coords="261,359,433,415"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a98696c3147a6f6d80ed9942ea9c2bb4e" title="backend.views_helper\l_functions.admin_sessions_check" alt="" coords="484,5,705,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="517,71,672,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="499,137,690,193"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a5ac1f074515bd3f392f96d80c8c483ca" title="backend.views_helper\l_functions.cs_is_registered\l_by_email" alt="" coords="505,217,685,273"/>
+<area shape="rect" id="node9" href="$namespacebackend_1_1views__helper__functions.html#aac661a138401e0cf317a2636332b3662" title="backend.views_helper\l_functions.admin_generate\l_communication_key" alt="" coords="506,297,683,353"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="backend.views.customerservice_setrobotinfo_delete" name="backend.views.customerservice_setrobotinfo_delete">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a8567671afdba808fd99f60e6ca14d7f0" title="backend.views_check\l_functions.customerservice\l_setrobotinfo_delete_check" alt="" coords="257,101,437,157"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="508,5,663,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a79fbb56d26078f86a4526b727a305e7b" title="backend.views_helper\l_functions.cs_sessions_check" alt="" coords="485,71,685,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="501,137,670,193"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#adaada44222764132b099b7d0f906b347" title="backend.views_helper\l_functions.robotinfo\l_is_existent_by_enterprise\l_question" alt="" coords="497,217,674,288"/>
+</map>

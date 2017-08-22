@@ -1,0 +1,5 @@
+<map id="backend.views.customerservice_setrobotinfo_show" name="backend.views.customerservice_setrobotinfo_show">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a787a23910308953860bd525590a4b3be" title="backend.views_check\l_functions.customerservice\l_setrobotinfo_show_check" alt="" coords="257,35,436,91"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a79fbb56d26078f86a4526b727a305e7b" title="backend.views_helper\l_functions.cs_sessions_check" alt="" coords="484,5,684,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="499,71,669,127"/>
+</map>

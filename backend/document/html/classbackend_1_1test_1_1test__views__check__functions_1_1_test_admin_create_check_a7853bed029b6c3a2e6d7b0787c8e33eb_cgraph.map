@@ -1,0 +1,8 @@
+<map id="backend.test.test_views_check_functions.TestAdminCreateCheck.test" name="backend.test.test_views_check_functions.TestAdminCreateCheck.test">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a152955c275ed32c1fd01aa42851947cf" title="backend.views_check\l_functions.admin_create_check" alt="" coords="280,144,485,185"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="553,5,707,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a90a64a471333b392ed7cb1f6006fe3ec" title="backend.views_helper\l_functions.sn_is_serials_valid" alt="" coords="533,71,727,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="535,137,725,193"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="545,217,715,273"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views__helper__functions.html#a47ef09b5836047c40116abf7e1bea927" title="backend.views_helper\l_functions.admin_is_existent\l_by_nickname" alt="" coords="535,297,725,353"/>
+</map>

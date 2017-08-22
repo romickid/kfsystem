@@ -1,0 +1,8 @@
+<map id="backend.views.customerservice_setrobotinfo_create" name="backend.views.customerservice_setrobotinfo_create">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#aeb9446b68b51a9c1533fa4eda1751875" title="backend.views_check\l_functions.customerservice\l_setrobotinfo_create_check" alt="" coords="257,101,439,157"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1robot.html#af52c0d884518e74864c6101be14b1f10" title="backend.robot.robot\l_add_keyword" alt="" coords="279,181,417,223"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="509,5,664,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a79fbb56d26078f86a4526b727a305e7b" title="backend.views_helper\l_functions.cs_sessions_check" alt="" coords="487,71,687,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="502,137,671,193"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#adaada44222764132b099b7d0f906b347" title="backend.views_helper\l_functions.robotinfo\l_is_existent_by_enterprise\l_question" alt="" coords="498,217,675,288"/>
+</map>
