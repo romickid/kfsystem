@@ -6,14 +6,18 @@
     </div>
     <div class='main-content-body'>
       <div class='guide'>
-        <h2>桌面网站web接入样例（web样例）</h2>
+        <h2>桌面网站web接入样例
+          <img src='./docPic/doc8.png'>
+        </h2>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>获取页面网址</h2>
         <p>在企业网站中嵌入web咨询页面的网址</p>
         <ul>
-          <li>申请系统后，在多渠道-web中获取页面网址。（图片）</li>
+          <li>申请系统后，在多渠道-web中获取页面网址。
+            <img src='./docPic/doc7.png'>
+          </li>
         </ul>
       </div>
       <div class='line'></div>
@@ -21,15 +25,18 @@
         <h2>入口样式简介</h2>
         <p>企业可参考如下几种方式进行入口样式的设计</p>
         <ul>
-          <li>1.banner样式（图片）</li>
-          <li>2.文字链样式（图片）</li>
-          <li>3.浮层样式（图片）</li>
+          <li>1.banner样式</li>
+          <img src='./docPic/doc9.jpg'>
+          <li>2.文字链样式</li>
+          <img src='./docPic/doc10.jpg'>
+          <li>3.浮层样式</li>
+          <img src='./docPic/doc11.jpg'>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>参数传递</h2>
-        <p>用户信息参数传递规则 请参考<a></a></p>
+        <p>用户信息参数传递规则 请参考<router-link :to='user_info'>《客户账户体系对接流程》</router-link></p>
       </div>
       <div class='line'></div>
     </div>
@@ -77,7 +84,8 @@ h5 {
 }
 
 p {
-  font-size: 1.3em;
+  font-size: 1.1em;
+  padding: 1em 0em;
 }
 
 .guide li {
@@ -106,5 +114,10 @@ p {
 
 .guide a {
   color: #9d2933;
+}
+
+img {
+  width: 600px;
+  margin: 2em 0em;
 }
 </style>
