@@ -8,26 +8,28 @@
       <div class='guide'>
         <h2>获取用户信息对接通讯密钥</h2>
         <ul>
-          <li>1. 登录BIG5智能客服，进入系统设置，在页面中找到通讯秘钥。</li>
+          <li>1. 登录BIG5智能客服，进入系统设置，在页面中找到通讯秘钥。
+            <img src='./docPic/doc13.png'>
+          </li>
           <li>2. 该通讯密钥（后面提到的secureKey参数）用来对用户信息做签名。你也可以点击“重新生成通讯密钥”更新它。</li>
-          <li>提示：只有管理员才有此权限。（图）</li>
+          <li>提示：只有管理员才有此权限。</li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>桌面网站、移动网站用户信息对接</h2>
         <ul>
-          <li>1. 进入BIG5多渠道设置，找到相应的咨询页面地址：（图片）</li>
+          <li>1. 进入BIG5多渠道设置，找到相应的咨询页面地址：</li>
           <li>2. 访问BIG5客服url时，带入用户信息</li>
           <li>例如：http://192.168.55.33:8000/customer_newlabel/customer_newlabel.html?userId=123@qq.com&userName=aaa&adminName＝lalala&signature=2f3b3bc0e8b51e17ff2b2440005dd5fa</li>
           <li>请求参数请参考参数说明</li>
-          <li>提示：这样的url暴露给用户不太美观，建议企业自己创建一个独立页面，用iframe标签嵌入该地址，如：（图）</li>
+          <li>提示：这样的url暴露给用户不太美观，建议企业自己创建一个独立页面，用iframe标签嵌入该地址，如：</li>
           <li>请求参数请参考参数说明</li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
-        <h2>请求参数说明（图）</h2>
+        <h2>请求参数说明</h2>
         <Table stripe :columns="columns" :data="data"></Table>
         <ul>
           <li>signature生成算法：</li>
@@ -51,7 +53,7 @@
         <h2>附：常见问题</h2>
         <ul>
           <li>对接的用户信息，在哪里体现？</li>
-          <li>在客服界面的右边栏中显示用户信息（图）</li>
+          <li>在客服界面的右边栏中显示用户信息</li>
         </ul>
       </div>
       <div class='line'></div>
@@ -148,7 +150,8 @@ h5 {
 }
 
 p {
-  font-size: 1.3em;
+  font-size: 1.1em;
+  padding: 1em 0em;
 }
 
 .guide li {
@@ -177,5 +180,10 @@ p {
 
 .guide a {
   color: #9d2933;
+}
+
+img {
+  width: 600px;
+  margin: 2em 0em;
 }
 </style>
