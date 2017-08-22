@@ -1,0 +1,8 @@
+<map id="backend.views.admin_forget_password_email_request" name="backend.views.admin_forget_password_email_request">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a99ccb0691e0e7471168a90eb54d53b98" title="backend.views_check\l_functions.admin_forget\l_password_email_request_check" alt="" coords="215,71,429,127"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a88689b51df542b78ed0f5408f4987911" title="backend.views_helper\l_functions.admin_generate_vid" alt="" coords="223,155,421,196"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views__helper__functions.html#a6ae252981d7eb79542227adab2cb3d72" title="backend.views_helper\l_functions.admin_send\l_email_forget_password" alt="" coords="241,221,403,277"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="495,5,650,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="477,71,668,127"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#aac661a138401e0cf317a2636332b3662" title="backend.views_helper\l_functions.admin_generate\l_communication_key" alt="" coords="484,151,661,207"/>
+</map>

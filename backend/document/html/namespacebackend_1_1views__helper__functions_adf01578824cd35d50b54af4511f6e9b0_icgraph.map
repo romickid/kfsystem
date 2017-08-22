@@ -1,0 +1,4 @@
+<map id="backend.views_helper_functions.admin_is_valid_by_email_password" name="backend.views_helper_functions.admin_is_valid_by_email_password">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views.html#a53dfd85c21367427c75e601930234416" title="backend.views.admin\l_login" alt="" coords="223,5,368,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views.html#a814218d7c60f020f4116be3a635a2ead" title="backend.views.admin\l_reset_password" alt="" coords="223,71,368,112"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="backend.views.admin_reset_communication_key" name="backend.views.admin_reset_communication_key">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#af9d893146dabdab2a5bb28bfd5a1acf1" title="backend.views_check\l_functions.admin_reset\l_communication_key_check" alt="" coords="235,34,421,90"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#aac661a138401e0cf317a2636332b3662" title="backend.views_helper\l_functions.admin_generate\l_communication_key" alt="" coords="239,114,417,170"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a98696c3147a6f6d80ed9942ea9c2bb4e" title="backend.views_helper\l_functions.admin_sessions_check" alt="" coords="469,5,691,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="485,71,675,127"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="backend.views_helper_functions.cs_generate_password" name="backend.views_helper_functions.cs_generate_password">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views.html#a1ff592ad96f2006505544d57aba542df" title="backend.views.customerservice\l_set_profile" alt="" coords="209,5,413,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views.html#a3b9563ddfe96721af77fc3c7245bbbe7" title="backend.views.customerservice\l_login" alt="" coords="209,71,413,112"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views.html#aa69846c7e3172196fdd2fa205961655e" title="backend.views.customerservice\l_reset_password" alt="" coords="209,136,413,177"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views.html#ab19120a401c3f6717efb378d8bbef962" title="backend.views.customerservice\l_forget_password_save_data" alt="" coords="209,201,413,243"/>
+</map>

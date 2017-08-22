@@ -1,0 +1,7 @@
+<map id="backend.views_check_functions.admin_create_check" name="backend.views_check_functions.admin_create_check">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="278,5,433,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a90a64a471333b392ed7cb1f6006fe3ec" title="backend.views_helper\l_functions.sn_is_serials_valid" alt="" coords="259,71,452,112"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="260,137,451,193"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="271,217,440,273"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a47ef09b5836047c40116abf7e1bea927" title="backend.views_helper\l_functions.admin_is_existent\l_by_nickname" alt="" coords="260,297,451,353"/>
+</map>

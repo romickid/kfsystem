@@ -1,0 +1,10 @@
+<map id="backend.robot.robot_return_answer" name="backend.robot.robot_return_answer">
+<area shape="rect" id="node2" href="$namespacebackend_1_1robot.html#acc62196a69d90b1425846401b7f6c0d8" title="backend.robot.robot\l_weight_list" alt="" coords="209,104,347,145"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1robot__basic.html#ad485ff79dce5ca50e02e03f41dd216c4" title="backend.robot_basic.robot\l_basic_weight_list" alt="" coords="191,235,365,276"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1robot.html#a02e9bd81b1f6b9549bdbab3015df2e2e" title="backend.robot.robot\l_create_tags" alt="" coords="448,5,585,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1robot.html#a61ada467b2f48b9bd2b1a4909bf8639b" title="backend.robot.robot\l_create_tags_withWeight" alt="" coords="433,71,601,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1robot.html#ab79ae276c711fbcb9fa18f0b4079b15d" title="backend.robot.robot\l_similarity" alt="" coords="448,136,585,177"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1robot__basic.html#a8cc8299edf3f5239d8a126e04a150740" title="backend.robot_basic.robot\l_basic_create_tags" alt="" coords="429,201,604,243"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1robot__basic.html#a28c032c7d3df2d7ca4440cb4ecb24fcb" title="backend.robot_basic.robot\l_basic_create_tags_withWeight" alt="" coords="413,267,620,308"/>
+<area shape="rect" id="node9" href="$namespacebackend_1_1robot__basic.html#ab867567a0ae672e122b189770fd062d9" title="backend.robot_basic.robot\l_basic_similarity" alt="" coords="429,332,604,373"/>
+</map>

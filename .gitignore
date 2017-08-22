@@ -15,7 +15,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -120,4 +119,3 @@ yarn.lock
 .DS_Store
 /.vagrant/
 /media/
-/backend/document/

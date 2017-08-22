@@ -1,0 +1,7 @@
+<map id="backend.views.customerservice_login" name="backend.views.customerservice_login">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#ad9264a3f5880072bee102ad0264641eb" title="backend.views_check\l_functions.customerservice\l_login_check" alt="" coords="269,5,448,61"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a2efa9a9e039d1baf0a85b6e21716a055" title="backend.views_helper\l_functions.cs_generate\l_password" alt="" coords="281,85,437,141"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a44467665034d3f68cde3e8e72cbc6c4c" title="backend.views_helper\l_functions.cs_is_valid\l_by_email_password" alt="" coords="285,165,433,221"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a5ead71589ab43727b2657f9ab14ed792" title="backend.views_helper\l_functions.admin_sessions_del" alt="" coords="257,246,460,287"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="508,13,663,54"/>
+</map>
