@@ -1,4 +1,4 @@
-from .models import Admin
+from .models import Customer, CommunicationKey
 from django.core.mail import send_mail
 import hashlib, random, string
 
@@ -15,82 +15,83 @@ def json_testing(json_receive, array_str, json_length):
     return 0
 
 
-def admin_is_existent_by_email(email):
+# useful
+def customer_is_existent_by_email(email):
     try:
-        instance = Admin.objects.get(email=email)
+        instance = Customer.objects.get(email=email)
         return True
-    except Admin.DoesNotExist:
+    except Customer.DoesNotExist:
         return False
 
 
-def admin_is_existent_by_nickname(nickname):
+# useful
+def customer_is_existent_by_nickname(nickname):
     try:
-        instance = Admin.objects.get(nickname=nickname)
+        instance = Customer.objects.get(nickname=nickname)
         return True
-    except Admin.DoesNotExist:
+    except Customer.DoesNotExist:
         return False
 
 
-def admin_is_valid_by_email_password(email, sha512_final_password):
+# useful
+def customer_is_valid_by_email_password(email, sha512_final_password):
     try:
-        instance = Admin.objects.get(email=email, password=sha512_final_password)
+        instance = Customer.objects.get(email=email, password=sha512_final_password)
         return True
-    except Admin.DoesNotExist:
+    except Customer.DoesNotExist:
         return False
 
 
-def admin_generate_password(email, sha512_frontend_password):
+# useful
+def customer_generate_password(email, sha512_frontend_password):
     hash_email = hashlib.sha512()
     hash_email.update(email.encode('utf-8'))
     sha512_email = hash_email.hexdigest()
     hash_password = hashlib.sha512()
-    hash_password.update((sha512_frontend_password+sha512_email+'adminbig5').encode('utf-8'))
+    hash_password.update((sha512_frontend_password+sha512_email+'customerbig5').encode('utf-8'))
     return hash_password.hexdigest()
 
 
-def admin_generate_communication_key(email):
-    salt1 = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-    salt2 = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-    hash_key = hashlib.md5()
-    hash_key.update((salt1+email+salt2).encode('utf-8'))
-    return hash_key.hexdigest()
-
-
-def admin_get_communication_key(email):
+# useful
+def customer_sessions_check(request):
     try:
-        instance = Admin.objects.get(email=email)
-        return instance.communication_key
-    except Admin.DoesNotExist:
-        return False
-
-
-def admin_generate_vid(email):
-    return admin_generate_communication_key(email)
-
-
-def admin_send_email_forget_password(email, content):
-    send_mail('客服系统找回密码', content, 'big5_nankai@163.com', [email], fail_silently=True)
-
-
-def admin_is_existent_by_email_vid(email, vid):
-    try:
-        instance = Admin.objects.get(email=email, vid=vid)
-        return True
-    except Admin.DoesNotExist:
-        return False
-
-
-def admin_sessions_check(request):
-    try:
-        request.session['a_email'] = request.session['a_email']
+        request.session['ec_email'] = request.session['ec_email']
         return True
     except KeyError:
         return False
 
 
-def admin_sessions_del(request):
+# useful
+def customer_sessions_del(request):
     try:
-        del request.session['a_email']
+        del request.session['ec_email']
     except KeyError:
         pass
 
+
+# useful
+def customer_generate_sending_data(request):
+    email, nickname, telephone, location, description = '', '', '', '', ''
+    if customer_sessions_check(request) == False:
+        email = "匿名用户" + str((random.random() * 1000))
+        nickname = "匿名用户"
+        telephone = "empty"
+        location = "empty"
+        description = "empty"
+    else:
+        email = request.session['ec_email']
+        instance = Customer.objects.get(email=email)
+        nickname = instance.nickname
+        telephone = instance.telephone
+        location = instance.location
+        description = instance.description
+    return email, nickname, telephone, location, description
+
+
+# useful
+def communication_key_is_existent_by_myid(myid):
+    try:
+        instance = CommunicationKey.objects.get(myid=myid)
+        return True
+    except CommunicationKey.DoesNotExist:
+        return False
