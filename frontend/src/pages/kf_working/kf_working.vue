@@ -656,9 +656,12 @@ export default {
         if (!this.hangon) {
           alert('该用户已挂断！')
           this.chatlogData.text = ''
+          let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+          residual.innerHTML = '' 
           return
         }
-
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML = ''
         this.currentOnlineObject.messages.push({
           text: this.chatlogData.text,
           isText: true,
