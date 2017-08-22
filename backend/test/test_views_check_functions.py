@@ -1076,13 +1076,6 @@ class TestCsRobotinfoShowCheck(TestCase):
 
 
 class TestCsDisplayrobotreplyShowCheck(TestCase):
-    def setUp(self):
-        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
-        Admin.objects.create(id=2, email='admin2@test.com', nickname='a_nick2', password='a_pass2', web_url='a_weburl2', widget_url='a_widgeturl2', mobile_url='a_mobileurl2', communication_key='a_key2', vid='a_vid2')
-        admin_instance1 = Admin.objects.get(id=1)
-        admin_instance2 = Admin.objects.get(id=2)
-        RobotInfo.objects.create(id=1, enterprise=admin_instance1, question='question1', answer='answer1', keyword='keyword1', weight=0)
-
     def test(self):
         json1 = {'nickname': 'a_nick1', 'customer_input': 'nihao'}
         errorcode1, errormessage1 = customerservice_displayrobotreply_show_check(json1)
@@ -1126,3 +1119,29 @@ class TestCsLogoutCheck(TestCase):
         errorcode3, errormessage3 = customerservice_logout_check(c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
+
+
+class TestCustomerCheckInfo(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
+
+    def test(self):
+        json1 = {'enterprise_id': 'a_nick1', 'customer_id': 'customer1', 'cusotmer_name': 'cusotmerName1', 'hash_result': 'hash1'}
+        errorcode1, errormessage1 = customer_check_info_check(json1)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {'enterprise_id': 'a_nick1', 'customer_id': 'customer1', 'cusotmer_name': 'cusotmerName1'}
+        errorcode2, errormessage2 = customer_check_info_check(json2)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'enterprise_id': 'a_nick1', 'customer_id': 'customer1', 'cusotmer_name': 'cusotmerName1', 'hash_result': 'hash1', 'other': 'other'}
+        errorcode3, errormessage3 = customer_check_info_check(json3)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        json4 = {'enterprise_id': 'a_nick2', 'customer_id': 'customer1', 'cusotmer_name': 'cusotmerName1', 'hash_result': 'hash1'}
+        errorcode4, errormessage4 = customer_check_info_check(json4)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, wrong nickname.')
