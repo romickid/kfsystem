@@ -6,7 +6,7 @@
     </div>
     <div class='main-content-body'>
       <div class='guide'>
-        <h2>桌面网站widget接入样例</h2>
+        <h2>桌面网站widget接入样例（图片）</h2>
       </div>
       <div class='line'></div>
       <div class='guide'>
@@ -14,7 +14,7 @@
         <p>将script代码嵌入企业网站</p>
         <ul>
           <li>1. 申请系统后，在多渠道-桌面网站-widget中查看</li>
-          <li>2. 将对应代码嵌入到前端页面中</li>
+          <li>2. 将对应代码嵌入到前端页面中（图片）</li>
         </ul>
       </div>
       <div class='line'></div>
@@ -68,8 +68,7 @@ h5 {
 }
 
 p {
-  font-size: 1.1em;
-  padding: 1em 0em;
+  font-size: 1.3em;
 }
 
 .guide li {
@@ -98,10 +97,5 @@ p {
 
 .guide a {
   color: #9d2933;
-}
-
-img {
-  width: 600px;
-  margin: 2em 0em;
 }
 </style>

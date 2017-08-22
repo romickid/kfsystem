@@ -2,12 +2,12 @@
   <div id='app'>
     <div class='main-content-head'>
       <h1>BIG5 在线客服系统</h1>
-      <p>这里有一切你想了解的关于BIG5使用的内容</p>
+      <p>Everything you need to know about BIG5.</p>
     </div>
     <div class='main-content-body'>
       <div class='guide'>
-        <h2>如何阅读本文档</h2>
-        <p>本文档分为接入指南、用户手册、智能机器人、其它四部分。<br>企业管理者应仔细阅读本文档每一部分内容，企业客服则只需阅读用户手册章节即可</p>
+        <h2>How the documentation is organized</h2>
+        <p></p>
         <ul>
           <li>
             接入指南：面向企业管理员，解答接入BIG5在线客服系统的诸多问题
@@ -26,7 +26,7 @@
       <div class='line'></div>
       <div class='guide'>
         <h2>接入指南</h2>
-        <p>第一次接触BIG5？这里是你开始的好地方</p>
+        <p>Are you new to BIG5? This is the place to start!</p>
         <ul>
           <li><router-link to='/access_guide'>BIG5客服系统接入步骤一览</router-link></li>
           <li><router-link to='/web'>桌面网站web接入</router-link></li>
@@ -107,8 +107,7 @@ h5 {
 }
 
 p {
-  font-size: 1.1em;
-  padding: 1em 0em;
+  font-size: 1.3em;
 }
 
 .guide li {
