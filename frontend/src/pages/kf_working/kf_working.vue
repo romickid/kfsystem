@@ -253,7 +253,7 @@ function addCustomer (cs_socket, onlineList, customer) {
   )
 }
 /**
-  * @description 接受新消息时对应消息和用户的上浮
+  * @description 接受新消息时相应的在线组上浮
   */
 function popUp (onlineList, index) {
   console.log('[function: popUp]')
@@ -270,12 +270,20 @@ function customerHangoff (onlineList, offlineList, customerID) {
   let customer = onlineList[onlineIndex].customer
   let messages = onlineList[onlineIndex].messages
   pushTextToOnlineList(onlineList, onlineIndex, '用户' + customerID + '已挂断')
-  offlineList.splice(0, 0, {
-    enterpriseID: customer.enterpriseID,
-    customerID: customer.customerID,
-    customer: customer,
-    messages: messages
-  })
+  // 如果离线组中已经有该用户的信息，则继续往里添加信息
+  if (findOfflineListByCustomerID(offlineList, customerID) === -1 ) {
+    offlineList.splice(0, 0, {
+      enterpriseID: customer.enterpriseID,
+      customerID: customer.customerID,
+      customer: customer,
+      messages: messages
+    })
+  } else {
+    let index = findOfflineListByCustomerID(offlineList, customerID)
+    for (let i=0; i<messages.length ;i++) {
+      offlineList[index].messages.push(messages[i])
+    }
+  }
 }
 /**
   * @description 用户挂断时将其从在线组中删除
