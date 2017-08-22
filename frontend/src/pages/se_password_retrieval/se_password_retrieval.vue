@@ -13,7 +13,7 @@
           <a href="../se_login" class='ceiling-item'> 客服入口</a>
         </div>
       </div>
-    </div>    
+    </div>
     <form>
       <div class="all">
         <div class="container">
@@ -27,7 +27,7 @@
               <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
             </i-label>
           </div>
-          <div class="div">
+          <div class="div" @keydown="finishEnter">
             <label class="label">确认密码：</label>
             <input type="password" v-model="newPasswordConfirm" name="newPasswordConfirm" class="text" @blur="checkNewPassword" @focus="newPasswordInput" id="input-password-confirm">
             <i-label v-if="passwordInConsistent">
@@ -99,6 +99,28 @@ export default {
           this.resetPassword()
         } else {
           this.$Message.info('您的密码不合法！')
+        }
+      }
+    },
+    /**
+      * @description 对按下Enter键进行监听，在信息无格式错误且完整的前提下调用resetPassword函数与后端进行交互
+      */
+    finishEnter (e) {
+      if (e.keyCode === 13) {
+        if (this.newPassword === '' || this.newPasswordConfirm === '') {
+          this.$Message.info('您的信息不完善！')
+        } else {
+          if (this.passwordInConsistent === false && this.passwordNonStandard === false) {
+            // 与后端链接进行信息传输和验证
+            this.customerserviceResetPassword = {
+              'email': this.customerserviceFindPassword.email,
+              'newpassword': this.hashPassword(),
+              'vid': this.newVid
+            }
+            this.resetPassword()
+          } else {
+            this.$Message.info('您的密码不合法！')
+          }
         }
       }
     },
@@ -208,7 +230,6 @@ export default {
   color: #9ba7b5;
   padding-left: 1em;
   padding-right: 1em;
-
 }
 
 .ceiling-main .mainpage {
