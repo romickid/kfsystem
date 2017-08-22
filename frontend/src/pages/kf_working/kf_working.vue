@@ -539,11 +539,12 @@ export default {
     this.socket.on('customer hang off', function (enterpriseID, customerID) {
       customerHangoff(that.onlineList, that.offlineList, customerID)
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
-      if (that.onlineIndex > onlineIndex) {
+      console.log(onlineIndex)
+      console.log(that.onlineIndex)
+      customerDelete(that.onlineList, that.offlineList, customerID)
+      if (that.onlineIndex !== 0 && that.onlineIndex === that.onlineList.length) {
         that.onlineIndex--
       }
-
-      customerDelete(that.onlineList, that.offlineList, customerID)
     })
     /**
       * @description 对当前用户转接失败，设置提示
