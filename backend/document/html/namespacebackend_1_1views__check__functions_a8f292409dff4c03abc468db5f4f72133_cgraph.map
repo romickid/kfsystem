@@ -1,0 +1,4 @@
+<map id="backend.views_check_functions.customerservice_forget_password_email_request_check" name="backend.views_check_functions.customerservice_forget_password_email_request_check">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="314,5,469,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="307,71,476,127"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="backend.views.customerservice_set_profile" name="backend.views.customerservice_set_profile">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a528b924eddf9ca6fd208885e967b6938" title="backend.views_check\l_functions.customerservice\l_set_profile_check" alt="" coords="257,151,436,207"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views__helper__functions.html#a2efa9a9e039d1baf0a85b6e21716a055" title="backend.views_helper\l_functions.cs_generate\l_password" alt="" coords="269,233,425,289"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1views__helper__functions.html#add75d5cbd127f61ffe1568f3e2f191c7" title="backend.views_helper\l_functions.cs_generate_vid" alt="" coords="257,316,436,357"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="495,5,650,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#aa8cbbf910ba8e99aa29b9defe756da54" title="backend.views_helper\l_functions.cs_is_existent\l_by_email_vid" alt="" coords="488,71,657,127"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#ab6f39e2179763f410bfc5bee5d371931" title="backend.views_helper\l_functions.cs_is_existent\l_by_nickname" alt="" coords="488,151,657,207"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#adb417628540530b91d14993648f0a644" title="backend.views_helper\l_functions.cs_vid_is\l_expired" alt="" coords="499,231,647,287"/>
+<area shape="rect" id="node9" href="$namespacebackend_1_1views__helper__functions.html#aac661a138401e0cf317a2636332b3662" title="backend.views_helper\l_functions.admin_generate\l_communication_key" alt="" coords="484,311,661,367"/>
+</map>

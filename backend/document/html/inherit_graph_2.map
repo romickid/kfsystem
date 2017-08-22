@@ -1,0 +1,11 @@
+<map id="类继承关系图" name="类继承关系图">
+<area shape="rect" id="node2" href="$classbackend_1_1models_1_1_admin.html" title="backend.models.Admin" alt="" coords="141,5,299,32"/>
+<area shape="rect" id="node3" href="$classbackend_1_1models_1_1_big_image_log.html" title="backend.models.BigImageLog" alt="" coords="122,56,318,83"/>
+<area shape="rect" id="node4" href="$classbackend_1_1models_1_1_chatting_log.html" title="backend.models.ChattingLog" alt="" coords="125,107,315,133"/>
+<area shape="rect" id="node5" href="$classbackend_1_1models_1_1_customer_service.html" title="backend.models.CustomerService" alt="" coords="111,157,329,184"/>
+<area shape="rect" id="node6" href="$classbackend_1_1models_1_1_enterprise_display_info.html" title="backend.models.Enterprise\lDisplayInfo" alt="" coords="130,209,310,250"/>
+<area shape="rect" id="node7" href="$classbackend_1_1models_1_1_robot_gossip_info.html" title="backend.models.RobotGossipInfo" alt="" coords="112,275,328,301"/>
+<area shape="rect" id="node8" href="$classbackend_1_1models_1_1_robot_info.html" title="backend.models.RobotInfo" alt="" coords="133,325,307,352"/>
+<area shape="rect" id="node9" href="$classbackend_1_1models_1_1_serial_number.html" title="backend.models.SerialNumber" alt="" coords="121,376,319,403"/>
+<area shape="rect" id="node10" href="$classbackend_1_1models_1_1_small_image_log.html" title="backend.models.SmallImageLog" alt="" coords="115,427,325,453"/>
+</map>

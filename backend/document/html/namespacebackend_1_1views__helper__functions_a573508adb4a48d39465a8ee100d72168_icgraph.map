@@ -1,0 +1,6 @@
+<map id="backend.views_helper_functions.admin_generate_password" name="backend.views_helper_functions.admin_generate_password">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views.html#a58aceae1449b97c2e8c94e8f2c932f15" title="backend.views.admin\l_create" alt="" coords="252,5,397,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views.html#a53dfd85c21367427c75e601930234416" title="backend.views.admin\l_login" alt="" coords="252,71,397,112"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views.html#a814218d7c60f020f4116be3a635a2ead" title="backend.views.admin\l_reset_password" alt="" coords="252,136,397,177"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views.html#ab7da87a69db13b68657a4eb45a5e2049" title="backend.views.admin\l_forget_password_save_data" alt="" coords="231,201,419,243"/>
+</map>

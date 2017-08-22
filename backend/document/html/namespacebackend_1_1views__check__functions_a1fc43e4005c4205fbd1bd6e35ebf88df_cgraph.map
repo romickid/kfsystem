@@ -1,0 +1,5 @@
+<map id="backend.views_check_functions.admin_reset_password_check" name="backend.views_check_functions.admin_reset_password_check">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="243,5,397,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a98696c3147a6f6d80ed9942ea9c2bb4e" title="backend.views_helper\l_functions.admin_sessions_check" alt="" coords="209,71,431,112"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="225,137,415,193"/>
+</map>

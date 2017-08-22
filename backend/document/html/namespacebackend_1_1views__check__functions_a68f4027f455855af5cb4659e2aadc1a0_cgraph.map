@@ -1,0 +1,5 @@
+<map id="backend.views_check_functions.admin_forget_password_check_vid_check" name="backend.views_check_functions.admin_forget_password_check_vid_check">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="262,5,417,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#af1f5f121f237ec493cfff00dd8d3a466" title="backend.views_helper\l_functions.admin_is_existent\l_by_email_vid" alt="" coords="244,71,435,127"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#ae192c5ef25500fc46de7a5012a456520" title="backend.views_helper\l_functions.admin_vid\l_is_expired" alt="" coords="265,151,413,207"/>
+</map>

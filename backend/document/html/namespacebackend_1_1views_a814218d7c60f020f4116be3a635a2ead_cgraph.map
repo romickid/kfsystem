@@ -1,0 +1,8 @@
+<map id="backend.views.admin_reset_password" name="backend.views.admin_reset_password">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a1fc43e4005c4205fbd1bd6e35ebf88df" title="backend.views_check\l_functions.admin_reset\l_password_check" alt="" coords="209,63,365,119"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a573508adb4a48d39465a8ee100d72168" title="backend.views_helper\l_functions.admin_generate\l_password" alt="" coords="199,143,376,199"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views__helper__functions.html#adf01578824cd35d50b54af4511f6e9b0" title="backend.views_helper\l_functions.admin_is_valid\l_by_email_password" alt="" coords="203,223,372,279"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="457,5,612,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a98696c3147a6f6d80ed9942ea9c2bb4e" title="backend.views_helper\l_functions.admin_sessions_check" alt="" coords="424,71,645,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="439,137,630,193"/>
+</map>

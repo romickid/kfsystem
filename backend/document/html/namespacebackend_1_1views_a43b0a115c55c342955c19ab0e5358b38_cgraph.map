@@ -1,0 +1,16 @@
+<map id="backend.views.customerservice_displayrobotreply_show" name="backend.views.customerservice_displayrobotreply_show">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a1662661a35b9163cf379ef0e4ab5caeb" title="backend.views_check\l_functions.customerservice\l_displayrobotreply_show_check" alt="" coords="257,137,464,193"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1robot.html#a6c68707f96b51e170c79248ace2523fe" title="backend.robot.robot\l_return_answer" alt="" coords="292,297,429,339"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="535,5,689,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a79fbb56d26078f86a4526b727a305e7b" title="backend.views_helper\l_functions.cs_sessions_check" alt="" coords="512,71,712,112"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a1ba2c9c4bedda38c41b044b339dc5c13" title="backend.views_helper\l_functions.cs_is_existent\l_by_email" alt="" coords="527,137,697,193"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a5557ae116f7bcb9eac58a86e36c8cd64" title="backend.views_helper\l_functions.robotinfo\l_is_existent_by_enterprise" alt="" coords="523,217,701,273"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1robot.html#acc62196a69d90b1425846401b7f6c0d8" title="backend.robot.robot\l_weight_list" alt="" coords="543,297,681,339"/>
+<area shape="rect" id="node12" href="$namespacebackend_1_1robot__basic.html#ad485ff79dce5ca50e02e03f41dd216c4" title="backend.robot_basic.robot\l_basic_weight_list" alt="" coords="525,428,699,469"/>
+<area shape="rect" id="node9" href="$namespacebackend_1_1robot.html#a02e9bd81b1f6b9549bdbab3015df2e2e" title="backend.robot.robot\l_create_tags" alt="" coords="795,199,932,240"/>
+<area shape="rect" id="node10" href="$namespacebackend_1_1robot.html#a61ada467b2f48b9bd2b1a4909bf8639b" title="backend.robot.robot\l_create_tags_withWeight" alt="" coords="779,264,947,305"/>
+<area shape="rect" id="node11" href="$namespacebackend_1_1robot.html#ab79ae276c711fbcb9fa18f0b4079b15d" title="backend.robot.robot\l_similarity" alt="" coords="795,329,932,371"/>
+<area shape="rect" id="node13" href="$namespacebackend_1_1robot__basic.html#a8cc8299edf3f5239d8a126e04a150740" title="backend.robot_basic.robot\l_basic_create_tags" alt="" coords="776,395,951,436"/>
+<area shape="rect" id="node14" href="$namespacebackend_1_1robot__basic.html#a28c032c7d3df2d7ca4440cb4ecb24fcb" title="backend.robot_basic.robot\l_basic_create_tags_withWeight" alt="" coords="760,460,967,501"/>
+<area shape="rect" id="node15" href="$namespacebackend_1_1robot__basic.html#ab867567a0ae672e122b189770fd062d9" title="backend.robot_basic.robot\l_basic_similarity" alt="" coords="776,525,951,567"/>
+</map>

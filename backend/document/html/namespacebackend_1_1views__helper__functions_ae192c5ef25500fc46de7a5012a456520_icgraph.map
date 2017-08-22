@@ -1,0 +1,8 @@
+<map id="backend.views_helper_functions.admin_vid_is_expired" name="backend.views_helper_functions.admin_vid_is_expired">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a68f4027f455855af5cb4659e2aadc1a0" title="backend.views_check\l_functions.admin_forget\l_password_check_vid_check" alt="" coords="201,76,392,132"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__check__functions.html#a96248efd31e7f25c8fc995565d27a765" title="backend.views_check\l_functions.admin_forget\l_password_save_data_check" alt="" coords="201,156,392,212"/>
+<area shape="rect" id="node3" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_admin_forget_password_check_vid_check.html#ada36bf3ee0612b8cbb5b1129304de962" title="backend.test.test_views\l_check_functions.TestAdminForget\lPasswordCheckVidCheck.test" alt="" coords="440,5,667,61"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views.html#ad61270ed1351a6376dbf3bf7e7a2ff21" title="backend.views.admin\l_forget_password_check_vid" alt="" coords="460,86,647,127"/>
+<area shape="rect" id="node6" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_admin_forget_password_save_data_check.html#a818d4c936eb34f68c7e3df66247feca3" title="backend.test.test_views\l_check_functions.TestAdminForget\lPasswordSaveDataCheck.test" alt="" coords="440,153,667,209"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views.html#ab7da87a69db13b68657a4eb45a5e2049" title="backend.views.admin\l_forget_password_save_data" alt="" coords="459,234,647,275"/>
+</map>
