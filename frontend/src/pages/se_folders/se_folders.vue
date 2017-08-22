@@ -9,7 +9,7 @@
         <div class="ceiling-main">
           <a href='../main' class='ceiling-item'>首页</a> |
           <a href="../main/#jump" class='ceiling-item'> 产品介绍</a> |
-          <a href="../documentation" class='ceiling-item'> 帮助中心</a> 
+          <a href="../documentation" class='ceiling-item'> 帮助中心</a>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
               <p>两次密码输入不一致！</p>
             </i-label>
           </div>
-          <div class="div">
+          <div class="div" @keydown="finishEnter">
             <label class="label">使用昵称：</label>
             <input type="text" v-model="nickname" name="nickname" class="text">
           </div>
@@ -132,6 +132,29 @@ export default {
           'vid': this.newVid
         }
         this.register()
+      }
+    },
+    /**
+      * @description 对注册完成使用Enter键进行监听，在信息无格式错误且完整的前提下调用register函数与后端进行交互
+      */
+    finishEnter (e) {
+      if (e.keyCode === 13) {
+        if (this.password === '' || this.passwordConfirm === '' || this.nickname === '') {
+          this.$Message.info('您的信息不完善！')
+        } else if (this.passwordNonstandard === true) {
+          this.$Message.info('您的输入的密码格式不正确！')
+        } else if (this.passwordInconsistent === true) {
+          this.$Message.info('您两次输入的密码不一致！')
+        } else {
+          // 与后端链接进行信息传输和验证
+          this.item = {
+            'email': this.customerserviceVerify.email,
+            'password': this.hashPassword(),
+            'nickname': this.nickname,
+            'vid': this.newVid
+          }
+          this.register()
+        }
       }
     },
     /**
@@ -302,7 +325,6 @@ p {
   color: #9ba7b5;
   padding-left: 1em;
   padding-right: 1em;
-
 }
 
 .ceiling-main .mainpage {
