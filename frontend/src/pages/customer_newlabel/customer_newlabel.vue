@@ -84,15 +84,28 @@ function connectToCs (cs, session, csID) {
 /**
   * @description 没有可连接客服
   */
-function noServerAvailable (cs, session) {
-  console.log("function: noServerAvailable")
+function noCsAvailable (cs, session) {
+  console.log("function: noCsAvailable")
   session.messages.push({
     text: '您好，现在没有客服在线哦，请您稍后重新连接',
     isText: true,
     date: new Date(),
     image: '../../../static/2.png'
   })
-  cs.customerID = -1
+  cs.csID = 'nick2@robot.com'
+}
+/**
+  * @description 客户超时断开
+  */
+function customerExpire (cs, session) {
+  console.log("function: noCsAvailable")
+  session.messages.push({
+    text: '您好，您已经超时并断开连接，请重新连接客服',
+    isText: true,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+  cs.csID = 'nick2@robot.com'
 }
 /**
   * @description 初始化Socket
@@ -101,11 +114,13 @@ function initSocket (cs, session, socket, customer) {
   return new Promise (function (resolve) {
     console.log("function: initSocket")
 
+    // 客服发送文字信息
     socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
       console.log("socket: cs send message")
       pushTextToSessionList(session, msg)
     })
 
+    // 客服发送图片信息
     socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
       console.log("socket: cs send picture")
       pushImgToSessionList(session, bpic, spic)
@@ -117,11 +132,6 @@ function initSocket (cs, session, socket, customer) {
       resolve()
     })
 
-    socket.on('no server available', function () {
-      console.log("socket: no server available")
-      noServerAvailable(cs, session)
-    })
-
     socket.on('switch cs', function (enterpriseID, formerCsID) {
       console.log("socket: switch cs")
       socket.emit('switch cs', enterpriseID, formerCsID)
@@ -129,7 +139,13 @@ function initSocket (cs, session, socket, customer) {
     })
 
     socket.on('no cs available', function () {
-      alert('当前无在线客服！')
+      console.log("socket: no cs available")
+      noCsAvailable(cs, session)
+    })
+
+    socket.on('customer expire', function () {
+      console.log("socket: customer expire")
+      customerExpire(cs, session)
     })
 
     socket.emit('assigned to cs', customer.enterpriseID, customer.customerID)
@@ -248,10 +264,6 @@ export default {
           resolve()
         })
 
-        this.socket.on('no server available', function () {
-          noServerAvailable(that.cs, that.session)
-        })
-
         this.socket.on('switch cs', function (enterpriseID, formerCsID) {
           that.socket.emit('switch cs', enterpriseID, formerCsID)
           resolve()
@@ -359,6 +371,7 @@ export default {
     },
 
     imgInputing () {
+      console.log('method: imgInputing')
       if (this.chatlogData.img !== '') {
         this.session.messages.push({
           img: this.chatlogData.img,
@@ -404,6 +417,7 @@ export default {
 
     // 图片压缩
     imageCompress () {
+      console.log('method: imageCompress')
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
@@ -424,12 +438,14 @@ export default {
       * @description 加载图片
       */
     imageUpload () {
+      console.log('method: imageUpload')
       var file = document.getElementById('inputFile')
       file.click()
     },
 
     // 显示大图片
     showBigImg (bigImg) {
+      console.log('method: showBigImg')
       this.bigImgSrc = bigImg
       this.modalShowBigImg = true
     },
@@ -437,6 +453,7 @@ export default {
       * @description 获取机器人回复调用后端接口
       */
     showRobotReplyApi () {
+      console.log('method: showRobotReplyApi')
       this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robotReplyItem)
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
@@ -461,6 +478,7 @@ export default {
       * @description 显示机器人回复并存入数据库
       */
     showRobotReply (msg) {
+      console.log('method: showRobotReply')
       this.session.messages.push({
         text: msg,
         isText: true,
@@ -475,20 +493,19 @@ export default {
       * @description 通过email设置用户ID
       */
     getCsIdApi () {
+      console.log('method: getCsIdApi')
       this.$http.post(this.apiChattinglogGetCsId, this.csEmailItem)
         .then((response) => {
           this.databaseCsID = response.data
-          console.log('get_cs_id_api1')
-          console.log(response.data)
         }, (response) => {
-          // window.location.href = '../se_login'
-          console.log('get_cs_id_api2')
+          // window.location.href = '../se_login'=
         })
     },
     /**
       * @description 保存文本接口
       */
     saveTextApi () {
+      console.log('method: saveTextApi')
       this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
         .then((response) => {
           console.log('save_text_api1')
@@ -502,6 +519,7 @@ export default {
       * @description 保存文本
       */
     saveText (isClient, index) {
+      console.log('method: saveText')
       this.saveTextItem = {
         'client_id': this.customer.customerID,
         'service_id': this.databaseCsID,
@@ -515,6 +533,7 @@ export default {
       * @description 保存图片接口
       */
     saveImgApi () {
+      console.log('method: saveImgApi')
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -533,6 +552,7 @@ export default {
       * @description 保存大图接口
       */
     saveBigImgApi () {
+      console.log('method: saveBigImgApi')
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
