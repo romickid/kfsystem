@@ -293,3 +293,9 @@ def log_show_history_if_snippet(json_send, instance_image, instance_chat, len_im
         for i in instance_chat[pointer_chat:len_chat]:
             str_send = {'client_id': i.client_id, 'content': i.content, 'is_client': i.is_client, 'time': i.time}
             json_send.append(str_send)
+
+
+def customer_generate_hash_result(enterprise_id, customer_id, cusotmer_name, communication_key):
+    hash_result = hashlib.sha512()
+    hash_result.update((enterprise_id+customer_id+cusotmer_name+communication_key).encode('utf-8'))
+    return hash_result.hexdigest()
