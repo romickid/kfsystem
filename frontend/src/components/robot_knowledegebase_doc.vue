@@ -10,16 +10,15 @@
         <p>机器人是通过对用户的问题进行词粒度的拆分，按照中文语义分析技术，找到问句的关键元素；和语料库中的问题进行匹配。当规则问句越完整，拆解的关键词越多越具体，则匹配到的概率越高。</p>
       <div class='line'></div>
       <div class='guide'>
-        <h2>如何让知识库发挥作用</h2>
-        <div class='line'></div>
-        <h2>原则一 提高知识库更新频率</h2>
+        <h2 style='margin-bottom: 2em;'>如何让知识库发挥作用</h2>
+        <h3>原则一 提高知识库更新频率</h3>
         <ul>
           <li>根据业务的发展，用户会不断产生新的问题。因此定期通过数据回顾将用户新的问题补充到语料中，将会对准确率有很大帮助。</li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
-        <h2>原则二 提高知识库质量</h2>
+        <h3>原则二 提高知识库质量</h3>
         <ul>
           <li>1. 设置一个完整的问句，包含主谓宾语，按照问题类型大致分为：</li>
           <li>What: 【什么是女生节特惠？】 【什么是储值卡？】</li>
@@ -98,7 +97,8 @@ h5 {
 }
 
 p {
-  font-size: 1.3em;
+  font-size: 1.1em;
+  padding: 1em 0em;
 }
 
 .guide li {
@@ -127,5 +127,10 @@ p {
 
 .guide a {
   color: #9d2933;
+}
+
+img {
+  width: 600px;
+  margin: 2em 0em;
 }
 </style>
