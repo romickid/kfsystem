@@ -28,11 +28,11 @@
         <div slot="footer">
         </div>
       </Modal>
-      <div class="main-text">
+      <div class="main-text" @keydown="keyboardInputing">
         <Button @click="switchToCs">转接人工客服</Button>
         <img @click="imageUpload" src="./assets/pic.png" style="height:20px;width:20px" class='send-pic'></img>
         <p class="lead emoji-picker-container">
-          <textarea class="textarea" placeholder="按Enter 发送" v-model="chatlogData.text" @keyup="keyboardInputing" data-emojiable="true"></textarea>
+          <textarea class="textarea" placeholder="按Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttonInputing">发送</Button>
         <input id="inputFile" name='inputFile' type='file' multiple='mutiple' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
@@ -296,6 +296,8 @@ export default {
    keyboardInputing (e) {
       console.log("method: keyboardInputing")
       if (e.keyCode === 13 && this.chatlogData.text.length) {
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML = ''
         this.session.messages.push({
           text: this.chatlogData.text,
           date: new Date(),
