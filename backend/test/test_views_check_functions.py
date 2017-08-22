@@ -231,20 +231,22 @@ class TestAdminShowCommunicationKeyCheck(TestCase):
         session['a_email'] = 'admin1@test.com'
         session.save()
 
-        errorcode1, errormessage1 = admin_show_user_status_check(c)
+        errorcode1, errormessage1 = admin_show_communication_key_check(c)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
         session['a_email'] = 'admin2@a.com'
         session.save()
-        errorcode2, errormessage2 = admin_show_user_status_check(c)
+        errorcode2, errormessage2 = admin_show_communication_key_check(c)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, wrong email.')
 
         session.delete()
-        errorcode3, errormessage3 = admin_show_user_status_check(c)
+        errorcode3, errormessage3 = admin_show_communication_key_check(c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
+
+
 
 
 class TestAdminResetCommunicationKeyCheck(TestCase):
@@ -257,18 +259,18 @@ class TestAdminResetCommunicationKeyCheck(TestCase):
         session['a_email'] = 'admin1@test.com'
         session.save()
 
-        errorcode1, errormessage1 = admin_show_user_status_check(c)
+        errorcode1, errormessage1 = admin_reset_communication_key_check(c)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
         session['a_email'] = 'admin2@a.com'
         session.save()
-        errorcode2, errormessage2 = admin_show_user_status_check(c)
+        errorcode2, errormessage2 = admin_reset_communication_key_check(c)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, wrong email.')
 
         session.delete()
-        errorcode3, errormessage3 = admin_show_user_status_check(c)
+        errorcode3, errormessage3 = admin_reset_communication_key_check(c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
@@ -283,18 +285,18 @@ class TestAdminShowCsStatusCheck(TestCase):
         session['a_email'] = 'admin1@test.com'
         session.save()
 
-        errorcode1, errormessage1 = admin_show_user_status_check(c)
+        errorcode1, errormessage1 = admin_show_cs_status_check(c)
         self.assertEqual(errorcode1, 1)
         self.assertEqual(errormessage1, 'No ERROR.')
 
         session['a_email'] = 'admin2@a.com'
         session.save()
-        errorcode2, errormessage2 = admin_show_user_status_check(c)
+        errorcode2, errormessage2 = admin_show_cs_status_check(c)
         self.assertEqual(errorcode2, 0)
         self.assertEqual(errormessage2, 'ERROR, wrong email.')
 
         session.delete()
-        errorcode3, errormessage3 = admin_show_user_status_check(c)
+        errorcode3, errormessage3 = admin_show_cs_status_check(c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
@@ -379,6 +381,32 @@ class TestAdminShowUserStatusCheck(TestCase):
 
         session.delete()
         errorcode3, errormessage3 = admin_show_user_status_check(c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, session is broken.')
+
+
+class TestAdminShowUrlStatusCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['a_email'] = 'admin1@test.com'
+        session.save()
+
+        errorcode1, errormessage1 = admin_show_url_status_check(c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        session['a_email'] = 'admin2@a.com'
+        session.save()
+        errorcode2, errormessage2 = admin_show_url_status_check(c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, wrong email.')
+
+        session.delete()
+        errorcode3, errormessage3 = admin_show_url_status_check(c)
         self.assertEqual(errorcode3, 0)
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
