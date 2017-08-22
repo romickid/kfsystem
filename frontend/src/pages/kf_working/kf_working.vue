@@ -3,7 +3,6 @@
     <div class="information">
       <ul v-if="hangon" class="customerinfo">
         <span>用户信息:</span>
-        <li v-for="item in currentOnlineObject.messages">{{ item }}</li>
       </ul>
     </div>
     <div class="sidebar">
@@ -239,7 +238,7 @@ function addCustomer (cs_socket, onlineList, customer) {
 
   let timer = setTimeout(function () {
     customerOutMessage(cs_socket, customer.customerID)
-  }, 1000000)
+  }, 10000)
 
   onlineList.splice(0, 0,
     {
@@ -463,7 +462,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 1000000)
+          }, 10000)
 
         // 当前显示的是应该变成列表第2位，因此要++
         if (that.onlineIndex < onlineIndex) {
@@ -478,7 +477,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 1000000)
+          }, 10000)
       }
     })
     /**
@@ -502,7 +501,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 1000000)
+          }, 10000)
 
         // 当前显示的是应该变成列表第2位，因此要++
         if (that.onlineIndex < onlineIndex) {
@@ -517,7 +516,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 1000000)
+          }, 10000)
       }
     })
 
@@ -540,7 +539,7 @@ export default {
     this.socket.on('customer hang off', function (enterpriseID, customerID) {
       customerHangoff(that.onlineList, that.offlineList, customerID)
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
-      if (that.onlineIndex >= onlineIndex) {
+      if (that.onlineIndex > onlineIndex) {
         that.onlineIndex--
       }
 
@@ -652,6 +651,12 @@ export default {
       */
     keyboardInputing (e) {
       console.log('[method: keyboardInputing]')
+      if (e.keyCode === 13 && this.chatlogData.text.length && this.currentOnlineObject.customerID === -1) {
+        this.$Message.info("尚未接入用户")
+        let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
+        residual.innerHTML = ''
+        this.chatlogData.text = ''
+      }
       if (e.keyCode === 13 && this.chatlogData.text.length && this.currentOnlineObject.customerID !== -1) {
         if (!this.hangon) {
           alert('该用户已挂断！')
@@ -680,7 +685,7 @@ export default {
         this.onlineList[this.onlineIndex].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 1000000)
+          }, 10000)
         this.chatlogData.text = ''
         console.log(this.chatlogData.text)
       }
@@ -718,7 +723,7 @@ export default {
         this.onlineList[this.onlineIndex].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 1000000)
+          }, 10000)
         this.chatlogData.text = ''
       }
     },
@@ -748,7 +753,7 @@ export default {
         this.onlineList[this.onlineIndex].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 1000000)
+          }, 10000)
         this.chatlogData.img = ''
         this.chatlogData.bigImg = ''
       }
