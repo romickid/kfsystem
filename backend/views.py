@@ -22,9 +22,9 @@ def admin_create(request):
         if is_correct == 0:
             return HttpResponse(error_message, status=200)
         json_receive['password'] = admin_generate_password(json_receive['email'], json_receive['password'])
-        json_receive['web_url'] = json_receive['email'] + '.web_url' # TODO change to a fancy url
-        json_receive['widget_url'] = json_receive['email'] + '.widget_url'
-        json_receive['mobile_url'] = json_receive['email'] + '.mobile_url'
+        json_receive['web_url'] = "192.168.55.33:8000/web/" + json_receive['nickname'] + '/'
+        json_receive['widget_url'] = "192.168.55.33:8000/widget/" + json_receive['nickname'] + '/'
+        json_receive['mobile_url'] = "192.168.55.33:8000/mobile/" + json_receive['nickname'] + '/'
         json_receive['communication_key'] = admin_generate_communication_key(json_receive['email'])
         json_receive['vid'] = admin_generate_vid(json_receive['email'])
         json_receive['vid_createtime'] = timezone.now()
@@ -214,6 +214,20 @@ def admin_show_user_status(request):
         data_email = request.session['a_email']
         instance = Admin.objects.get(email=data_email)
         json_send = {'email': instance.email, 'nickname': instance.nickname}
+        return JsonResponse(json_send, status=200)
+
+
+@csrf_exempt
+def admin_show_url_status(request):
+    if request.method == 'POST':
+        # no json
+        is_correct, error_message = admin_show_url_status_check(request)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        data_email = request.session['a_email']
+        instance = Admin.objects.get(email=data_email)
+        json_send = {'web_url':instance.web_url, 'widget_url':instance.widget_url, 'mobile_url':instance.widget_url}
         return JsonResponse(json_send, status=200)
 
 
