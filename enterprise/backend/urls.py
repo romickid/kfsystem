@@ -2,17 +2,13 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^api/admin_create/$', views.admin_create),
-    url(r'^api/admin_login/$', views.admin_login),
-    url(r'^api/admin_reset_password/$', views.admin_reset_password),
-    url(r'^api/admin_forget_password_email_request/$', views.admin_forget_password_email_request),
-    url(r'^api/admin_show_communication_key/$', views.admin_show_communication_key),
-    url(r'^api/admin_forget_password_email_request/$', views.admin_forget_password_email_request),
-    url(r'^api/admin_forget_password_save_data/', views.admin_forget_password_save_data),
-    url(r'^api/admin_show_user_status/', views.admin_show_user_status),
-    url(r'^api/admin_send_info/', views.admin_send_info),
-    url(r'^api/admin_logout/', views.admin_logout),
-    url(r'^api/admin_get_info/', views.admin_get_info),
-    url(r'^api/admin_get_info_iframe/', views.admin_get_info_iframe),
-
+    url(r'^api/customer_create/$', views.customer_create),
+    url(r'^api/customer_login/$', views.customer_login),
+    url(r'^api/customer_show_user_info/$', views.customer_show_user_info),
+    url(r'^api/customer_show_user_login_status/$', views.customer_show_user_login_status),
+    url(r'^api/customer_logout/$', views.customer_logout),
+    url(r'^api/communication_key_update/$', views.communication_key_update),
+    url(r'^api/customer_get_web_url/', views.customer_get_web_url),
+    url(r'^api/customer_get_widget_url/', views.customer_get_widget_url),
+    url(r'^api/customer_get_mobile_url/', views.customer_get_mobile_url),
 ]
