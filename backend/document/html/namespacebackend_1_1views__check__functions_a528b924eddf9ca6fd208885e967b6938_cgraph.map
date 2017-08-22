@@ -1,0 +1,6 @@
+<map id="backend.views_check_functions.customerservice_set_profile_check" name="backend.views_check_functions.customerservice_set_profile_check">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="239,5,394,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#aa8cbbf910ba8e99aa29b9defe756da54" title="backend.views_helper\l_functions.cs_is_existent\l_by_email_vid" alt="" coords="232,71,401,127"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#ab6f39e2179763f410bfc5bee5d371931" title="backend.views_helper\l_functions.cs_is_existent\l_by_nickname" alt="" coords="232,151,401,207"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#adb417628540530b91d14993648f0a644" title="backend.views_helper\l_functions.cs_vid_is\l_expired" alt="" coords="243,231,391,287"/>
+</map>

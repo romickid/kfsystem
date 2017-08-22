@@ -1,0 +1,9 @@
+<map id="backend.views.customerservice_forget_password_save_data" name="backend.views.customerservice_forget_password_save_data">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a61fa7284a713e2d42762fa968b4d9acf" title="backend.views_check\l_functions.customerservice\l_forget_password_save_data_check" alt="" coords="257,73,488,129"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views__helper__functions.html#a2efa9a9e039d1baf0a85b6e21716a055" title="backend.views_helper\l_functions.cs_generate\l_password" alt="" coords="295,154,451,210"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views__helper__functions.html#add75d5cbd127f61ffe1568f3e2f191c7" title="backend.views_helper\l_functions.cs_generate_vid" alt="" coords="283,236,462,277"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="547,5,702,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#aa8cbbf910ba8e99aa29b9defe756da54" title="backend.views_helper\l_functions.cs_is_existent\l_by_email_vid" alt="" coords="540,71,709,127"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#adb417628540530b91d14993648f0a644" title="backend.views_helper\l_functions.cs_vid_is\l_expired" alt="" coords="551,151,699,207"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1views__helper__functions.html#aac661a138401e0cf317a2636332b3662" title="backend.views_helper\l_functions.admin_generate\l_communication_key" alt="" coords="536,231,713,287"/>
+</map>

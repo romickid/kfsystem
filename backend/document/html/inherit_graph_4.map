@@ -1,0 +1,11 @@
+<map id="类继承关系图" name="类继承关系图">
+<area shape="rect" id="node2" href="$classbackend_1_1serializers_1_1_admin_serializer.html" title="backend.serializers.Admin\lSerializer" alt="" coords="175,5,350,47"/>
+<area shape="rect" id="node3" href="$classbackend_1_1serializers_1_1_big_image_log_serializer.html" title="backend.serializers.BigImage\lLogSerializer" alt="" coords="167,71,359,112"/>
+<area shape="rect" id="node4" href="$classbackend_1_1serializers_1_1_chatting_log_serializer.html" title="backend.serializers.Chatting\lLogSerializer" alt="" coords="169,136,356,177"/>
+<area shape="rect" id="node5" href="$classbackend_1_1serializers_1_1_customer_service_create_serializer.html" title="backend.serializers.Customer\lServiceCreateSerializer" alt="" coords="165,201,360,243"/>
+<area shape="rect" id="node6" href="$classbackend_1_1serializers_1_1_customer_service_serializer.html" title="backend.serializers.Customer\lServiceSerializer" alt="" coords="165,267,360,308"/>
+<area shape="rect" id="node7" href="$classbackend_1_1serializers_1_1_enterprise_display_info_serializer.html" title="backend.serializers.Enterprise\lDisplayInfoSerializer" alt="" coords="164,332,361,373"/>
+<area shape="rect" id="node8" href="$classbackend_1_1serializers_1_1_robot_info_serializer.html" title="backend.serializers.Robot\lInfoSerializer" alt="" coords="177,397,349,439"/>
+<area shape="rect" id="node9" href="$classbackend_1_1serializers_1_1_serial_number_serializer.html" title="backend.serializers.Serial\lNumberSerializer" alt="" coords="177,463,348,504"/>
+<area shape="rect" id="node10" href="$classbackend_1_1serializers_1_1_small_image_log_serializer.html" title="backend.serializers.Small\lImageLogSerializer" alt="" coords="177,528,348,569"/>
+</map>

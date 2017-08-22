@@ -1,0 +1,15 @@
+<map id="backend.views_helper_functions.admin_generate_communication_key" name="backend.views_helper_functions.admin_generate_communication_key">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views.html#a58aceae1449b97c2e8c94e8f2c932f15" title="backend.views.admin\l_create" alt="" coords="510,5,655,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views.html#a3775f5b5a372c285ad13d33136204247" title="backend.views.admin\l_reset_communication_key" alt="" coords="239,81,421,123"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a88689b51df542b78ed0f5408f4987911" title="backend.views_helper\l_functions.admin_generate_vid" alt="" coords="231,147,429,188"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1views__helper__functions.html#add75d5cbd127f61ffe1568f3e2f191c7" title="backend.views_helper\l_functions.cs_generate_vid" alt="" coords="241,413,419,455"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views.html#a2aa1fb9f9bf50c20dcdca7dff8fefdd1" title="backend.views.admin\l_forget_password_email\l_request" alt="" coords="502,71,663,127"/>
+<area shape="rect" id="node6" href="$namespacebackend_1_1views.html#ad61270ed1351a6376dbf3bf7e7a2ff21" title="backend.views.admin\l_forget_password_check_vid" alt="" coords="489,152,676,193"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views.html#ab7da87a69db13b68657a4eb45a5e2049" title="backend.views.admin\l_forget_password_save_data" alt="" coords="489,217,677,259"/>
+<area shape="rect" id="node9" href="$namespacebackend_1_1views.html#aa05b61549372d79988c32528e5519519" title="backend.views.customerservice\l_create" alt="" coords="481,283,685,324"/>
+<area shape="rect" id="node10" href="$namespacebackend_1_1views.html#a1ff592ad96f2006505544d57aba542df" title="backend.views.customerservice\l_set_profile" alt="" coords="481,348,685,389"/>
+<area shape="rect" id="node11" href="$namespacebackend_1_1views.html#a693f29717d11d45d1d89e2dcd6f50f6d" title="backend.views.customerservice\l_set_profile_check_vid" alt="" coords="481,413,685,455"/>
+<area shape="rect" id="node12" href="$namespacebackend_1_1views.html#af71d94579d6a050e5e502f150f0eeaba" title="backend.views.customerservice\l_forget_password_email_request" alt="" coords="477,479,688,520"/>
+<area shape="rect" id="node13" href="$namespacebackend_1_1views.html#a7adf93457b27dc3ae47393e499be7dfa" title="backend.views.customerservice\l_forget_password_check_vid" alt="" coords="481,544,685,585"/>
+<area shape="rect" id="node14" href="$namespacebackend_1_1views.html#ab19120a401c3f6717efb378d8bbef962" title="backend.views.customerservice\l_forget_password_save_data" alt="" coords="481,609,685,651"/>
+</map>

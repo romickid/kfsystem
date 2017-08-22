@@ -1,0 +1,5 @@
+<map id="backend.robot.robot_create_tags_withWeight" name="backend.robot.robot_create_tags_withWeight">
+<area shape="rect" id="node2" href="$namespacebackend_1_1robot.html#acc62196a69d90b1425846401b7f6c0d8" title="backend.robot.robot\l_weight_list" alt="" coords="221,5,359,47"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1robot.html#a6c68707f96b51e170c79248ace2523fe" title="backend.robot.robot\l_return_answer" alt="" coords="407,5,544,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views.html#a43b0a115c55c342955c19ab0e5358b38" title="backend.views.customerservice\l_displayrobotreply_show" alt="" coords="592,5,796,47"/>
+</map>
