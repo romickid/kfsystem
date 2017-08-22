@@ -289,9 +289,11 @@ socketIO.on('connection', function (socket) {
     cs_socket.customer_num = 0
     cs_socket.list_customer_socket = []
     
-    for (let i = 0; i < former_cs_socket.list_customer_socket.length; i++) {
-      socket.list_customer_socket.push(former_cs_socket.list_customer_socket[i])
-      socket.customer_num++
+    if (Array.isArray(former_cs_socket.list_customer_socket) !== false) {
+      for (let i = 0; i < former_cs_socket.list_customer_socket.length; i++) {
+        socket.list_customer_socket.push(former_cs_socket.list_customer_socket[i])
+        socket.customer_num++
+      }
     }
     cs_socket_list[enterprise_id].push(socket)
   })
