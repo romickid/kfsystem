@@ -268,7 +268,7 @@ def log_show_history_while_snippet(json_send, instance_image, instance_chat, len
         if instance_image[pointer_image].time < instance_chat[pointer_chat].time:
             instance = instance_image[pointer_image]
             f = open('./media/'+instance.image.url,'rb')
-            image_base64 = 'data:image/' + instance.extention + ';base64,' + str(base64.b64encode(f.read()))
+            image_base64 = 'data:image/' + instance.extention + ';base64,' + base64.b64encode(f.read()).decode('utf-8')
             f.close()
             str_send = {'client_id': instance.client_id, 'image': image_base64, 'is_client': instance.is_client, 'time': instance.time, 'label': instance.label}
             json_send.append(str_send)
@@ -285,7 +285,7 @@ def log_show_history_if_snippet(json_send, instance_image, instance_chat, len_im
     if pointer_chat == len_chat:
         for i in instance_image[pointer_image:len_image]:
             f = open('./media/'+i.image.url,'rb')
-            image_base64 = 'data:image/' + i.extention + ';base64,' + str(base64.b64encode(f.read()))
+            image_base64 = 'data:image/' + i.extention + ';base64,' + base64.b64encode(f.read()).decode('utf-8')
             f.close()
             str_send = {'client_id': i.client_id, 'image': image_base64, 'is_client': i.is_client, 'time': i.time, 'label': i.label}
             json_send.append(str_send)

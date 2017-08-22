@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'^api/chattinglog_delete_record_ontime/$', views.chattinglog_delete_record_ontime),
     url(r'^api/chattinglog_status_change/$', views.chattinglog_status_change),
     url(r'^api/chattinglog_show_history/$', views.chattinglog_show_history),
-    url(r'^api/chattinglog_get_cs_id/$', views.chattinglog_get_cs_id),
+    url(r'^api/chattinglog_get_cs_ID/$', views.chattinglog_get_cs_id),
 
     url(r'^api/bigimagelog_send_image/$', views.bigimagelog_send_image),
     url(r'^api/bigimagelog_show_single_history/$', views.bigimagelog_show_single_history),

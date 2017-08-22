@@ -10,27 +10,22 @@ export default {
         {
           title: '问题',
           key: 'question',
-          ellipsis: 'true',
-          render: (h, params) => {
-            return h('div', [
-              h('strong', params.row.question)
-            ])
-          }
+          ellipsis: true
         },
         {
           title: '回答',
           key: 'answer',
-          ellipsis: 'true'
+          ellipsis: true
         },
         {
           title: '关键词',
           key: 'keyword',
-          ellipsis: 'true'
+          ellipsis: true
         },
         {
           title: '权重',
           key: 'weight',
-          ellipsis: 'true'
+          ellipsis: true
         },
         {
           title: '操作',
@@ -79,10 +74,10 @@ export default {
     }
   },
   methods: {
-    /**
+      /**
       * @description 点击查看显示某条智能机器人语料的详细信息
       */
-    show (index) {
+      show (index) {
       this.$Modal.info({
         title: '机器人语料库',
         content: `问题：${this.data[index].question}<br>回答：${this.data[index].answer}<br>关键词：${this.data[index].keyword}<br>权重：${this.data[index].weight}`
@@ -91,7 +86,7 @@ export default {
     /**
       * @description 删除智能机器人语料库语料调用后端接口
       */
-    delete_robot_api () {
+      delete_robot_api () {
       this.$http.post(this.apiCustomerserviceSetrobotinfoDelete, this.robot_question_delete)
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
