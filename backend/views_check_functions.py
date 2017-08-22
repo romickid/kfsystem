@@ -387,3 +387,14 @@ def customerservice_logout_check(request):
     if cs_is_existent_by_email(request.session['c_email']) == False:
         return 0, 'ERROR, wrong email.'
     return 1, 'No ERROR.'
+
+
+def customer_check_info_check(json_receive):
+    test_json = json_testing(json_receive, ['enterprise_id', 'customer_id', 'cusotmer_name', 'hash_result'], 4)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
+    if admin_is_existent_by_nickname(json_receive['enterprise_id']) == False:
+        return 0, 'ERROR, wrong nickname.'
+    return 1, 'No ERROR.'

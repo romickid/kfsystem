@@ -725,3 +725,24 @@ def internal_reset_basic_robot(request):
     if request.method == 'GET':
         robot_basic_read()
         return HttpResponse('Done', status=200)
+
+
+@csrf_exempt
+def customer_check_info(request):
+    if request.method == 'POST':
+        # customer_info: enterprise_id, customer_id, cusotmer_name, hash_result
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customer_check_info_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        info_enterprise_id = json_receive['enterprise_id']
+        info_customer_id = json_receive['customer_id']
+        info_cusotmer_name = json_receive['cusotmer_name']
+        instance = Admin.objects.get(nickname=info_enterprise_id)
+        hash_result = customer_generate_hash_result(info_enterprise_id, info_customer_id, info_cusotmer_name, instance.communication_key)
+        if hash_result == json_receive['hash_result']:
+            return HttpResponse('True', status=200)
+        else:
+            return HttpResponse('False', status=200)
+
