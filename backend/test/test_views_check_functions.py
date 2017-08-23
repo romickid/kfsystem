@@ -1167,7 +1167,7 @@ class TestCsLogoutCheck(TestCase):
         self.assertEqual(errormessage3, 'ERROR, session is broken.')
 
 
-class TestCustomerCheckInfo(TestCase):
+class TestCustomerCheckInfoCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
 
@@ -1189,5 +1189,31 @@ class TestCustomerCheckInfo(TestCase):
 
         json4 = {'enterprise_id': 'a_nick2', 'customer_id': 'customer1', 'cusotmer_name': 'cusotmerName1', 'hash_result': 'hash1'}
         errorcode4, errormessage4 = customer_check_info_check(json4)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, wrong nickname.')
+
+
+class TestCustomerDisplayCustomerInfoPropertyNameCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
+
+    def test(self):
+        json1 = {'enterprise_id': 'a_nick1'}
+        errorcode1, errormessage1 = customer_display_customerinfopropertyname_check(json1)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {}
+        errorcode2, errormessage2 = customer_display_customerinfopropertyname_check(json2)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'enterprise_id': 'a_nick1', 'other': 'other'}
+        errorcode3, errormessage3 = customer_display_customerinfopropertyname_check(json3)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        json4 = {'enterprise_id': 'a_nick2'}
+        errorcode4, errormessage4 = customer_display_customerinfopropertyname_check(json4)
         self.assertEqual(errorcode4, 0)
         self.assertEqual(errormessage4, 'ERROR, wrong nickname.')

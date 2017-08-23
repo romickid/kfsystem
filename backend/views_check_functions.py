@@ -414,3 +414,14 @@ def customer_check_info_check(json_receive):
     if admin_is_existent_by_nickname(json_receive['enterprise_id']) == False:
         return 0, 'ERROR, wrong nickname.'
     return 1, 'No ERROR.'
+
+
+def customer_display_customerinfopropertyname_check(json_receive):
+    test_json = json_testing(json_receive, ['enterprise_id'], 1)
+    if test_json == 1:
+        return 0, 'ERROR, incomplete information.'
+    if test_json == 2:
+        return 0, 'ERROR, wrong information.'
+    if admin_is_existent_by_nickname(json_receive['enterprise_id']) == False:
+        return 0, 'ERROR, wrong nickname.'
+    return 1, 'No ERROR.'
