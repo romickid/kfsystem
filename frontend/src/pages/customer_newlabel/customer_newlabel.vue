@@ -29,8 +29,10 @@
         </div>
       </Modal>
       <div class="main-text" @keydown="keyboardInputing">
-        <Button @click="switchToCs">转接人工客服</Button>
-        <img @click="imageUpload" src="./assets/pic.png" style="height:20px;width:20px" class='send-pic'></img>
+        <Button-group>
+          <Button @click="switchToCs">转接人工客服</Button>
+          <Button @click="imageUpload" icon="image"></Button>
+        </Button-group>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
         </p>
@@ -181,7 +183,6 @@ function initData (key) {
 
 export default {
   el: '#chat',
-
   data () {
     initData(key)
     let dataserver = JSON.parse(sessionStorage.getItem(key))
@@ -211,11 +212,13 @@ export default {
       apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
       apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
       apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
+      apiCustomerCheckInfo: '../api/customer_check_info/',
       robotReplyItem: {},
       saveTextItem: {},
       csEmailItem: {},
       saveImgItem: {},
       saveBigImgItem: {},
+      customerCheckItem: {},
 
       databaseCsID: '',
       adminNickname: 'nick2'
@@ -223,6 +226,7 @@ export default {
   },
 
   created () {
+    this.customerCheck()
     // 如果初次登录， 初始化
     if (this.customer.customerID === -1) {
       this.customer.customerID = (Math.random() * 1000).toString()
@@ -574,6 +578,43 @@ export default {
       console.log(this.saveBigImgItem)
       this.saveImgApi()
       this.saveBigImgApi()
+    },
+    customerCheck () {
+      console.log('[methods]: customerCheck')
+      let url = window.loction.href
+      let urlArray = url.split('/')
+      let adminName = urlArray[4]
+      let userID = this.$utils.getUrlKey('userID')
+      let userName = this.$utils.getUrlKey('userName')
+      let signature = this.$utils.getUrlKey('signature')
+      this.customerCheckItem = {
+        'enterprise_id': adminName,
+        'customer_id': userID,
+        'cusotmer_name': userName,
+        'hash_result': signature
+      }
+      this.customerCheckApi()
+    },
+    customerCheckApi () {
+      console.log('[methods]: customerCheckApi')      
+      this.$http.post(this.apiCustomerCheckInfo, this.customerCheckItem)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            // window.location.href = '../not_found'
+            console.log('customerCheckApi1')
+          } else if (response.data === 'ERROR, wrong information.') {
+            // window.location.href = '../not_found'
+            console.log('customerCheckApi2')
+          } else if (response.data === 'ERROR, wrong nickname.') {
+            // window.location.href = '../not_found'
+            console.log('customerCheckApi3')
+          } else {
+            console.log('customerCheckApi4')
+          }
+        }, (response) => {
+          // window.location.href = '../not_found'
+            console.log('customerCheckApi5')
+        })
     }
   },
 
