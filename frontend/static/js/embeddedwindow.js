@@ -3,7 +3,7 @@ window.onload = function () {
   var btn = document.createElement('input')
   btn.type = 'button'
   btn.id = 'btn'
-  btn.style = 'position: fixed;background: url(http://192.168.55.33:7000/static/photo.png) no-repeat;height: 80px;width: 80px;margin-top: 8%;margin-left: 38%;border: 0;'
+  btn.style = 'position: fixed;background: url(http://192.168.55.33:8000/static/photo.png) no-repeat;height: 80px;width: 80px;margin-left: 90%;margin-top: 35%;border: 0'
   mydiv.insertBefore(btn, mydiv.childNodes[0])
   document.getElementById('btn').onclick = show
   var div1 = document.createElement('div')
@@ -11,7 +11,7 @@ window.onload = function () {
   div1.className = 'insertf'
   mydiv.insertBefore(div1, mydiv.childNodes[1])
   document.getElementsByClassName('insertf')[0].innerHTML = '<iframe class="insertframe" id="links" src=""></iframe>'
-  document.getElementsByClassName('insertframe')[0].style = 'position: fixed;width: 40%;height: 60%;z-index: 9999;'
+  document.getElementsByClassName('insertframe')[0].style = 'position: fixed;width: 35%;height: 60%;z-index: 9999;margin-left: 45%'
 }
 
 window.addEventListener('message', function (e) {
