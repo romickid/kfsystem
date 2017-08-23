@@ -826,4 +826,8 @@ ul {
   float: right;
   margin-right: 0.6em;
 }
+
+.ivu-btn-group .ivu-btn-icon-only .ivu-icon {
+  font-size: 18px;
+}
 </style>

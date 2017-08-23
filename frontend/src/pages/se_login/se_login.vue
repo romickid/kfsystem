@@ -32,11 +32,11 @@
             <label class="label">登录密码：</label>
             <input type="password" v-model="password" name="password" class="text" id="password">
           </div>
-          <div class="div">
-            <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
-          </div>
           <div id="butt">
             <se-forget-password ref="seForgetPassword"></se-forget-password>
+          </div>
+          <div class="div" style='margin-top: 0;'>
+            <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
           </div>
         </div>
       </div>
@@ -219,6 +219,7 @@ body {
   margin-bottom: 5px;
   margin-top: 5px;
   flex: 1 1 100%;
+  padding-left: 1em;
 }
 
 #login {

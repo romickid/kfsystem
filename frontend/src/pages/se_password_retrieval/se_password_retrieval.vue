@@ -233,9 +233,9 @@ body {
 .all {
   width: 40%;
   height: 350px;
-  margin: 40px 0 0 5%;
-  border-radius: 20px;
-  background: rgba(230, 230, 250, 0.5);
+  margin: 6% 0 0 30%;
+  border-radius: 25px;
+  background: rgba(243, 243, 243, 0.7);
 }
 
 .container {
@@ -279,6 +279,7 @@ body {
   width: 100%;
   height: 38px;
   flex: 1 1 100%;
+  padding-left: 1em;
 }
 
 #finish {
