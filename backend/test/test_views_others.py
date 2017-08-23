@@ -36,3 +36,29 @@ class TestCustomerCheckInfo(TestCase):
         request3 = c.post("/api/customer_check_info/", data=json.dumps(json3), content_type='json')
         self.assertEqual(request3.status_code, 200)
         self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
+
+
+class TestCustomerDisplayCustomerInfoPropertyName(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email="admin1@test.com", nickname="a_nick1", password="03b7c09dc3533c22df04519db1d9b861e576356115da12682b39d8785885bc27ca566220c81a6abcd638e0da61d79474e2dfeeda3e86798d1374efbd6103e9b5", web_url="a_weburl1", widget_url="a_weidgeturl1", mobile_url="a_mobileurl1", communication_key="a_key1", vid="a_vid1")
+        instance = Admin.objects.get(id=1)
+        EnterpriseDisplayInfo.objects.create(id=1, enterprise=instance, name='id_used', comment='this is id')
+        EnterpriseDisplayInfo.objects.create(id=2, enterprise=instance, name='id_used1', comment='this is id2')
+
+    def test(self):
+        c = Client()
+
+        json1 = {'enterprise_id': 'a_nick1'}
+        request1 = c.post("/api/customer_display_customerinfopropertyname/", data=json.dumps(json1), content_type='json')
+        self.assertEqual(request1.status_code, 200)
+        # print(request1.content.decode('utf-8'))
+
+        json2 = {}
+        request2 = c.post("/api/customer_display_customerinfopropertyname/", data=json.dumps(json2), content_type='json')
+        self.assertEqual(request2.status_code, 200)
+        self.assertEqual(request2.content.decode('utf-8'), "ERROR, incomplete information.")
+
+        json3 = {'enterprise_id': 'a_nick1', 'other': 'other'}
+        request3 = c.post("/api/customer_display_customerinfopropertyname/", data=json.dumps(json3), content_type='json')
+        self.assertEqual(request3.status_code, 200)
+        self.assertEqual(request3.content.decode('utf-8'), 'ERROR, wrong information.')
