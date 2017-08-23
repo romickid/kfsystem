@@ -388,7 +388,7 @@ p {
   top: 3.3em;
   z-index: -1;
   background-image: url('./assets/slider02.jpg');
-  height: 94vh;
+  height: 95vh;
   background-color: #FFF;
   background-position: center;
   background-size: cover;
@@ -592,7 +592,7 @@ margin: 20px auto 40px;
 
 .jump {
   text-align: center;
-  font-size: 3em;
+  font-size: 2em;
 }
 
 .jump a {

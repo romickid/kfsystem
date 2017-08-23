@@ -248,6 +248,7 @@ body {
   width: 100%;
   height: 38px;
   flex: 1 1 100%;
+  padding-left: 1em;
 }
 
 .explain {

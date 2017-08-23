@@ -1642,4 +1642,8 @@ ul {
   overflow: hidden;
   border-radius: 3px;
 }
+
+.ivu-btn-group .ivu-btn-icon-only .ivu-icon {
+  font-size: 18px;
+}
 </style>
