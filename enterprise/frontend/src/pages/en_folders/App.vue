@@ -31,6 +31,18 @@
             <label class="label">使用昵称：</label>
             <input type="text" v-model="nickname" name="nickname" class="text">
           </div>
+          <div class="div">
+            <label class="label">电话号码：</label>
+            <input type="text" v-model="telephone" name="telephone" class="text">
+          </div>
+          <div class="div">
+            <label class="label">联系地址：</label>
+            <input type="text" v-model="location" name="location" class="text">
+          </div>
+          <div class="div">
+            <label class="label">个人简介：</label>
+            <input type="text" v-model="description" name="description" class="text">
+          </div>
 
           <div class="div">
             <Button type="primary" shape="circle" size="large" id="finish" @click="register">注册</Button>
@@ -54,10 +66,14 @@ export default {
       password: '',
       passwordConfirm: '',
       nickname: '',
+      telephone: '',
+      location: '',
+      description: '',
+
       emailIllegal: false,
       passwordNonstandard: false,
       passwordInconsistent: false,
-      apiCreate: '../api/admin_create/',
+      apiCreate: '../api/customer_create/',
       item: {}
     }
   },
@@ -71,9 +87,11 @@ export default {
         this.emailIllegal = false
       }
     },
+
     emailInput () {
       this.emailIllegal = false
     },
+
     checkPassword () {
       if (this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '') {
         this.passwordInconsistent = true
@@ -86,9 +104,11 @@ export default {
         this.passwordNonstandard = false
       }
     },
+
     passwordInput () {
       this.passwordInconsistent = false
     },
+
     communicate () {
       alert('hhhhh!')
       this.$http.post(this.apiCreate, this.item)
@@ -111,8 +131,9 @@ export default {
           window.location.href = '../notfound'
         })
     },
+
     register () {
-      if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '') {
+      if (this.email === '' || this.password === '' || this.passwordConfirm === '' || this.nickname === '' || this.telephone === '' || this.location === '' || this.description === '') {
         this.$Message.info('您的信息不完善！')
       } else if (this.emailIllegal === true) {
         this.$Message.info('您的输入的邮箱格式不正确！')
@@ -125,11 +146,15 @@ export default {
         this.item = {
           'email': this.email,
           'nickname': this.nickname,
-          'password': this.hashPassword()
+          'password': this.hashPassword(),
+          'telephone': this.telephone,
+          'location': this.location,
+          'description': this.description,
         }
         this.communicate()
       }
     },
+
     hashPassword () {
       var sha512 = require('js-sha512').sha512
       var hash = sha512.create()
