@@ -227,7 +227,7 @@ def admin_show_url_status(request):
 
         data_email = request.session['a_email']
         instance = Admin.objects.get(email=data_email)
-        json_send = {'web_url':instance.web_url, 'widget_url':instance.widget_url, 'mobile_url':instance.widget_url}
+        json_send = {'web_url':instance.web_url, 'widget_url':instance.widget_url, 'mobile_url':instance.mobile_url}
         return JsonResponse(json_send, status=200)
 
 
