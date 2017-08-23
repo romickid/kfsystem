@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="main">
+      <div class="edge"></div>
       <div class="main-message" v-scroll-bottom="session.messages">
         <ul>
           <li class="message-list" v-for="item in session.messages">
@@ -52,7 +53,7 @@ const key = 'VUE-Customer1'
 
 // 接收文字消息放进sessionList
 function pushTextToSessionList (session, msg) {
-  console.log("function: pushTextToSessionList")
+  console.log('function: pushTextToSessionList')
   session.messages.push({
     text: msg,
     isText: true,
@@ -63,7 +64,7 @@ function pushTextToSessionList (session, msg) {
 
 // 接收图片消息放进sessionList
 function pushImgToSessionList (session, bpic, spic) {
-  console.log("function: pushTextToSessionList")
+  console.log('function: pushTextToSessionList')
   session.messages.push({
     bigImg: bpic,
     img: spic,
@@ -74,7 +75,7 @@ function pushImgToSessionList (session, bpic, spic) {
 }
 
 function connectToCs (cs, session, csID) {
-  console.log("function: connectToCs")
+  console.log('function: connectToCs')
   cs.csID = csID
   session.messages.push({
     text: '已成功为您转接客服' + csID,
@@ -87,7 +88,7 @@ function connectToCs (cs, session, csID) {
   * @description 没有可连接客服
   */
 function noCsAvailable (cs, session) {
-  console.log("function: noCsAvailable")
+  console.log('function: noCsAvailable')
   session.messages.push({
     text: '您好，现在没有客服在线哦，请您稍后重新连接',
     isText: true,
@@ -100,7 +101,7 @@ function noCsAvailable (cs, session) {
   * @description 客户超时断开
   */
 function customerExpire (cs, session) {
-  console.log("function: noCsAvailable")
+  console.log('function: noCsAvailable')
   session.messages.push({
     text: '您好，您已经超时并断开连接，请重新连接客服',
     isText: true,
@@ -113,45 +114,45 @@ function customerExpire (cs, session) {
   * @description 初始化Socket
   */
 function initSocket (cs, session, socket, customer) {
-  return new Promise (function (resolve) {
-    console.log("function: initSocket")
+  return new Promise(function (resolve) {
+    console.log('function: initSocket')
 
     // 客服发送文字信息
     socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
-      console.log("socket: cs send message")
+      console.log('socket: cs send message')
       pushTextToSessionList(session, msg)
     })
 
     // 客服发送图片信息
     socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-      console.log("socket: cs send picture")
+      console.log('socket: cs send picture')
       pushImgToSessionList(session, bpic, spic)
     })
 
     socket.on('connect to cs', function (csID) {
-      console.log("socket: connect to cs")
+      console.log('socket: connect to cs')
       connectToCs(cs, session, csID)
       resolve()
     })
 
     socket.on('switch cs', function (enterpriseID, formerCsID) {
-      console.log("socket: switch cs")
+      console.log('socket: switch cs')
       socket.emit('switch cs', formerCsID, enterpriseID, customer.customerInfomation)
       resolve()
     })
 
     socket.on('no cs available', function () {
-      console.log("socket: no cs available")
+      console.log('socket: no cs available')
       noCsAvailable(cs, session)
     })
 
     socket.on('customer expire', function () {
-      console.log("socket: customer expire")
+      console.log('socket: customer expire')
       customerExpire(cs, session)
     })
 
     socket.emit('assigned to cs', customer.enterpriseID, customer.customerID, customer.customerInfomation)
-    console.log("socket emit: assigned to cs")
+    console.log('socket emit: assigned to cs')
   })
 }
 /**
@@ -252,7 +253,7 @@ export default {
     }
 
     // 如果刷新之前已转接为人工客服，自动连接服务器
-    if (this.cs.csID.indexOf("robot.com") === -1) {
+    if (this.cs.csID.indexOf('robot.com') === -1) {
       let that = this
       this.socket = io('http://localhost:3000')
 
@@ -311,15 +312,14 @@ export default {
     /**
       * @description 替换换行符，实现多行文本输入
       */
-    repstr(str)
-    {
-      return str.replace(new RegExp("\n","gm"),"<br/>");
+    repstr (str) {
+      return str.replace(new RegExp('\n', 'gm'), '<br/>')
     },
     /**
       * @description 键盘输入信息
       */
-   keyboardInputing (e) {
-      console.log("method: keyboardInputing")
+    keyboardInputing (e) {
+      console.log('method: keyboardInputing')
       if (e.ctrlKey && e.keyCode === 13 && this.chatlogData.text.length) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
         residual.innerHTML = ''
@@ -336,7 +336,7 @@ export default {
         let index = this.session.messages.length
         this.saveText(1, index - 1)
         console.log('keyboardInputing2')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
+        if (this.cs.csID.indexOf('robot.com') === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -353,7 +353,7 @@ export default {
       * @description 按钮输入信息
       */
     buttonInputing (e) {
-      console.log("method: buttonInputing")
+      console.log('method: buttonInputing')
       if (this.chatlogData.text.length !== 0) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
         residual.innerHTML = ''
@@ -370,7 +370,7 @@ export default {
         let index = this.session.messages.length
         this.saveText(1, index - 1)
         console.log('buttonInputing2')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
+        if (this.cs.csID.indexOf('robot.com') === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -399,7 +399,7 @@ export default {
         let index = this.session.messages.length
         this.saveImg(1, index - 1)
         console.log('this.saveImg(1, index - 1)')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
+        if (this.cs.csID.indexOf('robot.com') === -1) {
           this.socket.emit('customer send picture', this.chatlogData.bigImg, this.chatlogData.img, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
           console.log('socket')
         }
@@ -412,9 +412,9 @@ export default {
       * @description 点击按钮转接客服
       */
     switchToCs (e) {
-      console.log("method: switchToCs")
+      console.log('method: switchToCs')
       // console.log(this.cs.csID.indexOf("robot.com"))
-      if (this.cs.csID.indexOf("robot.com") === -1) {
+      if (this.cs.csID.indexOf('robot.com') === -1) {
         alert('当前已为人工客服！')
         return
       }
@@ -643,7 +643,7 @@ export default {
           }
         }, (response) => {
           // window.location.href = '../not_found'
-            console.log('customerCheckApi5')
+          console.log('customerCheckApi5')
         })
     },
     customerInfoNameCheckApi () {
@@ -665,7 +665,7 @@ export default {
           }
         }, (response) => {
           // window.location.href = '../not_found'
-            console.log('customerInfoNameCheckApi7')
+          console.log('customerInfoNameCheckApi7')
         })
     },
     getCustomerInfo () {
@@ -679,7 +679,7 @@ export default {
       }
       this.customer.customerInfomation.push(tempUserID)
       this.customer.customerInfomation.push(tempNickname)
-      for (let i = 0;i < this.cusotmerInfoNameArray.length;i++) {
+      for (let i = 0; i < this.cusotmerInfoNameArray.length; i++) {
         let tempCustomerInfo = {
           name: this.cusotmerInfoNameArray[i].name,
           content: this.$utils.getUrlKey(this.cusotmerInfoNameArray[i].name)
@@ -743,6 +743,45 @@ html {
   overflow: hidden;
 }
 
+@media screen and (min-width: 320px) {
+  html {
+    font-size:30px;
+  }
+  .container {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+  }
+  .edge{
+    display: none;
+  }
+  .main-message {
+    height: calc(80% - 4rem);
+  }
+}
+
+@media screen and (min-width: 800px) {
+  html {
+    font-size:15px;
+  }
+  .main{
+    border-radius: 0.6rem;
+  }
+  .container {
+  height: 80%;
+  width: 80%;
+  margin: 5% auto 10%;
+  vertical-align: center;
+  border-radius: 0.33rem;
+  }
+  .edge {
+    display: block;
+  }
+  .main-message {
+    height: calc(80% - 8rem);
+  }
+}
+
 body,
 ul {
   margin: 0;
@@ -750,8 +789,8 @@ ul {
 }
 
 body {
-  font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
-  background: #176994 url(../index/assets/newbg.jpg);
+  font: 1rem/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
+  background: #176994 url(../index/assets/back3.jpg) repeat;
   background-size: cover;
 }
 
@@ -760,14 +799,6 @@ ul {
 }
 
 /*主要界面*/
-.container {
-  height: 70%;
-  width: 80%;
-  margin: 10% auto 10%;
-  vertical-align: center;
-  border-radius: 4px;
-}
-
 .main {
   height: 100%;
   position: relative;
@@ -775,69 +806,69 @@ ul {
   background-color: #eee;
 }
 
+.edge {
+   height: 4rem;
+   background: url(../index/assets/star.jpeg) repeat-x;
+}
+
 .main-text {
   position: absolute;
   width: 100%;
   bottom: 0;
   left: 0;
-  height: 160px;
-}
-
-/*似乎没有用到？*/
-.main-message {
-  height: calc(100% - 180px);
+  height: 10.7rem;
 }
 
 .main-message {
-  padding: 10px 15px;
+  padding: 0.67rem 1rem;
   overflow-y: scroll;
 }
 
 .message-list {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 
 .message-time {
-  margin: 7px 0;
+  margin: 0.47rem 0;
   text-align: center;
 }
 
 .time-span {
   display: inline-block;
-  padding: 0 18px;
-  font-size: 12px;
+  padding: 0 1.2rem;
+  font-size: 0.8rem;
   color: #fff;
-  border-radius: 2px;
+  border-radius: 0.2rem;
   background-color: #dcdcdc;
 }
 
 .main .message-avatar {
   float: left;
-  margin: 0 10px 0 0;
-  border-radius: 3px;
+  margin: 0 0.67rem 0 0;
+  border-radius: 0.2rem;
 }
 
 .main .massage-text {
-  left: 5px;
+  left: 0.33rem;
   display: inline-block;
   position: relative;
-  padding: 0 10px;
-  max-width: calc(80% - 40px);
-  min-height: 30px;
+  padding: 0 0.67rem;
+  max-width: calc(80% - 2.67rem);
+  min-height: 2rem;
   line-height: 2.5;
-  font-size: 12px;
+  font-size: 0.8rem;
   text-align: left;
   word-break: break-all;
   background-color: #fafafa;
-  border-radius: 4px;
+  border-radius: 0.27rem;
 }
 
 .main .massage-text:before {
   content: " ";
   position: absolute;
-  top: 9px;
+  top: 0.6rem;
   right: 100%;
-  border: 6px solid transparent;
+  border: 0.4rem solid transparent;
   border-right-color: #fafafa;
 }
 
@@ -847,41 +878,41 @@ ul {
 
 .self>img {
   float: right;
-  margin: 0 0 0 10px;
+  margin: 0 0 0 0.67rem;
 }
 
 .self>.massage-text {
   display: inline-block;
   position: relative;
-  padding: 0 10px;
-  max-width: calc(80% + 10px);
-  min-height: 30px;
+  padding: 0 0.67rem;
+  max-width: calc(80% + 0.67rem);
+  min-height: 2rem;
   line-height: 2.5;
-  font-size: 12px;
+  font-size: 0.8rem;
   background-color: #b2e281;
   word-break: break-all;
-  border-radius: 4px;
+  border-radius: 0.27rem;
 }
 
 .self>.massage-text:before {
   content: " ";
   position: absolute;
   right: inherit;
-  top: 9px;
+  top: 0.6rem;
   left: 100%;
-  border: 6px solid transparent;
+  border: 0.4rem solid transparent;
   border-right-color: transparent;
   border-left-color: #b2e281;
 }
 
 .main-text {
-  height: 160px;
-  border-top: solid 1px #ddd;
+  height: 10.67rem;
+  border-top: solid 0.067rem #ddd;
   background: white;
 }
 
 .textarea {
-  padding: 10px;
+  padding: 0.67rem;
   height: 100%;
   width: 86%;
   border: none;
@@ -891,26 +922,53 @@ ul {
 }
 
 .submit-button {
-  width: 10%;
   position: absolute;
-  right: 2px;
-  bottom: 2px;
+  right: 0.33rem;
+  bottom: 0.33rem;
 }
 
 #chat {
-  margin: 20px auto;
-  width: 800px;
-  height: 600px;
+  margin: 1.33rem auto;
+  width: 53.33rem;
+  height: 40rem;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: 0.2rem;
 }
 
 .send-pic {
   float: right;
-  margin-right: 0.6em;
+  height: 1.33rem;
+  width: 1.33rem;
+  margin-right: 0.7em;
+  margin-top: 0.33rem;
+  cursor: pointer;
+}
+
+.ivu-btn {
+  margin-left: 0.33rem;
+  font-size: 0.8rem;
+}
+
+img {
+  vertical-align: top;
+}
+
+.massage-avatar {
+  width: 2rem;
+  height: 2rem;
+}
+
+.emoji-picker-icon {
+  right: 0.8rem;
+  top: 0.33rem;
+  font-size: 1.2rem;
+}
+
+.emoji-wysiwyg-editor {
+  line-height: 1.33rem;
 }
 
 .ivu-btn-group .ivu-btn-icon-only .ivu-icon {
-  font-size: 18px;
+  font-size: 1.2rem;
 }
 </style>
