@@ -624,7 +624,7 @@ export default {
       this.customerCheckApi()
     },
     customerCheckApi () {
-      console.log('[methods]: customerCheckApi')      
+      console.log('[methods]: customerCheckApi')
       this.$http.post(this.apiCustomerCheckInfo, this.customerCheckItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {

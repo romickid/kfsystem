@@ -51,6 +51,7 @@ urlpatterns = [
     url(r'^api/log_show_history/$', views.log_show_history),
 
     url(r'^api/customer_check_info/$', views.customer_check_info),
+    url(r'^api/customer_display_customerinfopropertyname/$', views.customer_display_customerinfopropertyname),
 
     # url(r'^api/test_file/$', views.test_file),
     url(r'^internalapi/internal_reset_basic_robot/$', views.internal_reset_basic_robot),

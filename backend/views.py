@@ -762,3 +762,19 @@ def customer_check_info(request):
         else:
             return HttpResponse('False', status=200)
 
+
+@csrf_exempt
+def customer_display_customerinfopropertyname(request):
+    if request.method == 'POST':
+        # enterprise_id
+        json_receive = JSONParser().parse(request)
+        is_correct, error_message = customer_display_customerinfopropertyname_check(json_receive)
+        if is_correct == 0:
+            return HttpResponse(error_message, status=200)
+
+        instance_admin = Admin.objects.get(nickname=json_receive['enterprise_id'])
+        instance_displayinfo = EnterpriseDisplayInfo.objects.filter(enterprise=instance_admin.id)
+        json_send = list()
+        for i in instance_displayinfo:
+            json_send.append({'name': i.name})
+        return JsonResponse(json_send, safe=False, status=200)
