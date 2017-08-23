@@ -32,38 +32,22 @@
 </template>
 
 <script>
-import enForgetPassword from '../../components/en_forget_password'
 export default {
   name: 'app',
   components: {
-    enForgetPassword
   },
+
   data () {
     return {
       email: '',
       password: '',
       emailIllegal: false,
-      api_login: '../api/admin_login/',
-      admin_get_info: '../api/admin_get_info/',
+      api_login: '../api/customer_login/',
       item: {}
     }
   },
-  created () {
-    this.getInfo()
-  },
+
   methods: {
-    // test
-    getInfo () {
-      let vm = this
-      this.$http.post(this.admin_get_info)
-        .then((response) => {
-          alert(response.data)
-          vm.$set(this, 'item', response.data)
-          document.getElementById('links').setAttribute('href', this.item)
-        }, (response) => {
-          window.location.href = '../not_found'
-        })
-    },
     checkEmail () {
       let reg = /^[a-z0-9]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i
       let legal = reg.test(this.email)
@@ -88,7 +72,7 @@ export default {
             alert('incomplete information.')
             window.location.href = '../notfound'
           } else {
-            window.location.href = '../administrator'
+            window.location.href = '../'
           }
         }, (response) => {
           alert('太搞笑了')
@@ -115,9 +99,6 @@ export default {
       hash.update(this.password)
       return hash.hex()
     }
-    // contact () {
-
-    // }
   }
 }
 </script>
