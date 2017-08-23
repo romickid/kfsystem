@@ -24,7 +24,7 @@
           <Modal v-model='modal' title='添加用户信息' @on-ok='ok' @on-cancel='cancel' id='add-info-modal'>
             <Form :model='formItem' :label-width='80' class='input'>
               <Form-item label='名称'>
-                <Input v-model='formItem.name' placeholder='请输入名称，且只能包含英文大小写字符' @on-blur='check_name' @on-focus='name_inputing' id='input-name'></Input>
+                <Input v-model='formItem.name' placeholder='请输入名称，且只能包含数字和英文大小写字符' @on-blur='check_name' @on-focus='name_inputing' id='input-name'></Input>
                 <i-label v-if='nameIsNotStandard'>
                   <p>名称格式不合法</p>
                 </i-label>
@@ -102,7 +102,7 @@ export default {
       * @description 检查用户信息种类名称输入
       */
     check_name () {
-      let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
+      let reg = /^[A-Za-z0-9]+$/
       let standardContent = reg.test(this.formItem.name)
       if (this.formItem.name === '' || standardContent === false) {
         this.nameIsNotStandard = true
