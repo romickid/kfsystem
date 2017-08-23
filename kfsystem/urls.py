@@ -38,7 +38,4 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('backend.urls')),
 
-    url(r'^customer_newlabel/', TemplateView.as_view(template_name="customer_newlabel.html")),
-    url(r'^customer_iframe/', TemplateView.as_view(template_name="customer_iframe.html")),
-
 ]
