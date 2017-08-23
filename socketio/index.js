@@ -144,7 +144,7 @@ socketIO.on('connection', function (socket) {
   })
 
   // 为用户分配客服 customer_socket
-  socket.on('assigned to cs', function (enterprise_id, customer_id) {
+  socket.on('assigned to cs', function (enterprise_id, customer_id, cusomterInfo) {
     console.log("[assigned to cs]")
     let customer_socket = socket
 
@@ -160,7 +160,7 @@ socketIO.on('connection', function (socket) {
       customer_socket.customer_id = customer_id
       customer_socket.cs_id = cs_id
 
-      cs_socket.emit('add customer', enterprise_id, customer_id)
+      cs_socket.emit('add customer', enterprise_id, customer_id, cusomterInfo)
       console.log('Cs ' + cs_id + ' add customer ' + customer_id)
       customer_socket.emit('connect to cs', cs_id)
       console.log('Customer ' + customer_id + ' connect to cs ' + cs_id)
@@ -215,7 +215,7 @@ socketIO.on('connection', function (socket) {
   
 
   // 为用户转接客服 customer_socket
-  socket.on('switch cs', function (enterprise_id, former_cs_id, customer_id) {
+  socket.on('switch cs', function (former_cs_id, enterprise_id, customer_id, customerInfo) {
     console.log("[switch cs]")
     let customer_socket = socket
 
@@ -232,7 +232,7 @@ socketIO.on('connection', function (socket) {
       let cs_socket = cs_socket_list[enterprise_id][former_count]
       cs_id = cs_socket.cs_id
       console.log('Transfer customer ' + customer_socket.customer_id + ' to cs ' + cs_id + ': ')
-      cs_socket.emit('add customer', enterprise_id, customer_id)
+      cs_socket.emit('add customer', enterprise_id, customer_id, customerInfo)
       console.log('    Cs ' + cs_id + ' add customer ' + customer_id)
       customer_socket.emit('connect to Cs', cs_id)
       customer_socket.cs_id = cs_id
