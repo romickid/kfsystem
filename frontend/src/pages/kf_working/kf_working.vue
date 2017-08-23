@@ -405,16 +405,18 @@ export default {
       socket: '',
 
       // api
-      apiChattinglogSendMessage: '../api/chattinglog_send_message/',
-      apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
-      apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
-      apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
-      apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
-      apiBigimagelogShowSingleHistory: '../api/bigimagelog_show_single_history/',
-      apiLogShowHistory: '../api/log_show_history/',
       apiCustomerserviceSetrobotinfoCreate: '../api/customerservice_setrobotinfo_create/',
       apiCustomerserviceLogout: '../api/customerservice_logout/',
+      apiCusotmerserviceUpdateConnectionNum: '../api/customerservice_update_connection_num',
+      apiCusotmerserviceUpdateLoginStatus: '..api/customerservice_update_login_status',
+      apiChattinglogSendMessage: '../api/chattinglog_send_message/',
+      apiChattinglogShowHistory: '../api/chattinglog_show_history/',
+      apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
+      apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
+      apiBigimagelogShowSingleHistory: '../api/bigimagelog_show_single_history/',
+      apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
+      apiLogShowHistory: '../api/log_show_history/',
 
       databaseCsID: '',
       tempCustomerID: ''
@@ -540,6 +542,7 @@ export default {
         that.onlineIndex++
       }
       pushTextToOnlineList(that.onlineList, 0, '用户' + customerID + '已上线')
+      this.backendUpdateConnectionNum()
     })
     /**
       * @description 当用户挂断时，将其从在线组中删除，添加到离线组
@@ -553,6 +556,7 @@ export default {
       if (that.onlineIndex !== 0 && that.onlineIndex === that.onlineList.length) {
         that.onlineIndex--
       }
+      this.backendUpdateConnectionNum()
     })
     /**
       * @description 对当前用户转接失败，设置提示
@@ -599,11 +603,13 @@ export default {
         that.socket.emit('cs login', that.cs.enterpriseID, that.cs.csID)
         that.isLogon = true
       }, 1000)
+      this.backendUpdateLoginStatus(true)
     } else {
       console.log('socket: this.isLogon')
       that.socket.enterprise_ID = that.cs.enterpriseID
       that.socket.cs_ID = that.cs.csID
       that.socket.emit('cs come back', that.socket.enterprise_ID, that.socket.cs_ID)
+      this.backendUpdateLoginStatus(true)
     }
 
     sessionStorage.setItem(key, JSON.stringify({
@@ -817,8 +823,9 @@ export default {
       let enterpriseID = that.onlineList[that.onlineIndex].enterpriseID
       that.socket.emit('cs apply to transfer for customer', enterpriseID, customerID)
     },
-
-    // 登出按钮
+    /**
+      * @description 登出按钮
+      */
     csLogout (e) {
       console.log('[method: csLogout]')
       this.socket.emit('log out')
@@ -827,8 +834,11 @@ export default {
       }
       this.isLogon = false
       this.csLogoutApi()
+      this.backendUpdateLoginStatus(false)
     },
-
+    /**
+      * @description 登出接口
+      */
     csLogoutApi () {
       console.log('[method: csLogoutApi]')
       this.$http.post(this.apiCustomerserviceLogout)
@@ -961,7 +971,7 @@ export default {
       this.robotSentence.keywordArray = []
     },
     /**
-      * @description 设置机器人借口
+      * @description 设置机器人接口
       */
     setRobotApi () {
       console.log('[method: setRobotApi]')
@@ -993,8 +1003,9 @@ export default {
           console.log('set_robot_api5')
         })
     },
-
-    // 文件压缩
+    /**
+      * @description 图片压缩
+      */
     imageCompress () {
       console.log('[method: imageCompress]')
       let self = this
@@ -1013,22 +1024,25 @@ export default {
         })
       obj.value = ''
     },
-
-    // 上传图片
+    /**
+      * @description 图片上传
+      */
     imageUpload () {
       console.log('[method: imageUpload]')
       var file = document.getElementById('inputFile')
       file.click()
     },
-
-    // 显示大图片
+    /**
+      * @description 大图片显示
+      */
     showBigImg (bigImg) {
       console.log('[method: showBigImg]')
       this.bigImgSrc = bigImg
       this.modalShowBigImg = true
     },
-
-    // 保存文字
+    /**
+      * @description 文字信息保存
+      */
     saveText (index) {
       console.log('[method: saveText]')
       this.saveTextItem = {
@@ -1040,8 +1054,9 @@ export default {
       console.log(this.saveTextItem)
       this.saveTextApi()
     },
-
-    // 保存文字调用后端api
+    /**
+      * @description 文字信息保存API
+      */
     saveTextApi () {
       console.log('[method: saveTextApi]')
       this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
@@ -1066,8 +1081,9 @@ export default {
           console.log('get_cs_id_api')
         })
     },
-
-    // 存小图片调用后端api
+    /**
+      * @description 小图片保存API
+      */
     saveImgApi () {
       console.log('[method: saveImgApi]')
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
@@ -1084,7 +1100,7 @@ export default {
         })
     },
     /**
-      * @description 保存大图片
+      * @description 大图片保存
       */
     saveBigImgApi () {
       console.log('[method: saveBigImgApi]')
@@ -1102,7 +1118,7 @@ export default {
         })
     },
     /**
-      * @description 保存图片
+      * @description 大图片保存
       */
     saveImg (index) {
       console.log('[method: saveImg]')
@@ -1143,7 +1159,7 @@ export default {
       this.showHistoryApi()
     },
     /**
-      * @description 获取历史消息
+      * @description 获取历史消息API
       */
     showHistoryApi () {
       console.log('[method: showHistoryApi]')
@@ -1162,8 +1178,9 @@ export default {
           console.log('show_history_api2')
         })
     },
-
-    // 打印历史消息函数
+    /**
+      * @description 打印历史消息
+      */
     printHistoryMessages (historyArray) {
       console.log('[method: printHistoryMessages]')
       this.currentOnlineObject.historyMessages = []
@@ -1232,7 +1249,7 @@ export default {
       */
     showHistoryBigImgApi () {
       console.log('[method: showHistoryBigImgApi]')
-      this.$http.post(this.apiBigimagelogShowSingleHistory, this.showHistoryBigImgItem)
+      this.$http.post(this.apiCusotmerserviceUpdateConnectionNum, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
             // window.location.href = '../notfound'
@@ -1244,6 +1261,54 @@ export default {
         }, (response) => {
           // window.location.href = '../notfound'
           console.log('show_history_big_img_api2')
+        })
+    },
+    /**
+      * @description 为后端更新客服连接数信息
+      */
+    backendUpdateConnectionNum () {
+      console.log('[method: backendUpdateConnectionNum]')
+      this.$http.post(this.apiCusotmerserviceUpdateConnectionNum, {
+        'connection_num': this.onlineList.length
+      })
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            // window.location.href = '../notfound'
+            console.log('ERROR, session is broken.')
+          } 
+          else if (response.data === 'ERROR, wrong email.') {
+            console.log('ERROR, wrong email.')
+          }
+          else if (response.data === 'ERROR, wrong type.') {
+            console.log('ERROR, wrong type.')
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('backendUpdateConnectionNum Error')
+        })
+    },
+    /**
+      * @description 为后端更新客服连接状态信息
+      */
+    backendUpdateLoginStatus (loginStatus) {
+      console.log('[method: backendUpdateLoginStatus]')
+      this.$http.post(this.apiCusotmerserviceUpdateLoginStatus, {
+        'login_status': loginStatus
+      })
+        .then((response) => {
+          if (response.data === 'ERROR, session is broken.') {
+            // window.location.href = '../notfound'
+            console.log('ERROR, session is broken.')
+          } 
+          else if (response.data === 'ERROR, wrong email.') {
+            console.log('ERROR, wrong email.')
+          }
+          else if (response.data === 'ERROR, wrong type.') {
+            console.log('ERROR, wrong type.')
+          }
+        }, (response) => {
+          // window.location.href = '../notfound'
+          console.log('backendUpdateLoginStatus Error')
         })
     }
   },
