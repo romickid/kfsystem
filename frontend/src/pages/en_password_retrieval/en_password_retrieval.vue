@@ -8,9 +8,10 @@
         </a>
         <div class="ceiling-main">
           <a href='../main' class='ceiling-item'>首页</a> |
-          <a href="../main/#jump" class='ceiling-item'> 产品介绍</a> |
-          <a href="../documentation" class='ceiling-item'> 帮助中心</a> |
-          <a href="../en_login" class='ceiling-item'> 登录</a> |
+          <a href="../documentation" class='ceiling-item'>帮助中心</a> |
+          <a href="../en_login" class='ceiling-item'>企业登录</a> |
+          <a href="../en_folders" class='ceiling-item'>企业注册</a> |
+          <a href="../se_login" class='ceiling-item'>客服入口</a>
         </div>
       </div>
     </div>
@@ -216,14 +217,10 @@ export default {
   overflow: hidden;
 }
 
-.ceiling a {
-  margin-left: 1em;
-}
-
 .ceiling-main {
   float: right;
   margin-right: 5em;
-  padding-top: 1em;
+  padding-top: 0.6em;
 }
 
 .ceiling-main a {
@@ -239,7 +236,6 @@ export default {
 
 .ceiling-item:hover {
   color: #9d2933;
-  border-bottom: 1px solid #9d2933;
 }
 
 body {
@@ -253,9 +249,9 @@ body {
 .all {
   width: 40%;
   height: 350px;
-  margin: 40px 0 0 5%;
+  margin: 6% 0 0 5%;
   border-radius: 20px;
-  background: rgba(230, 230, 250, 0.5);
+  background: rgba(243, 243, 243, 0.7);
 }
 
 .container {
@@ -294,12 +290,12 @@ body {
   font-size: 11pt;
   color: #808080;
   font-weight: bold;
-  text-align: center;
   margin-bottom: 5px;
   margin-top: 5px;
   width: 100%;
   height: 38px;
   flex: 1 1 100%;
+  padding-left: 1em;
 }
 
 #finish {

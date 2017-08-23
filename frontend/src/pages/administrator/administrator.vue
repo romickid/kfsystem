@@ -16,12 +16,8 @@
     <div class='main' :class="{'main-hide-text': spanLeft < 5}">
       <Row type='flex'>
         <i-col :span="spanLeft" class='main-menu-left'>
-          <Menu active-name='1' theme='dark' width='auto' @on-select='select'>
-            <div class='main-logo-left'>
-              <img src='./assets/logo5.png' style="height:30px;width:30px">
-              <p class='main-text'>{{ adminName }}</p>
-            </div>
-            <Menu-item name=''>
+          <Menu active-name='outline' theme='dark' width='auto' @on-select='select'>
+            <Menu-item name='outline'>
               <Icon type='ios-navigate' :size='iconSize'></Icon>
               <span class='main-text'>概览</span>
             </Menu-item>
@@ -57,10 +53,10 @@
                 </a>
                 <Dropdown-menu slot="list">
                   <Dropdown-item>
-                    <Button type='text' @click='logout'>登出</Button>
+                    <en-reset-password ref="enResetPassword"></en-reset-password>
                   </Dropdown-item>
                   <Dropdown-item>
-                    <en-reset-password ref="enResetPassword"></en-reset-password>
+                    <Button type='text' @click='logout'>登出</Button>
                   </Dropdown-item>
                 </Dropdown-menu>
               </Dropdown>
@@ -68,9 +64,6 @@
           </div>
           <div class='main-content'>
             <router-view></router-view>
-          </div>
-          <div class='main-copy'>
-            2011-2016 &copy; TalkingData
           </div>
         </i-col>
       </Row>
@@ -196,15 +189,13 @@ export default {
 }
 
 .main {
-  border: 1px solid #d7dde4;
   background: #f5f7f9;
   position: relative;
-  border-radius: 4px;
   overflow: hidden;
 }
 
 .main-content {
-  min-height: 424px;
+  min-height: 73.73vh;
   margin: 15px;
   overflow: hidden;
   background: #fff;
