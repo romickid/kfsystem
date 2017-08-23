@@ -8,8 +8,10 @@
         </a>
         <div class="ceiling-main">
           <a href='../main' class='ceiling-item'>首页</a> |
-          <a href="../main/#jump" class='ceiling-item'> 产品介绍</a> |
-          <a href="../documentation" class='ceiling-item'> 帮助中心</a>
+          <a href="../documentation" class='ceiling-item'>帮助中心</a> |
+          <a href="../en_login" class='ceiling-item'>企业登录</a> |
+          <a href="../en_folders" class='ceiling-item'>企业注册</a> |
+          <a href="../se_login" class='ceiling-item'>客服入口</a>
         </div>
       </div>
     </div>
@@ -321,11 +323,7 @@ p {
   color: #9ba7b5;
   padding-left: 1em;
   padding-right: 1em;
-}
-
-.ceiling-main .mainpage {
-  color: #9d2933;
-  border-bottom: 1px solid #9d2933;
+  font-size: 11pt;
 }
 
 .ceiling-item:hover {
