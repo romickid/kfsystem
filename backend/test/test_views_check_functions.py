@@ -952,6 +952,52 @@ class TestCsUpdateConnectionNumCheck(TestCase):
         self.assertEqual(errormessage6, 'ERROR, session is broken.')
 
 
+class TestCsUpdateLoginStatusCheck(TestCase):
+    def setUp(self):
+        Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
+        admin_instance = Admin.objects.get(id=1)
+        CustomerService.objects.create(id=1, email='cs1@test.com', enterprise=admin_instance, nickname='c_nick1', password='c_pass1', is_register=False, is_online=False, connection_num=0, vid='c_vid1')
+
+    def test(self):
+        c = Client()
+        session = c.session
+        session['c_email'] = 'cs1@test.com'
+        session.save()
+
+        json1 = {'login_status': True}
+        errorcode1, errormessage1 = customerservice_update_login_status_check(json1, c)
+        self.assertEqual(errorcode1, 1)
+        self.assertEqual(errormessage1, 'No ERROR.')
+
+        json2 = {}
+        errorcode2, errormessage2 = customerservice_update_login_status_check(json2, c)
+        self.assertEqual(errorcode2, 0)
+        self.assertEqual(errormessage2, 'ERROR, incomplete information.')
+
+        json3 = {'login_status': True, 'other': 'other'}
+        errorcode3, errormessage3 = customerservice_update_login_status_check(json3, c)
+        self.assertEqual(errorcode3, 0)
+        self.assertEqual(errormessage3, 'ERROR, wrong information.')
+
+        json4 = {'login_status': 'True'}
+        errorcode4, errormessage4 = customerservice_update_login_status_check(json4, c)
+        self.assertEqual(errorcode4, 0)
+        self.assertEqual(errormessage4, 'ERROR, wrong type.')
+
+        session['c_email'] = 'cs2@test.com'
+        session.save()
+        json5 = {'login_status': True}
+        errorcode5, errormessage5 = customerservice_update_login_status_check(json5, c)
+        self.assertEqual(errorcode5, 0)
+        self.assertEqual(errormessage5, 'ERROR, wrong email.')
+
+        session.delete()
+        json6 = {'login_status': True}
+        errorcode6, errormessage6 = customerservice_update_login_status_check(json6, c)
+        self.assertEqual(errorcode6, 0)
+        self.assertEqual(errormessage6, 'ERROR, session is broken.')
+
+
 class TestCsRobotinfoCreateCheck(TestCase):
     def setUp(self):
         Admin.objects.create(id=1, email='admin1@test.com', nickname='a_nick1', password='a_pass1', web_url='a_weburl1', widget_url='a_widgeturl1', mobile_url='a_mobileurl1', communication_key='a_key1', vid='a_vid1')
