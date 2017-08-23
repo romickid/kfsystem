@@ -205,7 +205,11 @@ export default {
   color: #9ba7b5;
   padding-left: 1em;
   padding-right: 1em;
-  font-size: 11pt;
+}
+
+.ceiling-main .mainpage {
+  color: #9d2933;
+  border-bottom: 1px solid #9d2933;
 }
 
 .ceiling-item:hover {
