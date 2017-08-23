@@ -113,6 +113,9 @@ export default {
       * @description 选择路由，渲染不同组件
       */
     select (name) {
+      if (name === 'outline') {
+        name = ''
+      }
       this.$router.push('/' + name)
     },
     /**

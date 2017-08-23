@@ -2,7 +2,9 @@
   <div class="container">
     <div class="information">
       <ul v-if="hangon" class="customerinfo">
-        <span>用户信息:</span>
+        <span>用户信息:
+          <p v-for="customerInfomation in currentOnlineObject.customerInfomation">{{ customerInfomation.name }}: {{ customerInfomation.content }}</p>
+        </span>
       </ul>
     </div>
     <div class="sidebar">
@@ -74,34 +76,30 @@
         </header>
       </div>
       <div class="main-ul">
-        <ul v-if="hangon">
-          <div>
-            <p align="center" color="#cccccc" @click="switchoff">
-              <a>点击切换已挂断聊天消息</a>
-            </p>
-          </div>
-          <li class="main-list" v-for="item in onlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
-            <a>
-              <Badge :count="item.uncheck" overflow-count="999">
-                <img class="main-avatar" width="30" height="30" :alt="item.customerID" :src="item.image">
-              </Badge>
-              <p class="main-name">{{ item.customerID }}</p>
-            </a>
-          </li>
-        </ul>
-        <ul v-if="!hangon">
-          <div>
-            <p align="center" color="#cccccc" @click="switchoff">
-              <a>点击切换活跃聊天消息</a>
-            </p>
-          </div>
-          <li class="main-list" v-for="item in offlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
-            <a>
-              <img class="main-avatar" width="30" height="30" :alt="item.customerID" :src="item.image">
-              <p class="main-name">{{ item.customerID }}</p>
-            </a>
-          </li>
-        </ul>
+        <Tabs value="active">
+          <Tab-pane label="活跃聊天" name="active" @on-click="switchoff">
+            <ul>
+              <li class="main-list" v-for="item in onlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
+                <a>
+                  <Badge :count="item.uncheck" overflow-count="999">
+                    <img class="main-avatar" width="30" height="30" :alt="item.customerID" :src="item.image">
+                  </Badge>
+                  <p class="main-name">{{ item.customerID }}</p>
+                </a>
+              </li>
+            </ul>
+          </Tab-pane>
+          <Tab-pane label="已挂断聊天" name="negative" @on-click="switchoff">
+            <ul>
+              <li class="main-list" v-for="item in offlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
+                <a>
+                  <img class="main-avatar" width="30" height="30" :alt="item.customerID" :src="item.image">
+                  <p class="main-name">{{ item.customerID }}</p>
+                </a>
+              </li>
+            </ul>
+          </Tab-pane>
+        </Tabs>
       </div>
     </div>
     <div class="main">
@@ -215,11 +213,12 @@ function pushImgToOnlineList (onlineList, index, bpic, spic) {
 /**
   * @description 根据已有信息创建一个客户, 返回一个客户对象
   */
-function createCustomer (customerID, customerName, enterpriseID) {
+function createCustomer (customerID, customerName, enterpriseID, customerInfomation) {
   console.log('[function: createCustomer]')
   return {
     customerID: customerID,
     customerName: customerName,
+    customerInfomation: customerInfomation,
     enterpriseID: enterpriseID,
     image: '../../../static/3.jpg',
     uncheck: 0  // 未读消息数
@@ -247,6 +246,7 @@ function addCustomer (cs_socket, onlineList, customer) {
       enterpriseID: customer.enterpriseID,
       customerID: customer.customerID,
       customer: customer,
+      customerInfomation: customer.customerInfomation,
       messages: [],
       historyMessages: [],
       timer: timer,
@@ -273,7 +273,7 @@ function customerHangoff (onlineList, offlineList, customerID) {
   let messages = onlineList[onlineIndex].messages
   pushTextToOnlineList(onlineList, onlineIndex, '用户' + customerID + '已挂断')
   // 如果离线组中已经有该用户的信息，则继续往里添加信息
-  if (findOfflineListByCustomerID(offlineList, customerID) === -1 ) {
+  if (findOfflineListByCustomerID(offlineList, customerID) === -1) {
     offlineList.splice(0, 0, {
       enterpriseID: customer.enterpriseID,
       customerID: customer.customerID,
@@ -282,7 +282,7 @@ function customerHangoff (onlineList, offlineList, customerID) {
     })
   } else {
     let index = findOfflineListByCustomerID(offlineList, customerID)
-    for (let i=0; i<messages.length ;i++) {
+    for (let i = 0; i < messages.length; i++) {
       offlineList[index].messages.push(messages[i])
     }
   }
@@ -533,9 +533,16 @@ export default {
     })
 
     // socket响应 增加客服
-    this.socket.on('add customer', function (enterpriseID, customerID) {
+    this.socket.on('add customer', function (enterpriseID, customerID, customerInfomation) {
       console.log('socket: add customer')
-      let customer = createCustomer(customerID, customerID, enterpriseID)
+      let customerName = ''
+      for (let i = 0; i < customerInfomation.length; i++) {
+        if (customerInfomation[i].name === 'nickname') {
+          customerName = customerInfomation[i].content
+          break
+        }
+      }
+      let customer = createCustomer(customerID, customerName, enterpriseID)
       addCustomer(that.socket, that.onlineList, customer)
       if (that.onlineList.length !== 1) { // 新增客服显示未读消息
         customer.uncheck++
@@ -582,7 +589,7 @@ export default {
     this.socket.on('cs reload old socket', function (former_customerinfo) {
       console.log('socket: cs reload old socket')
       console.log(former_customerinfo)
-      for (let i=0; i<former_customerinfo.length; i++) {
+      for (let i = 0; i < former_customerinfo.length; i++) {
         let customer = createCustomer(former_customerinfo[i].customer_id, former_customerinfo[i].customer_id, former_customerinfo[i].enterprise_id)
         addCustomer(that.socket, that.onlineList, customer)
         console.log(that.onlineList)
@@ -666,9 +673,8 @@ export default {
     /**
       * @description 替换换行符，实现多行文本输入
       */
-    repstr(str)
-    {
-      return str.replace(new RegExp("\n","gm"),"<br/>");
+    repstr (str) {
+      return str.replace(new RegExp("\n","gm"),"<br/>")
     },
     /**
       * @description 键盘发送消息
@@ -686,7 +692,7 @@ export default {
           alert('该用户已挂断！')
           this.chatlogData.text = ''
           let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
-          residual.innerHTML = '' 
+          residual.innerHTML = ''
           return
         }
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
@@ -788,7 +794,6 @@ export default {
     // 点击切换查看历史记录信息或当前记录信息
     switchoff () {
       console.log('[method: switchoff]')
-      this.hangon = !this.hangon
       this.onlineIndex = 0
       this.offlineIndex = 0
     },
@@ -1286,11 +1291,9 @@ export default {
           if (response.data === 'ERROR, session is broken.') {
             // window.location.href = '../notfound'
             console.log('ERROR, session is broken.')
-          } 
-          else if (response.data === 'ERROR, wrong email.') {
+          } else if (response.data === 'ERROR, wrong email.') {
             console.log('ERROR, wrong email.')
-          }
-          else if (response.data === 'ERROR, wrong type.') {
+          } else if (response.data === 'ERROR, wrong type.') {
             console.log('ERROR, wrong type.')
           }
         }, (response) => {
@@ -1310,11 +1313,9 @@ export default {
           if (response.data === 'ERROR, session is broken.') {
             // window.location.href = '../notfound'
             console.log('ERROR, session is broken.')
-          } 
-          else if (response.data === 'ERROR, wrong email.') {
+          } else if (response.data === 'ERROR, wrong email.') {
             console.log('ERROR, wrong email.')
-          }
-          else if (response.data === 'ERROR, wrong type.') {
+          } else if (response.data === 'ERROR, wrong type.') {
             console.log('ERROR, wrong type.')
           }
         }, (response) => {
