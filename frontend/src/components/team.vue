@@ -3,7 +3,7 @@
     <div class='team-content'>
       <div class='title'>
         <h2>客服人员列表</h2>
-        <i-button type='text' @click='refresh'>刷新</i-button>
+        <i-button type='text' @click='refresh' class='title-button'>刷新</i-button>
         <div class='add'>
           <Icon type='person-add' class='add-icon'></Icon>
           <i-button type='text' @click='addModal = true' id='add-cs-button'>添加客服
@@ -31,7 +31,7 @@
             <th>验证状态</th>
             <th>在线状态</th>
             <th>连接人数</th>
-            <th>操作</th>
+            <th style='border-right: 0;'>操作</th>
           </tr>
           <tr v-for='(kf, id) in kfstaff'>
             <td>{{ kf.email }}</td>
@@ -39,7 +39,7 @@
             <td>{{ kf.is_register ? '已验证' : '未验证'}}</td>
             <td>{{ kf.is_online ? '在线' : '离线'}}</td>
             <th>{{ kf.connection_num }}</th>
-            <th>
+            <th style='border-right: 0;'>
               <i-button type='text' @click='delete_cs(id)'>删除</i-button>
             </th>
           </tr>
@@ -201,12 +201,12 @@ export default {
 <style scoped>
 .team-content {
   border: 1px solid #d7dde4;
-  border-bottom: 1px solid #d7dde4;
+  border-radius: 4px;
   margin: 4em 3em;
 }
 
 .title {
-  padding: 0.5em 2em;
+  padding: 1em 2em;
 }
 
 .title h2 {
@@ -231,16 +231,16 @@ export default {
 }
 
 .list th {
-  width: 16.65%;
-  border: 1px solid #bbbec4;
+  width: 16.66%;
+  border: 1px solid #d7dde4;
   border-bottom: 0;
   border-left: 0;
   padding: 0.5em 0;
 }
 
 .list td {
-  width: 16.65%;
-  border: 1px solid #bbbec4;
+  width: 16.66%;
+  border: 1px solid #d7dde4;
   border-bottom: 0;
   border-left: 0;
   padding: 0.5em 0;
@@ -248,5 +248,9 @@ export default {
 
 .input p{
   color: red;
+}
+
+.title-button {
+  padding: 0;
 }
 </style>

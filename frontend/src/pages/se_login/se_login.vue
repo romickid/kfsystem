@@ -30,11 +30,11 @@
             <label class="label">登录密码：</label>
             <input type="password" v-model="password" name="password" class="text" id="password">
           </div>
-          <div class="div">
-            <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
-          </div>
           <div id="butt">
             <se-forget-password ref="seForgetPassword"></se-forget-password>
+          </div>
+          <div class="div" style='margin-top: 0;'>
+            <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
           </div>
         </div>
       </div>
@@ -158,14 +158,10 @@ export default {
   overflow: hidden;
 }
 
-.ceiling a {
-  margin-left: 1em;
-}
-
 .ceiling-main {
   float: right;
   margin-right: 5em;
-  padding-top: 1em;
+  padding-top: 0.6em;
 }
 
 .ceiling-main a {
@@ -174,14 +170,12 @@ export default {
   padding-right: 1em;
 }
 
-.ceiling-main .mainpage {
-  color: #9d2933;
-  border-bottom: 1px solid #9d2933;
+.current-page {
+  color: #9d2933;  
 }
 
 .ceiling-item:hover {
   color: #9d2933;
-  border-bottom: 1px solid #9d2933;
 }
 
 body {
@@ -195,9 +189,9 @@ body {
 .all {
   width: 40%;
   height: 350px;
-  margin: 40px 0 0 5%;
-  border-radius: 20px;
-  background: rgba(230, 230, 250, 0.5);
+  margin: 6% 0 0 30%;
+  border-radius: 25px;
+  background: rgba(243, 243, 243, 0.7);
 }
 
 .container {
@@ -236,12 +230,12 @@ body {
   font-size: 11pt;
   color: #808080;
   font-weight: bold;
-  text-align: center;
   width: 100%;
   height: 38px;
   margin-bottom: 5px;
   margin-top: 5px;
   flex: 1 1 100%;
+  padding-left: 1em;
 }
 
 #login {

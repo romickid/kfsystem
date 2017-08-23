@@ -264,12 +264,12 @@ body {
   font-size: 11pt;
   color: #808080;
   font-weight: bold;
-  text-align: center;
   margin-bottom: 5px;
   margin-top: 5px;
   width: 100%;
   height: 38px;
   flex: 1 1 100%;
+  padding-left: 1em;
 }
 
 .explain {
@@ -311,14 +311,10 @@ p {
   overflow: hidden;
 }
 
-.ceiling a {
-  margin-left: 1em;
-}
-
 .ceiling-main {
   float: right;
   margin-right: 5em;
-  padding-top: 1em;
+  padding-top: 0.6em;
 }
 
 .ceiling-main a {
@@ -334,6 +330,5 @@ p {
 
 .ceiling-item:hover {
   color: #9d2933;
-  border-bottom: 1px solid #9d2933;
 }
 </style>

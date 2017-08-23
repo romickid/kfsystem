@@ -6,9 +6,10 @@
       <img src="./assets/logo.png" alt="" style="height:40px;width:40px">
       <img src="./assets/name.png" alt="" style="height:40px">
       <div class="ceiling-main">
-        <a href="../main" class='ceiling-item'>首页</a> |
-        <a href="../en_login" class='ceiling-item'>登录</a> |
-        <a href="../en_folders" class='ceiling-item'>注册</a> |
+        <a href='../main' class='ceiling-item'>首页</a> |
+        <a href="../documentation" class='ceiling-item current-page'>帮助中心</a> |
+        <a href="../en_login" class='ceiling-item'>企业登录</a> |
+        <a href="../en_folders" class='ceiling-item'>企业注册</a> |
         <a href="../se_login" class='ceiling-item'>客服入口</a>
       </div>
     </div>
@@ -74,7 +75,7 @@
       <i-col span='7' class='subfooter-container-box'>
         <h3>关于我们</h3>
         <ul>
-          <li>组长：魏久骐</li>
+          <li>组长：魏久麒</li>
           <li>组员：吴文竹</li>
           <li>组员：孙晓菲</li>
           <li>组员：黄侣淳</li>
@@ -252,7 +253,6 @@ p {
 .header {
   position: relative;
   border: 1px solid #d7dde4;
-  border-radius: 4px;
   overflow: hidden;
   z-index: 1;
 }
@@ -266,24 +266,22 @@ p {
 .ceiling-main {
   float: right;
   margin-right: 5em;
-  padding-top: 1em;
+  padding-top: 0.6em;
 }
 
 .ceiling-main a {
   color: #9ba7b5;
-  padding-left: 1.5em;
-  padding-right: 1.5em;
+  padding-left: 1em;
+  padding-right: 1em;
+  font-size: 11pt;
 }
 
-.ceiling-item .document {
-  color: #9d2933;
-  border-bottom: 1px solid #9d2933;
+.current-page {
+  color: #9d2933;  
 }
 
 .ceiling-item:hover {
   color: #9d2933;
-  padding-bottom: 1em;
-  border-bottom: 1px solid #9d2933;
 }
 
 /*= main

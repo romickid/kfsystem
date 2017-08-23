@@ -28,7 +28,7 @@
                 </Dropdown-item>
                 <Dropdown-menu slot="list">
                   <Dropdown-item>
-                    <Button @click="addSentence=true">增添语料</Button>
+                    <Button type='text' @click="addSentence=true">增添语料</Button>
                     <Modal v-model="addSentence" title="增添语料" @on-ok="robotSentenceAddOk" @on-cancel="robotSentenceAddCancel">
                       <Form :label-width="80">
                         <Form-item label="问题">
@@ -61,7 +61,7 @@
                     </Modal>
                   </Dropdown-item>
                   <Dropdown-item>
-                    <Button @click="modifySentence=true">编辑语料</Button>
+                    <Button type='text' @click="modifySentence=true">编辑语料</Button>
                     <Modal v-model="modifySentence" title="编辑语料" z-index=40>
                       <robot-setting ref="robotSetting"></robot-setting>
                       <div slot="footer"></div>
@@ -147,9 +147,11 @@
         </div>
       </Modal>
       <div class="main-text" @keydown="keyboardInputing">
-        <Button @click="showHistory">历史消息</Button>
-        <Button @click="switchAnotherCs">转接</Button>
-        <img @click="imageUpload" src="./assets/pic.png" style="height:20px;width:20px" class='send-pic'></img>
+        <Button-group>
+          <Button @click="showHistory">历史消息</Button>
+          <Button @click="switchAnotherCs">转接</Button>
+          <Button @click="imageUpload" icon="image"></Button>
+        </Button-group>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl+Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
         </p>
@@ -1729,8 +1731,7 @@ ul {
   border-radius: 3px;
 }
 
-.send-pic {
-  float: right;
-  margin-right: 0.6em;
+.ivu-btn-group .ivu-btn-icon-only .ivu-icon {
+  font-size: 18px;
 }
 </style>

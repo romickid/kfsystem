@@ -45,26 +45,26 @@
           <tr>
             <th>名称</th>
             <th>说明</th>
-            <th>操作</th>
+            <th style='border-right: 0;'>操作</th>
           </tr>
           <tr class='list-item'>
             <td>Id</td>
             <td></td>
-            <td>
+            <td style='border-right: 0;'>
               <i-button type='text' disabled>删除</i-button>
             </td>
           </tr>
           <tr class='list-item'>
             <td>用户名</td>
             <td></td>
-            <td>
+            <td style='border-right: 0;'>
               <i-button type='text' disabled>删除</i-button>
             </td>
           </tr>
           <tr class='list-item' v-for='(infomation, id) in infomations'>
             <td>{{ infomation.name }}</td>
             <td>{{ infomation.comment }}</td>
-            <td>
+            <td style='border-right: 0;'>
               <i-button type='text' @click='delete_info(id)'>删除</i-button>
             </td>
           </tr>
@@ -273,6 +273,7 @@ export default {
 .key {
   margin: 4em 0em;
   border: 1px solid #d7dde4;
+  border-radius: 4px;
 }
 
 .key-title {
@@ -315,10 +316,10 @@ export default {
 .info {
   margin: 4em 0em;
   border: 1px solid #d7dde4;
+  border-radius: 4px;
 }
 
 .info-title {
-  border-bottom: 1px solid #d7dde4;
   padding: 0.5em 2em;
 }
 
@@ -344,7 +345,7 @@ export default {
 }
 
 .info-list td {
-  width: 33%;
+  width: 33.33%;
   border: 1px solid #bbbec4;
   border-bottom: 0;
   border-left: 0;
@@ -352,7 +353,7 @@ export default {
 }
 
 .info-list th {
-  width: 33%;
+  width: 33.33%;
   border: 1px solid #bbbec4;
   border-bottom: 0;
   border-left: 0;
