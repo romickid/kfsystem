@@ -13,7 +13,7 @@ import random
 @csrf_exempt
 def customer_create(request):
     if request.method == 'POST':
-        # Customer: email nickname password telephone location
+        # Customer: email nickname password telephone location description
         json_receive = JSONParser().parse(request)
         is_correct, error_message = customer_create_check(json_receive)
         if is_correct == 0:
