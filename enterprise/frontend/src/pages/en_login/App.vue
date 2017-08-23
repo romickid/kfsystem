@@ -32,11 +32,9 @@
 </template>
 
 <script>
-import enForgetPassword from '../../components/en_forget_password'
 export default {
   name: 'app',
   components: {
-    enForgetPassword
   },
 
   data () {
@@ -74,7 +72,7 @@ export default {
             alert('incomplete information.')
             window.location.href = '../notfound'
           } else {
-            window.location.href = '../index'
+            window.location.href = '../'
           }
         }, (response) => {
           alert('太搞笑了')
