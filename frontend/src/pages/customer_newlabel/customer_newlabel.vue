@@ -136,7 +136,7 @@ function initSocket (cs, session, socket, customer) {
 
     socket.on('switch cs', function (enterpriseID, formerCsID) {
       console.log("socket: switch cs")
-      socket.emit('switch cs', enterpriseID, formerCsID)
+      socket.emit('switch cs', formerCsID, enterpriseID, customer.customerInfomation)
       resolve()
     })
 
@@ -150,7 +150,7 @@ function initSocket (cs, session, socket, customer) {
       customerExpire(cs, session)
     })
 
-    socket.emit('assigned to cs', customer.enterpriseID, customer.customerID)
+    socket.emit('assigned to cs', customer.enterpriseID, customer.customerID, customer.customerInfomation)
     console.log("socket emit: assigned to cs")
   })
 }
@@ -167,7 +167,8 @@ function initData (key) {
         customerID: -1,
         customerName: 'coffce',
         enterpriseID: 'nick2',
-        image: '../../../static/1.jpg'
+        image: '../../../static/1.jpg',
+        customerInfomation: []
       },
 
       // 客服列表
@@ -180,8 +181,6 @@ function initData (key) {
 
       // 会话列表
       session: {
-        customerID: -1,
-        enterpriseID: 'nick2',
         messages: [
           {
             text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
@@ -229,20 +228,23 @@ export default {
       apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
       apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
       apiCustomerCheckInfo: '../api/customer_check_info/',
+      apiCustomerDisplayCustomerinfopropertyname: '../api/customer_display_customerinfopropertyname/',
       robotReplyItem: {},
       saveTextItem: {},
       csEmailItem: {},
       saveImgItem: {},
       saveBigImgItem: {},
       customerCheckItem: {},
+      customerInfoNameCheckItem: {},
 
       databaseCsID: '',
-      adminNickname: 'nick2'
+      adminNickname: '',
+      customerInfoNameArray: []
     }
   },
 
   created () {
-    this.customerCheck()
+    this.getCustomerInfoUrl()
     // 如果初次登录， 初始化
     if (this.customer.customerID === -1) {
       this.customer.customerID = (Math.random() * 1000).toString()
@@ -608,17 +610,13 @@ export default {
       this.saveBigImgApi()
     },
     customerCheck () {
-      console.log('[methods]: customerCheck')
-      let url = window.loction.href
-      let urlArray = url.split('/')
-      let adminName = urlArray[4]
-      let userID = this.$utils.getUrlKey('userID')
-      let userName = this.$utils.getUrlKey('nickname')
+      this.customer.customerID = this.$utils.getUrlKey('userID')
+      this.customer.customerName = this.$utils.getUrlKey('nickname')
       let signature = this.$utils.getUrlKey('signature')
       this.customerCheckItem = {
-        'enterprise_id': adminName,
-        'customer_id': userID,
-        'cusotmer_name': userName,
+        'enterprise_id': this.adminNickname,
+        'customer_id': this.customer.customerID,
+        'cusotmer_name': this.customer.customerName,
         'hash_result': signature
       }
       this.customerCheckApi()
@@ -636,13 +634,70 @@ export default {
           } else if (response.data === 'ERROR, wrong nickname.') {
             // window.location.href = '../not_found'
             console.log('customerCheckApi3')
-          } else {
+          } else if (response.data === 'False') {
+            // window.location.href = '../not_found'
             console.log('customerCheckApi4')
+          } else if (response.data === 'True') {
+            console.log('customerCheckApi6')
+            this.customerInfoNameCheckApi()
           }
         }, (response) => {
           // window.location.href = '../not_found'
             console.log('customerCheckApi5')
         })
+    },
+    customerInfoNameCheckApi () {
+      this.$http.post(this.apiCustomerDisplayCustomerinfopropertyname, this.customerInfoNameCheckItem)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            // window.location.href = '../not_found'
+            console.log('customerInfoNameCheckApi3')
+          } else if (response.data === 'ERROR, wrong information.') {
+            // window.location.href = '../not_found'
+            console.log('customerInfoNameCheckApi4')
+          } else if (response.data === 'ERROR, wrong nickname.') {
+            // window.location.href = '../not_found'
+            console.log('customerInfoNameCheckApi5')
+          } else {
+            console.log('customerInfoNameCheckApi6')
+            this.customerInfoNameArray = response.data
+            this.getCustomerInfo()
+          }
+        }, (response) => {
+          // window.location.href = '../not_found'
+            console.log('customerInfoNameCheckApi7')
+        })
+    },
+    getCustomerInfo () {
+      let tempUserID = {
+        name: 'userID',
+        content: this.customer.customerID
+      }
+      let tempNickname = {
+        name: 'nickname',
+        content: this.customer.customerName
+      }
+      this.customer.customerInfomation.push(tempUserID)
+      this.customer.customerInfomation.push(tempNickname)
+      for (let i = 0;i < this.cusotmerInfoNameArray.length;i++) {
+        let tempCustomerInfo = {
+          name: this.cusotmerInfoNameArray[i].name,
+          content: this.$utils.getUrlKey(this.cusotmerInfoNameArray[i].name)
+        }
+        this.customer.customerInfomation.push(tempCustomerInfo)
+      }
+    },
+    getCustomerInfoUrl () {
+      console.log('[methods]: getCustomerInfoUrl')
+      let url = window.loction.href
+      let urlArray = url.split('/')
+      this.adminNickname = urlArray[4]
+      this.customer.enterpriseID = this.adminNickname
+      this.cs.enterpriseID = this.adminNickname
+      this.customerInfoNameCheckItem = {
+        'enterprise_id': this.adminNickname
+      }
+      this.customerCheck()
     }
   },
 
