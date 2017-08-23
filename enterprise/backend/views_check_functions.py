@@ -2,7 +2,7 @@ from .views_helper_functions import *
 
 
 def customer_create_check(json_receive):
-    test_json = json_testing(json_receive, ['email', 'nickname', 'password', 'telephone', 'location'], 5)
+    test_json = json_testing(json_receive, ['email', 'nickname', 'password', 'telephone', 'location', 'description'], 6)
     if test_json == 1:
         return 0, 'ERROR, incomplete information.'
     if test_json == 2:

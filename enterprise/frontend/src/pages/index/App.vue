@@ -7,8 +7,7 @@
         <a href="./en_folders">跳转至用户注册页面</a>
         <br>
       </h2>
-    </div>  
-    <router-view></router-view>
+    </div>
   </div>
 </template>
 
