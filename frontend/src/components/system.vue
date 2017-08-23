@@ -24,9 +24,9 @@
           <Modal v-model='modal' title='添加用户信息' @on-ok='ok' @on-cancel='cancel' id='add-info-modal'>
             <Form :model='formItem' :label-width='80' class='input'>
               <Form-item label='名称'>
-                <Input v-model='formItem.name' placeholder='请输入' @on-blur='check_name' @on-focus='name_inputing' id='input-name'></Input>
-                <i-label v-if='nameIsNull'>
-                  <p>名称不能为空</p>
+                <Input v-model='formItem.name' placeholder='请输入名称，且只能包含英文大小写字符' @on-blur='check_name' @on-focus='name_inputing' id='input-name'></Input>
+                <i-label v-if='nameIsNotStandard'>
+                  <p>名称格式不合法</p>
                 </i-label>
               </Form-item>
               <Form-item label='自定义说明'>
@@ -48,14 +48,14 @@
             <th style='border-right: 0;'>操作</th>
           </tr>
           <tr class='list-item'>
-            <td>Id</td>
+            <td>userID</td>
             <td></td>
             <td style='border-right: 0;'>
               <i-button type='text' disabled>删除</i-button>
             </td>
           </tr>
           <tr class='list-item'>
-            <td>用户名</td>
+            <td>nickname</td>
             <td></td>
             <td style='border-right: 0;'>
               <i-button type='text' disabled>删除</i-button>
@@ -84,7 +84,7 @@ export default {
         name: '',
         comment: ''
       },
-      nameIsNull: false,
+      nameIsNotStandard: false,
       commentIsNull: false,
       apiShowCommunicationKey: '../api/admin_show_communication_key/',
       apiResetCommunicationKey: '../api/admin_reset_communication_key/',
@@ -102,15 +102,17 @@ export default {
       * @description 检查用户信息种类名称输入
       */
     check_name () {
-      if (this.formItem.name === '') {
-        this.nameIsNull = true
+      let reg = /^(?![a-z]+$)(?!\d+$)(?![A-Z]+$)(?![a-z\d]+$)(?![a-zA-Z]+$)(?![\dA-Z]+$)[a-zA-Z\d]{6,20}$/
+      let standardContent = reg.test(this.formItem.name)
+      if (this.formItem.name === '' || standardContent === false) {
+        this.nameIsNotStandard = true
       }
     },
     /**
       * @description 正在输入用户信息种类名称时取消名称检查标记
       */
     name_inputing () {
-      this.nameIsNull = false
+      this.nameIsNotStandard = false
     },
     /**
       * @description 检查输入的自定义说明
@@ -130,8 +132,11 @@ export default {
       * @description 输入信息后点击确定
       */
     ok () {
+      this.check_name()
       if (this.formItem.name === '' || this.formItem.comment === '') {
         this.$Message.info('您的信息不完善')
+      } else if (this.nameIsNotStandard === true) {
+        this.$Message.info('您的名称不合法')
       } else {
         this.infomationItem = {
           'name': this.formItem.name,
@@ -169,7 +174,7 @@ export default {
     cancel () {
       this.formItem.name = ''
       this.formItem.comment = ''
-      this.nameIsNull = false
+      this.nameIsNotStandard = false
       this.commentIsNull = false
     },
     /**
