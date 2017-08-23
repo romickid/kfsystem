@@ -613,7 +613,7 @@ export default {
       let urlArray = url.split('/')
       let adminName = urlArray[4]
       let userID = this.$utils.getUrlKey('userID')
-      let userName = this.$utils.getUrlKey('userName')
+      let userName = this.$utils.getUrlKey('nickname')
       let signature = this.$utils.getUrlKey('signature')
       this.customerCheckItem = {
         'enterprise_id': adminName,
