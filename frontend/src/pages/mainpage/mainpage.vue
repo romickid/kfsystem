@@ -6,7 +6,7 @@
       <a href='./'><img src="./assets/name.png" alt="首页" style="height:40px"></a>
       <div class="ceiling-main">
         <a href='./' class='ceiling-item mainpage'>首页</a> |
-        <a href="#jump/" class='ceiling-item'>产品介绍</a> |
+        <a href="#jump" class='ceiling-item'>产品介绍</a> |
         <a href="../documentation/" class='ceiling-item'>帮助中心</a> |
         <a href="../en_login/" class='ceiling-item'>企业登录</a> |
         <a href="../en_folders/" class='ceiling-item'>企业注册</a> |
@@ -24,7 +24,7 @@
         </div>
       </section>
       <div class='jump'>
-        <a href="#jump/"><Icon type="chevron-down"></Icon></a>
+        <a href="#jump"><Icon type="chevron-down"></Icon></a>
       </div>
     </Carousel-item>
     <Carousel-item>
@@ -35,7 +35,7 @@
         </div>
       </section>
       <div class='jump'>
-        <a href="#jump/"><Icon type="chevron-down"></Icon></a>
+        <a href="#jump"><Icon type="chevron-down"></Icon></a>
       </div>
     </Carousel-item>
     <Carousel-item>
@@ -45,7 +45,7 @@
         </div>
       </section>
       <div class='jump'>
-        <a href="#jump/"><Icon type="chevron-down"></Icon></a>
+        <a href="#jump"><Icon type="chevron-down"></Icon></a>
       </div>
     </Carousel-item>
   </Carousel>
