@@ -534,8 +534,7 @@ export default {
           console.log('get_cs_id_api1')
           console.log(response.data)
         }, (response) => {
-          // window.location.href = '../se_login'
-          console.log('get_cs_id_api2')
+          // window.location.href = '../se_login'=
         })
     },
     /**
