@@ -77,7 +77,7 @@
       </div>
       <div class="main-ul">
         <Tabs value="active">
-          <Tab-pane label="活跃聊天" name="active" @on-click="switchoff">
+          <Tab-pane label="活跃聊天" name="active" @on-click="switchoff" class='tab'>
             <ul>
               <li class="main-list" v-for="item in onlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -89,7 +89,7 @@
               </li>
             </ul>
           </Tab-pane>
-          <Tab-pane label="已挂断聊天" name="negative" @on-click="switchoff">
+          <Tab-pane label="已挂断聊天" name="negative" @on-click="switchoff" class='tab'>
             <ul>
               <li class="main-list" v-for="item in offlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -247,6 +247,7 @@ function addCustomer (cs_socket, onlineList, customer) {
       customerID: customer.customerID,
       customer: customer,
       customerInfomation: customer.customerInfomation,
+      image: '../../../static/3.jpg',
       messages: [],
       historyMessages: [],
       timer: timer,
@@ -1734,5 +1735,9 @@ ul {
 
 .ivu-btn-group .ivu-btn-icon-only .ivu-icon {
   font-size: 18px;
+}
+
+.tab {
+  color: #fff;
 }
 </style>
