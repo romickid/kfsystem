@@ -19,7 +19,7 @@
       <div class="all">
         <div class="container">
           <div class="div">
-            <label id="title">客服信息完善</label>
+            <label id="title">客服完善信息</label>
           </div>
           <div class="div">
             <label class="label">登录密码：</label>
@@ -36,7 +36,7 @@
             </i-label>
           </div>
           <div class="div" @keydown="finishEnter">
-            <label class="label">使用昵称：</label>
+            <label class="label">昵称：</label>
             <input type="text" v-model="nickname" name="nickname" class="text">
           </div>
           <div class="div">
