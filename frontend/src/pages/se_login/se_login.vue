@@ -22,14 +22,14 @@
             <label id="title">客服登录</label>
           </div>
           <div class="div">
-            <label class="label">登录邮箱：</label>
+            <label class="label">邮箱：</label>
             <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput" id='input-email'>
             <i-label v-if="emailIllegal">
               <p id="p">请输入正确的邮箱！</p>
             </i-label>
           </div>
           <div class="div" @keydown="loginEnter">
-            <label class="label">登录密码：</label>
+            <label class="label">密码：</label>
             <input type="password" v-model="password" name="password" class="text" id="password">
           </div>
           <div id="butt">

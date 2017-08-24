@@ -19,17 +19,17 @@
       <div class="all">
         <div class="container">
           <div class="div">
-            <label id="title">账号注册</label>
+            <label id="title">企业账号注册</label>
           </div>
           <div class="div">
-            <label class="label">登录邮箱：</label>
+            <label class="label">邮箱：</label>
             <input type="text" v-model="email" name="email" @blur="checkEmail" @focus="emailInput" id="input-email" class='text'>
             <i-label v-if="emailIllegal">
               <p>请输入正确的邮箱！</p>
             </i-label>
           </div>
           <div class="div">
-            <label class="label">登录密码：</label>
+            <label class="label">密码：</label>
             <input type="password" v-model="password" name="password" @blur="checkPassword" @focus="passwordInput" id="input-password" class='text'>
             <i-label v-if="passwordNonStandard">
               <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
@@ -43,7 +43,7 @@
             </i-label>
           </div>
           <div class="div">
-            <label class="label">使用昵称：</label>
+            <label class="label">企业昵称：</label>
             <input type="text" v-model="nickname" name="nickname" class='text'>
           </div>
           <div class="div" @keydown="registerEnter">
