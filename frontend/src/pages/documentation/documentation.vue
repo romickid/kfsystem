@@ -180,6 +180,9 @@ export default {
     }
   },
   computed: {
+    /**
+      * @description 控制路由跳转
+      */
     youAreHere () {
       for (let i = 0; i < this.routerName.length; i++) {
         if (this.$route.name === this.routerName[i].name) {
