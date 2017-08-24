@@ -33,7 +33,7 @@
           <Button @click="switchToCs">转接人工客服</Button>
           <Button @click="screenShot">截屏</Button>
           <Button @click="endSession">结束会话</Button>
-          <Button @click="imageUpload" icon="image"></Button>
+          <Button @click="imageUpload">发送图片</Button>
         </Button-group>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl+Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
@@ -659,6 +659,7 @@ export default {
         'cusotmer_name': this.customer.customerName,
         'hash_result': signature
       }
+      console.log(this.customerCheckItem)
       this.customerCheckApi()
     },
     customerCheckApi () {
@@ -706,6 +707,7 @@ export default {
           } else {
             console.log('customerInfoNameCheckApi6')
             this.customerInfoNameArray = response.data
+            console.log(response.data)
             console.log(this.customerInfoNameArray)
             this.getCustomerInfo()
           }
@@ -715,6 +717,7 @@ export default {
         })
     },
     getCustomerInfo () {
+      this.customer.customerInfomation = []
       console.log('[methods: getCustomerInfo]')
       let tempUserID = {
         name: 'userID',
@@ -727,17 +730,19 @@ export default {
       this.customer.customerInfomation.push(tempUserID)
       this.customer.customerInfomation.push(tempNickname)
       for (let i = 0; i < this.customerInfoNameArray.length; i++) {
+        console.log(this.customerInfoNameArray[i].name)
         let tempCustomerInfo = {
           name: this.customerInfoNameArray[i].name,
           content: this.$utils.getUrlKey(this.customerInfoNameArray[i].name)
         }
+        console.log(this.$utils.getUrlKey(this.customerInfoNameArray[i].name))
         this.customer.customerInfomation.push(tempCustomerInfo)
       }
       this.cs.csID = this.customer.enterpriseID + '&Robot'
       this.csIDItem = {
         'nickname': this.cs.csID
       }
-      console.log(this.csIDItem)
+      console.log(this.csIDItem.nickname)
       console.log(this.customer.customerInfomation)
       this.getCsIdApi()
     },
@@ -814,16 +819,16 @@ ul {
 }
 
 .emoji-wysiwyg-editor {
-  line-height: 8px;
+  line-height: 10px;
   padding: 5px;
 }
 
 .lead {
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .ivu-btn {
-  font-size: 8px;
+  font-size: 10px;
 }
 
 
@@ -835,6 +840,8 @@ ul {
   width: 100%;
   vertical-align: center;
   border-radius: 4px;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .main {
@@ -878,7 +885,7 @@ ul {
 .time-span {
   display: inline-block;
   padding: 0 18px;
-  font-size: 8px;
+  font-size: 10px;
   color: #fff;
   border-radius: 2px;
   background-color: #dcdcdc;
@@ -895,10 +902,11 @@ ul {
   display: inline-block;
   position: relative;
   padding: 0 5px;
+  padding-top: 0.3rem;
   max-width: calc(80% - 40px);
   min-height: 30px;
   line-height: 1.5;
-  font-size: 8px;
+  font-size: 10px;
   text-align: left;
   word-break: break-all;
   background-color: #fafafa;
@@ -927,10 +935,11 @@ ul {
   display: inline-block;
   position: relative;
   padding: 0 10px;
+  padding-top: 0.3rem;
   max-width: calc(80% + 10px);
   min-height: 25px;
   line-height: 1.5;
-  font-size: 8px;
+  font-size: 10px;
   background-color: #b2e281;
   word-break: break-all;
   border-radius: 4px;
@@ -981,5 +990,9 @@ ul {
 .send-pic {
   float: right;
   margin-right: 0.6em;
+}
+
+img {
+  vertical-align: top;
 }
 </style>
