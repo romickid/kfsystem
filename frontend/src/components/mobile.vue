@@ -32,10 +32,10 @@ export default {
       this.$http.post(this.apiadminShowUrlStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../en_login'
+            // window.location.href = '../en_login/'
             console.log('getMobileUrlApi1')
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../en_login'
+            // window.location.href = '../en_login/'
             console.log('getMobileUrlApi2')
           } else {
             this.mobileUrl = response.data.mobile_url

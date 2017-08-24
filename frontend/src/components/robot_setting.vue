@@ -90,13 +90,13 @@ export default {
       this.$http.post(this.apiCustomerserviceSetrobotinfoDelete, this.robot_question_delete)
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../se_login'
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, incomplete information.') {
             this.$Message.info('您所填的信息不完整')
           } else if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login'
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login'
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, info is not exist.') {
             this.$Message.info('该问题不存在')
           } else {
@@ -104,7 +104,7 @@ export default {
             this.show_robot_question_api()
           }
         }, (response) => {
-          window.location.href = '../se_login'
+          window.location.href = '../se_login/'
         })
     },
     /**
@@ -114,9 +114,9 @@ export default {
       this.$http.post(this.apiCustomerserviceSetrobotinfoShow, this.robot_question)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login'
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login'
+            window.location.href = '../se_login/'
           } else {
             this.data = response.data
             for (var i = 0; i < this.data.length; i++) {
@@ -130,7 +130,7 @@ export default {
             }
           }
         }, (response) => {
-          window.location.href = '../se_login'
+          window.location.href = '../se_login/'
         })
     },
     /**
