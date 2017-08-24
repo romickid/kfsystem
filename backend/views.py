@@ -48,7 +48,7 @@ def admin_login(request):
             return HttpResponse(error_message, status=200)
         sha512_final_password = admin_generate_password(json_receive['email'], json_receive['password'])
         if admin_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
-            cs_sessions_del(request)
+            # cs_sessions_del(request)
             request.session['a_email'] = json_receive['email']
             return HttpResponse('OK', status=200)
         else:
@@ -370,7 +370,7 @@ def customerservice_login(request):
 
         sha512_final_password = cs_generate_password(json_receive['email'], json_receive['password'])
         if cs_is_valid_by_email_password(json_receive['email'], sha512_final_password) == True:
-            admin_sessions_del(request)
+            # admin_sessions_del(request)
             request.session['c_email'] = json_receive['email']
             instance_cs = CustomerService.objects.get(email=json_receive['email'])
             instance_cs.is_online = True
