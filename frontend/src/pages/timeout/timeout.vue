@@ -27,7 +27,7 @@ export default {
       * @description 返回主页
       */
     home () {
-      window.location.href = '../main'
+      window.location.href = '../main/'
     }
   }
 }

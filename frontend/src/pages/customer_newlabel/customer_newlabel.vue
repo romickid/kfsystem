@@ -474,7 +474,7 @@ export default {
       this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robotReplyItem)
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('show_robot_reply_api1')
           } else if (response.data === 'ERROR, incomplete information.') {
             // this.$Message.info('您所填的信息不完整')
@@ -487,7 +487,7 @@ export default {
             this.showRobotReply(msg)
           }
         }, (response) => {
-          // window.location.href = '../se_login'
+          // window.location.href = '../se_login/'
           console.log('show_robot_reply_api4')
         })
     },
@@ -516,7 +516,7 @@ export default {
         .then((response) => {
           this.databaseCsID = response.data
         }, (response) => {
-          // window.location.href = '../se_login'=
+          // window.location.href = '../se_login/'
         })
     },
     /**
@@ -531,7 +531,7 @@ export default {
           console.log(response.data)
           this.saveTextItem = {}
         }, (response) => {
-          // window.location.href = '../se_login'
+          // window.location.href = '../se_login/'
           console.log('save_text_api2')
         })
     },
@@ -557,14 +557,14 @@ export default {
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('save_img_api1')
           } else {
             this.saveImgItem = {}
             console.log('saveImgApi')
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('save_img_api2')
         })
     },
@@ -576,14 +576,14 @@ export default {
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('save_bigImg_api1')
           } else {
             this.saveBigImgItem = {}
             console.log('saveBigImgApi')
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('save_bigImg_api2')
         })
     },
@@ -633,16 +633,16 @@ export default {
       this.$http.post(this.apiCustomerCheckInfo, this.customerCheckItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            // window.location.href = '../not_found'
+            // window.location.href = '../not_found/'
             console.log('customerCheckApi1')
           } else if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../not_found'
+            // window.location.href = '../not_found/'
             console.log('customerCheckApi2')
           } else if (response.data === 'ERROR, wrong nickname.') {
-            // window.location.href = '../not_found'
+            // window.location.href = '../not_found/'
             console.log('customerCheckApi3')
           } else if (response.data === 'False') {
-            // window.location.href = '../not_found'
+            // window.location.href = '../not_found/'
             console.log('customerCheckApi4')
           } else if (response.data === 'True') {
             console.log('customerCheckApi6')
@@ -651,7 +651,7 @@ export default {
             console.log(response.data)
           }
         }, (response) => {
-          // window.location.href = '../not_found'
+          // window.location.href = '../not_found/'
           console.log('customerCheckApi5')
         })
     },
@@ -661,13 +661,13 @@ export default {
       this.$http.post(this.apiCustomerDisplayCustomerinfopropertyname, this.customerInfoNameCheckItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            // window.location.href = '../not_found'
+            // window.location.href = '../not_found/'
             console.log('customerInfoNameCheckApi3')
           } else if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../not_found'
+            // window.location.href = '../not_found/'
             console.log('customerInfoNameCheckApi4')
           } else if (response.data === 'ERROR, wrong nickname.') {
-            // window.location.href = '../not_found'
+            // window.location.href = '../not_found/'
             console.log('customerInfoNameCheckApi5')
           } else {
             console.log('customerInfoNameCheckApi6')
@@ -676,7 +676,7 @@ export default {
             this.getCustomerInfo()
           }
         }, (response) => {
-          // window.location.href = '../not_found'
+          // window.location.href = '../not_found/'
           console.log('customerInfoNameCheckApi7')
         })
     },

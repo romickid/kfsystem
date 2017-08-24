@@ -6,8 +6,8 @@
       </div>
       <div class='key-content'>
         <div class='introduction'>
-          <p>您可以通过信息接口将用户名和用户ID与夜莺系统对接,从而在会话界面和历史记录中查看用户信息。</p>
-          <a>点击查看客户用户信息对接流程</a>
+          <p>您可以通过信息接口将用户名和用户ID与BIG5系统对接,从而在会话界面和历史记录中查看用户信息。</p>
+          <a href='http://192.168.55.33:8000/documentation/#/user_info'>点击查看客户用户信息对接流程</a>
         </div>
         <h3>通讯密钥:</h3>
         <p class='key-number'>{{ communicationKey }}</p>
@@ -153,19 +153,19 @@ export default {
       this.$http.post(this.apiAdminDisplayInfoCreate, this.infomationItem)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, attribute name has been used.') {
             this.$Message.info('该名称已存在')
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             this.$Message.info('添加成功')
             this.show_info()
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     },
     /**
@@ -193,9 +193,9 @@ export default {
       this.$http.post(this.apiAdminDisplayInfoDelete, this.deleteName)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, attribute is not existent.') {
             this.$Message.info('该名称不存在')
           } else {
@@ -203,7 +203,7 @@ export default {
             this.show_info()
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     },
     /**
@@ -213,16 +213,16 @@ export default {
       this.$http.post(this.apiResetCommunicationKey)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             this.show_key()
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     },
     /**
@@ -232,16 +232,16 @@ export default {
       this.$http.post(this.apiAdminDisplayInfoShow)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, display info is empty.') {
             this.infomations = []
           } else {
             this.infomations = response.data
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     },
     /**
@@ -251,14 +251,14 @@ export default {
       this.$http.post(this.apiShowCommunicationKey)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             this.communicationKey = response.data.communication_key
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     }
   },
