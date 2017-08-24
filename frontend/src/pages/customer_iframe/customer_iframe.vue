@@ -54,7 +54,7 @@ const key = 'VUE-Customer1'
 
 // 接收文字消息放进sessionList
 function pushTextToSessionList (session, msg) {
-  console.log("function: pushTextToSessionList")
+  console.log('function: pushTextToSessionList')
   session.messages.push({
     text: msg,
     isText: true,
@@ -65,7 +65,7 @@ function pushTextToSessionList (session, msg) {
 
 // 接收图片消息放进sessionList
 function pushImgToSessionList (session, bpic, spic) {
-  console.log("function: pushTextToSessionList")
+  console.log('function: pushTextToSessionList')
   session.messages.push({
     bigImg: bpic,
     img: spic,
@@ -76,7 +76,7 @@ function pushImgToSessionList (session, bpic, spic) {
 }
 
 function connectToCs (cs, session, csID) {
-  console.log("function: connectToCs")
+  console.log('function: connectToCs')
   cs.csID = csID
   session.messages.push({
     text: '已成功为您转接客服' + csID,
@@ -85,60 +85,80 @@ function connectToCs (cs, session, csID) {
     image: '../../../static/2.png'
   })
 }
-
-function noServerAvailable (cs, session) {
-  console.log("function: noServerAvailable")
+/**
+  * @description 没有可连接客服
+  */
+function noCsAvailable (cs, session) {
+  console.log('function: noCsAvailable')
   session.messages.push({
-    text: '您好，小怪兽麻麻喊小怪兽回家吃饭啦~请您稍后重新连接哦',
+    text: '您好，现在没有客服在线哦，请您稍后重新连接',
     isText: true,
     date: new Date(),
     image: '../../../static/2.png'
   })
-  cs.customerID = -1
+  cs.csID = '&Robot'
 }
-
-// 初始化Socket
+/**
+  * @description 客户超时断开
+  */
+function customerExpire (cs, session) {
+  console.log('function: noCsAvailable')
+  session.messages.push({
+    text: '您好，您已经超时并断开连接，请重新连接客服',
+    isText: true,
+    date: new Date(),
+    image: '../../../static/2.png'
+  })
+  cs.csID = '&Robot'
+}
+/**
+  * @description 初始化Socket
+  */
 function initSocket (cs, session, socket, customer) {
-  return new Promise (function (resolve) {
-    console.log("function: initSocket")
+  return new Promise(function (resolve) {
+    console.log('function: initSocket')
 
+    // 客服发送文字信息
     socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
-      console.log("socket: cs send message")
+      console.log('socket: cs send message')
       pushTextToSessionList(session, msg)
     })
 
+    // 客服发送图片信息
     socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-      console.log("socket: cs send picture")
+      console.log('socket: cs send picture')
       pushImgToSessionList(session, bpic, spic)
     })
 
     socket.on('connect to cs', function (csID) {
-      console.log("socket: connect to cs")
+      console.log('socket: connect to cs')
       connectToCs(cs, session, csID)
       resolve()
     })
 
-    socket.on('no server available', function () {
-      console.log("socket: no server available")
-      noServerAvailable(cs, session)
-    })
-
     socket.on('switch cs', function (enterpriseID, formerCsID) {
-      console.log("socket: switch cs")
-      socket.emit('switch cs', enterpriseID, formerCsID)
+      console.log('socket: switch cs')
+      socket.emit('switch cs', formerCsID, enterpriseID, customer.customerInfomation)
       resolve()
     })
 
     socket.on('no cs available', function () {
-      alert('当前无在线客服！')
+      console.log('socket: no cs available')
+      noCsAvailable(cs, session)
     })
 
-    socket.emit('assigned to cs', customer.enterpriseID, customer.customerID)
-    console.log("socket emit: assigned to cs")
+    socket.on('customer expire', function () {
+      console.log('socket: customer expire')
+      customerExpire(cs, session)
+    })
+
+    socket.emit('assigned to cs', customer.enterpriseID, customer.customerID, customer.customerInfomation)
+    console.log('socket emit: assigned to cs')
   })
 }
-
-// 数据初始化
+/**
+  * @description 初始化数据
+  */
 function initData (key) {
   // 虚拟数据
   if (!sessionStorage.getItem(key)) {
@@ -146,27 +166,26 @@ function initData (key) {
     let userData = {
       // 登录客户
       customer: {
-        customerID: -1,
-        customerName: 'coffce',
-        enterpriseID: 'nick2',
-        image: '../../../static/1.jpg'
+        customerID: 'null',
+        customerName: 'null',
+        enterpriseID: 'null',
+        image: '../../../static/1.jpg',
+        customerInfomation: []
       },
 
       // 客服列表
       cs: {
-        csID: 'nick2@robot.com',
-        csName: 'MonsterSXF',
-        enterpriseID: 'nick2',
+        csID: '&Robot',
+        csName: 'null',
+        enterpriseID: 'null',
         image: '../../../static/2.png'
       },
 
       // 会话列表
       session: {
-        customerID: -1,
-        enterpriseID: 'nick2',
         messages: [
           {
-            text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
+            text: '你好，我是机器人alpha. 你可以询问我任何想问的问题，如果需要转接人工客服，请点击窗口下方的转接按钮进行转接哦~',
             isText: true,
             date: now,
             image: '../../../static/2.png'
@@ -181,7 +200,6 @@ function initData (key) {
 
 export default {
   el: '#chat',
-
   data () {
     initData(key)
     let dataserver = JSON.parse(sessionStorage.getItem(key))
@@ -206,25 +224,30 @@ export default {
       modalShowBigImg: false,
 
       // api接口
-      apiCustomerserviceDisplayrobotreplyShow: '../api/customerservice_displayrobotreply_show/',
-      apiChattinglogSendMessage: '../api/chattinglog_send_message/',
-      apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
-      apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
-      apiSmallimagelogSendImage: '../api/smallimagelog_send_image/',
-      apiCustomerCheckInfo: '../api/customer_check_info/',
+      apiCustomerserviceDisplayrobotreplyShow: '../../api/customerservice_displayrobotreply_show/',
+      apiChattinglogSendMessage: '../../api/chattinglog_send_message/',
+      apiChattinglogGetCsId: '../../api/chattinglog_get_cs_ID/',
+      apiBigimagelogSendImage: '../../api/bigimagelog_send_image/',
+      apiSmallimagelogSendImage: '../../api/smallimagelog_send_image/',
+      apiCustomerCheckInfo: '../../api/customer_check_info/',
+      apiCustomerDisplayCustomerinfopropertyname: '../../api/customer_display_customerinfopropertyname/',
       robotReplyItem: {},
       saveTextItem: {},
-      csEmailItem: {},
+      csIDItem: {},
       saveImgItem: {},
       saveBigImgItem: {},
       customerCheckItem: {},
+      customerInfoNameCheckItem: {},
 
       databaseCsID: '',
-      adminNickname: 'nick2'
+      adminNickname: '',
+      customerInfoNameArray: []
     }
   },
 
   created () {
+    this.getCustomerInfoUrl()
+
     // 如果初次登录， 初始化
     if (this.customer.customerID === -1) {
       this.customer.customerID = (Math.random() * 1000).toString()
@@ -232,7 +255,7 @@ export default {
     }
 
     // 如果刷新之前已转接为人工客服，自动连接服务器
-    if (this.cs.csID.indexOf("robot.com") === -1) {
+    if (this.cs.csID.indexOf('&Robot') === -1) {
       let that = this
       this.socket = io('http://localhost:3000')
 
@@ -250,10 +273,6 @@ export default {
           resolve()
         })
 
-        this.socket.on('no server available', function () {
-          noServerAvailable(that.cs, that.session)
-        })
-
         this.socket.on('switch cs', function (enterpriseID, formerCsID) {
           that.socket.emit('switch cs', enterpriseID, formerCsID)
           resolve()
@@ -261,17 +280,17 @@ export default {
 
         this.socket.emit('cs come back', that.customer.enterpriseID, that.cs.csID)
       }).then(function () {
-        that.csEmailItem = {
-          'email': that.cs.csID
+        that.csIDItem = {
+          'nickname': that.cs.csID
         }
-        console.log(that.csEmailItem)
+        console.log(that.csIDItem)
         that.getCsIdApi()
       })
     } else {
-      this.csEmailItem = {
-        'email': this.cs.csID
+      this.csIDItem = {
+        'nickname': this.cs.csID
       }
-      console.log(this.csEmailItem)
+      console.log(this.csIDItem)
       this.getCsIdApi()
     };
 
@@ -296,14 +315,8 @@ export default {
           return rst
         })
     }, false)
-
-
-
   },
 
-  computed: {
-
-  },
 
   watch: {
     // 每当session改变时，保存到localStorage中
@@ -324,16 +337,15 @@ export default {
     /**
       * @description 替换换行符，实现多行文本输入
       */
-    repstr(str)
-    {
-      return str.replace(new RegExp("\n","gm"),"<br/>");
+    repstr (str) {
+      return str.replace(new RegExp('\n', 'gm'), '<br/>')
     },
     /**
       * @description 键盘输入信息
       */
     keyboardInputing (e) {
-      console.log("method: keyboardInputing")
-      if (e.keyCode === 13 && this.chatlogData.text.length) {
+      console.log('method: keyboardInputing')
+      if (e.ctrlKey && e.keyCode === 13 && this.chatlogData.text.length) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
         residual.innerHTML = ''
         this.chatlogData.text = this.repstr(this.chatlogData.text)
@@ -349,7 +361,7 @@ export default {
         let index = this.session.messages.length
         this.saveText(1, index - 1)
         console.log('keyboardInputing2')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
+        if (this.cs.csID.indexOf('&Robot') === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -366,7 +378,7 @@ export default {
       * @description 按钮输入信息
       */
     buttonInputing (e) {
-      console.log("method: buttonInputing")
+      console.log('method: buttonInputing')
       if (this.chatlogData.text.length !== 0) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
         residual.innerHTML = ''
@@ -383,7 +395,7 @@ export default {
         let index = this.session.messages.length
         this.saveText(1, index - 1)
         console.log('buttonInputing2')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
+        if (this.cs.csID.indexOf('&Robot') === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -398,7 +410,7 @@ export default {
     },
 
     imgInputing () {
-      console.log("method: imgInputing")
+      console.log('method: imgInputing')
       if (this.chatlogData.img !== '') {
         this.session.messages.push({
           img: this.chatlogData.img,
@@ -412,7 +424,7 @@ export default {
         let index = this.session.messages.length
         this.saveImg(1, index - 1)
         console.log('this.saveImg(1, index - 1)')
-        if (this.cs.csID.indexOf("robot.com") === -1) {
+        if (this.cs.csID.indexOf('&Robot') === -1) {
           this.socket.emit('customer send picture', this.chatlogData.bigImg, this.chatlogData.img, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
           console.log('socket')
         }
@@ -425,27 +437,28 @@ export default {
       * @description 点击按钮转接客服
       */
     switchToCs (e) {
-      console.log("method: switchToCs")
-      // console.log(this.cs.csID.indexOf("robot.com"))
-      if (this.cs.csID.indexOf("robot.com") === -1) {
+      console.log('method: switchToCs')
+      // console.log(this.cs.csID.indexOf("&Robot"))
+      if (this.cs.csID.indexOf('&Robot') === -1) {
         alert('当前已为人工客服！')
         return
       }
+      // console.log(this.customer.customerInfomation)
+      // this.getCustomerInfo()
       let that = this
       that.socket = io('http://localhost:3000')
       initSocket(that.cs, that.session, that.socket, that.customer).then(function () {
-        that.csEmailItem = {
-          'email': that.cs.csID
+        that.csIDItem = {
+          'nickname': that.cs.csID
         }
-        console.log(that.csEmailItem)
+        console.log(that.csIDItem)
         that.getCsIdApi()
       })
     },
-    /**
-      * @description 图片压缩
-      */
+
+    // 图片压缩
     imageCompress () {
-      console.log("method: imageCompress")
+      console.log('method: imageCompress')
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
@@ -463,31 +476,29 @@ export default {
       obj.value = ''
     },
     /**
-      * @description 上传图片
+      * @description 加载图片
       */
     imageUpload () {
-      console.log("method: imageUpload")
+      console.log('method: imageUpload')
       var file = document.getElementById('inputFile')
       file.click()
     },
-    /**
-      * @description 显示大图
-      */
+
+    // 显示大图片
     showBigImg (bigImg) {
-      console.log("method: showBigImg")
+      console.log('method: showBigImg')
       this.bigImgSrc = bigImg
       this.modalShowBigImg = true
     },
-
     screenShot () {
       console.log("method: screenShot")
       window.parent.postMessage('Screen shot', '*')
     },
     /**
-      * @description 获取机器人回复
+      * @description 获取机器人回复调用后端接口
       */
     showRobotReplyApi () {
-      console.log("method: showRobotReplyApi")
+      console.log('method: showRobotReplyApi')
       this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robotReplyItem)
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
@@ -509,10 +520,10 @@ export default {
         })
     },
     /**
-      * @description 显示机器人回复
+      * @description 显示机器人回复并存入数据库
       */
     showRobotReply (msg) {
-      console.log("method: showRobotReply")
+      console.log('method: showRobotReply')
       this.session.messages.push({
         text: msg,
         isText: true,
@@ -523,29 +534,29 @@ export default {
       let index = this.session.messages.length
       this.saveText(0, index - 1)
     },
-
-    // 获取CSID
+    /**
+      * @description 通过email设置用户ID
+      */
     getCsIdApi () {
-      console.log("method: getCsIdApi")
-      console.log(this.csEmailItem)
-      this.$http.post(this.apiChattinglogGetCsId, this.csEmailItem)
+      console.log('method: getCsIdApi')
+      console.log(this.csIDItem)
+      this.$http.post(this.apiChattinglogGetCsId, this.csIDItem)
         .then((response) => {
           this.databaseCsID = response.data
-          console.log('get_cs_id_api1')
-          console.log(response.data)
         }, (response) => {
-          // window.location.href = '../se_login'
-          console.log('get_cs_id_api2')
+          // window.location.href = '../se_login'=
         })
     },
     /**
       * @description 保存文本接口
       */
     saveTextApi () {
-      console.log("method: saveTextApi")
+      console.log('method: saveTextApi')
+      console.log(this.saveTextItem)
       this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
         .then((response) => {
           console.log('save_text_api1')
+          console.log(response.data)
           this.saveTextItem = {}
         }, (response) => {
           // window.location.href = '../se_login'
@@ -553,15 +564,15 @@ export default {
         })
     },
     /**
-      * @description 保存文本接口
+      * @description 保存文本
       */
     saveText (isClient, index) {
-      console.log("method: saveText")
+      console.log('method: saveText')
       this.saveTextItem = {
         'client_id': this.customer.customerID,
         'service_id': this.databaseCsID,
         'content': this.session.messages[index].text,
-        'is_client': isClient
+        'is_client': isClient,
       }
       console.log(this.saveTextItem)
       this.saveTextApi()
@@ -570,7 +581,7 @@ export default {
       * @description 保存图片接口
       */
     saveImgApi () {
-      console.log("method: saveImgApi")
+      console.log('method: saveImgApi')
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -589,7 +600,7 @@ export default {
       * @description 保存大图接口
       */
     saveBigImgApi () {
-      console.log("method: saveBigImgApi")
+      console.log('method: saveBigImgApi')
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -605,10 +616,10 @@ export default {
         })
     },
     /**
-      * @description 保存图片函数
+      * @description 保存图片
       */
     saveImg (isClient, index) {
-      console.log("method: saveImg")
+      console.log('saveImg')
       let timestamp = new Date().getTime()
       console.log(timestamp)
       let label = timestamp + this.customer.customerID
@@ -637,24 +648,22 @@ export default {
       console.log("method: endSession")
       window.parent.postMessage('End session', '*')
     },
+
     customerCheck () {
-      console.log('[methods]: customerCheck')
-      let url = window.loction.href
-      let urlArray = url.split('/')
-      let adminName = urlArray[4]
-      let userID = this.$utils.getUrlKey('userID')
-      let userName = this.$utils.getUrlKey('userName')
+      this.customer.customerID = this.$utils.getUrlKey('userID')
+      this.customer.customerName = this.$utils.getUrlKey('nickname')
       let signature = this.$utils.getUrlKey('signature')
       this.customerCheckItem = {
-        'enterprise_id': adminName,
-        'customer_id': userID,
-        'cusotmer_name': userName,
+        'enterprise_id': this.adminNickname,
+        'customer_id': this.customer.customerID,
+        'cusotmer_name': this.customer.customerName,
         'hash_result': signature
       }
       this.customerCheckApi()
     },
     customerCheckApi () {
-      console.log('[methods]: customerCheckApi')      
+      console.log('[methods]: customerCheckApi')
+      console.log(this.customerCheckItem)
       this.$http.post(this.apiCustomerCheckInfo, this.customerCheckItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
@@ -666,15 +675,84 @@ export default {
           } else if (response.data === 'ERROR, wrong nickname.') {
             // window.location.href = '../not_found'
             console.log('customerCheckApi3')
-          } else {
+          } else if (response.data === 'False') {
+            // window.location.href = '../not_found'
             console.log('customerCheckApi4')
+          } else if (response.data === 'True') {
+            console.log('customerCheckApi6')
+            this.customerInfoNameCheckApi()
+          } else {
+            console.log(response.data)
           }
         }, (response) => {
           // window.location.href = '../not_found'
-            console.log('customerCheckApi5')
+          console.log('customerCheckApi5')
         })
+    },
+    customerInfoNameCheckApi () {
+      console.log('[methods: customerInfoNameCheckApi]')
+      console.log(this.customerInfoNameCheckItem)
+      this.$http.post(this.apiCustomerDisplayCustomerinfopropertyname, this.customerInfoNameCheckItem)
+        .then((response) => {
+          if (response.data === 'ERROR, incomplete information.') {
+            // window.location.href = '../not_found'
+            console.log('customerInfoNameCheckApi3')
+          } else if (response.data === 'ERROR, wrong information.') {
+            // window.location.href = '../not_found'
+            console.log('customerInfoNameCheckApi4')
+          } else if (response.data === 'ERROR, wrong nickname.') {
+            // window.location.href = '../not_found'
+            console.log('customerInfoNameCheckApi5')
+          } else {
+            console.log('customerInfoNameCheckApi6')
+            this.customerInfoNameArray = response.data
+            console.log(this.customerInfoNameArray)
+            this.getCustomerInfo()
+          }
+        }, (response) => {
+          // window.location.href = '../not_found'
+          console.log('customerInfoNameCheckApi7')
+        })
+    },
+    getCustomerInfo () {
+      console.log('[methods: getCustomerInfo]')
+      let tempUserID = {
+        name: 'userID',
+        content: this.customer.customerID
+      }
+      let tempNickname = {
+        name: 'nickname',
+        content: this.customer.customerName
+      }
+      this.customer.customerInfomation.push(tempUserID)
+      this.customer.customerInfomation.push(tempNickname)
+      for (let i = 0; i < this.customerInfoNameArray.length; i++) {
+        let tempCustomerInfo = {
+          name: this.customerInfoNameArray[i].name,
+          content: this.$utils.getUrlKey(this.customerInfoNameArray[i].name)
+        }
+        this.customer.customerInfomation.push(tempCustomerInfo)
+      }
+      this.cs.csID = this.customer.enterpriseID + '&Robot'
+      this.csIDItem = {
+        'nickname': this.cs.csID
+      }
+      console.log(this.csIDItem)
+      console.log(this.customer.customerInfomation)
+      this.getCsIdApi()
+    },
+    getCustomerInfoUrl () {
+      console.log('[methods: getCustomerInfoUrl]')
+      let url = window.location.href
+      let urlArray = url.split('/')
+      this.adminNickname = urlArray[4]
+      this.customer.enterpriseID = this.adminNickname
+      this.cs.enterpriseID = this.adminNickname
+      this.customerInfoNameCheckItem = {
+        'enterprise_id': this.adminNickname
+      }
+      this.customerCheck()
     }
-
   },
 
   filters: {
