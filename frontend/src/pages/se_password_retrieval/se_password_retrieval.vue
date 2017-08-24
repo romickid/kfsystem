@@ -129,7 +129,7 @@ export default {
       * @description 检查进入网页的链接是否合法（真的还是伪造的），若不合法则跳转到404页
       */
     verify () {
-      this.$http.post(this.apiCustomerserviceForgetPasswordCheckVid, this.customerserviceResetPassword)
+      this.$http.post(this.apiCustomerserviceForgetPasswordCheckVid, this.customerserviceFindPassword)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../notfound/'
@@ -152,7 +152,7 @@ export default {
       * @description 把用户设置的新密码传输到后端进行交互，并得到反馈
       */
     resetPassword () {
-      this.$http.post(this.apiCustomerserviceForgetPasswordSaveData, this.adminResetPassword)
+      this.$http.post(this.apiCustomerserviceForgetPasswordSaveData, this.customerserviceResetPassword)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
             window.location.href = '../notfound/'

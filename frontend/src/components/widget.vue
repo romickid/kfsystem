@@ -6,7 +6,7 @@
       </div>
       <div class='method-background'>
         <div class='method-content'>
-          <a>{{ widgetUrl }}</a>
+          <a>{{ script }}</a>
         </div>
         <div class='method-foot'>
           <ul>
@@ -21,31 +21,10 @@
 <script>
 export default {
   name: 'widget',
-  data () {
-    return {
-      widgetUrl: '',
-      apiadminShowUrlStatus: '../api/admin_show_url_status/'
+  computed: {
+    script () {
+      return '<scrip' + 't src="http://192.168.55.33:8000/static/js/jquery-2.1.1.min.js"></scrip' + 't><scrip' + 't src="http://192.168.55.33:8000/static/js/html2canvas.js"></scrip' + 't><scrip' + 't src="http://192.168.55.33:8000/static/js/embeddedwindow.js"></scrip' + 't>'
     }
-  },
-  methods: {
-    /**
-      * @description 获取企业嵌入式接口js入口
-      */
-    getWidgetUrlApi () {
-      this.$http.post(this.apiadminShowUrlStatus)
-        .then((response) => {
-          if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login/'
-          } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login/'
-          } else {
-            this.widgetUrl = response.data.widget_url
-          }
-        })
-    }
-  },
-  created () {
-    this.getWidgetUrlApi()
   }
 }
 </script>

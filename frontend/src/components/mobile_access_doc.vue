@@ -6,7 +6,8 @@
     </div>
     <div class='main-content-body'>
       <div class='guide'>
-        <h2>移动网站web接入样例（图片）</h2>
+        <h2>移动网站web接入样例</h2>
+        <img src='./docPic/doc19.png'>
       </div>
       <div class='line'></div>
       <div class='guide'>
@@ -14,13 +15,14 @@
         <p>移动网站对接，可以将移动页面的URL直接嵌入到对应的接口页面</p>
         <ul>
           <li>1. 登录BIG5，进入申请的对应系统</li>
-          <li>2. 在左侧一级导航栏，多渠道-mobile中查看移动页面的URL（图片）</li>
+          <li>2. 在左侧一级导航栏，多渠道-mobile中查看移动页面的URL</li>
+          <img src='./docPic/doc21.png'>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>参数传递</h2>
-        <p>用户信息参数传递规则 请参考<a></a></p>
+        <p>用户信息参数传递规则 请参考<router-link :to='user_info'>《客户账户体系对接流程》</router-link></p>
       </div>
       <div class='line'></div>
     </div>
