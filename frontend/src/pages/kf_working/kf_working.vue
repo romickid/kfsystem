@@ -10,10 +10,10 @@
     <div class="sidebar">
       <div class="main-card">
         <header>
-          <img class="customer-avatar" width="40" height="40" :alt="cs.csName" :src="cs.image">
+          <img class="customer-avatar" width="40" height="40" :alt="cs.csID" :src="cs.image">
           <Dropdown>
             <a href="javascript:void(0)">
-              <p class="customer-name">{{ cs.csName }}</p>
+              <p class="customer-name">{{ cs.csID }}</p>
               <Icon type="arrow-down-b"></Icon>
             </a>
             <Dropdown-menu slot="list">
@@ -76,8 +76,8 @@
         </header>
       </div>
       <div class="main-ul">
-        <Tabs value="active">
-          <Tab-pane label="活跃聊天" name="active" @on-click="switchoff" class='tab'>
+        <Tabs v-model="tagName" @on-click="switchoff">
+          <Tab-pane label="活跃聊天" name="active"  class='tab'>
             <ul>
               <li class="main-list" v-for="item in onlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -89,7 +89,7 @@
               </li>
             </ul>
           </Tab-pane>
-          <Tab-pane label="已挂断聊天" name="negative" @on-click="switchoff" class='tab'>
+          <Tab-pane label="已挂断聊天" name="negative" class='tab'>
             <ul>
               <li class="main-list" v-for="item in offlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -240,7 +240,7 @@ function addCustomer (cs_socket, onlineList, customer) {
 
   let timer = setTimeout(function () {
     customerOutMessage(cs_socket, customer.customerID)
-  }, 10000)
+  }, 60000)
 
   onlineList.splice(0, 0,
     {
@@ -280,7 +280,8 @@ function customerHangoff (onlineList, offlineList, customerID) {
       enterpriseID: customer.enterpriseID,
       customerID: customer.customerID,
       customer: customer,
-      messages: messages
+      messages: messages,
+      image: '../../../static/3.jpg'
     })
   } else {
     let index = findOfflineListByCustomerID(offlineList, customerID)
@@ -308,7 +309,6 @@ if (!sessionStorage.getItem(key)) {
     cs: {
       csID: -1,
       enterpriseID: -1,
-      csName: 'coffce',
       image: '../../../static/1.jpg'
     },
 
@@ -423,7 +423,8 @@ export default {
       apiLogShowHistory: '../api/log_show_history/',
 
       databaseCsID: '',
-      tempCustomerID: ''
+      tempCustomerID: '',
+      tagName: 'active'
     }
   },
 
@@ -476,7 +477,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 10000)
+          }, 60000)
 
         // 当前显示的是应该变成列表第2位，因此要++
         if (that.onlineIndex < onlineIndex) {
@@ -491,7 +492,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 10000)
+          }, 60000)
       }
     })
     /**
@@ -515,7 +516,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 10000)
+          }, 60000)
 
         // 当前显示的是应该变成列表第2位，因此要++
         if (that.onlineIndex < onlineIndex) {
@@ -530,7 +531,7 @@ export default {
         that.onlineList[0].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 10000)
+          }, 60000)
       }
     })
 
@@ -612,6 +613,7 @@ export default {
       setTimeout(function () {
         that.socket.enterprise_ID = that.cs.enterpriseID
         that.socket.cs_ID = that.cs.csID
+        console.log(that.cs.csID)
         that.socket.emit('cs login', that.cs.enterpriseID, that.cs.csID)
         that.isLogon = true
       }, 1000)
@@ -719,7 +721,7 @@ export default {
         this.onlineList[this.onlineIndex].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 10000)
+          }, 60000)
         this.chatlogData.text = ''
         console.log(this.chatlogData.text)
       }
@@ -758,7 +760,7 @@ export default {
         this.onlineList[this.onlineIndex].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 10000)
+          }, 60000)
         this.chatlogData.text = ''
       }
     },
@@ -788,7 +790,7 @@ export default {
         this.onlineList[this.onlineIndex].timer = setTimeout(
           function () {
             customerOutMessage(csSocket, customerID)
-          }, 10000)
+          }, 60000)
         this.chatlogData.img = ''
         this.chatlogData.bigImg = ''
       }
@@ -797,8 +799,15 @@ export default {
     // 点击切换查看历史记录信息或当前记录信息
     switchoff () {
       console.log('[method: switchoff]')
-      this.onlineIndex = 0
-      this.offlineIndex = 0
+      if (this.hangon === true && this.tagName === 'negative') {
+        this.hangon = false
+        this.onlineIndex = 0
+        this.offlineIndex = 0
+      } else if (this.hangon === false && this.tagName === 'active') {
+        this.hangon = true
+        this.onlineIndex = 0
+        this.offlineIndex = 0
+      }
     },
     /**
       * @description 获取客服信息，用于第一次登陆的初始化
@@ -815,8 +824,7 @@ export default {
             // window.location.href = '../se_login'
             console.log('getCsInfomation2')
           } else {
-            that.cs.csID = response.data.email
-            that.cs.csName = response.data.nickname
+            that.cs.csID = response.data.nickname
             that.cs.enterpriseID = response.data.admin_nickname
             that.csIDItem = { 'nickname': that.cs.csID }
             console.log(that.cs.csID)

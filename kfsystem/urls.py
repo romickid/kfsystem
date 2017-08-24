@@ -19,7 +19,7 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', TemplateView.as_view(template_name="index.html")),
+    url(r'^$', TemplateView.as_view(template_name="mainpage.html")),
     url(r'^kf_working/', TemplateView.as_view(template_name="kf_working.html")),
     url(r'^web/', TemplateView.as_view(template_name="customer_newlabel.html")),
     url(r'^widget/', TemplateView.as_view(template_name="customer_iframe.html")),
