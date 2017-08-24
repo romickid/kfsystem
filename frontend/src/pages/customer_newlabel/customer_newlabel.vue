@@ -693,7 +693,6 @@ export default {
       this.customer.customerInfomation.push(tempUserID)
       this.customer.customerInfomation.push(tempNickname)
       for (let i = 0; i < this.cusotmerInfoNameArray.length; i++) {
-      // for (let i = 0;i < this.customerInfoNameArray.length;i++) {
         let tempCustomerInfo = {
           name: this.customerInfoNameArray[i].name,
           content: this.$utils.getUrlKey(this.customerInfoNameArray[i].name)
