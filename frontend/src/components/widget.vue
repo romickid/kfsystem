@@ -28,15 +28,16 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 获取企业嵌入式接口js入口
+      */
     getWidgetUrlApi () {
       this.$http.post(this.apiadminShowUrlStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../en_login/'
-            console.log('getWidgetUrlApi1')
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../en_login/'
-            console.log('getWidgetUrlApi2')
+            window.location.href = '../en_login/'
           } else {
             this.widgetUrl = response.data.widget_url
           }

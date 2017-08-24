@@ -28,15 +28,16 @@ export default {
     }
   },
   methods: {
+    /**
+      * @description 获取企业移动端接入网址
+      */
     getMobileUrlApi () {
       this.$http.post(this.apiadminShowUrlStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../en_login/'
-            console.log('getMobileUrlApi1')
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../en_login/'
-            console.log('getMobileUrlApi2')
+            window.location.href = '../en_login/'
           } else {
             this.mobileUrl = response.data.mobile_url
           }
