@@ -237,7 +237,7 @@ function customerOutMessage (socket, customerID) {
   */
 function addCustomer (cs_socket, onlineList, customer) {
   console.log('[function: addCustomer]')
-
+  console.log(customer.customerInfomation)
   let timer = setTimeout(function () {
     customerOutMessage(cs_socket, customer.customerID)
   }, 60000)

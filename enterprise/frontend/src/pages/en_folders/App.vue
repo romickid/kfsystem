@@ -167,17 +167,19 @@ export default {
 
 <style>
 body {
-  background: url(../../../static/center.jpg) no-repeat;
+  background: url(../../../static/center.jpg);
   height: 100%;
   width: 100%;
   overflow: hidden;
   background-size: cover;
+  overflow-y: scroll;
+  line-height: 1;
 }
 
 .all {
   width: 40%;
   height: 600px;
-  margin: 10px 0 0 40%;
+  margin: 10px 0 0 30%;
   border-radius: 10px;
   background: rgba(154, 192, 205, 0.5);
 }
@@ -201,6 +203,7 @@ body {
   margin-bottom: 25px;
   padding-left: 38%;
   flex: 1 1 100%;
+  color: white;
 }
 
 .label {
@@ -209,6 +212,7 @@ body {
   padding-top: 30px;
   padding-bottom: 40px;
   flex: 1 1 100%;
+  color: white;
 }
 
 .text {
