@@ -4,6 +4,7 @@
       <div class='user-info'>{{ user_info }}</div>
       <div class='div-button'><a href="./en_folders"><button class='button'>免费注册</button></a></div>
       <div class='div-button'><a href="./en_login"><button class='button'>用户登录</button></a></div>
+      <div class='div-button'><a :href='webUrl'><button class='button'>联系客服</button></a></div>
     </div>
   </div>
 </template>
@@ -14,7 +15,9 @@ export default {
   data () {
     return {
       user_info: '未登录',
-      apiCustomerShowUserInfo: '../api/customer_show_user_info/'
+      apiCustomerShowUserInfo: '../api/customer_show_user_info/',
+      apiCustomerGetWebUrl: '../api/customer_get_web_url/',
+      webUrl: ''
     }
   },
   methods: {
@@ -29,10 +32,21 @@ export default {
             this.user_info = response.data.email
           }
         })
+    },
+    getWebUrl () {
+      this.$http.post(this.apiCustomerGetWebUrl)
+        .then((response) => {
+          if (response.data === 'ERROR, communication key is not exist') {
+            console.log('getUserInfoApi1')
+          } else {
+            this.webUrl = response.data
+          }
+        })
     }
   },
   created () {
     this.getUserInfoApi()
+    this.getWebUrl()
   }
 }
 </script>
@@ -49,11 +63,11 @@ export default {
 body {
   overflow-y: scroll;
   margin: 0;
+  background-image: url('./assets/background.png');
+  background-size: 100%;
 }
 
 .main-content {
-  background-image: url('./assets/background.png');
-  background-size: 100%;
   height: 11780px;
 }
 

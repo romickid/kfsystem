@@ -681,6 +681,8 @@ export default {
         })
     },
     getCustomerInfo () {
+      this.customer.customerInfomation = []
+      console.log(this.customer.customerInfomation)
       console.log('[methods: getCustomerInfo]')
       let tempUserID = {
         name: 'userID',

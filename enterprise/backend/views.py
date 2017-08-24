@@ -103,9 +103,9 @@ def customer_get_web_url(request):
             return HttpResponse('ERROR, communication key is not exist', status=200)
         communication_key = CommunicationKey.objects.get(myid = 1).key
         hash_key = hashlib.sha512()
-        hash_key.update('demo'+email+nickname+communication_key).encode('utf-8')
+        hash_key.update(('nick2'+email+nickname+communication_key).encode('utf-8'))
         signature = hash_key.hexdigest()
-        data = 'http://192.168.55.33:8000/web/demo/?email=' + email + '&nickname=' + nickname + '&telephone=' + telephone + '&location=' + location + '&description=' + description + '&signature=' + signature
+        data = 'http://192.168.55.33:8000/web/nick2/?userID=' + email + '&nickname=' + nickname + '&telephone=' + telephone + '&location=' + location + '&description=' + description + '&signature=' + signature
         return HttpResponse(data, status=200)
 
 
@@ -118,9 +118,9 @@ def customer_get_widget_url(request):
             return HttpResponse('ERROR, communication key is not exist', status=200)
         communication_key = CommunicationKey.objects.get(myid = 1).key
         hash_key = hashlib.sha512()
-        hash_key.update('demo'+email+nickname+communication_key).encode('utf-8')
+        hash_key.update(('nick2'+email+nickname+communication_key).encode('utf-8'))
         signature = hash_key.hexdigest()
-        data = 'http://192.168.55.33:8000/widget/demo/?email=' + email + '&nickname='+ nickname + '&telephone=' + telephone + '&location=' + location + '&description=' + description + '&signature=' + signature
+        data = 'http://192.168.55.33:8000/widget/nick2/?userID=' + email + '&nickname='+ nickname + '&telephone=' + telephone + '&location=' + location + '&description=' + description + '&signature=' + signature
         return HttpResponse(data, status=200)
 
 
@@ -133,7 +133,7 @@ def customer_get_mobile_url(request):
             return HttpResponse('ERROR, communication key is not exist', status=200)
         communication_key = CommunicationKey.objects.get(myid = 1).key
         hash_key = hashlib.sha512()
-        hash_key.update('demo'+email+nickname+communication_key).encode('utf-8')
+        hash_key.update(('nick2'+email+nickname+communication_key).encode('utf-8'))
         signature = hash_key.hexdigest()
-        data = 'http://192.168.55.33:8000/mobile/demo/?email=' + email + '&nickname=' + nickname + '&telephone=' + telephone + '&location=' + location + '&description=' + description + '&signature=' + signature
+        data = 'http://192.168.55.33:8000/mobile/nick2/?userID=' + email + '&nickname=' + nickname + '&telephone=' + telephone + '&location=' + location + '&description=' + description + '&signature=' + signature
         return HttpResponse(data, status=200)
