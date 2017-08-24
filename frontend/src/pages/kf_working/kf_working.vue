@@ -416,7 +416,6 @@ export default {
       apiCusotmerserviceUpdateConnectionNum: '../api/customerservice_update_connection_num/',
       apiCusotmerserviceUpdateLoginStatus: '../api/customerservice_update_login_status/',
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
-      apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
       apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
       apiBigimagelogShowSingleHistory: '../api/bigimagelog_show_single_history/',
@@ -1071,6 +1070,7 @@ export default {
     showBigImg (bigImg) {
       console.log('[method: showBigImg]')
       this.bigImgSrc = bigImg
+      console.log(this.bigImgSrc)
       this.modalShowBigImg = true
     },
     /**
@@ -1197,6 +1197,7 @@ export default {
       */
     showHistoryApi () {
       console.log('[method: showHistoryApi]')
+      console.log(this.showHistoryItem)
       this.$http.post(this.apiLogShowHistory, this.showHistoryItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -1283,7 +1284,7 @@ export default {
       */
     showHistoryBigImgApi () {
       console.log('[method: showHistoryBigImgApi]')
-      this.$http.post(this.apiCusotmerserviceUpdateConnectionNum, this.showHistoryBigImgItem)
+      this.$http.post(this.apiBigimagelogShowSingleHistory, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
             // window.location.href = '../notfound/'
