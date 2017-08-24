@@ -11,7 +11,7 @@ window.onload = function () {
   div1.className = 'insertf'
   mydiv.insertBefore(div1, mydiv.childNodes[1])
   document.getElementsByClassName('insertf')[0].innerHTML = '<iframe class="insertframe" id="links" src=""></iframe>'
-  document.getElementsByClassName('insertframe')[0].style = 'position: fixed;width: 35%;height: 60%;z-index: 9999;margin-left: 45%'
+  document.getElementsByClassName('insertframe')[0].style = 'position: fixed;width: 35%;height: 60%;z-index: 9999;margin-left: 45%;margin-top: 10%'
 }
 
 window.addEventListener('message', function (e) {
@@ -22,7 +22,7 @@ window.addEventListener('message', function (e) {
     html2canvas(document.body, {
       onrendered: function (canvas) {
         var canvasData = canvas.toDataURL()
-        window.frames[0].postMessage(canvasData, 'http://192.168.55.33:8000/customer_iframe/')
+        window.frames[0].postMessage(canvasData, 'http://192.168.55.33:8000/widget/')
       }
     })
     document.getElementsByClassName('insertf')[0].style.display = 'block'
@@ -42,7 +42,7 @@ function getInfo () {
   $(function () {
     $.ajax({
       type: 'POST',
-      url: 'http://192.168.55.33:7000/api/admin_get_info_iframe/',
+      url: 'http://192.168.55.33:7000/api/customer_get_widget_url/',
       success: function (data) {
         console.log(data)
         document.getElementById('links').setAttribute('src', data)
