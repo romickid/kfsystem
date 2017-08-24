@@ -2,16 +2,16 @@
   <div>
     <div class="header">
       <div class="ceiling">
-        <a href='../main'>
+        <a href='../main/'>
           <img src="../../../static/logo5.png" alt="" style="height:40px;width:40px">
           <img src="../../../static/name.png" alt="" style="height:40px">
         </a>
         <div class="ceiling-main">
-          <a href='../main' class='ceiling-item'>首页</a> |
-          <a href="../documentation" class='ceiling-item'>帮助中心</a> |
-          <a href="../en_login" class='ceiling-item'>企业登录</a> |
-          <a href="../en_folders" class='ceiling-item'>企业注册</a> |
-          <a href="../se_login" class='ceiling-item'>客服入口</a>
+          <a href='../main/' class='ceiling-item'>首页</a> |
+          <a href="../documentation/" class='ceiling-item'>帮助中心</a> |
+          <a href="../en_login/" class='ceiling-item'>企业登录</a> |
+          <a href="../en_folders/" class='ceiling-item'>企业注册</a> |
+          <a href="../se_login/" class='ceiling-item'>客服入口</a>
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
           </div>
           <div class="div">
             <label id="la">已有账号，直接</label>
-            <a href="../se_login" target="_blank" id="login">登录</a>
+            <a href="../se_login/" id="login">登录</a>
           </div>
         </div>
       </div>
@@ -99,20 +99,20 @@ export default {
       this.$http.post(this.api_set_profile, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, incomplete information.' || response.data === 'ERROR, wrong information.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong email or vid.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, vid is expired.') {
-            window.location.href = '../timeout'
+            window.location.href = '../timeout/'
           } else if (response.data === 'ERROR, nickname has been used.') {
             this.$Message.info('该昵称已被注册！')
           } else {
-            window.location.href = '../se_login'
+            window.location.href = '../se_login/'
           }
         }, (response) => {
-          window.location.href = '../notfound'
+          window.location.href = '../notfound/'
         })
     },
     /**
@@ -166,20 +166,20 @@ export default {
       this.$http.post(this.api_customerservice_set_profile_check_vid, this.customerserviceVerify)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong email or vid.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, vid is expired.') {
-            window.location.href = '../timeout'
+            window.location.href = '../timeout/'
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else {
             this.newVid = response.data
           }
         }, (response) => {
-          window.location.href = '../notfound'
+          window.location.href = '../notfound/'
         })
     },
     /**

@@ -37,5 +37,6 @@ urlpatterns = [
     url(r'^api/', include('backend.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include('backend.urls')),
+    url(r'^', TemplateView.as_view(template_name="not_found.html")),
 
 ]

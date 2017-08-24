@@ -32,10 +32,10 @@ export default {
       this.$http.post(this.apiadminShowUrlStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../en_login'
+            // window.location.href = '../en_login/'
             console.log('getWidgetUrlApi1')
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../en_login'
+            // window.location.href = '../en_login/'
             console.log('getWidgetUrlApi2')
           } else {
             this.widgetUrl = response.data.widget_url

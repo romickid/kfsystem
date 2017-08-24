@@ -7,8 +7,8 @@
           <img src='./assets/name.png' style="height:40px">
         </div>
         <div class='layout-ceiling-main'>
-          <a href='../main'>首页</a> |
-          <a href='../documentation'>帮助中心</a>
+          <a href='../main/'>首页</a> |
+          <a href='../documentation/'>帮助中心</a>
         </div>
       </div>
     </div>
@@ -125,15 +125,15 @@ export default {
       this.$http.post(this.apiAdminShowUserStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             this.adminEmail = response.data.email
             this.adminName = response.data.nickname
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     },
     /**
@@ -143,14 +143,14 @@ export default {
       this.$http.post(this.apiAdminLogout)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     }
   },

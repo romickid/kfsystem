@@ -76,8 +76,8 @@
         </header>
       </div>
       <div class="main-ul">
-        <Tabs value="active">
-          <Tab-pane label="活跃聊天" name="active" @on-click="switchoff" class='tab'>
+        <Tabs v-model="tagName" @on-click="switchoff">
+          <Tab-pane label="活跃聊天" name="active" class='tab'>
             <ul>
               <li class="main-list" v-for="item in onlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -89,7 +89,7 @@
               </li>
             </ul>
           </Tab-pane>
-          <Tab-pane label="已挂断聊天" name="negative" @on-click="switchoff" class='tab'>
+          <Tab-pane label="已挂断聊天" name="negative" class='tab'>
             <ul>
               <li class="main-list" v-for="item in offlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -423,7 +423,8 @@ export default {
       apiLogShowHistory: '../api/log_show_history/',
 
       databaseCsID: '',
-      tempCustomerID: ''
+      tempCustomerID: '',
+      tagName: 'active'
     }
   },
 
@@ -797,8 +798,15 @@ export default {
     // 点击切换查看历史记录信息或当前记录信息
     switchoff () {
       console.log('[method: switchoff]')
-      this.onlineIndex = 0
-      this.offlineIndex = 0
+      if (this.hangon === true && this.tagName === 'negative') {
+        this.hangon = false
+        this.onlineIndex = 0
+        this.offlineIndex = 0
+      } else if (this.hangon === false && this.tagName === 'active') {
+        this.hangon = true
+        this.onlineIndex = 0
+        this.offlineIndex = 0
+      }
     },
     /**
       * @description 获取客服信息，用于第一次登陆的初始化
@@ -809,10 +817,10 @@ export default {
       that.$http.post(that.apiCustomerserviceShowUserStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('getCsInfomation1')
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('getCsInfomation2')
           } else {
             that.cs.csID = response.data.email
@@ -823,7 +831,7 @@ export default {
             that.getCsIdApi()
           }
         }, (response) => {
-          // window.location.href = '../se_login'
+          // window.location.href = '../se_login/'
           console.log('getCsInfomation3')
         })
     },
@@ -863,16 +871,16 @@ export default {
       this.$http.post(this.apiCustomerserviceLogout)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('csLogoutApi1')
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('csLogoutApi2')
           } else {
-            window.location.href = '../se_login'
+            window.location.href = '../se_login/'
           }
         }, (response) => {
-          // window.location.href = '../se_login'
+          // window.location.href = '../se_login/'
           console.log('csLogoutApi3')
         })
     },
@@ -998,18 +1006,18 @@ export default {
       this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robotSentenceAddItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('set_robot_api1')
           } else if (response.data === 'ERROR, incomplete information.') {
             this.$Message.info('您所填的信息不完整')
           } else if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('set_robot_api2')
           } else if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('set_robot_api3')
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login'
+            // window.location.href = '../se_login/'
             console.log('set_robot_api4')
           } else if (response.data === 'ERROR, info is exist.') {
             this.$Message.info('该问题已存在')
@@ -1018,7 +1026,7 @@ export default {
             this.$refs.robotSetting.show_robot_question_api()
           }
         }, (response) => {
-          // window.location.href = '../se_login'
+          // window.location.href = '../se_login/'
           console.log('set_robot_api5')
         })
     },
@@ -1082,7 +1090,7 @@ export default {
         .then((response) => {
           this.saveTextItem = {}
         }, (response) => {
-          // window.location.href = '../se_login'
+          // window.location.href = '../se_login/'
           console.log('save_text_api')
         })
     },
@@ -1097,7 +1105,7 @@ export default {
           this.databaseCsID = response.data
           console.log(this.databaseCsID)
         }, (response) => {
-          // window.location.href = '../se_login'
+          // window.location.href = '../se_login/'
           console.log('get_cs_id_api')
         })
     },
@@ -1109,13 +1117,13 @@ export default {
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('save_img_api1')
           } else {
             this.saveImgItem = {}
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('save_img_api2')
         })
     },
@@ -1127,13 +1135,13 @@ export default {
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('save_bigImg_api1')
           } else {
             this.saveBigImgItem = {}
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('save_bigImg_api2')
         })
     },
@@ -1186,7 +1194,7 @@ export default {
       this.$http.post(this.apiLogShowHistory, this.showHistoryItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('show_history_api1')
           } else {
             console.log(response.data)
@@ -1194,7 +1202,7 @@ export default {
             this.printHistoryMessages(historyArray)
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('show_history_api2')
         })
     },
@@ -1272,14 +1280,14 @@ export default {
       this.$http.post(this.apiCusotmerserviceUpdateConnectionNum, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('show_history_big_img_api1')
           } else {
             this.showHistoryBigImgItem = {}
             this.showBigImg(response.data)
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('show_history_big_img_api2')
         })
     },
@@ -1293,7 +1301,7 @@ export default {
       })
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('ERROR, session is broken.')
           } else if (response.data === 'ERROR, wrong email.') {
             console.log('ERROR, wrong email.')
@@ -1301,7 +1309,7 @@ export default {
             console.log('ERROR, wrong type.')
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('backendUpdateConnectionNum Error')
         })
     },
@@ -1315,7 +1323,7 @@ export default {
       })
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../notfound'
+            // window.location.href = '../notfound/'
             console.log('ERROR, session is broken.')
           } else if (response.data === 'ERROR, wrong email.') {
             console.log('ERROR, wrong email.')
@@ -1323,7 +1331,7 @@ export default {
             console.log('ERROR, wrong type.')
           }
         }, (response) => {
-          // window.location.href = '../notfound'
+          // window.location.href = '../notfound/'
           console.log('backendUpdateLoginStatus Error')
         })
     }

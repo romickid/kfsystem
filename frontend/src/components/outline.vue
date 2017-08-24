@@ -36,9 +36,9 @@ export default {
       this.$http.post(this.apiAdminShowCsStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             console.log(response.data)
             for (var p in response.data) {
@@ -47,7 +47,7 @@ export default {
             }
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     }
   },
