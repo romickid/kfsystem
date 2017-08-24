@@ -39,7 +39,7 @@
           <textarea class="textarea" placeholder="按 Ctrl+Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttonInputing">发送</Button>
-        <input id="inputFile" name='inputFile' type='file' multiple='mutiple' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="fileup">
+        <input id="inputFile" name='inputFile' type='file' multiple='mutiple' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
       </div>
     </div>
   </div>
