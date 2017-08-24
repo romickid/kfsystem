@@ -761,11 +761,10 @@ def customer_check_info(request):
         info_cusotmer_name = json_receive['cusotmer_name']
         instance = Admin.objects.get(nickname=info_enterprise_id)
         hash_result = customer_generate_hash_result(info_enterprise_id, info_customer_id, info_cusotmer_name, instance.communication_key)
-        json_send = [info_enterprise_id, info_customer_id, info_cusotmer_name, instance.communication_key, hash_result]
         if hash_result == json_receive['hash_result']:
             return HttpResponse('True', status=200)
         else:
-            return JsonResponse(json_send, safe=False, status=200)
+            return HttpResponse('False', status=200)
 
 
 @csrf_exempt
