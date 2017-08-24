@@ -864,9 +864,9 @@ export default {
         clearTimeout(this.onlineList[i].timer)
       }
       this.isLogon = false
-      this.csLogoutApi()
       this.backendUpdateLoginStatus(false)
-      that.backendUpdateConnectionNum()
+      this.backendUpdateConnectionNum()
+      this.csLogoutApi()
     },
     /**
       * @description 登出接口

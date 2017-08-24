@@ -96,9 +96,15 @@ function removeByCsId (arr, cs_id) {
 }
 
 
-function distributeCustomer (cs_socket) {
+function deleteCustomer (cs_socket) {
   for (let i = 0; i < cs_socket.list_customer_socket.length; i++) {
-    cs_socket.list_customer_socket[i].emit('switch cs', cs_socket.enterprise_id, cs_socket.cs_id)
+    console.log('[customer out]')
+    customer_socket = cs_socket.list_customer_socket[i]
+    console.log('    Customer out: ' + customer_socket.customer_id)
+    customer_socket.emit('customer expire')
+    removeByCustomerId(cs_socket.list_customer_socket, customer_socket.customer_id)
+    cs_socket.customer_num--
+    console.log('After one customer left, cs ' + cs_socket.cs_id + ' has customers: ' + cs_socket.list_customer_socket.length)
   }
 }
 
@@ -302,7 +308,7 @@ socketIO.on('connection', function (socket) {
   socket.on('log out', function () {
     console.log('[log out]')
     if (!socket.is_cs) {
-      // 用户5分钟未说话自动断开
+      // 用户1分钟未说话自动断开
       let customer_socket = socket
       console.log('Customer ' + customer_socket.customer_id + ' is left')
       let cs_socket = findByCsId(cs_socket_list[socket.enterprise_id], customer_socket.cs_id)
@@ -315,7 +321,7 @@ socketIO.on('connection', function (socket) {
       let cs_socket = socket
       console.log('Cs ' + cs_socket.cs_id + ' is left')
       removeByCsId(cs_socket_list[socket.enterprise_id], cs_socket.cs_id)
-      distributeCustomer(cs_socket) // 转接所有客户至其他客服
+      deleteCustomer(cs_socket) // 转接所有客户至其他客服
     }
   })
   
