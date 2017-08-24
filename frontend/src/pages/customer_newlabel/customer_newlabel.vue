@@ -184,7 +184,7 @@ function initData (key) {
       session: {
         messages: [
           {
-            text: '你好呀，我是机器人兔兔~如果想转接人工客服，请按窗口下方的转接按钮进行转接哦~',
+            text: '你好，我是机器人alpha. 你可以询问我任何想问的问题，如果需要转接人工客服，请点击窗口下方的转接按钮进行转接哦~',
             isText: true,
             date: now,
             image: '../../../static/2.png'
@@ -524,7 +524,7 @@ export default {
       */
     saveTextApi () {
       console.log('method: saveTextApi')
-      console.log(this.s)
+      console.log(this.saveTextItem)
       this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
         .then((response) => {
           console.log('save_text_api1')
@@ -692,7 +692,7 @@ export default {
       }
       this.customer.customerInfomation.push(tempUserID)
       this.customer.customerInfomation.push(tempNickname)
-      for (let i = 0; i < this.cusotmerInfoNameArray.length; i++) {
+      for (let i = 0; i < this.customerInfoNameArray.length; i++) {
         let tempCustomerInfo = {
           name: this.customerInfoNameArray[i].name,
           content: this.$utils.getUrlKey(this.customerInfoNameArray[i].name)
@@ -704,6 +704,7 @@ export default {
         'nickname': this.cs.csID
       }
       console.log(this.csIDItem)
+      console.log(this.customer.customerInfomation)
       this.getCsIdApi()
     },
     getCustomerInfoUrl () {
