@@ -253,8 +253,7 @@ export default {
     }
 
     // 如果刷新之前已转接为人工客服，自动连接服务器
-    if (this.cs.csID.indexOf("&Robot") === -1) {
-    // if (this.cs.csID.indexOf("&Robot") === -1) {
+    if (this.cs.csID.indexOf("robot.com") === -1) {
       let that = this
       this.socket = io('http://localhost:3000')
 
@@ -339,7 +338,6 @@ export default {
         this.saveText(1, index - 1)
         console.log('keyboardInputing2')
         if (this.cs.csID.indexOf('robot.com') === -1) {
-        // if (this.cs.csID.indexOf("&Robot") === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -374,7 +372,6 @@ export default {
         this.saveText(1, index - 1)
         console.log('buttonInputing2')
         if (this.cs.csID.indexOf('robot.com') === -1) {
-        // if (this.cs.csID.indexOf("&Robot") === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
           this.robotReplyItem = {
@@ -404,7 +401,6 @@ export default {
         this.saveImg(1, index - 1)
         console.log('this.saveImg(1, index - 1)')
         if (this.cs.csID.indexOf('robot.com') === -1) {
-        // if (this.cs.csID.indexOf("&Robot") === -1) {
           this.socket.emit('customer send picture', this.chatlogData.bigImg, this.chatlogData.img, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
           console.log('socket')
         }
@@ -420,7 +416,6 @@ export default {
       console.log("method: switchToCs")
       // console.log(this.cs.csID.indexOf("robot.com"))
       if (this.cs.csID.indexOf('robot.com') === -1) {
-      // if (this.cs.csID.indexOf("&Robot") === -1) {
         alert('当前已为人工客服！')
         return
       }
@@ -697,7 +692,6 @@ export default {
       }
       this.customer.customerInfomation.push(tempUserID)
       this.customer.customerInfomation.push(tempNickname)
-      
       for (let i = 0; i < this.cusotmerInfoNameArray.length; i++) {
       // for (let i = 0;i < this.customerInfoNameArray.length;i++) {
         let tempCustomerInfo = {
