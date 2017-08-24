@@ -15,15 +15,40 @@
     </div>
   </div>
   <!-- Banner -->
-  <section class='banner'>
-    <div class='banner-content'>
-      <h1 style='font-family: "楷体","楷体_GB2312";'>连接你的用户 高效你的客服</h1>
-      <p style='font-family: "楷体","楷体_GB2312";'>智能机器人 实时在线沟通 一键接入 多渠道汇聚</p>
-    </div>
-  </section>
-  <div class='jump'>
-    <a href="#jump"><Icon type="chevron-down"></Icon></a>
-  </div>
+  <Carousel autoplay autoplay-speed=3000>
+    <Carousel-item>
+      <section class='banner-one'>
+        <div class='banner-content'>
+          <h1>BIG5 在线客服系统</h1>
+          <p>全智能客服专家，帮助企业提升工作效率，发挥商业价值</p>
+        </div>
+      </section>
+      <div class='jump'>
+        <a href="#jump"><Icon type="chevron-down"></Icon></a>
+      </div>
+    </Carousel-item>
+    <Carousel-item>
+      <section class='banner-two'>
+        <div class='banner-content'>
+          <h1>连接你的用户 高效你的客服</h1>
+          <p>智能机器人 实时在线沟通 一键接入 多渠道汇聚</p>
+        </div>
+      </section>
+      <div class='jump'>
+        <a href="#jump"><Icon type="chevron-down"></Icon></a>
+      </div>
+    </Carousel-item>
+    <Carousel-item>
+      <section class='banner-three'>
+        <div class='banner-content'>
+          <h1>一触即达，触达之间，服务化简为繁</h1>
+        </div>
+      </section>
+      <div class='jump'>
+        <a href="#jump"><Icon type="chevron-down"></Icon></a>
+      </div>
+    </Carousel-item>
+  </Carousel>
   <!-- One -->
   <div id='jump'>
   </div>
@@ -313,6 +338,7 @@ export default {
   color: #2c3e50;
   position: relative;
   margin: 0 auto;
+  font-size: 13px;
 }
 
 /*= font-size
@@ -383,12 +409,36 @@ p {
 /*= banner
 --------------------------------------------------------------------*/
 
-.banner {
+.banner-one {
   position: relative;
   top: 3.3em;
   z-index: -1;
   background-image: url('./assets/slider02.jpg');
-  height: 95vh;
+  height: 94.6vh;
+  background-color: #FFF;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.banner-two {
+  position: relative;
+  top: 3.3em;
+  z-index: -1;
+  background-image: url('./assets/slider01.jpg');
+  height: 94.6vh;
+  background-color: #FFF;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.banner-three {
+  position: relative;
+  top: 3.3em;
+  z-index: -1;
+  background-image: url('./assets/slider03.jpg');
+  height: 94.6vh;
   background-color: #FFF;
   background-position: center;
   background-size: cover;
@@ -498,7 +548,7 @@ margin: 20px auto 40px;
 }
 
 .two-box-container p {
-  font-size: 0.9em;
+  font-size: 1.1em;
   padding-right: 3em;
 }
 
@@ -591,6 +641,8 @@ margin: 20px auto 40px;
 }
 
 .jump {
+  position: relative;
+  bottom: 1em;
   text-align: center;
   font-size: 2em;
 }
