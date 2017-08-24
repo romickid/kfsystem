@@ -406,7 +406,6 @@ export default {
       apiCusotmerserviceUpdateConnectionNum: '../api/customerservice_update_connection_num/',
       apiCusotmerserviceUpdateLoginStatus: '../api/customerservice_update_login_status/',
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
-      apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
       apiBigimagelogSendImage: '../api/bigimagelog_send_image/',
       apiBigimagelogShowSingleHistory: '../api/bigimagelog_show_single_history/',
@@ -804,6 +803,7 @@ export default {
             that.cs.enterpriseID = response.data.admin_nickname
             that.csIDItem = { 'nickname': that.cs.csID }
             that.getCsIdApi()
+            this.csLogoutApi()
           }
         }, (response) => {
           window.location.href = '../se_login/'
@@ -832,7 +832,6 @@ export default {
         clearTimeout(this.onlineList[i].timer)
       }
       this.isLogon = false
-      this.csLogoutApi()
       this.backendUpdateLoginStatus(false)
       this.backendUpdateConnectionNum()
     },
@@ -1018,6 +1017,7 @@ export default {
       */
     showBigImg (bigImg) {
       this.bigImgSrc = bigImg
+      console.log(this.bigImgSrc)
       this.modalShowBigImg = true
     },
     /**

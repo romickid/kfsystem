@@ -613,7 +613,7 @@ def chattinglog_delete_record(request):
         chattinglogs = ChattingLog.objects.all()
         if chattinglogs.exists():
             chattinglogs.delete()   
-            return HttpResponse('Clear', status=200)     
+            return HttpResponse('Clear', status=200)
         else:
             return HttpResponse('No data to be Clear.', status=201)
 
@@ -628,46 +628,16 @@ def chattinglog_delete_record_ontime(request):
         chattinglogs = ChattingLog.objects.exclude(time__range=(start_date, end_date))
         if chattinglogs.exists():
             chattinglogs.delete()
-            return HttpResponse('Clear', status=200)     
+            return HttpResponse('Clear', status=200)
         else:
             return HttpResponse('No data to be Clear.', status=201)
 
-
-@csrf_exempt
-def chattinglog_status_change(request):
-    if request.method == 'POST':
-        json_receive = JSONParser().parse(request)
-        customerservices = CustomerService.objects.filter(id=json_receive['service_id'])
-        if customerservices.exists():
-            customerservice = CustomerService.objects.get(id=json_receive['service_id'])
-            if customerservice.is_online == True:
-                serializer = CustomerServiceSerializer(customerservice, data={'is_online': False}, partial=True)
-            if customerservice.is_online == False:
-                serializer = CustomerServiceSerializer(customerservice, data={'is_online': True}, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, safe=False,status=200)
-            return JsonResponse(serializer.errors, status=201)
-        else:
-            return HttpResponse('Not found.', status=202)
-
-
-@csrf_exempt
-def chattinglog_show_history(request):
-    if request.method == 'POST':
-        # Chattinglog: client_id service_id
-        json_receive = JSONParser().parse(request)
-        instances = ChattingLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
-        if instances.exists():
-            serializer = ChattingLogSerializer(instances,many=True)
-            return JsonResponse(serializer.data,safe=False,status=200)
-        else:
-            return HttpResponse('No history.', status=201)
 
 
 @csrf_exempt
 def chattinglog_get_cs_id(request):
     if request.method == 'POST':
+        # nickname!!!!!
         json_receive = JSONParser().parse(request)
         instance = CustomerService.objects.filter(nickname=json_receive['nickname'])
         if instance.exists() == False:
@@ -727,8 +697,20 @@ def log_show_history(request):
     if request.method == 'POST':
         # client_id service_id
         json_receive = JSONParser().parse(request)
-        instance_image = SmallImageLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
-        instance_chat = ChattingLog.objects.filter(client_id=json_receive['client_id'], service_id=json_receive['service_id']).order_by('time')
+        instance_customerservice = CustomerService.objects.get(id = json_receive['service_id'])
+        instance_enterprise = instance_customerservice.enterprise
+        queryset_customerservice = CustomerService.objects.filter(enterprise = instance_enterprise.id)
+        cs_list = list()
+        for i in queryset_customerservice:
+            cs_list.append(i.id)
+        queryset_image = SmallImageLog.objects.none()
+        queryset_chat = ChattingLog.objects.none()
+        for i in cs_list:
+            queryset_image = queryset_image | SmallImageLog.objects.filter(client_id=json_receive['client_id'], service_id=i)
+            queryset_chat = queryset_chat | ChattingLog.objects.filter(client_id=json_receive['client_id'], service_id=i)
+        instance_image = queryset_image.distinct().order_by('time')
+        instance_chat = queryset_chat.distinct().order_by('time')
+
         len_image = len(instance_image)
         pointer_image = 0
         len_chat = len(instance_chat)
