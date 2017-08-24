@@ -833,6 +833,7 @@ export default {
             that.csIDItem = { 'nickname': that.cs.csID }
             console.log(that.cs.csID)
             that.getCsIdApi()
+            this.csLogoutApi()
           }
         }, (response) => {
           // window.location.href = '../se_login/'
@@ -866,7 +867,6 @@ export default {
       this.isLogon = false
       this.backendUpdateLoginStatus(false)
       this.backendUpdateConnectionNum()
-      this.csLogoutApi()
     },
     /**
       * @description 登出接口
@@ -1196,8 +1196,6 @@ export default {
       * @description 获取历史消息API
       */
     showHistoryApi () {
-      console.log('[method: showHistoryApi]')
-      console.log(this.showHistoryItem)
       this.$http.post(this.apiLogShowHistory, this.showHistoryItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
@@ -1283,7 +1281,6 @@ export default {
       * @description 获取历史消息中的大图
       */
     showHistoryBigImgApi () {
-      console.log('[method: showHistoryBigImgApi]')
       this.$http.post(this.apiBigimagelogShowSingleHistory, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
