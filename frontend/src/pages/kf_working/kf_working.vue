@@ -271,6 +271,7 @@ function popUp (onlineList, index) {
 function customerHangoff (onlineList, offlineList, customerID) {
   console.log('[function: customerHangoff]')
   let onlineIndex = findOnlineListByCustomerID(onlineList, customerID)
+  console.log(onlineList[onlineIndex])
   let customer = onlineList[onlineIndex].customer
   let messages = onlineList[onlineIndex].messages
   pushTextToOnlineList(onlineList, onlineIndex, '用户' + customerID + '已挂断')
@@ -582,12 +583,14 @@ export default {
     this.socket.on('switch succeed', function () {
       console.log('socket: switch succeed')
       let customerID = that.onlineList[that.onlineIndex].customerID
-      pushTextToOnlineList(that.onlineIndex, that.onlineIndex, '已成功为用户转接！')
-      customerHangoff(that.onlineIndex, that.offlineList, customerID)
-      if (that.onlineIndex !== 0) {
+      console.log(customerID)
+      pushTextToOnlineList(that.onlineList, that.onlineIndex, '已成功为用户转接！')
+      customerHangoff(that.onlineList, that.offlineList, customerID)
+      customerDelete(that.onlineList, that.offlineList, customerID)
+      if (that.onlineIndex !== 0 && that.onlineIndex === that.onlineList.length) {
         that.onlineIndex--
       }
-      customerDelete(that.onlineIndex, that.offlineList, customerID)
+      that.backendUpdateConnectionNum()
     })
 
     this.socket.on('cs reload old socket', function (former_customerinfo) {

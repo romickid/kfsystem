@@ -67,8 +67,8 @@ function csaddCustomerSocket (cs_socket, customer_socket) {
 
 function csdeleteCustomerSocket (cs_socket, customer_socket) {
   console.log('[function: csdeleteCustomerSocket]')
-  cs_socket_list_lenght = cs_socket.list_customer_socket.length
-  for (let i = 0; i < length; i++) {
+  cs_socket_list_lengh = cs_socket.list_customer_socket.length
+  for (let i = 0; i < cs_socket_list_lengh; i++) {
     if (cs_socket.list_customer_socket[i].customer_id == customer_socket.customer_id) {
       cs_socket.list_customer_socket.splice(i, 1);
       break;
@@ -76,7 +76,6 @@ function csdeleteCustomerSocket (cs_socket, customer_socket) {
   }
 
 }
-
 
 function removeByCustomerId (arr, customer_id) {
   for(let i = 0; i < arr.length; i++) {
@@ -86,7 +85,6 @@ function removeByCustomerId (arr, customer_id) {
     }
   }
 }
-
 
 function removeByCsId (arr, cs_id) {
   for(let i = 0; i < arr.length; i++) {
@@ -218,7 +216,8 @@ socketIO.on('connection', function (socket) {
   socket.on('switch cs', function (former_cs_id, enterprise_id, customer_id, customerInfo) {
     console.log("[switch cs]")
     let customer_socket = socket
-
+    console.log(enterprise_id)
+    console.log(cs_socket_list[enterprise_id])
     if (cs_socket_list[enterprise_id].length === 0 || cs_socket_list[enterprise_id].length === 1) {
       customer_socket.emit('no cs available') // 无法转接
     } else {
@@ -234,7 +233,7 @@ socketIO.on('connection', function (socket) {
       console.log('Transfer customer ' + customer_socket.customer_id + ' to cs ' + cs_id + ': ')
       cs_socket.emit('add customer', enterprise_id, customer_id, customerInfo)
       console.log('    Cs ' + cs_id + ' add customer ' + customer_id)
-      customer_socket.emit('connect to Cs', cs_id)
+      customer_socket.emit('connect to cs', cs_id)
       customer_socket.cs_id = cs_id
       console.log('    Customer ' + customer_socket.customer_id + ' connect to cs ' + cs_id)
       csaddCustomerSocket(cs_socket, customer_socket)
@@ -251,13 +250,13 @@ socketIO.on('connection', function (socket) {
       console.log('switch failed')
       return
     } else {
-      cs_socket.emit('switch succeeded')
-      console.log('switch succeeded')
+      cs_socket.emit('switch succeed')
+      console.log('switch succeed')
       let customer_socket = findByCustomerId(cs_socket.list_customer_socket, customer_id)
-      customer_socket.emit('switch cs', cs_socket.cs_id)
+      customer_socket.emit('switch cs', enterprise_id, cs_socket.cs_id)
       cs_socket.customer_num--
       csdeleteCustomerSocket(cs_socket, customer_socket)
-      console.log('After switch a customer out, cs ' + socket.id + socket.customer_num + ' customer.')
+      console.log('After switch a customer out, cs ' + cs_socket.cs_id + cs_socket.customer_num + ' customer.')
     }
   })
 
@@ -326,6 +325,7 @@ socketIO.on('connection', function (socket) {
     console.log('[customer out]')
     console.log('    Customer out: ' + customer_id)
     let customer_socket = findByCustomerId(cs_socket.list_customer_socket, customer_id)
+    console.log(customer_socket)
     customer_socket.emit('customer expire')
     removeByCustomerId(cs_socket.list_customer_socket, customer_id)
     cs_socket.customer_num--
