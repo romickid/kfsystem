@@ -7,6 +7,7 @@
     <div class='main-content-body'>
       <div class='guide'>
         <h2>桌面网站widget接入样例</h2>
+        <img src='./docPic/doc20.png'>
       </div>
       <div class='line'></div>
       <div class='guide'>
@@ -14,13 +15,14 @@
         <p>将script代码嵌入企业网站</p>
         <ul>
           <li>1. 申请系统后，在多渠道-桌面网站-widget中查看</li>
+          <img src='./docPic/doc22.png'>
           <li>2. 将对应代码嵌入到前端页面中</li>
         </ul>
       </div>
       <div class='line'></div>
       <div class='guide'>
         <h2>参数传递</h2>
-        <p>用户信息参数传递规则 请参考<a></a></p>
+        <p>用户信息参数传递规则 请参考<router-link :to='user_info'>《客户账户体系对接流程》</router-link></p>
       </div>
       <div class='line'></div>
     </div>

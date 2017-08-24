@@ -17,12 +17,6 @@
               <Icon type="arrow-down-b"></Icon>
             </a>
             <Dropdown-menu slot="list">
-              <Dropdown-item>
-                <Button @click="csLogout">
-                  <!-- <a href="../se_login">退出账号</a> -->
-                  退出账号
-                </Button>
-              </Dropdown-item>
               <Dropdown placement="right-start">
                 <Dropdown-item>
                   机器人设置
@@ -71,6 +65,14 @@
                   </Dropdown-item>
                 </Dropdown-menu>
               </Dropdown>
+              <Dropdown-item>
+                <se-reset-password ref="seResetPassword"></se-reset-password>
+              </Dropdown-item>
+              <Dropdown-item>
+                <Button @click="csLogout" type='text'>
+                  退出账号
+                </Button>
+              </Dropdown-item>
             </Dropdown-menu>
           </Dropdown>
         </header>
@@ -161,6 +163,7 @@
 </template>
 
 <script>
+import seResetPassword from '../../components/se_reset_password'
 import * as io from 'socket.io-client'
 import Vue from 'vue'
 import robotSetting from '../../components/robot_setting'
@@ -171,7 +174,6 @@ const key = 'VUE-CHAT-v6'
   * @description 通过id找在线组的索引
   */
 function findOnlineListByCustomerID (onlineList, customerID) {
-  console.log('[function: findOnlineListByCustomerID]')
   for (let i = 0; i < onlineList.length; i++) {
     if (onlineList[i].customerID === customerID) {
       return i
@@ -189,7 +191,6 @@ function findOfflineListByCustomerID (offlineList, customerID) {
   * @description 接收文字消息放进在线组
   */
 function pushTextToOnlineList (onlineList, index, msg) {
-  console.log('[function: pushTextToOnlineList]')
   onlineList[index].messages.push({
     text: msg,
     isText: true,
@@ -201,7 +202,6 @@ function pushTextToOnlineList (onlineList, index, msg) {
   * @description 接收图片消息放进在线组
   */
 function pushImgToOnlineList (onlineList, index, bpic, spic) {
-  console.log('[function: pushTextToOnlineList]')
   onlineList[index].messages.push({
     img: spic,
     bigImg: bpic,
@@ -214,8 +214,6 @@ function pushImgToOnlineList (onlineList, index, bpic, spic) {
   * @description 根据已有信息创建一个客户, 返回一个客户对象
   */
 function createCustomer (customerID, customerName, enterpriseID, customerInfomation) {
-  console.log('[function: createCustomer]')
-  console.log(customerInfomation)
   return {
     customerID: customerID,
     customerName: customerName,
@@ -229,15 +227,12 @@ function createCustomer (customerID, customerName, enterpriseID, customerInfomat
   * @description 向服务器发送消息说用户已挂断
   */
 function customerOutMessage (socket, customerID) {
-  console.log('[function: customerOutMessage]')
   socket.emit('customer out', customerID)
 }
 /**
   * @description 在在线组中添加用户
   */
 function addCustomer (cs_socket, onlineList, customer) {
-  console.log('[function: addCustomer]')
-  console.log(customer.customerInfomation)
   let timer = setTimeout(function () {
     customerOutMessage(cs_socket, customer.customerID)
   }, 60000)
@@ -260,7 +255,6 @@ function addCustomer (cs_socket, onlineList, customer) {
   * @description 接受新消息时相应的在线组上浮
   */
 function popUp (onlineList, index) {
-  console.log('[function: popUp]')
   let temp_onlineObject = onlineList[index]
   onlineList.splice(index, 1)
   onlineList.splice(0, 0, temp_onlineObject)
@@ -269,9 +263,7 @@ function popUp (onlineList, index) {
   * @description 用户挂断时将其添加到离线组
   */
 function customerHangoff (onlineList, offlineList, customerID) {
-  console.log('[function: customerHangoff]')
   let onlineIndex = findOnlineListByCustomerID(onlineList, customerID)
-  console.log(onlineList[onlineIndex])
   let customer = onlineList[onlineIndex].customer
   let messages = onlineList[onlineIndex].messages
   pushTextToOnlineList(onlineList, onlineIndex, '用户' + customerID + '已挂断')
@@ -295,8 +287,6 @@ function customerHangoff (onlineList, offlineList, customerID) {
   * @description 用户挂断时将其从在线组中删除
   */
 function customerDelete (onlineList, offlineList, customerID) {
-  console.log('[function: customerDelete]')
-
   let onlineIndex = findOnlineListByCustomerID(onlineList, customerID)
   let timer = onlineList[onlineIndex].timer
   clearTimeout(timer)
@@ -461,7 +451,6 @@ export default {
       * @description 当接收到用户发来的文字信息时，将信息存到对应用户的消息数组中，并将对应数据上浮
       */
     this.socket.on('customer send message', function (msg, enterpriseID, csID, customerID) {
-      console.log('socket: customer send message')
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
       pushTextToOnlineList(that.onlineList, onlineIndex, msg)
 
@@ -500,7 +489,6 @@ export default {
       * @description 当接收到用户发来的图片信息时，将信息存到对应用户的消息数组中，并将对应数据上浮
       */
     this.socket.on('customer send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-      console.log('socket: customer send picture')
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
       pushImgToOnlineList(that.onlineList, onlineIndex, bpic, spic)
 
@@ -538,8 +526,6 @@ export default {
 
     // socket响应 增加客服
     this.socket.on('add customer', function (enterpriseID, customerID, customerInfomation) {
-      console.log('socket: add customer')
-      console.log(customerInfomation)
       let customerName = ''
       for (let i = 0; i < customerInfomation.length; i++) {
         if (customerInfomation[i].name === 'nickname') {
@@ -564,8 +550,6 @@ export default {
     this.socket.on('customer hang off', function (enterpriseID, customerID) {
       customerHangoff(that.onlineList, that.offlineList, customerID)
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
-      // console.log(onlineIndex)
-      // console.log(that.onlineIndex)
       customerDelete(that.onlineList, that.offlineList, customerID)
       if (that.onlineIndex !== 0 && that.onlineIndex === that.onlineList.length) {
         that.onlineIndex--
@@ -576,14 +560,11 @@ export default {
       * @description 对当前用户转接失败，设置提示
       */
     this.socket.on('switch failed', function () {
-      console.log('socket: switch failed')
       alert('当前无可转接客服！')
     })
 
     this.socket.on('switch succeed', function () {
-      console.log('socket: switch succeed')
       let customerID = that.onlineList[that.onlineIndex].customerID
-      console.log(customerID)
       pushTextToOnlineList(that.onlineList, that.onlineIndex, '已成功为用户转接！')
       customerHangoff(that.onlineList, that.offlineList, customerID)
       customerDelete(that.onlineList, that.offlineList, customerID)
@@ -594,12 +575,9 @@ export default {
     })
 
     this.socket.on('cs reload old socket', function (former_customerinfo) {
-      console.log('socket: cs reload old socket')
-      // console.log(former_customerinfo)
       for (let i = 0; i < former_customerinfo.length; i++) {
         let customer = createCustomer(former_customerinfo[i].customer_id, former_customerinfo[i].customer_id, former_customerinfo[i].enterprise_id)
         addCustomer(that.socket, that.onlineList, customer)
-        // console.log(that.onlineList)
         if (that.onlineList.length !== 1) { // 新增客服显示未读消息
           customer.uncheck++
         }
@@ -612,18 +590,15 @@ export default {
     // 客服登录
     // 判断上次是刷新还是退出页面，并进行初始化
     if (!this.isLogon) {
-      console.log('socket: !this.isLogon')
       setTimeout(function () {
         that.socket.enterprise_ID = that.cs.enterpriseID
         that.socket.cs_ID = that.cs.csID
-        console.log(that.cs.csID)
         that.socket.emit('cs login', that.cs.enterpriseID, that.cs.csID)
         that.isLogon = true
       }, 1000)
       that.backendUpdateLoginStatus(true)
       that.backendUpdateConnectionNum()
     } else {
-      console.log('socket: this.isLogon')
       that.socket.enterprise_ID = that.cs.enterpriseID
       that.socket.cs_ID = that.cs.csID
       that.socket.emit('cs come back', that.socket.enterprise_ID, that.socket.cs_ID)
@@ -669,9 +644,10 @@ export default {
   },
 
   methods: {
-    //  显示用户列表
+    /**
+      * @description 显示用户列表
+      */
     displayCustomerList (value) {
-      console.log('[method: displayCustomerList]')
 
       if (this.hangon) {
         this.onlineIndex = this.onlineList.indexOf(value)
@@ -690,7 +666,6 @@ export default {
       * @description 键盘发送消息
       */
     keyboardInputing (e) {
-      console.log('[method: keyboardInputing]')
       if (e.ctrlKey && e.keyCode === 13 && this.chatlogData.text.length && this.currentOnlineObject.customerID === -1) {
         this.$Message.info("尚未接入用户")
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
@@ -728,14 +703,12 @@ export default {
             customerOutMessage(csSocket, customerID)
           }, 60000)
         this.chatlogData.text = ''
-        console.log(this.chatlogData.text)
       }
     },
     /**
       * @description 按钮发送消息
       */
     buttonInputing (e) {
-      console.log('[method: buttonInputing]')
       let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
       residual.innerHTML = ''
 
@@ -769,9 +742,10 @@ export default {
         this.chatlogData.text = ''
       }
     },
-
+    /**
+      * @description 发送图片
+      */
     imgInputing () {
-      console.log('[method: imgInputing]')
       if (!this.hangon) {
         alert('该用户已挂断！')
         this.chatlogData.img = ''
@@ -800,10 +774,10 @@ export default {
         this.chatlogData.bigImg = ''
       }
     },
-
-    // 点击切换查看历史记录信息或当前记录信息
+    /**
+      * @description 点击切换查看历史记录信息或当前记录信息
+      */
     switchoff () {
-      console.log('[method: switchoff]')
       if (this.hangon === true && this.tagName === 'negative') {
         this.hangon = false
         this.onlineIndex = 0
@@ -818,33 +792,27 @@ export default {
       * @description 获取客服信息，用于第一次登陆的初始化
       */
     getCsInfomation () {
-      console.log('[method: getCsInfomation]')
       var that = this
       that.$http.post(that.apiCustomerserviceShowUserStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login/'
-            console.log('getCsInfomation1')
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login/'
-            console.log('getCsInfomation2')
+            window.location.href = '../se_login/'
           } else {
             that.cs.csID = response.data.nickname
             that.cs.enterpriseID = response.data.admin_nickname
             that.csIDItem = { 'nickname': that.cs.csID }
-            console.log(that.cs.csID)
             that.getCsIdApi()
           }
         }, (response) => {
-          // window.location.href = '../se_login/'
-          console.log('getCsInfomation3')
+          window.location.href = '../se_login/'
         })
     },
     /**
       * @description 点击按钮对当前用户进行转接，如果转接成功，将其转移到已挂断消息列表，不成功则给出提示
       */
     switchAnotherCs (e) {
-      console.log('[method: switchAnotherCs]')
       if (!this.hangon) {
         alert('无法为已挂断的用户进行转接！')
         return
@@ -859,7 +827,6 @@ export default {
       * @description 登出按钮
       */
     csLogout (e) {
-      console.log('[method: csLogout]')
       this.socket.emit('log out')
       for (let i = 0; i < this.onlineList.length; i++) {
         clearTimeout(this.onlineList[i].timer)
@@ -867,34 +834,29 @@ export default {
       this.isLogon = false
       this.csLogoutApi()
       this.backendUpdateLoginStatus(false)
-      that.backendUpdateConnectionNum()
+      this.backendUpdateConnectionNum()
     },
     /**
       * @description 登出接口
       */
     csLogoutApi () {
-      console.log('[method: csLogoutApi]')
       this.$http.post(this.apiCustomerserviceLogout)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login/'
-            console.log('csLogoutApi1')
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login/'
-            console.log('csLogoutApi2')
+            window.location.href = '../se_login/'
           } else {
             window.location.href = '../se_login/'
           }
         }, (response) => {
-          // window.location.href = '../se_login/'
-          console.log('csLogoutApi3')
+          window.location.href = '../se_login/'
         })
     },
     /**
       * @description 检查向机器人提出的问题
       */
     checkQuestion () {
-      console.log('[method: checkQuestion]')
       if (this.robotSentence.question === '') {
         this.robotSentence.questionIsNull = true
       }
@@ -903,7 +865,6 @@ export default {
       * @description 检查机器人回复
       */
     checkReply () {
-      console.log('[method: checkReply]')
       if (this.robotSentence.reply === '') {
         this.robotSentence.replyIsNull = true
       }
@@ -912,7 +873,6 @@ export default {
       * @description 检查添加的关键词格式（只能是英文）
       */
     checkKeyword () {
-      console.log('[method: checkKeyword]')
       let reg = /^[\u4E00-\u9FA5]+$/
       let standardContent = reg.test(this.robotSentence.keyword)
       if (this.robotSentence.keyword === '' || standardContent === false) {
@@ -923,27 +883,24 @@ export default {
       * @description 回复输入
       */
     replyInput () {
-      console.log('[method: replyInput]')
       this.robotSentence.replyIsNull = false
     },
     /**
       * @description 问题输入
       */
     questionInput () {
-      console.log('[method: questionInput]')
       this.robotSentence.questionIsNull = false
     },
     /**
       * @description 关键词输出
       */
     keywordInput () {
-      console.log('[method: keywordInput]')
       this.robotSentence.keywordIsNotStandard = false
     },
-
-    // 添加关键词按钮
+    /**
+      * @description 添加关键词按钮
+      */
     robotKeywordAdd () {
-      console.log('[method: robotKeywordAdd]')
       this.checkKeyword()
       let keywordIsExist = false
       for (let i = 0; i < this.robotSentence.keywordArray.length; i++) {
@@ -960,17 +917,17 @@ export default {
         this.robotSentence.keyword = ''
       }
     },
-
-    // 删除关键词
+    /**
+      * @description 删除关键词
+      */
     robotKeywordClose (event, name) {
-      console.log('[method: robotKeywordClose]')
       const index = this.robotSentence.keywordArray.indexOf(name)
       this.robotSentence.keywordArray.splice(index, 1)
     },
-
-    // 确认添加机器人语料
+    /**
+      * @description 确认添加机器人语料
+      */
     robotSentenceAddOk () {
-      console.log('[method: robotSentenceAddOk]')
       let keywordString = ''
       if (this.robotSentence.question === '' || this.robotSentence.reply === '') {
         this.$Message.info('您所填的信息不能为空')
@@ -990,10 +947,10 @@ export default {
       }
       this.robotSentenceAddCancel()
     },
-
-    // 取消添加机器人语料
+    /**
+      * @description 取消添加机器人语料
+      */
     robotSentenceAddCancel () {
-      console.log('[method: robotSentenceAddCancel]')
       this.robotSentence.question = ''
       this.robotSentence.reply = ''
       this.robotSentence.keyword = ''
@@ -1007,24 +964,18 @@ export default {
       * @description 设置机器人接口
       */
     setRobotApi () {
-      console.log('[method: setRobotApi]')
-      console.log(this.robotSentenceAddItem)
       this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robotSentenceAddItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../se_login/'
-            console.log('set_robot_api1')
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, incomplete information.') {
             this.$Message.info('您所填的信息不完整')
           } else if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../se_login/'
-            console.log('set_robot_api2')
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login/'
-            console.log('set_robot_api3')
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login/'
-            console.log('set_robot_api4')
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, info is exist.') {
             this.$Message.info('该问题已存在')
           } else {
@@ -1032,15 +983,13 @@ export default {
             this.$refs.robotSetting.show_robot_question_api()
           }
         }, (response) => {
-          // window.location.href = '../se_login/'
-          console.log('set_robot_api5')
+          window.location.href = '../se_login/'
         })
     },
     /**
       * @description 图片压缩
       */
     imageCompress () {
-      console.log('[method: imageCompress]')
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
@@ -1061,7 +1010,6 @@ export default {
       * @description 图片上传
       */
     imageUpload () {
-      console.log('[method: imageUpload]')
       var file = document.getElementById('inputFile')
       file.click()
     },
@@ -1069,7 +1017,6 @@ export default {
       * @description 大图片显示
       */
     showBigImg (bigImg) {
-      console.log('[method: showBigImg]')
       this.bigImgSrc = bigImg
       this.modalShowBigImg = true
     },
@@ -1077,85 +1024,70 @@ export default {
       * @description 文字信息保存
       */
     saveText (index) {
-      console.log('[method: saveText]')
       this.saveTextItem = {
         'client_id': this.currentOnlineObject.customerID,
         'service_id': this.databaseCsID,
         'content': this.currentOnlineObject.messages[index].text,
         'is_client': 0
       }
-      console.log(this.saveTextItem)
       this.saveTextApi()
     },
     /**
       * @description 文字信息保存API
       */
     saveTextApi () {
-      console.log('[method: saveTextApi]')
       this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
         .then((response) => {
           this.saveTextItem = {}
         }, (response) => {
-          // window.location.href = '../se_login/'
-          console.log('save_text_api')
+          window.location.href = '../se_login/'
         })
     },
     /**
       * @description 通过Email找客服Id
       */
     getCsIdApi () {
-      console.log('[method: getCsIdApi]')
-      console.log(this.apiChattinglogGetCsId)
       this.$http.post(this.apiChattinglogGetCsId, this.csIDItem)
         .then((response) => {
           this.databaseCsID = response.data
-          console.log(this.databaseCsID)
         }, (response) => {
-          // window.location.href = '../se_login/'
-          console.log('get_cs_id_api')
+          window.location.href = '../se_login/'
         })
     },
     /**
       * @description 小图片保存API
       */
     saveImgApi () {
-      console.log('[method: saveImgApi]')
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound/'
-            console.log('save_img_api1')
+            window.location.href = '../notfound/'
           } else {
             this.saveImgItem = {}
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('save_img_api2')
+          window.location.href = '../notfound/'
         })
     },
     /**
       * @description 大图片保存
       */
     saveBigImgApi () {
-      console.log('[method: saveBigImgApi]')
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound/'
-            console.log('save_bigImg_api1')
+            window.location.href = '../notfound/'
           } else {
             this.saveBigImgItem = {}
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('save_bigImg_api2')
+          window.location.href = '../notfound/'
         })
     },
     /**
       * @description 大图片保存
       */
     saveImg (index) {
-      console.log('[method: saveImg]')
       let timestamp = new Date().getTime()
       let label = timestamp + this.databaseCsID
       this.saveImgItem = {
@@ -1172,15 +1104,13 @@ export default {
         'is_client': false,
         'label': label
       }
-      console.log(this.saveImgItem)
-      console.log(this.saveBigImgItem)
       this.saveImgApi()
       this.saveBigImgApi()
     },
-
-    // 显示历史记录按钮的响应函数
+    /**
+      * @description 显示历史记录按钮的响应函数
+      */
     showHistory (e) {
-      console.log('[method: showHistory]')
       if (!this.hangon) {
         alert('无法获取历史消息！')
         return
@@ -1189,38 +1119,31 @@ export default {
         'client_id': this.currentOnlineObject.customerID,
         'service_id': this.databaseCsID
       }
-      console.log(this.showHistoryItem)
       this.showHistoryApi()
     },
     /**
       * @description 获取历史消息API
       */
     showHistoryApi () {
-      console.log('[method: showHistoryApi]')
       this.$http.post(this.apiLogShowHistory, this.showHistoryItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound/'
-            console.log('show_history_api1')
+            window.location.href = '../notfound/'
           } else {
-            console.log(response.data)
             let historyArray = response.data
             this.printHistoryMessages(historyArray)
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('show_history_api2')
+          window.location.href = '../notfound/'
         })
     },
     /**
       * @description 打印历史消息
       */
     printHistoryMessages (historyArray) {
-      console.log('[method: printHistoryMessages]')
       this.currentOnlineObject.historyMessages = []
       this.currentOnlineObject.messages = []
       for (var p = 0; p < historyArray.length; p++) {
-        console.log(historyArray[p].hasOwnProperty('content'))
         if (historyArray[p].hasOwnProperty('content')) {
           if (historyArray[p].is_client === false) {
             this.currentOnlineObject.historyMessages.push({
@@ -1248,9 +1171,6 @@ export default {
               self: true,
               image: this.cs.image
             })
-            let index = this.currentOnlineObject.historyMessages.length
-            console.log('this.hsession.messages1')
-            console.log(this.currentOnlineObject.historyMessages[index - 1])
           } else {
             this.currentOnlineObject.historyMessages.push({
               img: historyArray[p].image,
@@ -1259,9 +1179,6 @@ export default {
               date: historyArray[p].time,
               image: '../../../static/3.jpg'
             })
-            let index = this.currentOnlineObject.historyMessages.length
-            console.log('this.hsession.messages2')
-            console.log(this.currentOnlineObject.historyMessages[index - 1])
           }
         }
       }
@@ -1270,7 +1187,6 @@ export default {
       * @description 显示历史消息中的大图
       */
     showHistoryBigImg (label) {
-      console.log('[method: showHistoryBigImg]')
       this.showHistoryBigImgItem = {
         'client_id': this.currentOnlineObject.customerID,
         'service_id': this.databaseCsID,
@@ -1282,63 +1198,54 @@ export default {
       * @description 获取历史消息中的大图
       */
     showHistoryBigImgApi () {
-      console.log('[method: showHistoryBigImgApi]')
       this.$http.post(this.apiCusotmerserviceUpdateConnectionNum, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
-            // window.location.href = '../notfound/'
-            console.log('show_history_big_img_api1')
+            window.location.href = '../notfound/'
           } else {
             this.showHistoryBigImgItem = {}
             this.showBigImg(response.data)
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('show_history_big_img_api2')
+          window.location.href = '../notfound/'
         })
     },
     /**
       * @description 为后端更新客服连接数信息
       */
     backendUpdateConnectionNum () {
-      console.log('[method: backendUpdateConnectionNum]')
       this.$http.post(this.apiCusotmerserviceUpdateConnectionNum, {
         'connection_num': this.onlineList.length
       })
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../notfound/'
-            console.log('ERROR, session is broken.')
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong email.') {
-            console.log('ERROR, wrong email.')
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong type.') {
-            console.log('ERROR, wrong type.')
+            window.location.href = '../notfound/'
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('backendUpdateConnectionNum Error')
+          window.location.href = '../notfound/'
         })
     },
     /**
       * @description 为后端更新客服连接状态信息
       */
     backendUpdateLoginStatus (loginStatus) {
-      console.log('[method: backendUpdateLoginStatus]')
       this.$http.post(this.apiCusotmerserviceUpdateLoginStatus, {
         'login_status': loginStatus
       })
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../notfound/'
-            console.log('ERROR, session is broken.')
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong email.') {
-            console.log('ERROR, wrong email.')
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong type.') {
-            console.log('ERROR, wrong type.')
+            window.location.href = '../notfound/'
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('backendUpdateLoginStatus Error')
+          window.location.href = '../notfound/'
         })
     }
   },
@@ -1356,7 +1263,8 @@ export default {
   },
 
   components: {
-    robotSetting
+    robotSetting,
+    seResetPassword
   },
 
   directives: {
