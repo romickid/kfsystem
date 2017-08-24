@@ -55,7 +55,7 @@
           </div>
           <div class="div">
             <label id="la">已有账号，直接</label>
-            <a href="../en_login/" id="login">登录</a>
+            <a href="../en_login" id="login">登录</a>
           </div>
         </div>
       </div>

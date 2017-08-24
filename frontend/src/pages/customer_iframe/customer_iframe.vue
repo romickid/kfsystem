@@ -548,7 +548,7 @@ export default {
           console.log('save_text_api1')
           this.saveTextItem = {}
         }, (response) => {
-          // window.location.href = '../se_login/'
+          // window.location.href = '../se_login'
           console.log('save_text_api2')
         })
     },
@@ -670,7 +670,7 @@ export default {
             console.log('customerCheckApi4')
           }
         }, (response) => {
-          // window.location.href = '../not_found/'
+          // window.location.href = '../not_found'
             console.log('customerCheckApi5')
         })
     }

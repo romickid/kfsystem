@@ -77,7 +77,7 @@
       </div>
       <div class="main-ul">
         <Tabs v-model="tagName" @on-click="switchoff">
-          <Tab-pane label="活跃聊天" name="active" class='tab'>
+          <Tab-pane label="活跃聊天" name="active"  class='tab'>
             <ul>
               <li class="main-list" v-for="item in onlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
