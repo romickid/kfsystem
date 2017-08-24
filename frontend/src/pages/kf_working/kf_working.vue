@@ -621,12 +621,14 @@ export default {
         that.isLogon = true
       }, 1000)
       that.backendUpdateLoginStatus(true)
+      that.backendUpdateConnectionNum()
     } else {
       console.log('socket: this.isLogon')
       that.socket.enterprise_ID = that.cs.enterpriseID
       that.socket.cs_ID = that.cs.csID
       that.socket.emit('cs come back', that.socket.enterprise_ID, that.socket.cs_ID)
       that.backendUpdateLoginStatus(true)
+      that.backendUpdateConnectionNum()
     }
 
     sessionStorage.setItem(key, JSON.stringify({
@@ -865,6 +867,7 @@ export default {
       this.isLogon = false
       this.csLogoutApi()
       this.backendUpdateLoginStatus(false)
+      that.backendUpdateConnectionNum()
     },
     /**
       * @description 登出接口
