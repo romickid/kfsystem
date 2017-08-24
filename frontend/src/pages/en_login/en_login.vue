@@ -19,7 +19,7 @@
       <div class="all">
         <div class="container">
           <div class="div">
-            <label id="title">企业登录</label>
+            <h1 id="title">企业登录</h1>
           </div>
           <div class="div">
             <label class="label">邮箱：</label>
@@ -162,8 +162,8 @@ export default {
 
 .ceiling-main {
   float: right;
-  margin-right: 5em;
-  padding-top: 0.6em;
+  margin-right: 3em;
+  padding-top: 1em;
 }
 
 .ceiling-main a {
@@ -214,16 +214,14 @@ body {
   font-size: 15pt;
   font-weight: bold;
   text-align: center;
-  padding-left: 38%;
-  margin-bottom: 15px;
   flex: 1 1 100%;
 }
 
 .label {
   font-weight: bold;
   font-size: 15px;
-  padding-top: 20px;
-  padding-bottom: 40px;
+  /* padding-top: 20px;
+  padding-bottom: 40px; */
   flex: 1 1 100%;
 }
 
