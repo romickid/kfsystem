@@ -1281,7 +1281,7 @@ export default {
       * @description 获取历史消息中的大图
       */
     showHistoryBigImgApi () {
-      this.$http.post(this.apiBigimagelogShowSingleHistory, this.showHistoryBigImgItem)
+      this.$http.post(this.apiCusotmerserviceUpdateConnectionNum, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
             // window.location.href = '../notfound/'
