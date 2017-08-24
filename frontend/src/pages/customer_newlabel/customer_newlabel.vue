@@ -32,7 +32,7 @@
       <div class="main-text" @keydown="keyboardInputing">
         <Button-group>
           <Button @click="switchToCs">转接人工客服</Button>
-          <Button @click="imageUpload" icon="image"></Button>
+          <Button @click="imageUpload">发送图片</Button>
         </Button-group>
         <p class="lead emoji-picker-container">
           <textarea class="textarea" placeholder="按 Ctrl+Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
@@ -747,9 +747,9 @@ export default {
   }
 }
 </script>
+
 <style>
 /*开头*/
-
 *,
 *:before,
 *:after {
@@ -775,11 +775,31 @@ html {
     display: none;
   }
   .main-message {
-    height: calc(80% - 4rem);
+    height: calc(85% - 4rem);
+  }
+  .main-text {
+    bottom: 0
   }
 }
 
-@media screen and (min-width: 800px) {
+ @media screen and (min-width: 665px) {
+  html {
+    font-size:20px;
+  }
+  .container {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+  }
+  .edge{
+    display: none;
+  }
+  .main-message {
+    height: calc(85% - 4rem);
+  }
+} 
+
+@media screen and (min-width: 768px) {
   html {
     font-size:15px;
   }
@@ -797,7 +817,10 @@ html {
     display: block;
   }
   .main-message {
-    height: calc(80% - 8rem);
+    height: calc(85% - 8rem);
+  }
+  .main-text {
+    bottom: 0
   }
 }
 
@@ -833,7 +856,6 @@ ul {
 .main-text {
   position: absolute;
   width: 100%;
-  bottom: 0;
   left: 0;
   height: 10.7rem;
 }
@@ -874,7 +896,7 @@ ul {
   padding: 0 0.67rem;
   max-width: calc(80% - 2.67rem);
   min-height: 2rem;
-  line-height: 2.5;
+  line-height: 1.8;
   font-size: 0.8rem;
   text-align: left;
   word-break: break-all;
@@ -906,7 +928,6 @@ ul {
   padding: 0 0.67rem;
   max-width: calc(80% + 0.67rem);
   min-height: 2rem;
-  line-height: 2.5;
   font-size: 0.8rem;
   background-color: #b2e281;
   word-break: break-all;
@@ -925,7 +946,7 @@ ul {
 }
 
 .main-text {
-  height: 10.67rem;
+  height: 8.67rem;
   border-top: solid 0.067rem #ddd;
   background: white;
 }
@@ -948,8 +969,6 @@ ul {
 
 #chat {
   margin: 1.33rem auto;
-  width: 53.33rem;
-  height: 40rem;
   overflow: hidden;
   border-radius: 0.2rem;
 }
@@ -965,7 +984,7 @@ ul {
 
 .ivu-btn {
   margin-left: 0.33rem;
-  font-size: 0.8rem;
+   font-size: 0.9rem; 
 }
 
 img {
@@ -989,5 +1008,9 @@ img {
 
 .ivu-btn-group .ivu-btn-icon-only .ivu-icon {
   font-size: 1.2rem;
+}
+
+button.ivu-btn.ivu-btn-icon-only .ivu-icon {
+  font-size: 0.9rem;
 }
 </style>
