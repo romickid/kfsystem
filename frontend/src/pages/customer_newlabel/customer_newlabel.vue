@@ -137,7 +137,11 @@ function initSocket (cs, session, socket, customer) {
 
     socket.on('switch cs', function (enterpriseID, formerCsID) {
       console.log('socket: switch cs')
-      socket.emit('switch cs', formerCsID, enterpriseID, customer.customerInfomation)
+      console.log(formerCsID)
+      console.log(enterpriseID)
+      console.log(customer.customerID)
+      console.log(customer.customerInfomation)
+      socket.emit('switch cs', formerCsID, enterpriseID, customer.customerID, customer.customerInfomation)
       resolve()
     })
 
