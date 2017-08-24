@@ -215,6 +215,7 @@ function pushImgToOnlineList (onlineList, index, bpic, spic) {
   */
 function createCustomer (customerID, customerName, enterpriseID, customerInfomation) {
   console.log('[function: createCustomer]')
+  console.log(customerInfomation)
   return {
     customerID: customerID,
     customerName: customerName,
@@ -396,7 +397,7 @@ export default {
 
       // api参数
       saveTextItem: {},
-      csEmailItem: {},
+      csIDItem: {},
       saveImgItem: {},
       saveBigImgItem: {},
       showHistoryItem: {},
@@ -410,8 +411,8 @@ export default {
       apiCustomerserviceShowUserStatus: '../api/customerservice_show_user_status/',
       apiCustomerserviceSetrobotinfoCreate: '../api/customerservice_setrobotinfo_create/',
       apiCustomerserviceLogout: '../api/customerservice_logout/',
-      apiCusotmerserviceUpdateConnectionNum: '../api/customerservice_update_connection_num',
-      apiCusotmerserviceUpdateLoginStatus: '..api/customerservice_update_login_status',
+      apiCusotmerserviceUpdateConnectionNum: '../api/customerservice_update_connection_num/',
+      apiCusotmerserviceUpdateLoginStatus: '../api/customerservice_update_login_status/',
       apiChattinglogSendMessage: '../api/chattinglog_send_message/',
       apiChattinglogShowHistory: '../api/chattinglog_show_history/',
       apiChattinglogGetCsId: '../api/chattinglog_get_cs_ID/',
@@ -535,6 +536,7 @@ export default {
     // socket响应 增加客服
     this.socket.on('add customer', function (enterpriseID, customerID, customerInfomation) {
       console.log('socket: add customer')
+      console.log(customerInfomation)
       let customerName = ''
       for (let i = 0; i < customerInfomation.length; i++) {
         if (customerInfomation[i].name === 'nickname') {
@@ -542,7 +544,7 @@ export default {
           break
         }
       }
-      let customer = createCustomer(customerID, customerName, enterpriseID)
+      let customer = createCustomer(customerID, customerName, enterpriseID, customerInfomation)
       addCustomer(that.socket, that.onlineList, customer)
       if (that.onlineList.length !== 1) { // 新增客服显示未读消息
         customer.uncheck++
@@ -551,7 +553,7 @@ export default {
         that.onlineIndex++
       }
       pushTextToOnlineList(that.onlineList, 0, '用户' + customerID + '已上线')
-      this.backendUpdateConnectionNum()
+      that.backendUpdateConnectionNum()
     })
     /**
       * @description 当用户挂断时，将其从在线组中删除，添加到离线组
@@ -559,13 +561,13 @@ export default {
     this.socket.on('customer hang off', function (enterpriseID, customerID) {
       customerHangoff(that.onlineList, that.offlineList, customerID)
       let onlineIndex = findOnlineListByCustomerID(that.onlineList, customerID)
-      console.log(onlineIndex)
-      console.log(that.onlineIndex)
+      // console.log(onlineIndex)
+      // console.log(that.onlineIndex)
       customerDelete(that.onlineList, that.offlineList, customerID)
       if (that.onlineIndex !== 0 && that.onlineIndex === that.onlineList.length) {
         that.onlineIndex--
       }
-      this.backendUpdateConnectionNum()
+      that.backendUpdateConnectionNum()
     })
     /**
       * @description 对当前用户转接失败，设置提示
@@ -588,11 +590,11 @@ export default {
 
     this.socket.on('cs reload old socket', function (former_customerinfo) {
       console.log('socket: cs reload old socket')
-      console.log(former_customerinfo)
+      // console.log(former_customerinfo)
       for (let i = 0; i < former_customerinfo.length; i++) {
         let customer = createCustomer(former_customerinfo[i].customer_id, former_customerinfo[i].customer_id, former_customerinfo[i].enterprise_id)
         addCustomer(that.socket, that.onlineList, customer)
-        console.log(that.onlineList)
+        // console.log(that.onlineList)
         if (that.onlineList.length !== 1) { // 新增客服显示未读消息
           customer.uncheck++
         }
@@ -612,13 +614,13 @@ export default {
         that.socket.emit('cs login', that.cs.enterpriseID, that.cs.csID)
         that.isLogon = true
       }, 1000)
-      this.backendUpdateLoginStatus(true)
+      that.backendUpdateLoginStatus(true)
     } else {
       console.log('socket: this.isLogon')
       that.socket.enterprise_ID = that.cs.enterpriseID
       that.socket.cs_ID = that.cs.csID
       that.socket.emit('cs come back', that.socket.enterprise_ID, that.socket.cs_ID)
-      this.backendUpdateLoginStatus(true)
+      that.backendUpdateLoginStatus(true)
     }
 
     sessionStorage.setItem(key, JSON.stringify({
@@ -815,7 +817,7 @@ export default {
             that.cs.csID = response.data.email
             that.cs.csName = response.data.nickname
             that.cs.enterpriseID = response.data.admin_nickname
-            that.csEmailItem = { 'email': that.cs.csID }
+            that.csIDItem = { 'nickname': that.cs.csID }
             console.log(that.cs.csID)
             that.getCsIdApi()
           }
@@ -1088,7 +1090,8 @@ export default {
       */
     getCsIdApi () {
       console.log('[method: getCsIdApi]')
-      this.$http.post(this.apiChattinglogGetCsId, this.csEmailItem)
+      console.log(this.apiChattinglogGetCsId)
+      this.$http.post(this.apiChattinglogGetCsId, this.csIDItem)
         .then((response) => {
           this.databaseCsID = response.data
           console.log(this.databaseCsID)

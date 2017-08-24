@@ -598,8 +598,9 @@ def customerservice_logout(request):
 @csrf_exempt
 def chattinglog_send_message(request):
     if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ChattingLogSerializer(data=data)
+        # client_id service_id content is_client
+        json_receive = JSONParser().parse(request)
+        serializer = ChattingLogSerializer(data=json_receive)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=200)
@@ -668,8 +669,11 @@ def chattinglog_show_history(request):
 def chattinglog_get_cs_id(request):
     if request.method == 'POST':
         json_receive = JSONParser().parse(request)
-        customerservices = CustomerService.objects.get(email=json_receive['email'])
-        return HttpResponse(customerservices.id,status=200)
+        instance = CustomerService.objects.filter(nickname=json_receive['nickname'])
+        if instance.exists() == False:
+            return HttpResponse('robot',status=200)
+        else:
+            return HttpResponse(instance[0].id,status=200)
 
 
 @csrf_exempt
