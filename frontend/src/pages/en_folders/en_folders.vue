@@ -19,7 +19,7 @@
       <div class="all">
         <div class="container">
           <div class="div">
-            <label id="title">企业账号注册</label>
+            <h1 id="title">企业账号注册</h1>
           </div>
           <div class="div">
             <label class="label">邮箱：</label>
@@ -55,7 +55,7 @@
           </div>
           <div class="div">
             <label id="la">已有账号，直接</label>
-            <a href="../en_login" target="_blank" id="login">登录</a>
+            <a href="../en_login" id="login">登录</a>
           </div>
         </div>
       </div>
@@ -221,8 +221,8 @@ export default {
 
 .ceiling-main {
   float: right;
-  margin-right: 5em;
-  padding-top: 0.6em;
+  margin-right: 3em;
+  padding-top: 1em;
 }
 
 .ceiling-main a {
@@ -246,12 +246,12 @@ body {
   width: 100%;
   /* overflow: hidden; */
   background-size: cover;
-  line-height: 1;
+   line-height: 1; 
 }
 
 .all {
   width: 40%;
-  height: 495px;
+  min-height: 525px;
   margin: 1.5% 0 0 30%;
   border-radius: 25px;
   background: rgba(243, 243, 243, 0.7);
@@ -273,8 +273,7 @@ body {
 #title {
   font-size: 15pt;
   font-weight: bold;
-  margin-bottom: 25px;
-  padding-left: 38%;
+  text-align: center;
   flex: 1 1 100%;
 }
 
