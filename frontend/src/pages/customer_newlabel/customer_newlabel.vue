@@ -50,10 +50,10 @@ import Vue from 'vue'
 import { formatDate } from '../../../static/js/date.js'
 import lrz from '../../../node_modules/lrz/dist/lrz.bundle.js'
 const key = 'VUE-Customer1'
-
-// 接收文字消息放进sessionList
+/**
+  * @description 接收文字消息放进sessionList
+  */
 function pushTextToSessionList (session, msg) {
-  console.log('function: pushTextToSessionList')
   session.messages.push({
     text: msg,
     isText: true,
@@ -61,10 +61,10 @@ function pushTextToSessionList (session, msg) {
     image: '../../../static/2.png'
   })
 }
-
-// 接收图片消息放进sessionList
+/**
+  * @description 接收图片消息放进sessionList
+  */
 function pushImgToSessionList (session, bpic, spic) {
-  console.log('function: pushTextToSessionList')
   session.messages.push({
     bigImg: bpic,
     img: spic,
@@ -73,9 +73,10 @@ function pushImgToSessionList (session, bpic, spic) {
     image: '../../../static/2.png'
   })
 }
-
+/**
+  * @description 链接客服
+  */
 function connectToCs (cs, session, csID) {
-  console.log('function: connectToCs')
   cs.csID = csID
   session.messages.push({
     text: '已成功为您转接客服' + csID,
@@ -88,7 +89,6 @@ function connectToCs (cs, session, csID) {
   * @description 没有可连接客服
   */
 function noCsAvailable (cs, session) {
-  console.log('function: noCsAvailable')
   session.messages.push({
     text: '您好，现在没有客服在线哦，请您稍后重新连接',
     isText: true,
@@ -101,7 +101,6 @@ function noCsAvailable (cs, session) {
   * @description 客户超时断开
   */
 function customerExpire (cs, session) {
-  console.log('function: noCsAvailable')
   session.messages.push({
     text: '您好，您已经超时并断开连接，请重新连接客服',
     isText: true,
@@ -115,48 +114,35 @@ function customerExpire (cs, session) {
   */
 function initSocket (cs, session, socket, customer) {
   return new Promise(function (resolve) {
-    console.log('function: initSocket')
-
     // 客服发送文字信息
     socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
-      console.log('socket: cs send message')
       pushTextToSessionList(session, msg)
     })
 
     // 客服发送图片信息
     socket.on('cs send picture', function (bpic, spic, enterpriseID, csID, customerID) {
-      console.log('socket: cs send picture')
       pushImgToSessionList(session, bpic, spic)
     })
 
     socket.on('connect to cs', function (csID) {
-      console.log('socket: connect to cs')
       connectToCs(cs, session, csID)
       resolve()
     })
 
     socket.on('switch cs', function (enterpriseID, formerCsID) {
-      console.log('socket: switch cs')
-      console.log(formerCsID)
-      console.log(enterpriseID)
-      console.log(customer.customerID)
-      console.log(customer.customerInfomation)
       socket.emit('switch cs', formerCsID, enterpriseID, customer.customerID, customer.customerInfomation)
       resolve()
     })
 
     socket.on('no cs available', function () {
-      console.log('socket: no cs available')
       noCsAvailable(cs, session)
     })
 
     socket.on('customer expire', function () {
-      console.log('socket: customer expire')
       customerExpire(cs, session)
     })
 
     socket.emit('assigned to cs', customer.enterpriseID, customer.customerID, customer.customerInfomation)
-    console.log('socket emit: assigned to cs')
   })
 }
 /**
@@ -286,14 +272,12 @@ export default {
         that.csIDItem = {
           'nickname': that.cs.csID
         }
-        console.log(that.csIDItem)
         that.getCsIdApi()
       })
     } else {
       this.csIDItem = {
         'nickname': this.cs.csID
       }
-      console.log(this.csIDItem)
       this.getCsIdApi()
     }
   },
@@ -324,7 +308,6 @@ export default {
       * @description 键盘输入信息
       */
     keyboardInputing (e) {
-      console.log('method: keyboardInputing')
       if (e.ctrlKey && e.keyCode === 13 && this.chatlogData.text.length) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
         residual.innerHTML = ''
@@ -336,11 +319,9 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        console.log('keyboardInputing1')
         // 存入数据库
         let index = this.session.messages.length
         this.saveText(1, index - 1)
-        console.log('keyboardInputing2')
         if (this.cs.csID.indexOf('&Robot') === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
@@ -348,7 +329,6 @@ export default {
             'nickname': this.customer.enterpriseID,
             'customer_input': this.chatlogData.text
           }
-          console.log(this.robotReplyItem)
           this.showRobotReplyApi()
         }
         this.chatlogData.text = ''
@@ -358,7 +338,6 @@ export default {
       * @description 按钮输入信息
       */
     buttonInputing (e) {
-      console.log('method: buttonInputing')
       if (this.chatlogData.text.length !== 0) {
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
         residual.innerHTML = ''
@@ -370,11 +349,9 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        console.log('buttonInputing1')
         // 存入数据库
         let index = this.session.messages.length
         this.saveText(1, index - 1)
-        console.log('buttonInputing2')
         if (this.cs.csID.indexOf('&Robot') === -1) {
           this.socket.emit('customer send message', this.chatlogData.text, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
         } else {
@@ -382,15 +359,15 @@ export default {
             'nickname': this.customer.enterpriseID,
             'customer_input': this.chatlogData.text
           }
-          console.log(this.robotReplyItem)
           this.showRobotReplyApi()
         }
         this.chatlogData.text = ''
       }
     },
-
+    /**
+      * @description 发送图片
+      */
     imgInputing () {
-      console.log('method: imgInputing')
       if (this.chatlogData.img !== '') {
         this.session.messages.push({
           img: this.chatlogData.img,
@@ -400,15 +377,11 @@ export default {
           self: true,
           image: '../../../static/1.jpg'
         })
-        console.log('imgInputing1')
         let index = this.session.messages.length
         this.saveImg(1, index - 1)
-        console.log('this.saveImg(1, index - 1)')
         if (this.cs.csID.indexOf('&Robot') === -1) {
           this.socket.emit('customer send picture', this.chatlogData.bigImg, this.chatlogData.img, this.customer.enterpriseID, this.cs.csID, this.customer.customerID)
-          console.log('socket')
         }
-        console.log('imgInputing2')
         this.chatlogData.img = ''
         this.chatlogData.bigImg = ''
       }
@@ -417,28 +390,23 @@ export default {
       * @description 点击按钮转接客服
       */
     switchToCs (e) {
-      console.log('method: switchToCs')
-      // console.log(this.cs.csID.indexOf("&Robot"))
       if (this.cs.csID.indexOf('&Robot') === -1) {
         alert('当前已为人工客服！')
         return
       }
-      // console.log(this.customer.customerInfomation)
-      // this.getCustomerInfo()
       let that = this
       that.socket = io('http://localhost:3000')
       initSocket(that.cs, that.session, that.socket, that.customer).then(function () {
         that.csIDItem = {
           'nickname': that.cs.csID
         }
-        console.log(that.csIDItem)
         that.getCsIdApi()
       })
     },
-
-    // 图片压缩
+    /**
+      * @description 图片压缩
+      */
     imageCompress () {
-      console.log('method: imageCompress')
       let self = this
       let obj = document.getElementById('inputFile')
       let file = obj.files[0]
@@ -459,14 +427,13 @@ export default {
       * @description 加载图片
       */
     imageUpload () {
-      console.log('method: imageUpload')
       var file = document.getElementById('inputFile')
       file.click()
     },
-
-    // 显示大图片
+    /**
+      * @description 显示大图片
+      */
     showBigImg (bigImg) {
-      console.log('method: showBigImg')
       this.bigImgSrc = bigImg
       this.modalShowBigImg = true
     },
@@ -474,32 +441,26 @@ export default {
       * @description 获取机器人回复调用后端接口
       */
     showRobotReplyApi () {
-      console.log('method: showRobotReplyApi')
       this.$http.post(this.apiCustomerserviceDisplayrobotreplyShow, this.robotReplyItem)
         .then((response) => {
           if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../se_login/'
-            console.log('show_robot_reply_api1')
+            this.$Message.info('问题没得到解决？请转接人工客服或刷新页面')
           } else if (response.data === 'ERROR, incomplete information.') {
-            // this.$Message.info('您所填的信息不完整')
-            console.log('show_robot_reply_api2')
+            this.$Message.info('问题没得到解决？请转接人工客服或刷新页面')
           } else if (response.data === 'ERROR, info is not exist.') {
-            // this.$Message.info('问题没得到解决？请转接人工客服')
-            console.log('show_robot_reply_api3')
+            this.$Message.info('问题没得到解决？请转接人工客服或刷新页面')
           } else {
             let msg = response.data
             this.showRobotReply(msg)
           }
         }, (response) => {
-          // window.location.href = '../se_login/'
-          console.log('show_robot_reply_api4')
+          this.$Message.info('问题没得到解决？请转接人工客服或刷新页面')
         })
     },
     /**
       * @description 显示机器人回复并存入数据库
       */
     showRobotReply (msg) {
-      console.log('method: showRobotReply')
       this.session.messages.push({
         text: msg,
         isText: true,
@@ -514,92 +475,72 @@ export default {
       * @description 通过email设置用户ID
       */
     getCsIdApi () {
-      console.log('method: getCsIdApi')
-      console.log(this.csIDItem)
       this.$http.post(this.apiChattinglogGetCsId, this.csIDItem)
         .then((response) => {
           this.databaseCsID = response.data
         }, (response) => {
-          // window.location.href = '../se_login/'
+          window.location.href = '../se_login/'
         })
     },
     /**
       * @description 保存文本接口
       */
     saveTextApi () {
-      console.log('method: saveTextApi')
-      console.log(this.saveTextItem)
       this.$http.post(this.apiChattinglogSendMessage, this.saveTextItem)
         .then((response) => {
-          console.log('save_text_api1')
-          console.log(response.data)
           this.saveTextItem = {}
         }, (response) => {
-          // window.location.href = '../se_login/'
-          console.log('save_text_api2')
+          window.location.href = '../se_login/'
         })
     },
     /**
       * @description 保存文本
       */
     saveText (isClient, index) {
-      console.log('method: saveText')
       this.saveTextItem = {
         'client_id': this.customer.customerID,
         'service_id': this.databaseCsID,
         'content': this.session.messages[index].text,
         'is_client': isClient,
       }
-      console.log(this.saveTextItem)
       this.saveTextApi()
     },
     /**
       * @description 保存图片接口
       */
     saveImgApi () {
-      console.log('method: saveImgApi')
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound/'
-            console.log('save_img_api1')
+            window.location.href = '../notfound/'
           } else {
             this.saveImgItem = {}
-            console.log('saveImgApi')
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('save_img_api2')
+          window.location.href = '../notfound/'
         })
     },
     /**
       * @description 保存大图接口
       */
     saveBigImgApi () {
-      console.log('method: saveBigImgApi')
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            // window.location.href = '../notfound/'
-            console.log('save_bigImg_api1')
+            window.location.href = '../notfound/'
           } else {
             this.saveBigImgItem = {}
-            console.log('saveBigImgApi')
           }
         }, (response) => {
-          // window.location.href = '../notfound/'
-          console.log('save_bigImg_api2')
+          window.location.href = '../notfound/'
         })
     },
     /**
       * @description 保存图片
       */
     saveImg (isClient, index) {
-      console.log('saveImg')
       let timestamp = new Date().getTime()
-      console.log(timestamp)
       let label = timestamp + this.customer.customerID
-      console.log('timestamp')
       this.saveImgItem = {
         'client_id': this.customer.customerID,
         'service_id': this.databaseCsID,
@@ -614,11 +555,12 @@ export default {
         'is_client': isClient,
         'label': label
       }
-      console.log(this.saveImgItem)
-      console.log(this.saveBigImgItem)
       this.saveImgApi()
       this.saveBigImgApi()
     },
+    /**
+      * @description 从url中获取用户信息
+      */
     customerCheck () {
       this.customer.customerID = this.$utils.getUrlKey('userID')
       this.customer.customerName = this.$utils.getUrlKey('nickname')
@@ -631,63 +573,52 @@ export default {
       }
       this.customerCheckApi()
     },
+    /**
+      * @description 调用后端接口检查url是否为真
+      */
     customerCheckApi () {
-      console.log('[methods]: customerCheckApi')
-      console.log(this.customerCheckItem)
       this.$http.post(this.apiCustomerCheckInfo, this.customerCheckItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            // window.location.href = '../not_found/'
-            console.log('customerCheckApi1')
+            window.location.href = '../not_found/'
           } else if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../not_found/'
-            console.log('customerCheckApi2')
+            window.location.href = '../not_found/'
           } else if (response.data === 'ERROR, wrong nickname.') {
-            // window.location.href = '../not_found/'
-            console.log('customerCheckApi3')
+            window.location.href = '../not_found/'
           } else if (response.data === 'False') {
-            // window.location.href = '../not_found/'
-            console.log('customerCheckApi4')
+            window.location.href = '../not_found/'
           } else if (response.data === 'True') {
-            console.log('customerCheckApi6')
             this.customerInfoNameCheckApi()
-          } else {
-            console.log(response.data)
           }
         }, (response) => {
-          // window.location.href = '../not_found/'
-          console.log('customerCheckApi5')
+          window.location.href = '../not_found/'
         })
     },
+    /**
+      * @description 调用后端接口获取企业自定义用户信息种类
+      */
     customerInfoNameCheckApi () {
-      console.log('[methods: customerInfoNameCheckApi]')
-      console.log(this.customerInfoNameCheckItem)
       this.$http.post(this.apiCustomerDisplayCustomerinfopropertyname, this.customerInfoNameCheckItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            // window.location.href = '../not_found/'
-            console.log('customerInfoNameCheckApi3')
+            window.location.href = '../not_found/'
           } else if (response.data === 'ERROR, wrong information.') {
-            // window.location.href = '../not_found/'
-            console.log('customerInfoNameCheckApi4')
+            window.location.href = '../not_found/'
           } else if (response.data === 'ERROR, wrong nickname.') {
-            // window.location.href = '../not_found/'
-            console.log('customerInfoNameCheckApi5')
+            window.location.href = '../not_found/'
           } else {
-            console.log('customerInfoNameCheckApi6')
             this.customerInfoNameArray = response.data
-            console.log(this.customerInfoNameArray)
             this.getCustomerInfo()
           }
         }, (response) => {
-          // window.location.href = '../not_found/'
-          console.log('customerInfoNameCheckApi7')
+          window.location.href = '../not_found/'
         })
     },
+    /**
+      * @description 从url中获取用户信息并存储
+      */
     getCustomerInfo () {
       this.customer.customerInfomation = []
-      console.log(this.customer.customerInfomation)
-      console.log('[methods: getCustomerInfo]')
       let tempUserID = {
         name: 'userID',
         content: this.customer.customerID
@@ -709,12 +640,12 @@ export default {
       this.csIDItem = {
         'nickname': this.cs.csID
       }
-      console.log(this.csIDItem)
-      console.log(this.customer.customerInfomation)
       this.getCsIdApi()
     },
+    /**
+      * @description 获取weburl
+      */
     getCustomerInfoUrl () {
-      console.log('[methods: getCustomerInfoUrl]')
       let url = window.location.href
       let urlArray = url.split('/')
       this.adminNickname = urlArray[4]
