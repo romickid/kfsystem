@@ -19,7 +19,7 @@
       <div class="all">
         <div class="container">
           <div class="div">
-            <label id="title">客服完善信息</label>
+            <h1 id="title">客服完善信息</h1>
           </div>
           <div class="div">
             <label class="label">登录密码：</label>
@@ -44,7 +44,7 @@
           </div>
           <div class="div">
             <label id="la">已有账号，直接</label>
-            <a href="../se_login" target="_blank" id="login">登录</a>
+            <a href="../se_login" id="login">登录</a>
           </div>
         </div>
       </div>
@@ -255,8 +255,7 @@ body {
 #title {
   font-size: 15pt;
   font-weight: bold;
-  margin-bottom: 25px;
-  padding-left: 34%;
+  text-align: center;
   flex: 1 1 100%;
 }
 
@@ -315,8 +314,8 @@ p {
 
 .ceiling-main {
   float: right;
-  margin-right: 5em;
-  padding-top: 0.6em;
+  margin-right: 3em;
+  padding-top: 1em;
 }
 
 .ceiling-main a {
