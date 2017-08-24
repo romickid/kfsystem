@@ -66,16 +66,16 @@ export default {
           if (response.data === 'ERROR, wrong email.') {
             this.$Message.info('您的邮箱不正确！')
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else {
             this.$Message.info('验证邮件已发送至您的邮箱')
           }
         }, (response) => {
-          window.location.href = '../notfound'
+          window.location.href = '../notfound/'
         })
     },
     /**

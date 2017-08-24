@@ -6,11 +6,11 @@
       <img src="./assets/logo.png" alt="" style="height:40px;width:40px">
       <img src="./assets/name.png" alt="" style="height:40px">
       <div class="ceiling-main">
-        <a href='../main' class='ceiling-item'>首页</a> |
-        <a href="../documentation" class='ceiling-item current-page'>帮助中心</a> |
-        <a href="../en_login" class='ceiling-item'>企业登录</a> |
-        <a href="../en_folders" class='ceiling-item'>企业注册</a> |
-        <a href="../se_login" class='ceiling-item'>客服入口</a>
+        <a href='../main/' class='ceiling-item'>首页</a> |
+        <a href="../documentation/" class='ceiling-item current-page'>帮助中心</a> |
+        <a href="../en_login/" class='ceiling-item'>企业登录</a> |
+        <a href="../en_folders/" class='ceiling-item'>企业注册</a> |
+        <a href="../se_login/" class='ceiling-item'>客服入口</a>
       </div>
     </div>
   </div>

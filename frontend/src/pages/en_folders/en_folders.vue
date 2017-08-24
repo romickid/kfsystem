@@ -2,16 +2,16 @@
   <div>
     <div class="header">
       <div class="ceiling">
-        <a href='../main'>
+        <a href='../main/'>
           <img src="../../../static/logo5.png" alt="" style="height:40px;width:40px">
           <img src="../../../static/name.png" alt="" style="height:40px">
         </a>
         <div class="ceiling-main">
-          <a href='../main' class='ceiling-item'>首页</a> |
-          <a href="../documentation" class='ceiling-item'>帮助中心</a> |
-          <a href="../en_login" class='ceiling-item'>企业登录</a> |
-          <a href="../en_folders" class='ceiling-item current-page'>企业注册</a> |
-          <a href="../se_login" class='ceiling-item'>客服入口</a>
+          <a href='../main/' class='ceiling-item'>首页</a> |
+          <a href="../documentation/" class='ceiling-item'>帮助中心</a> |
+          <a href="../en_login/" class='ceiling-item'>企业登录</a> |
+          <a href="../en_folders/" class='ceiling-item current-page'>企业注册</a> |
+          <a href="../se_login/" class='ceiling-item'>客服入口</a>
         </div>
       </div>
     </div>
@@ -128,9 +128,9 @@ export default {
       this.$http.post(this.apiCreate, this.item)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, incomplete information.' || response.data === 'ERROR, wrong information.') {
-            window.location.href = '../notfound'
+            window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, serials is invalid.') {
             this.$Message.info('请输入正确的产品序列号！')
           } else if (response.data === 'ERROR, email has been registered.') {
@@ -138,10 +138,10 @@ export default {
           } else if (response.data === 'ERROR, nickname has been used.') {
             this.$Message.info('该昵称已被注册!')
           } else {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           }
         }, (response) => {
-          window.location.href = '../notfound'
+          window.location.href = '../notfound/'
         })
     },
     /**

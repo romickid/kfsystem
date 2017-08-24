@@ -33,6 +33,16 @@
             <th>连接人数</th>
             <th style='border-right: 0;'>操作</th>
           </tr>
+          <tr>
+            <td>{{ robot.email }}</td>
+            <td>{{ robot.nickname }}</td>
+            <td>{{ robot.is_register ? '已验证' : '未验证'}}</td>
+            <td>{{ robot.is_online ? '在线' : '离线'}}</td>
+            <th>{{ robot.connection_num }}</th>
+            <th style='border-right: 0;'>
+              <i-button type='text' @click='delete_cs(id)' disabled>删除</i-button>
+            </th>
+          </tr>
           <tr v-for='(kf, id) in kfstaff'>
             <td>{{ kf.email }}</td>
             <td>{{ kf.nickname }}</td>
@@ -64,7 +74,8 @@ export default {
       apiAdminShowCsStatus: '../api/admin_show_cs_status/',
       apiAdminDeleteCs: '../api/admin_delete_cs/',
       customerService: {},
-      deleteCSItem: {}
+      deleteCSItem: {},
+      robot: {}
     }
   },
   methods: {
@@ -110,18 +121,18 @@ export default {
       this.$http.post(this.apiCustomerserviceCreate, this.customerService)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, admin_email is wrong.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, email has been registered.') {
             this.$Message.info('该客服邮箱已被注册')
             this.kf = ''
           } else if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             this.$Message.info('添加成功')
             this.refresh()
@@ -145,17 +156,17 @@ export default {
       this.$http.post(this.apiAdminDeleteCs, this.deleteCSItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong admin email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong customerservice email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, customerservice is not belong to admin.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             this.$Message.info('删除成功')
             this.refresh()
@@ -180,14 +191,16 @@ export default {
       this.$http.post(this.apiAdminShowCsStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../en_login'
+            window.location.href = '../en_login/'
           } else {
             this.kfstaff = response.data
+            this.robot = this.kfstaff[0]
+            this.kfstaff.splice(0,1)
           }
         }, (response) => {
-          window.location.href = '../en_login'
+          window.location.href = '../en_login/'
         })
     }
   },
