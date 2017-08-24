@@ -38,20 +38,20 @@
             <td>{{ robot.nickname }}</td>
             <td>{{ robot.is_register ? '已验证' : '未验证'}}</td>
             <td>{{ robot.is_online ? '在线' : '离线'}}</td>
-            <th>{{ robot.connection_num }}</th>
-            <th style='border-right: 0;'>
+            <td>{{ robot.connection_num }}</td>
+            <td style='border-right: 0;'>
               <i-button type='text' @click='delete_cs(id)' disabled>删除</i-button>
-            </th>
+            </td>
           </tr>
           <tr v-for='(kf, id) in kfstaff'>
             <td>{{ kf.email }}</td>
             <td>{{ kf.nickname }}</td>
             <td>{{ kf.is_register ? '已验证' : '未验证'}}</td>
             <td>{{ kf.is_online ? '在线' : '离线'}}</td>
-            <th>{{ kf.connection_num }}</th>
-            <th style='border-right: 0;'>
+            <td>{{ kf.connection_num }}</td>
+            <td style='border-right: 0;'>
               <i-button type='text' @click='delete_cs(id)'>删除</i-button>
-            </th>
+            </td>
           </tr>
         </table>
       </div>
