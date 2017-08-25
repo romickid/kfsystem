@@ -12,14 +12,14 @@
               <div class="massage-text">
                 <li>
                   <p v-if="item.isText" v-html="item.text"></p>
-                  <img :src='item.img' v-else @click='showBigImg(item.bigImg)'>
+                  <img :src="item.img" v-else @click='showBigImg(item.bigImg)'>
                 </li>
               </div>
             </div>
           </li>
         </ul>
       </div>
-      <Modal v-model="modalShowBigImg" width='auto'>
+      <Modal v-model="modalShowBigImg" width="auto">
         <p slot="header">
         </p>
         <div style="text-align:center">
@@ -39,7 +39,7 @@
           <textarea class="textarea" placeholder="按 Ctrl+Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttonInputing">发送</Button>
-        <input id="inputFile" name='inputFile' type='file' multiple='mutiple' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
+        <input id="inputFile" name="inputFile" type="file" multiple="mutiple" accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
       </div>
     </div>
   </div>
@@ -115,7 +115,6 @@ function customerExpire (cs, session) {
   */
 function initSocket (cs, session, socket, customer) {
   return new Promise(function (resolve) {
-
     // 客服发送文字信息
     socket.on('cs send message', function (msg, enterpriseID, csID, customerID) {
       pushTextToSessionList(session, msg)
@@ -304,7 +303,6 @@ export default {
         })
     }, false)
   },
-
 
   watch: {
     // 每当session改变时，保存到localStorage中
@@ -531,7 +529,7 @@ export default {
         'client_id': this.customer.customerID,
         'service_id': this.databaseCsID,
         'content': this.session.messages[index].text,
-        'is_client': isClient,
+        'is_client': isClient
       }
       this.saveTextApi()
     },

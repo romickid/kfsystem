@@ -1,7 +1,7 @@
 <template>
   <div class="outline">
-    <p class='outline-content'>连接你的用户 高效你的客服</p>
-    <Row class='outline-content'>
+    <p class="outline-content">连接你的用户 高效你的客服</p>
+    <Row class="outline-content">
       <Col span="11">
         <Card>
           <p slot="title">在线客服数</p>
