@@ -4,7 +4,7 @@
     <div class='layout'>
       <div class='layout-ceiling'>
         <div class='layout-logo'>
-          <img src='./assets/name.png' style="height:40px">
+          <img src='./assets/name.png' style='height:40px'>
         </div>
         <div class='layout-ceiling-main'>
           <a href='../main/'>首页</a> |
@@ -46,14 +46,14 @@
               <Icon type='navicon' size='32'></Icon>
             </i-button>
             <div class='email'>
-              <Dropdown style="margin-left: 20px">
-                <a href="javascript:void(0)">
+              <Dropdown style='margin-left: 20px'>
+                <a href='javascript:void(0)'>
                   {{ adminEmail }}
-                  <Icon type="arrow-down-b"></Icon>
+                  <Icon type='arrow-down-b'></Icon>
                 </a>
-                <Dropdown-menu slot="list">
+                <Dropdown-menu slot='list'>
                   <Dropdown-item>
-                    <en-reset-password ref="enResetPassword"></en-reset-password>
+                    <en-reset-password ref='enResetPassword'></en-reset-password>
                   </Dropdown-item>
                   <Dropdown-item>
                     <Button type='text' @click='logout'>登出</Button>

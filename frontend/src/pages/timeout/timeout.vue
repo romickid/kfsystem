@@ -1,14 +1,14 @@
 <template>
-  <div id="app">
+  <div id='app'>
     <Row class='content'>
-      <i-col :xs="{ span: 0}" :md="{ span: 6, offset: 5 }" :lg="{ span: 6, offset: 5 }">
+      <i-col :xs='{ span: 0}' :md='{ span: 6, offset: 5 }' :lg='{ span: 6, offset: 5 }'>
         <div class='picture'>
           <div class='left'>
             <p>OPPS! ERROR!</p>
           </div>
         </div>
       </i-col>
-      <i-col :xs="{ span: 11, offset: 2 }" :lg="{ span: 11, offset: 2 }">
+      <i-col :xs='{ span: 11, offset: 2 }' :lg='{ span: 11, offset: 2 }'>
         <div class='right'>
           <h1>TimeOut</h1>
           <p>您的链接已失效，请重新申请</p>
