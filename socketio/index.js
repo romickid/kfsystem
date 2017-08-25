@@ -78,6 +78,9 @@ function csdeleteCustomerSocket (cs_socket, customer_socket) {
 }
 
 function removeByCustomerId (arr, customer_id) {
+  if (Array.isArray(arr) === false) {
+    return
+  }
   for(let i = 0; i < arr.length; i++) {
     if (arr[i].customer_id === customer_id) {
       arr.splice(i, 1);
@@ -87,6 +90,9 @@ function removeByCustomerId (arr, customer_id) {
 }
 
 function removeByCsId (arr, cs_id) {
+  if (Array.isArray(arr) === false) {
+    return
+  }
   for(let i = 0; i < arr.length; i++) {
     if (arr[i].cs_id === cs_id) {
       arr.splice(i, 1);
