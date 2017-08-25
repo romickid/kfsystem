@@ -30,7 +30,7 @@
       <div class='line'></div>
       <div class='guide'>
         <h2>请求参数说明</h2>
-        <Table stripe :columns="columns" :data="data"></Table>
+        <Table stripe :columns='columns' :data='data'></Table>
         <ul>
           <li>signature生成算法：</li>
           <li>1. 用户ID、用户名、企业名和通讯密钥按参数名自然排序（即升序）</li>

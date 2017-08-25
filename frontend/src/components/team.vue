@@ -197,7 +197,7 @@ export default {
           } else {
             this.kfstaff = response.data
             this.robot = this.kfstaff[0]
-            this.kfstaff.splice(0,1)
+            this.kfstaff.splice(0, 1)
           }
         }, (response) => {
           window.location.href = '../en_login/'
