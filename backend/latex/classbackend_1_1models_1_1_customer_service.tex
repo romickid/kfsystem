@@ -1,0 +1,43 @@
+\hypertarget{classbackend_1_1models_1_1_customer_service}{}\section{backend.\+models.\+Customer\+Service Class Reference}
+\label{classbackend_1_1models_1_1_customer_service}\index{backend.\+models.\+Customer\+Service@{backend.\+models.\+Customer\+Service}}
+Inheritance diagram for backend.\+models.\+Customer\+Service\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classbackend_1_1models_1_1_customer_service}
+\end{center}
+\end{figure}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_afd84cb13b4f13da507c1ac1d705a4a47}\label{classbackend_1_1models_1_1_customer_service_afd84cb13b4f13da507c1ac1d705a4a47}} 
+{\bfseries email} = models.\+Email\+Field(default=\textquotesingle{}empty@empty.\+com\textquotesingle{}, unique=True)
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_a23475a354ede9af46120e17cc346da96}\label{classbackend_1_1models_1_1_customer_service_a23475a354ede9af46120e17cc346da96}} 
+{\bfseries enterprise} = models.\+Foreign\+Key(\textquotesingle{}\hyperlink{classbackend_1_1models_1_1_admin}{Admin}\textquotesingle{}, on\+\_\+delete=models.\+C\+A\+S\+C\+A\+DE)
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_a51b7fbd597da23c46ffa48acd37a6730}\label{classbackend_1_1models_1_1_customer_service_a51b7fbd597da23c46ffa48acd37a6730}} 
+{\bfseries nickname} = models.\+Char\+Field(max\+\_\+length=50, default=\textquotesingle{}empty\textquotesingle{}, unique=True)
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_a7aba2934fc1089c3b6730099b744debd}\label{classbackend_1_1models_1_1_customer_service_a7aba2934fc1089c3b6730099b744debd}} 
+{\bfseries password} = models.\+Char\+Field(max\+\_\+length=128, default=\textquotesingle{}empty\textquotesingle{})
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_a316a7ce100879a6fb27a8d202a857ab9}\label{classbackend_1_1models_1_1_customer_service_a316a7ce100879a6fb27a8d202a857ab9}} 
+{\bfseries is\+\_\+register} = models.\+Boolean\+Field(default=False)
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_a35d1452178e9d8ce83e0abaebbcfa060}\label{classbackend_1_1models_1_1_customer_service_a35d1452178e9d8ce83e0abaebbcfa060}} 
+{\bfseries is\+\_\+online} = models.\+Boolean\+Field(default=False)
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_a2ac1c6d11ccc775f4a8c40ddd436967d}\label{classbackend_1_1models_1_1_customer_service_a2ac1c6d11ccc775f4a8c40ddd436967d}} 
+{\bfseries connection\+\_\+num} = models.\+Integer\+Field(default=0)
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_afed4ee03d4fddfda167fd0970f369488}\label{classbackend_1_1models_1_1_customer_service_afed4ee03d4fddfda167fd0970f369488}} 
+{\bfseries vid} = models.\+Char\+Field(max\+\_\+length=32, default=\textquotesingle{}empty\textquotesingle{})
+\item 
+\mbox{\Hypertarget{classbackend_1_1models_1_1_customer_service_ad6e0221ddd7b485e04f156e3eb935c31}\label{classbackend_1_1models_1_1_customer_service_ad6e0221ddd7b485e04f156e3eb935c31}} 
+{\bfseries vid\+\_\+createtime} = models.\+Date\+Time\+Field(default=timezone.\+now, blank=True)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+models.\+py\end{DoxyCompactItemize}
