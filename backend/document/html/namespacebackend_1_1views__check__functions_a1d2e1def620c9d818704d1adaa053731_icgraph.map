@@ -1,3 +1,4 @@
 <map id="backend.views_check_functions.admin_show_cs_status_check" name="backend.views_check_functions.admin_show_cs_status_check">
-<area shape="rect" id="node2" href="$namespacebackend_1_1views.html#a38813fc7a5073c575fa798ecb28e6db1" title="backend.views.admin\l_show_cs_status" alt="" coords="211,13,356,54"/>
+<area shape="rect" id="node2" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_admin_show_cs_status_check.html#a8b0f37d86b50f4ef3533af59a7018de3" title="backend.test.test_views\l_check_functions.TestAdminShow\lCsStatusCheck.test" alt="" coords="211,5,432,61"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views.html#a38813fc7a5073c575fa798ecb28e6db1" title="backend.views.admin\l_show_cs_status" alt="" coords="249,86,394,127"/>
 </map>

@@ -1,0 +1,6 @@
+<map id="backend.views.customer_check_info" name="backend.views.customer_check_info">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#ac142c424e045a4ca25b1b933ce46f68e" title="backend.views_check\l_functions.customer\l_check_info_check" alt="" coords="241,34,389,90"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__helper__functions.html#a06cf2884ca71dd95da765e92f89d4856" title="backend.views_helper\l_functions.customer_generate\l_hash_result" alt="" coords="217,114,413,170"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="479,5,634,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a47ef09b5836047c40116abf7e1bea927" title="backend.views_helper\l_functions.admin_is_existent\l_by_nickname" alt="" coords="461,71,652,127"/>
+</map>

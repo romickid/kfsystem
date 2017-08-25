@@ -1,5 +1,11 @@
 <map id="backend.views_helper_functions.admin_is_existent_by_nickname" name="backend.views_helper_functions.admin_is_existent_by_nickname">
-<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a152955c275ed32c1fd01aa42851947cf" title="backend.views_check\l_functions.admin_create_check" alt="" coords="244,50,449,91"/>
-<area shape="rect" id="node3" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_admin_create_check.html#a7853bed029b6c3a2e6d7b0787c8e33eb" title="backend.test.test_views\l_check_functions.TestAdminCreate\lCheck.test" alt="" coords="497,5,724,61"/>
-<area shape="rect" id="node4" href="$namespacebackend_1_1views.html#a58aceae1449b97c2e8c94e8f2c932f15" title="backend.views.admin\l_create" alt="" coords="538,86,683,127"/>
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#a152955c275ed32c1fd01aa42851947cf" title="backend.views_check\l_functions.admin_create_check" alt="" coords="277,86,483,127"/>
+<area shape="rect" id="node5" href="$namespacebackend_1_1views__check__functions.html#ac142c424e045a4ca25b1b933ce46f68e" title="backend.views_check\l_functions.customer\l_check_info_check" alt="" coords="306,185,454,241"/>
+<area shape="rect" id="node8" href="$namespacebackend_1_1views__check__functions.html#ac7586256baf7ae445b48854cae1bbac2" title="backend.views_check\l_functions.customer\l_display_customerinfopropertyname_check" alt="" coords="244,299,516,355"/>
+<area shape="rect" id="node3" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_admin_create_check.html#a7853bed029b6c3a2e6d7b0787c8e33eb" title="backend.test.test_views\l_check_functions.TestAdminCreate\lCheck.test" alt="" coords="594,5,821,61"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views.html#a58aceae1449b97c2e8c94e8f2c932f15" title="backend.views.admin\l_create" alt="" coords="635,86,780,127"/>
+<area shape="rect" id="node6" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_customer_check_info_check.html#a40c0ebdc0eacc0554209d395a7a431f8" title="backend.test.test_views\l_check_functions.TestCustomer\lCheckInfoCheck.test" alt="" coords="603,152,811,208"/>
+<area shape="rect" id="node7" href="$namespacebackend_1_1views.html#a94e288ac309c379d82ba9b677ef2162b" title="backend.views.customer\l_check_info" alt="" coords="625,233,789,274"/>
+<area shape="rect" id="node9" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_customer_display_customer_info_property_name_check.html#a4d19dff0c615cd7586f66178c664fab8" title="backend.test.test_views\l_check_functions.TestCustomer\lDisplayCustomerInfoPropertyNameCheck.test" alt="" coords="564,299,851,355"/>
+<area shape="rect" id="node10" href="$namespacebackend_1_1views.html#a433168c444cbb598221bc929b92f6467" title="backend.views.customer\l_display_customerinfopropertyname" alt="" coords="592,379,823,421"/>
 </map>
