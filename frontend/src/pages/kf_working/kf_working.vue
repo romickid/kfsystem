@@ -541,7 +541,7 @@ export default {
         that.onlineIndex++
       }
       pushTextToOnlineList(that.onlineList, 0, '用户' + customerID + '已上线')
-      that.backendUpdateConnectionNum()
+      // that.backendUpdateConnectionNum()
     })
     /**
       * @description 当用户挂断时，将其从在线组中删除，添加到离线组
@@ -553,7 +553,7 @@ export default {
       if (that.onlineIndex !== 0 && that.onlineIndex === that.onlineList.length) {
         that.onlineIndex--
       }
-      that.backendUpdateConnectionNum()
+      // that.backendUpdateConnectionNum()
     })
     /**
       * @description 对当前用户转接失败，设置提示
@@ -570,7 +570,7 @@ export default {
       if (that.onlineIndex !== 0 && that.onlineIndex === that.onlineList.length) {
         that.onlineIndex--
       }
-      that.backendUpdateConnectionNum()
+      // that.backendUpdateConnectionNum()
     })
 
     this.socket.on('cs reload old socket', function (former_customerinfo) {
@@ -596,13 +596,13 @@ export default {
         that.isLogon = true
       }, 1000)
       that.backendUpdateLoginStatus(true)
-      that.backendUpdateConnectionNum()
+      // that.backendUpdateConnectionNum()
     } else {
       that.socket.enterprise_ID = that.cs.enterpriseID
       that.socket.cs_ID = that.cs.csID
       that.socket.emit('cs come back', that.socket.enterprise_ID, that.socket.cs_ID)
       that.backendUpdateLoginStatus(true)
-      that.backendUpdateConnectionNum()
+      // that.backendUpdateConnectionNum()
     }
 
     sessionStorage.setItem(key, JSON.stringify({
@@ -795,18 +795,17 @@ export default {
       that.$http.post(that.apiCustomerserviceShowUserStatus)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else {
             that.cs.csID = response.data.nickname
             that.cs.enterpriseID = response.data.admin_nickname
             that.csIDItem = { 'nickname': that.cs.csID }
             that.getCsIdApi()
-            this.csLogoutApi()
           }
         }, (response) => {
-          window.location.href = '../se_login/'
+          // window.location.href = '../se_login/'
         })
     },
     /**
@@ -833,7 +832,7 @@ export default {
       }
       this.isLogon = false
       this.backendUpdateLoginStatus(false)
-      this.backendUpdateConnectionNum()
+      // this.backendUpdateConnectionNum()
       this.csLogoutApi()
     },
     /**
@@ -843,14 +842,14 @@ export default {
       this.$http.post(this.apiCustomerserviceLogout)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           }
         }, (response) => {
-          window.location.href = '../se_login/'
+          // window.location.href = '../se_login/'
         })
     },
     /**
@@ -967,15 +966,15 @@ export default {
       this.$http.post(this.apiCustomerserviceSetrobotinfoCreate, this.robotSentenceAddItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, incomplete information.') {
             this.$Message.info('您所填的信息不完整')
           } else if (response.data === 'ERROR, wrong information.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../se_login/'
+            // window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, info is exist.') {
             this.$Message.info('该问题已存在')
           } else {
@@ -983,7 +982,7 @@ export default {
             this.$refs.robotSetting.show_robot_question_api()
           }
         }, (response) => {
-          window.location.href = '../se_login/'
+          // window.location.href = '../se_login/'
         })
     },
     /**
@@ -1041,7 +1040,7 @@ export default {
         .then((response) => {
           this.saveTextItem = {}
         }, (response) => {
-          window.location.href = '../se_login/'
+          // window.location.href = '../se_login/'
         })
     },
     /**
@@ -1052,7 +1051,7 @@ export default {
         .then((response) => {
           this.databaseCsID = response.data
         }, (response) => {
-          window.location.href = '../se_login/'
+          // window.location.href = '../se_login/'
         })
     },
     /**
@@ -1062,12 +1061,12 @@ export default {
       this.$http.post(this.apiSmallimagelogSendImage, this.saveImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else {
             this.saveImgItem = {}
           }
         }, (response) => {
-          window.location.href = '../notfound/'
+          // window.location.href = '../notfound/'
         })
     },
     /**
@@ -1077,12 +1076,12 @@ export default {
       this.$http.post(this.apiBigimagelogSendImage, this.saveBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else {
             this.saveBigImgItem = {}
           }
         }, (response) => {
-          window.location.href = '../notfound/'
+          // window.location.href = '../notfound/'
         })
     },
     /**
@@ -1129,13 +1128,13 @@ export default {
       this.$http.post(this.apiLogShowHistory, this.showHistoryItem)
         .then((response) => {
           if (response.data === 'ERROR, invalid data in serializer.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else {
             let historyArray = response.data
             this.printHistoryMessages(historyArray)
           }
         }, (response) => {
-          window.location.href = '../notfound/'
+          // window.location.href = '../notfound/'
         })
     },
     /**
@@ -1202,13 +1201,13 @@ export default {
       this.$http.post(this.apiBigimagelogShowSingleHistory, this.showHistoryBigImgItem)
         .then((response) => {
           if (response.data === 'ERROR, no history.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else {
             this.showHistoryBigImgItem = {}
             this.showBigImg(response.data)
           }
         }, (response) => {
-          window.location.href = '../notfound/'
+          // window.location.href = '../notfound/'
         })
     },
     /**
@@ -1220,14 +1219,14 @@ export default {
       })
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong type.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           }
         }, (response) => {
-          window.location.href = '../notfound/'
+          // window.location.href = '../notfound/'
         })
     },
     /**
@@ -1239,14 +1238,14 @@ export default {
       })
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong email.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           } else if (response.data === 'ERROR, wrong type.') {
-            window.location.href = '../notfound/'
+            // window.location.href = '../notfound/'
           }
         }, (response) => {
-          window.location.href = '../notfound/'
+          // window.location.href = '../notfound/'
         })
     }
   },

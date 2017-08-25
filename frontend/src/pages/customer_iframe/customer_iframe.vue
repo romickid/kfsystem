@@ -132,7 +132,7 @@ function initSocket (cs, session, socket, customer) {
     })
 
     socket.on('switch cs', function (enterpriseID, formerCsID) {
-      socket.emit('switch cs', formerCsID, enterpriseID, customer.customerInfomation)
+      socket.emit('switch cs', formerCsID, enterpriseID, customer.customerID, customer.customerInfomation)
       resolve()
     })
 
@@ -610,7 +610,7 @@ export default {
       this.customerCheckApi()
     },
     /**
-      * @description 调用后端api接口检查url真实性
+      * @description 调用后端接口检查url是否为真
       */
     customerCheckApi () {
       this.$http.post(this.apiCustomerCheckInfo, this.customerCheckItem)
@@ -624,16 +624,16 @@ export default {
           } else if (response.data === 'False') {
             window.location.href = '../not_found/'
           } else if (response.data === 'True') {
-            this.customerInfoNameApi()
+            this.customerInfoNameCheckApi()
           }
         }, (response) => {
-          window.location.href = '../not_found'
+          window.location.href = '../not_found/'
         })
     },
     /**
-      * @description 调用后端api接口获取用户信息名称
+      * @description 调用后端接口获取企业自定义用户信息种类
       */
-    customerInfoNameApi () {
+    customerInfoNameCheckApi () {
       this.$http.post(this.apiCustomerDisplayCustomerinfopropertyname, this.customerInfoNameCheckItem)
         .then((response) => {
           if (response.data === 'ERROR, incomplete information.') {
@@ -651,7 +651,7 @@ export default {
         })
     },
     /**
-      * @description 将用户信息按名称存储
+      * @description 从url中获取用户信息并存储
       */
     getCustomerInfo () {
       this.customer.customerInfomation = []
@@ -679,7 +679,7 @@ export default {
       this.getCsIdApi()
     },
     /**
-      * @description 获取页面url
+      * @description 获取weburl
       */
     getCustomerInfoUrl () {
       let url = window.location.href
