@@ -1,6 +1,6 @@
 # project-kfsystem
 
-A CusomterSystem project finished in the second year of undergraduate.
+A CusomterSystem project like Baidu yeying finished in the second year of undergraduate.
 
 With<br>
 Django 1.11<br>
