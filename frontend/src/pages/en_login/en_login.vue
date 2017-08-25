@@ -2,16 +2,16 @@
   <div>
     <div class="header">
       <div class="ceiling">
-        <a href='../main/'>
+        <a href="../main/">
           <img src="../../../static/logo5.png" alt="" style="height:40px;width:40px">
           <img src="../../../static/name.png" alt="" style="height:40px">
         </a>
         <div class="ceiling-main">
-          <a href='../main/' class='ceiling-item'>首页</a> |
-          <a href="../documentation/" class='ceiling-item'>帮助中心</a> |
-          <a href="../en_login/" class='ceiling-item current-page'>企业登录</a> |
-          <a href="../en_folders/" class='ceiling-item'>企业注册</a> |
-          <a href="../se_login/" class='ceiling-item'>客服入口</a>
+          <a href="../main/" class="ceiling-item">首页</a> |
+          <a href="../documentation/" class="ceiling-item">帮助中心</a> |
+          <a href="../en_login/" class="ceiling-item current-page">企业登录</a> |
+          <a href="../en_folders/" class="ceiling-item">企业注册</a> |
+          <a href="../se_login/" class="ceiling-item">客服入口</a>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
           </div>
           <div class="div">
             <label class="label">邮箱：</label>
-            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput" id='input-email'>
+            <input type="text" v-model="email" name="email" class="text" @blur="checkEmail" @focus="emailInput" id="input-email">
             <i-label v-if="emailIllegal">
               <p id="p">请输入正确的邮箱！</p>
             </i-label>
@@ -35,7 +35,7 @@
           <div id="butt">
             <en-forget-password ref="enForgetPassword"></en-forget-password>
           </div>
-          <div class="div" style='margin-top: 0;'>
+          <div class="div" style="margin-top: 0;">
             <Button type="primary" shape="circle" size="large" id="login" @click="login">登录</Button>
           </div>
         </div>

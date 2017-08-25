@@ -24,26 +24,26 @@
                 </Dropdown-item>
                 <Dropdown-menu slot="list">
                   <Dropdown-item>
-                    <Button type='text' @click="addSentence=true">增添语料</Button>
+                    <Button type="text" @click="addSentence=true">增添语料</Button>
                     <Modal v-model="addSentence" title="增添语料" @on-ok="robotSentenceAddOk" @on-cancel="robotSentenceAddCancel">
                       <Form :label-width="80">
                         <Form-item label="问题">
                           <Input type="text" placeholder="请输入问题" v-model="robotSentence.question" @on-blur="checkQuestion" @on-focus="questionInput"></Input>
                           <i-label v-if="robotSentence.questionIsNull">
-                            <p class='waring'>问题不能为空</p>
+                            <p class="waring">问题不能为空</p>
                           </i-label>
                         </Form-item>
                         <Form-item label="回答">
                           <Input type="text" placeholder="请输入回答" v-model="robotSentence.reply" @on-blur="checkReply" @on-focus="replyInput"></Input>
                           <i-label v-if="robotSentence.replyIsNull">
-                            <p class='waring'>回答不能为空</p>
+                            <p class="waring">回答不能为空</p>
                           </i-label>
                         </Form-item>
                         <Form-item label="关键词">
                           <Input type="text" placeholder="请输入关键词" v-model="robotSentence.keyword" @on-blur="checkKeyword" @on-focus="keywordInput"></Input>
                           <p>关键词最好为问题中的重点词汇</p>
                           <i-label v-if="robotSentence.keywordIsNotStandard">
-                            <p class='waring'>关键词不合法</p>
+                            <p class="waring">关键词不合法</p>
                           </i-label>
                           <Button icon="ios-plus-empty" type="dashed" size="small" @click="robotKeywordAdd">添加关键词</Button>
                           <Tag v-for="item in robotSentence.keywordArray" :name="item" closable @on-close="robotKeywordClose">{{ item }}</Tag>
@@ -57,7 +57,7 @@
                     </Modal>
                   </Dropdown-item>
                   <Dropdown-item>
-                    <Button type='text' @click="modifySentence=true">编辑语料</Button>
+                    <Button type="text" @click="modifySentence=true">编辑语料</Button>
                     <Modal v-model="modifySentence" title="编辑语料" z-index=40>
                       <robot-setting ref="robotSetting"></robot-setting>
                       <div slot="footer"></div>
@@ -69,7 +69,7 @@
                 <se-reset-password ref="seResetPassword"></se-reset-password>
               </Dropdown-item>
               <Dropdown-item>
-                <Button @click="csLogout" type='text'>
+                <Button @click="csLogout" type="text">
                   退出账号
                 </Button>
               </Dropdown-item>
@@ -79,7 +79,7 @@
       </div>
       <div class="main-ul">
         <Tabs v-model="tagName" @on-click="switchoff">
-          <Tab-pane label="活跃聊天" name="active"  class='tab'>
+          <Tab-pane label="活跃聊天" name="active"  class="tab">
             <ul>
               <li class="main-list" v-for="item in onlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -91,7 +91,7 @@
               </li>
             </ul>
           </Tab-pane>
-          <Tab-pane label="已挂断聊天" name="negative" class='tab'>
+          <Tab-pane label="已挂断聊天" name="negative" class="tab">
             <ul>
               <li class="main-list" v-for="item in offlineList" :class="{ choosed: currentOnlineObject.customerID === item.customerID }" @click="displayCustomerList(item)">
                 <a>
@@ -130,14 +130,14 @@
               <div class="massage-text">
                 <li>
                   <p v-if="item.isText" v-html="item.text"></p>
-                  <img :src='item.img' v-else @click='showBigImg(item.bigImg)'>
+                  <img :src="item.img" v-else @click="showBigImg(item.bigImg)">
                 </li>
               </div>
             </div>
           </li>
         </ul>
       </div>
-      <Modal v-model="modalShowBigImg" width='auto'>
+      <Modal v-model="modalShowBigImg" width="auto">
         <p slot="header">
         </p>
         <div style="text-align:center">
@@ -156,7 +156,7 @@
           <textarea class="textarea" placeholder="按 Ctrl+Enter 发送" v-model="chatlogData.text" rows="5" data-emojiable="true"></textarea>
         </p>
         <Button class="submit-button" @click="buttonInputing">发送</Button>
-        <input id="inputFile" name='inputFile' type='file' accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
+        <input id="inputFile" name="inputFile" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" style="display: none" @change="imageCompress">
       </div>
     </div>
   </div>
@@ -232,9 +232,9 @@ function customerOutMessage (socket, customerID) {
 /**
   * @description 在在线组中添加用户
   */
-function addCustomer (cs_socket, onlineList, customer) {
+function addCustomer (csSocket, onlineList, customer) {
   let timer = setTimeout(function () {
-    customerOutMessage(cs_socket, customer.customerID)
+    customerOutMessage(csSocket, customer.customerID)
   }, 60000)
 
   onlineList.splice(0, 0,
@@ -255,9 +255,9 @@ function addCustomer (cs_socket, onlineList, customer) {
   * @description 接受新消息时相应的在线组上浮
   */
 function popUp (onlineList, index) {
-  let temp_onlineObject = onlineList[index]
+  let tempOnlineObject = onlineList[index]
   onlineList.splice(index, 1)
-  onlineList.splice(0, 0, temp_onlineObject)
+  onlineList.splice(0, 0, tempOnlineObject)
 }
 /**
   * @description 用户挂断时将其添加到离线组
@@ -573,9 +573,9 @@ export default {
       // that.backendUpdateConnectionNum()
     })
 
-    this.socket.on('cs reload old socket', function (former_customerinfo) {
-      for (let i = 0; i < former_customerinfo.length; i++) {
-        let customer = createCustomer(former_customerinfo[i].customer_id, former_customerinfo[i].customer_id, former_customerinfo[i].enterprise_id)
+    this.socket.on('cs reload old socket', function (formerCustomerinfo) {
+      for (let i = 0; i < formerCustomerinfo.length; i++) {
+        let customer = createCustomer(formerCustomerinfo[i].customer_id, formerCustomerinfo[i].customer_id, formerCustomerinfo[i].enterprise_id)
         addCustomer(that.socket, that.onlineList, customer)
         if (that.onlineList.length !== 1) { // 新增客服显示未读消息
           customer.uncheck++
@@ -647,7 +647,6 @@ export default {
       * @description 显示用户列表
       */
     displayCustomerList (value) {
-
       if (this.hangon) {
         this.onlineIndex = this.onlineList.indexOf(value)
         this.onlineList[this.onlineIndex].uncheck = 0
@@ -659,14 +658,14 @@ export default {
       * @description 替换换行符，实现多行文本输入
       */
     repstr (str) {
-      return str.replace(new RegExp("\n","gm"),"<br/>")
+      return str.replace(new RegExp('\n', 'gm'), '<br/>')
     },
     /**
       * @description 键盘发送消息
       */
     keyboardInputing (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.chatlogData.text.length && this.currentOnlineObject.customerID === -1) {
-        this.$Message.info("尚未接入用户")
+        this.$Message.info('尚未接入用户')
         let residual = document.getElementsByClassName('emoji-wysiwyg-editor textarea')[0]
         residual.innerHTML = ''
         this.chatlogData.text = ''

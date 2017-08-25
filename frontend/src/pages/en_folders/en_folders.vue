@@ -2,16 +2,16 @@
   <div>
     <div class="header">
       <div class="ceiling">
-        <a href='../main/'>
+        <a href="../main/">
           <img src="../../../static/logo5.png" alt="" style="height:40px;width:40px">
           <img src="../../../static/name.png" alt="" style="height:40px">
         </a>
         <div class="ceiling-main">
-          <a href='../main/' class='ceiling-item'>首页</a> |
-          <a href="../documentation/" class='ceiling-item'>帮助中心</a> |
-          <a href="../en_login/" class='ceiling-item'>企业登录</a> |
-          <a href="../en_folders/" class='ceiling-item current-page'>企业注册</a> |
-          <a href="../se_login/" class='ceiling-item'>客服入口</a>
+          <a href="../main/" class="ceiling-item">首页</a> |
+          <a href="../documentation/" class="ceiling-item">帮助中心</a> |
+          <a href="../en_login/" class="ceiling-item">企业登录</a> |
+          <a href="../en_folders/" class="ceiling-item current-page">企业注册</a> |
+          <a href="../se_login/" class="ceiling-item">客服入口</a>
         </div>
       </div>
     </div>
@@ -23,32 +23,32 @@
           </div>
           <div class="div">
             <label class="label">邮箱：</label>
-            <input type="text" v-model="email" name="email" @blur="checkEmail" @focus="emailInput" id="input-email" class='text'>
+            <input type="text" v-model="email" name="email" @blur="checkEmail" @focus="emailInput" id="input-email" class="text">
             <i-label v-if="emailIllegal">
               <p>请输入正确的邮箱！</p>
             </i-label>
           </div>
           <div class="div">
             <label class="label">密码：</label>
-            <input type="password" v-model="password" name="password" @blur="checkPassword" @focus="passwordInput" id="input-password" class='text'>
+            <input type="password" v-model="password" name="password" @blur="checkPassword" @focus="passwordInput" id="input-password" class="text">
             <i-label v-if="passwordNonStandard">
               <p>密码只能且必须包含大小写字母和数字，长度6-20位！</p>
             </i-label>
           </div>
           <div class="div">
             <label class="label">确认密码：</label>
-            <input type="password" v-model="passwordConfirm" name="passwordConfirm" @blur="checkPassword" @focus="passwordInput" id="input-password-confirm" class='text'>
+            <input type="password" v-model="passwordConfirm" name="passwordConfirm" @blur="checkPassword" @focus="passwordInput" id="input-password-confirm" class="text">
             <i-label v-if="passwordInConsistent">
               <p>两次密码输入不一致！</p>
             </i-label>
           </div>
           <div class="div">
             <label class="label">企业昵称：</label>
-            <input type="text" v-model="nickname" name="nickname" class='text'>
+            <input type="text" v-model="nickname" name="nickname" class="text">
           </div>
           <div class="div" @keydown="registerEnter">
             <label class="label">产品序列号：</label>
-            <input type="text" v-model="serialNumber" name="serialNumber" class='text'>
+            <input type="text" v-model="serialNumber" name="serialNumber" class="text">
           </div>
           <div class="div">
             <Button type="primary" shape="circle" size="large" id="finish" @click="register">注册</Button>

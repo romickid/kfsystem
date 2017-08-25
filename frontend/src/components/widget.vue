@@ -1,5 +1,5 @@
 <template>
-  <div class="widget">
+  <div class='widget'>
     <div class='method'>
       <div class='method-title'>
         <h2>在网站中嵌入widget咨询页面地址</h2>
