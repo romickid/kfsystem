@@ -720,7 +720,7 @@ html {
   }
 }
 
- @media screen and (min-width: 665px) {
+ @media screen and (min-width: 785px) {
   html {
     font-size:20px;
   }
@@ -737,7 +737,7 @@ html {
   }
 } 
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 800px) {
   html {
     font-size:15px;
   }
