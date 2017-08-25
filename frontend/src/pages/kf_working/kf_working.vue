@@ -842,11 +842,11 @@ export default {
       this.$http.post(this.apiCustomerserviceLogout)
         .then((response) => {
           if (response.data === 'ERROR, session is broken.') {
-            // window.location.href = '../se_login/'
+            window.location.href = '../se_login/'
           } else if (response.data === 'ERROR, wrong email.') {
-            // window.location.href = '../se_login/'
+            window.location.href = '../se_login/'
           } else {
-            // window.location.href = '../se_login/'
+            window.location.href = '../se_login/'
           }
         }, (response) => {
           // window.location.href = '../se_login/'
@@ -1017,7 +1017,6 @@ export default {
       */
     showBigImg (bigImg) {
       this.bigImgSrc = bigImg
-      console.log(this.bigImgSrc)
       this.modalShowBigImg = true
     },
     /**
