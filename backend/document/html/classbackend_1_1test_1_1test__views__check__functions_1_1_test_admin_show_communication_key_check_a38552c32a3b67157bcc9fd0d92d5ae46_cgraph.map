@@ -1,5 +1,5 @@
 <map id="backend.test.test_views_check_functions.TestAdminShowCommunicationKeyCheck.test" name="backend.test.test_views_check_functions.TestAdminShowCommunicationKeyCheck.test">
-<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#ae5cca172a1f09218e8853a8ea5d746f5" title="backend.views_check\l_functions.admin_show\l_user_status_check" alt="" coords="275,35,432,91"/>
-<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a98696c3147a6f6d80ed9942ea9c2bb4e" title="backend.views_helper\l_functions.admin_sessions_check" alt="" coords="480,5,701,47"/>
-<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="495,71,686,127"/>
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#ae9ee74db76e6710d7bf2c670febbfb6c" title="backend.views_check\l_functions.admin_show\l_communication_key_check" alt="" coords="275,35,461,91"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a98696c3147a6f6d80ed9942ea9c2bb4e" title="backend.views_helper\l_functions.admin_sessions_check" alt="" coords="509,5,731,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a347164645570c7569e69dbc28b9be932" title="backend.views_helper\l_functions.admin_is_existent\l_by_email" alt="" coords="525,71,715,127"/>
 </map>

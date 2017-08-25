@@ -1,0 +1,5 @@
+<map id="backend.views.customer_display_customerinfopropertyname" name="backend.views.customer_display_customerinfopropertyname">
+<area shape="rect" id="node2" href="$namespacebackend_1_1views__check__functions.html#ac7586256baf7ae445b48854cae1bbac2" title="backend.views_check\l_functions.customer\l_display_customerinfopropertyname_check" alt="" coords="284,35,556,91"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views__helper__functions.html#a83029c3bb0dd1d526926614507aa2825" title="backend.views_helper\l_functions.json_testing" alt="" coords="622,5,777,47"/>
+<area shape="rect" id="node4" href="$namespacebackend_1_1views__helper__functions.html#a47ef09b5836047c40116abf7e1bea927" title="backend.views_helper\l_functions.admin_is_existent\l_by_nickname" alt="" coords="604,71,795,127"/>
+</map>

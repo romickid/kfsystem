@@ -1,3 +1,4 @@
 <map id="backend.views_check_functions.admin_show_communication_key_check" name="backend.views_check_functions.admin_show_communication_key_check">
-<area shape="rect" id="node2" href="$namespacebackend_1_1views.html#aac3088f84417ff2bb5e6af04c9b9ce64" title="backend.views.admin\l_show_communication_key" alt="" coords="240,13,423,54"/>
+<area shape="rect" id="node2" href="$classbackend_1_1test_1_1test__views__check__functions_1_1_test_admin_show_communication_key_check.html#a38552c32a3b67157bcc9fd0d92d5ae46" title="backend.test.test_views\l_check_functions.TestAdminShow\lCommunicationKeyCheck.test" alt="" coords="240,5,461,61"/>
+<area shape="rect" id="node3" href="$namespacebackend_1_1views.html#aac3088f84417ff2bb5e6af04c9b9ce64" title="backend.views.admin\l_show_communication_key" alt="" coords="259,86,442,127"/>
 </map>
