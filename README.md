@@ -1,6 +1,6 @@
 # project-kfsystem
 
-A CusomterSystem project like Baidu yeying finished in the second year of undergraduate.
+A CustomerSystem project like Baidu YeYing finished in the second year of undergraduate.
 
 With<br>
 Django 1.11<br>
