@@ -34,12 +34,12 @@ kfsystem is mainly built by the following components: <br>
 
 # Screenshots
 #### 管理系统 / Management System
-![管理系统 / Management System](https://github.com/romic-kid/kfsystem/raw/master/screenshots/1.png)
+![管理系统 / Management System](./screenshots/1.png)
 
 
 #### <br>会话系统 / Conversation System
-![会话系统 / Conversation System](https://github.com/romic-kid/kfsystem/raw/master/screenshots/2.png)
+![会话系统 / Conversation System](./screenshots/2.png)
 
 
 #### <br>嵌入式会话界面 / Embedded Interface
-![嵌入式会话界面 / Embedded Interface](https://github.com/romic-kid/kfsystem/raw/master/screenshots/3.png)
+![嵌入式会话界面 / Embedded Interface](./screenshots/3.png)
